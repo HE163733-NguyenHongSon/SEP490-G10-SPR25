@@ -1,19 +1,37 @@
 import React from "react";
+import { useContext } from "react";
+import { SpecialtyList } from "./SpecialtyList";
+import { Home } from "./Home";
+import { DoctorList } from "./DoctorList";
+import { ServiceList } from "./ServiceList";
+import { BlogList } from "./BlogList";
+import { AppointmentBooking } from "./AppointmentBooking";
+import { NavContext } from "../../context/NavContext";
 
 const Body = () => {
+  const navContext = useContext(NavContext);
+  const nav = navContext ? navContext.nav : "Home";
   return (
     <div
-      className="min-h-screen mb-4 w-full bg-cover bg-center flex items-center overflow-hidden relative"
+      className="relative min-h-screen  w-full bg-cover bg-center flex flex-col items-center justify-center"
       style={{ backgroundImage: "url('/background.jpeg')" }}
       id="Header"
     >
-      <div className="container text-center mx-auto py-6 px-6 md:px-20 lg:px-32 text-white relative z-10">
-        <h2 className="text-5xl">Explore home that fit you</h2>
-        <div>
-          <a href="#"></a>
-        </div>
-      </div>
-      <div className="absolute inset-0 bg-cyan-500 bg-opacity-20"></div>
+      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+      {nav === "Home" ? (
+        <Home />
+      ) : nav === "Specialties" ? (
+        <SpecialtyList />
+      ) : nav === "Doctors" ? (
+        <DoctorList />
+      ) : nav === "Services" ? (
+        <ServiceList />
+      ) : nav === "Blogs" ? (
+        <BlogList />
+      ) : (
+        <AppointmentBooking />
+      )}
     </div>
   );
 };

@@ -1,6 +1,9 @@
-﻿namespace AppointmentSchedulingApp.Domain.Contracts.Repositories
+﻿using AppointmentSchedulingApp.Domain.Models;
+
+namespace AppointmentSchedulingApp.Domain.Contracts.Repositories
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository:IGenericRepository<Category>
     {
+
     }
 }

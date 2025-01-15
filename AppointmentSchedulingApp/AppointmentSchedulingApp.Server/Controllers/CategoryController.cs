@@ -1,4 +1,7 @@
+using AppointmentSchedulingApp.Domain.Contracts.Services;
+using AppointmentSchedulingApp.Domain.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace AppointmentSchedulingApp.Server.Controllers
 {
@@ -6,10 +9,7 @@ namespace AppointmentSchedulingApp.Server.Controllers
     [Route("[controller]")]
     public class CategoryController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private ICategoryService categoryService;
 
         private readonly ILogger<CategoryController> _logger;
 
@@ -18,16 +18,13 @@ namespace AppointmentSchedulingApp.Server.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet("getListCategory")]
+        [EnableQuery]
+        public async Task<IActionResult> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            var categories = await categoryService.GetListCategory();
+            return Ok(categories);  
         }
+
     }
 }

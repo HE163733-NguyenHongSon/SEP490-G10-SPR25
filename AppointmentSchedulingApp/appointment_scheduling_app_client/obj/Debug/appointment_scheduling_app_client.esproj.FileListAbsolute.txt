@@ -1,1 +1,2 @@
 C:\Users\Son\OneDrive\Máy tính\AppointmentSchedulingApp\appointment_scheduling_app_client\obj\Debug\appointment_scheduling_app_client.esproj.CoreCompileInputs.cache
+C:\Users\Son\OneDrive\Máy tính\AppointmentSchedulingApp\Project\appointment_scheduling_app_client\obj\Debug\appointment_scheduling_app_client.esproj.CoreCompileInputs.cache

@@ -25,7 +25,7 @@ public partial class Service
 
     public virtual Category Category { get; set; } = null!;
 
-    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+    public virtual ICollection<DoctorSchedule> DoctorSchedules { get; set; } = new List<DoctorSchedule>();
 
     public virtual Specialty Specialty { get; set; } = null!;
 

@@ -254,38 +254,6 @@ VALUES
 ('Room 301', 'Surgery', 'Floor 3, Zone C');
 
 -----------------------------------------------------------------------
-CREATE TABLE DoctorSchedules (
-  DoctorScheduleId INT NOT NULL IDENTITY(1,1),
-  DoctorId INT NOT NULL,
-  DayOfWeek VARCHAR(10) NOT NULL,  
-  SlotId INT NOT NULL,  
-  RoomId INT NOT NULL,
-  PRIMARY KEY (DoctorScheduleId),
-  CONSTRAINT DoctorId_FK FOREIGN KEY (DoctorId) REFERENCES Doctors (DoctorId),
-  CONSTRAINT SlotId_FK FOREIGN KEY (SlotId) REFERENCES Slots (SlotId),
-  CONSTRAINT RoomId_FK FOREIGN KEY (RoomId) REFERENCES Rooms (RoomId)
-);
-
-INSERT INTO DoctorSchedules (DoctorId, DayOfWeek, SlotId,RoomId)
-VALUES 
-(1, 'Monday', 1,1), 
-(1, 'Monday', 2,1),
-(1, 'Wednesday', 1,2),
-(1, 'Wednesday', 2,2),
-(1, 'Friday', 1,1),
-
-(2, 'Tuesday', 1,1),
-(2, 'Tuesday', 2,1),
-(2, 'Thursday', 3,1),
-
-(3, 'Monday', 3,1),
-(3, 'Wednesday', 3,2),
-(3, 'Friday', 2,1),
-
-(4, 'Tuesday', 3,1),
-(4, 'Thursday', 2,1);
-
-----------------------------------------------------------------------------------------
 CREATE TABLE Services (
   ServiceId INT NOT NULL IDENTITY(1,1),
   ServiceName VARCHAR(30) NOT NULL,
@@ -325,6 +293,38 @@ VALUES
 ('Emergency Care', 'Emergency treatment for injuries', 'First aid, trauma care', 'Surgical intervention, pain management', 1500000, 1, 4);
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE DoctorSchedules (
+  DoctorScheduleId INT NOT NULL IDENTITY(1,1),
+  DoctorId INT NOT NULL,
+  ServiceId INT NOT NULL,
+  DayOfWeek VARCHAR(10) NOT NULL,  
+  RoomId INT NOT NULL,
+  SlotId INT NOT NULL,  
+  PRIMARY KEY (DoctorScheduleId),
+  CONSTRAINT DoctorId_FK FOREIGN KEY (DoctorId) REFERENCES Doctors (DoctorId),
+  CONSTRAINT ServiceId_FK FOREIGN KEY (ServiceId) REFERENCES Services (ServiceId),
+  CONSTRAINT RoomId_FK FOREIGN KEY (RoomId) REFERENCES Rooms (RoomId),
+  CONSTRAINT SlotId_FK FOREIGN KEY (SlotId) REFERENCES Slots (SlotId)
+);
+INSERT INTO DoctorSchedules (DoctorId, ServiceId, DayOfWeek, SlotId, RoomId)
+VALUES 
+(1, 1, 'Monday', 1, 1), 
+(1, 2, 'Monday', 2, 1),
+(1, 3, 'Wednesday', 1, 2),
+(1, 4, 'Wednesday', 2, 2),
+(1, 5, 'Friday', 1, 1),
+
+(2, 6, 'Tuesday', 1, 1),
+(2, 7, 'Tuesday', 2, 1),
+(2, 8, 'Thursday', 3, 1),
+
+(3, 9, 'Monday', 3, 1),
+(3, 10, 'Wednesday', 3, 2),
+(3, 11, 'Friday', 2, 1),
+
+(4, 12, 'Tuesday', 3, 1),
+(4, 13, 'Thursday', 2, 1);
+---------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE DeviceServices (
     ServiceId INT NOT NULL,
     DeviceId INT NOT NULL,
@@ -399,42 +399,42 @@ VALUES
 CREATE TABLE Reservations (
   ReservationId int NOT NULL IDENTITY(1,1),
   PatientId int NOT NULL,
-  ServiceId int NOT NULL,
   DoctorScheduleId int NOT NULL,
   Reason Text,
-  PriorExaminationImg  VARCHAR(200) NULL,
+  PriorExaminationImg VARCHAR(200) NULL,
   AppointmentDate datetime,
   Status varchar(20) NOT NULL,
   PRIMARY KEY (ReservationId),
   CONSTRAINT PatientId_FK FOREIGN KEY (PatientId) REFERENCES Patients (PatientId),
-  CONSTRAINT ServiceId_FK FOREIGN KEY (ServiceId) REFERENCES Services (ServiceId),
   CONSTRAINT DoctorScheduleId_FK FOREIGN KEY (DoctorScheduleId) REFERENCES DoctorSchedules (DoctorScheduleId)
-) ;
-INSERT INTO Reservations (PatientId, ServiceId, DoctorScheduleId, Reason, PriorExaminationImg, AppointmentDate, Status)
+);
+
+INSERT INTO Reservations (PatientId, DoctorScheduleId, Reason, PriorExaminationImg, AppointmentDate, Status)
 VALUES
-(23, 17, 10, 'Diabetes consultation', 'http://example.com/prior_exam_17', '2025-01-10 09:15:00', 'Completed'),
-(23, 1, 1, 'Routine checkup', 'http://example.com/prior_exam_1', '2025-01-15 09:00:00', 'Completed'),
-(23, 1, 1, 'Routine checkup', 'http://example.com/prior_exam_2', '2025-01-20 10:00:00', 'Pending'),
-(23, 5, 5, 'Eye examination', 'http://example.com/prior_exam_5', '2025-01-19 11:00:00', 'Confirmed'),
-(23, 13, 10, 'Hearing test', 'http://example.com/prior_exam_13', '2025-01-27 14:00:00', 'Confirmed'),
-(23, 9, 9, 'Dermatology consultation', NULL, '2025-01-23 09:30:00', 'Confirmed'),
+(23, 10, 'Diabetes consultation', 'http://example.com/prior_exam_17', '2025-01-10 09:15:00', 'Completed'),
+(23, 1, 'Routine checkup', 'http://example.com/prior_exam_1', '2025-01-15 09:00:00', 'Completed'),
+(23, 1, 'Routine checkup', 'http://example.com/prior_exam_2', '2025-01-20 10:00:00', 'Pending'),
+(23, 5, 'Eye examination', 'http://example.com/prior_exam_5', '2025-01-19 11:00:00', 'Confirmed'),
+(23, 10, 'Hearing test', 'http://example.com/prior_exam_13', '2025-01-27 14:00:00', 'Confirmed'),
+(23, 9, 'Dermatology consultation', NULL, '2025-01-23 09:30:00', 'Confirmed'),
 
-(25, 3, 3, 'Follow-up for diabetes management', NULL, '2025-01-17 14:30:00', 'Confirmed'),
-(26, 4, 4, 'General health check', 'http://example.com/prior_exam_4', '2025-01-18 08:30:00', 'Cancelled'),
-(24, 6, 6, 'Psychological consultation', 'http://example.com/prior_exam_6', '2025-01-20 13:00:00', 'No-show'),
-(25, 7, 7, 'Pediatric consultation', NULL, '2025-01-21 15:00:00', 'Confirmed'),
-(26, 8, 8, 'Ultrasound check', 'http://example.com/prior_exam_8', '2025-01-22 16:30:00', 'Pending'),
-(24, 10, 1, 'Nutritional counseling', 'http://example.com/prior_exam_10', '2025-01-24 10:45:00', 'Cancelled'),
-(25, 11, 2, 'Vaccination', NULL, '2025-01-25 12:00:00', 'Completed'),
-(26, 12, 3, 'Chiropractic consultation', 'http://example.com/prior_exam_12', '2025-01-26 11:00:00', 'No-show'),
-(24, 14, 4, 'Cardiology checkup', NULL, '2025-01-28 08:00:00', 'Confirmed'),
-(25, 15, 5, 'Orthopedic consultation', 'http://example.com/prior_exam_15', '2025-01-29 13:30:00', 'Completed'),
-(26, 16, 6, 'Fertility consultation', NULL, '2025-01-30 15:00:00', 'Confirmed'),
-(24, 18, 8, 'Respiratory therapy', 'http://example.com/prior_exam_18', '2025-02-02 11:30:00', 'Cancelled'),
-(25, 19, 9, 'Gastroenterology consultation', NULL, '2025-02-03 14:45:00', 'No-show'),
-(26, 20, 10, 'Emergency care', 'http://example.com/prior_exam_20', '2025-02-04 08:30:00', 'Confirmed');
+(25, 3, 'Follow-up for diabetes management', NULL, '2025-01-17 14:30:00', 'Confirmed'),
+(26, 4, 'General health check', 'http://example.com/prior_exam_4', '2025-01-18 08:30:00', 'Cancelled'),
+(24, 6, 'Psychological consultation', 'http://example.com/prior_exam_6', '2025-01-20 13:00:00', 'No-show'),
+(25, 7, 'Pediatric consultation', NULL, '2025-01-21 15:00:00', 'Confirmed'),
+(26, 8, 'Ultrasound check', 'http://example.com/prior_exam_8', '2025-01-22 16:30:00', 'Pending'),
+(24, 1, 'Nutritional counseling', 'http://example.com/prior_exam_10', '2025-01-24 10:45:00', 'Cancelled'),
+(25, 2, 'Vaccination', NULL, '2025-01-25 12:00:00', 'Completed'),
+(26, 3, 'Chiropractic consultation', 'http://example.com/prior_exam_12', '2025-01-26 11:00:00', 'No-show'),
+(24, 4, 'Cardiology checkup', NULL, '2025-01-28 08:00:00', 'Confirmed'),
+(25, 5, 'Orthopedic consultation', 'http://example.com/prior_exam_15', '2025-01-29 13:30:00', 'Completed'),
+(26, 6, 'Fertility consultation', NULL, '2025-01-30 15:00:00', 'Confirmed'),
+(24, 8, 'Respiratory therapy', 'http://example.com/prior_exam_18', '2025-02-02 11:30:00', 'Cancelled'),
+(25, 9, 'Gastroenterology consultation', NULL, '2025-02-03 14:45:00', 'No-show'),
+(26, 10, 'Emergency care', 'http://example.com/prior_exam_20', '2025-02-04 08:30:00', 'Confirmed');
 
-------------------------
+
+-------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE Feedbacks (
   FeedbackId int NOT NULL IDENTITY(1,1),
   ReservationId int NOT NULL,

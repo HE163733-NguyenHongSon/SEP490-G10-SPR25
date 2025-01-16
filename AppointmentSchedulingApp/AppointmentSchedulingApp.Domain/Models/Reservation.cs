@@ -9,8 +9,6 @@ public partial class Reservation
 
     public int PatientId { get; set; }
 
-    public int ServiceId { get; set; }
-
     public int DoctorScheduleId { get; set; }
 
     public string? Reason { get; set; }
@@ -26,6 +24,4 @@ public partial class Reservation
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 
     public virtual Patient Patient { get; set; } = null!;
-
-    public virtual Service Service { get; set; } = null!;
 }

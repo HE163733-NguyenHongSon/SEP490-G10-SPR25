@@ -2,7 +2,7 @@ import React from "react";
 
 export const Footer = () => {
   return (
-    <footer className="relative top-80 mb-0 bg-gray-800 bg-opacity-90 text-white py-8">
+    <footer className=" mb-0   bg-gray-800 bg-opacity-90 text-white py-8">
       <div className="container mx-auto flex flex-col md:flex-row justify-between px-4">
         {/* Logo and Description */}
         <div className="mb-6 md:mb-0">

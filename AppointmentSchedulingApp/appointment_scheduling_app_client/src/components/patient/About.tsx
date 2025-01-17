@@ -4,7 +4,7 @@ import { assets } from "../../assets/assets";
 export const About = () => {
   return (
     <div
-      className="relative top-60 flex flex-col items-center justify-center container p-14 md:px-20 lg:px-48 w-full z-10"
+      className="my-64  flex flex-col items-center justify-center container p-14 md:px-20 lg:px-32 w-full bg-white rounded-3xl "
       id="About"
     >
       <h1 className="text-cyan-600 text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2">

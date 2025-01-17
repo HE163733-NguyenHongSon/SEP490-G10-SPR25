@@ -5,13 +5,13 @@ import { NavProvider } from "./context/NavContext";
 
 const PatientApp = () => {
   return (
-    <div className="felx flex-col items-center grid grid-rows-4 gap-6">
-      <NavProvider>
+    <NavProvider>
+      <div className="flex flex-col ">
         <Header />
-        <Body />       
+        <Body />
         <Footer />
-      </NavProvider>
-    </div>
+      </div>
+    </NavProvider>
   );
 };
 

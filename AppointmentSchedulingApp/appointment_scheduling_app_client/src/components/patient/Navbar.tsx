@@ -45,9 +45,9 @@ const Navbar: React.FC = () => {
             onClick={() => setNav('Blogs')}>
             Blogs
           </a>
-          <a  className={`cursor-pointer ${nav==='BookAppointment'?'text-cyan-500 underline underline-offset-4':'text-white'} text-xl hover:text-cyan-500 hover:underline underline-offset-6`} 
-            onClick={() => setNav('BookAppointment')}>
-            Book appointment
+          <a  className={`cursor-pointer ${nav==='AppointmentBooking'?'text-cyan-500 underline underline-offset-4':'text-white'} text-xl hover:text-cyan-500 hover:underline underline-offset-6`} 
+            onClick={() => setNav('AppointmentBooking')}>
+           Appointment booking
           </a>
           <li className="flex gap-4">
             <button className="hidden md:block bg-white px-8 py-2 rounded-full text-black hover:bg-cyan-500 hover:text-white">

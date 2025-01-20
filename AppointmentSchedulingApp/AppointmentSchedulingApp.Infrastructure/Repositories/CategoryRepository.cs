@@ -1,5 +1,6 @@
 ﻿using AppointmentSchedulingApp.Domain.Contracts.Repositories;
 using AppointmentSchedulingApp.Domain.Models;
+using AppointmentSchedulingApp.Infrastructure.Database;
 using System.Linq.Expressions;
 
 namespace AppointmentSchedulingApp.Infrastructure
@@ -10,14 +11,6 @@ namespace AppointmentSchedulingApp.Infrastructure
         {
         }
 
-        public Task<Category> Get(Expression<Func<Category, bool>> expression)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Category>> GetAll(Expression<Func<Category, bool>> expression)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

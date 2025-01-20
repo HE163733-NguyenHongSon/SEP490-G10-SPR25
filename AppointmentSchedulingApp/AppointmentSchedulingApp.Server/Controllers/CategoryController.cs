@@ -10,11 +10,11 @@ namespace AppointmentSchedulingApp.Server.Controllers
     public class CategoryController : ControllerBase
     {
         private ICategoryService categoryService;
-
         private readonly ILogger<CategoryController> _logger;
 
-        public CategoryController(ILogger<CategoryController> logger)
+        public CategoryController(ICategoryService categoryService, ILogger<CategoryController> logger)
         {
+            this.categoryService = categoryService;
             _logger = logger;
         }
 

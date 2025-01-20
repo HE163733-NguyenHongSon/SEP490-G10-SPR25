@@ -27,6 +27,8 @@ public partial class User
 
     public string? AvatarUrl { get; set; }
 
+    public bool IsVerify { get; set; }
+
     public virtual Doctor? Doctor { get; set; }
 
     public virtual Patient? Patient { get; set; }

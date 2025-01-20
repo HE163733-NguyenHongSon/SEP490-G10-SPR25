@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Domain.DTOs
 {
-    internal class DoctorDTO
+    public class DoctorDTO
     {
     }
 }

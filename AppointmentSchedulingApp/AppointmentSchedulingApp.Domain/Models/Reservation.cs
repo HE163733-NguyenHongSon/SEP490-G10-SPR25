@@ -19,9 +19,15 @@ public partial class Reservation
 
     public string Status { get; set; } = null!;
 
+    public string? CancellationReason { get; set; }
+
+    public DateTime UpdatedDate { get; set; }
+
     public virtual DoctorSchedule DoctorSchedule { get; set; } = null!;
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+
+    public virtual ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
 
     public virtual Patient Patient { get; set; } = null!;
 }

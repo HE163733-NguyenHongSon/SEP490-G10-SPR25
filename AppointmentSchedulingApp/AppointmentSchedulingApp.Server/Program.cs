@@ -1,5 +1,8 @@
+using AppointmentSchedulingApp.Domain.Contracts.Repositories;
 using AppointmentSchedulingApp.Domain.Contracts.Services;
 using AppointmentSchedulingApp.Domain.Models;
+using AppointmentSchedulingApp.Infrastructure;
+using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Services;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +37,8 @@ builder.Services.AddControllers().AddOData(opt => opt.Select().Filter().SetMaxTo
 
 builder.Services.AddDbContext<AppointmentSchedulingDbContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabase")));
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 

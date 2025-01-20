@@ -1,6 +1,7 @@
 ﻿
 
 using AppointmentSchedulingApp.Domain.Contracts.Repositories;
+using AppointmentSchedulingApp.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

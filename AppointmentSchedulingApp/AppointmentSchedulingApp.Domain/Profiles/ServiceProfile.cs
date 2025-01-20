@@ -13,9 +13,9 @@ namespace AppointmentSchedulingApp.Domain.Profiles
     {
         public ServiceProfile()
         {
-            CreateMap<Category, CategoryDTO>()
-            .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
-            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.CategoryName))
+            CreateMap<Service, ServiceDTO>()
+            .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ServiceName))
             .ReverseMap();
         }
     }

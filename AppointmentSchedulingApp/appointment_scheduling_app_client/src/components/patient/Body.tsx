@@ -26,7 +26,7 @@ const Body = () => {
 
   return (
     <div
-      className="relative min-h-screen w-full bg-cover bg-center flex flex-col items-center justify-center z-10"
+      className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center justify-center z-10"
       style={{ backgroundImage: `url(${background})` }}
       id="Body"
     >

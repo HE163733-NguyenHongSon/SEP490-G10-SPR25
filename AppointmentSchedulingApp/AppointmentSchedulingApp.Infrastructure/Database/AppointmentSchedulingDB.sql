@@ -17,6 +17,7 @@ CREATE TABLE Users (
   Address VARCHAR(100) NOT NULL,
   Role VARCHAR(20) NOT NULL,
   AvatarUrl VARCHAR(200) NULL,
+  IsVerify BIT NOT NULL DEFAULT 0,  
   PRIMARY KEY (UserId),
   CONSTRAINT CitizenId_Unique UNIQUE (CitizenId),
   CONSTRAINT Email_Unique UNIQUE (Email),
@@ -24,39 +25,40 @@ CREATE TABLE Users (
   CONSTRAINT User_CheckGender CHECK (Gender IN ('Male', 'Female'))
 );
 
-INSERT INTO Users (CitizenId,Email, Password, UserName, Phone, Gender, Dob, Address, Role, AvatarUrl)
+INSERT INTO Users (CitizenId, Email, Password, UserName, Phone, Gender, Dob, Address, Role, AvatarUrl, IsVerify)
 VALUES
--- 1-20-- bác sĩ (Doctors)
-(035002005151,'doctor1@example.com', 'DoctorPass1', 'Dr. John', '0912345671', 'Male', '1980-03-10', '12 Health Lane', 'Doctor', 'https://example.com/avatars/doctor1.jpg'),
-(035002005152,'doctor2@example.com', 'DoctorPass2', 'Dr. Mary', '0912345672', 'Female', '1985-07-25', '34 Health Lane', 'Doctor', 'https://example.com/avatars/doctor2.jpg'),
-(035002005153,'doctor3@example.com', 'DoctorPass3', 'Dr. Smith', '0912345673', 'Male', '1990-11-12', '56 Health Lane', 'Doctor', 'https://example.com/avatars/doctor3.jpg'),
-(035002005154,'doctor4@example.com', 'DoctorPass4', 'Dr. Lisa', '0912345674', 'Female', '1983-09-14', '78 Health Lane', 'Doctor', 'https://example.com/avatars/doctor4.jpg'),
-(035002005155,'doctor5@example.com', 'DoctorPass5', 'Dr. Alan', '0912345675', 'Male', '1992-02-22', '90 Health Lane', 'Doctor', 'https://example.com/avatars/doctor5.jpg'),
-(035002005156,'doctor6@example.com', 'DoctorPass6', 'Dr. Sophia', '0912345676', 'Female', '1989-06-08', '23 Medical Blvd', 'Doctor', 'https://example.com/avatars/doctor6.jpg'),
-(035002005157,'doctor7@example.com', 'DoctorPass7', 'Dr. Henry', '0912345677', 'Male', '1978-11-18', '11 Clinic Street', 'Doctor', 'https://example.com/avatars/doctor7.jpg'),
-(035002005158,'doctor8@example.com', 'DoctorPass8', 'Dr. Olivia', '0912345678', 'Female', '1986-01-05', '14 Doctor Avenue', 'Doctor', 'https://example.com/avatars/doctor8.jpg'),
-(035002005159,'doctor9@example.com', 'DoctorPass9', 'Dr. Ethan', '0912345679', 'Male', '1993-03-15', '17 Medical Street', 'Doctor', 'https://example.com/avatars/doctor9.jpg'),
-(035002005160,'doctor10@example.com', 'DoctorPass10', 'Dr. Grace', '0912345680', 'Female', '1982-12-12', '29 Health Boulevard', 'Doctor', 'https://example.com/avatars/doctor10.jpg'),
-(035002005161,'doctor11@example.com', 'DoctorPass11', 'Dr. Chris', '0912345681', 'Male', '1981-04-21', '34 Clinic Road', 'Doctor', 'https://example.com/avatars/doctor11.jpg'),
-(035002005162,'doctor12@example.com', 'DoctorPass12', 'Dr. Sarah', '0912345682', 'Female', '1984-05-13', '55 Medical Park', 'Doctor', 'https://example.com/avatars/doctor12.jpg'),
-(035002005163,'doctor13@example.com', 'DoctorPass13', 'Dr. Jack', '0912345683', 'Male', '1991-07-09', '76 Doctor Square', 'Doctor', 'https://example.com/avatars/doctor13.jpg'),
-(035002005164,'doctor14@example.com', 'DoctorPass14', 'Dr. Emily', '0912345684', 'Female', '1988-12-19', '87 Clinic Lane', 'Doctor', 'https://example.com/avatars/doctor14.jpg'),
-(035002005165,'doctor15@example.com', 'DoctorPass15', 'Dr. Liam', '0912345685', 'Male', '1986-03-17', '44 Health Avenue', 'Doctor', 'https://example.com/avatars/doctor15.jpg'),
-(035002005166,'doctor16@example.com', 'DoctorPass16', 'Dr. Mia', '0912345686', 'Female', '1990-10-05', '67 Medical Street', 'Doctor', 'https://example.com/avatars/doctor16.jpg'),
-(035002005167,'doctor17@example.com', 'DoctorPass17', 'Dr. Noah', '0912345687', 'Male', '1987-08-23', '88 Clinic Road', 'Doctor', 'https://example.com/avatars/doctor17.jpg'),
-(035002005168,'doctor18@example.com', 'DoctorPass18', 'Dr. Ava', '0912345688', 'Female', '1989-06-11', '99 Medical Lane', 'Doctor', 'https://example.com/avatars/doctor18.jpg'),
-(035002005169,'doctor19@example.com', 'DoctorPass19', 'Dr. James', '0912345689', 'Male', '1983-11-08', '22 Health Park', 'Doctor', 'https://example.com/avatars/doctor19.jpg'),
-(035002005170,'doctor20@example.com', 'DoctorPass20', 'Dr. Charlotte', '0912345690', 'Female', '1982-01-15', '33 Clinic Avenue', 'Doctor', 'https://example.com/avatars/doctor20.jpg'),
+-- 1-20 -- bác sĩ (Doctors)
+(035002005151, 'doctor1@example.com', 'DoctorPass1', 'Dr. John', '0912345671', 'Male', '1980-03-10', '12 Health Lane', 'Doctor', 'https://example.com/avatars/doctor1.jpg', 0),
+(035002005152, 'doctor2@example.com', 'DoctorPass2', 'Dr. Mary', '0912345672', 'Female', '1985-07-25', '34 Health Lane', 'Doctor', 'https://example.com/avatars/doctor2.jpg', 0),
+(035002005153, 'doctor3@example.com', 'DoctorPass3', 'Dr. Smith', '0912345673', 'Male', '1990-11-12', '56 Health Lane', 'Doctor', 'https://example.com/avatars/doctor3.jpg', 0),
+(035002005154, 'doctor4@example.com', 'DoctorPass4', 'Dr. Lisa', '0912345674', 'Female', '1983-09-14', '78 Health Lane', 'Doctor', 'https://example.com/avatars/doctor4.jpg', 0),
+(035002005155, 'doctor5@example.com', 'DoctorPass5', 'Dr. Alan', '0912345675', 'Male', '1992-02-22', '90 Health Lane', 'Doctor', 'https://example.com/avatars/doctor5.jpg', 0),
+(035002005156, 'doctor6@example.com', 'DoctorPass6', 'Dr. Sophia', '0912345676', 'Female', '1989-06-08', '23 Medical Blvd', 'Doctor', 'https://example.com/avatars/doctor6.jpg', 0),
+(035002005157, 'doctor7@example.com', 'DoctorPass7', 'Dr. Henry', '0912345677', 'Male', '1978-11-18', '11 Clinic Street', 'Doctor', 'https://example.com/avatars/doctor7.jpg', 0),
+(035002005158, 'doctor8@example.com', 'DoctorPass8', 'Dr. Olivia', '0912345678', 'Female', '1986-01-05', '14 Doctor Avenue', 'Doctor', 'https://example.com/avatars/doctor8.jpg', 0),
+(035002005159, 'doctor9@example.com', 'DoctorPass9', 'Dr. Ethan', '0912345679', 'Male', '1993-03-15', '17 Medical Street', 'Doctor', 'https://example.com/avatars/doctor9.jpg', 0),
+(035002005160, 'doctor10@example.com', 'DoctorPass10', 'Dr. Grace', '0912345680', 'Female', '1982-12-12', '29 Health Boulevard', 'Doctor', 'https://example.com/avatars/doctor10.jpg', 0),
+(035002005161, 'doctor11@example.com', 'DoctorPass11', 'Dr. Chris', '0912345681', 'Male', '1981-04-21', '34 Clinic Road', 'Doctor', 'https://example.com/avatars/doctor11.jpg', 0),
+(035002005162, 'doctor12@example.com', 'DoctorPass12', 'Dr. Sarah', '0912345682', 'Female', '1984-05-13', '55 Medical Park', 'Doctor', 'https://example.com/avatars/doctor12.jpg', 0),
+(035002005163, 'doctor13@example.com', 'DoctorPass13', 'Dr. Jack', '0912345683', 'Male', '1991-07-09', '76 Doctor Square', 'Doctor', 'https://example.com/avatars/doctor13.jpg', 0),
+(035002005164, 'doctor14@example.com', 'DoctorPass14', 'Dr. Emily', '0912345684', 'Female', '1988-12-19', '87 Clinic Lane', 'Doctor', 'https://example.com/avatars/doctor14.jpg', 0),
+(035002005165, 'doctor15@example.com', 'DoctorPass15', 'Dr. Liam', '0912345685', 'Male', '1986-03-17', '44 Health Avenue', 'Doctor', 'https://example.com/avatars/doctor15.jpg', 0),
+(035002005166, 'doctor16@example.com', 'DoctorPass16', 'Dr. Mia', '0912345686', 'Female', '1990-10-05', '67 Medical Street', 'Doctor', 'https://example.com/avatars/doctor16.jpg', 0),
+(035002005167, 'doctor17@example.com', 'DoctorPass17', 'Dr. Noah', '0912345687', 'Male', '1987-08-23', '88 Clinic Road', 'Doctor', 'https://example.com/avatars/doctor17.jpg', 0),
+(035002005168, 'doctor18@example.com', 'DoctorPass18', 'Dr. Ava', '0912345688', 'Female', '1989-06-11', '99 Medical Lane', 'Doctor', 'https://example.com/avatars/doctor18.jpg', 0),
+(035002005169, 'doctor19@example.com', 'DoctorPass19', 'Dr. James', '0912345689', 'Male', '1983-11-08', '22 Health Park', 'Doctor', 'https://example.com/avatars/doctor19.jpg', 0),
+(035002005170, 'doctor20@example.com', 'DoctorPass20', 'Dr. Charlotte', '0912345690', 'Female', '1982-01-15', '33 Clinic Avenue', 'Doctor', 'https://example.com/avatars/doctor20.jpg', 0),
 
--- 21-22-- lễ tân (Receptionists)
-(035002005171,'receptionist1@example.com', 'RecepPass1', 'Receptionist One', '0912345691', 'Female', '1995-02-18', '22 Office Road', 'Receptionist', 'https://example.com/avatars/receptionist1.jpg'),
-(035002005172,'receptionist2@example.com', 'RecepPass2', 'Receptionist Two', '0912345692', 'Male', '1997-06-30', '33 Office Road', 'Receptionist', 'https://example.com/avatars/receptionist2.jpg'),
+-- 21-22 -- lễ tân (Receptionists)
+(035002005171, 'receptionist1@example.com', 'RecepPass1', 'Receptionist One', '0912345691', 'Female', '1995-02-18', '22 Office Road', 'Receptionist', 'https://example.com/avatars/receptionist1.jpg', 0),
+(035002005172, 'receptionist2@example.com', 'RecepPass2', 'Receptionist Two', '0912345692', 'Male', '1997-06-30', '33 Office Road', 'Receptionist', 'https://example.com/avatars/receptionist2.jpg', 0),
 
--- 23-26-- bệnh nhân (Patients)
-(035002005173,'patient1@example.com', 'PatientPass1', 'Patient One', '0912345693', 'Male', '1990-04-15', '101 Patient Street', 'Patient', 'https://example.com/avatars/patient1.jpg'),
-(035002005174,'patient2@example.com', 'PatientPass2', 'Patient Two', '0912345694', 'Female', '1995-08-20', '102 Patient Avenue', 'Patient', 'https://example.com/avatars/patient2.jpg'),
-(035002005175,'patient3@example.com', 'PatientPass3', 'Patient Three', '09123456954', 'Female', '1995-08-20', '103 Patient Avenue', 'Patient', 'https://example.com/avatars/patient2.jpg'),
-(035002005176,'patient4@example.com', 'PatientPass4', 'Patient Four', '0912345696', 'Female', '1995-08-20', '104 Patient Avenue', 'Patient', 'https://example.com/avatars/patient2.jpg');
+-- 23-26 -- bệnh nhân (Patients)
+(035002005173, 'patient1@example.com', 'PatientPass1', 'Patient One', '0912345693', 'Male', '1990-04-15', '101 Patient Street', 'Patient', 'https://example.com/avatars/patient1.jpg', 0),
+(035002005174, 'patient2@example.com', 'PatientPass2', 'Patient Two', '0912345694', 'Female', '1995-08-20', '102 Patient Avenue', 'Patient', 'https://example.com/avatars/patient2.jpg', 0),
+(035002005175, 'patient3@example.com', 'PatientPass3', 'Patient Three', '09123456954', 'Female', '1995-08-20', '103 Patient Avenue', 'Patient', 'https://example.com/avatars/patient2.jpg', 0),
+(035002005176, 'patient4@example.com', 'PatientPass4', 'Patient Four', '0912345696', 'Female', '1995-08-20', '104 Patient Avenue', 'Patient', 'https://example.com/avatars/patient2.jpg', 0);
+
 -----------------------------------------------------------------------------------------------------------------------------------------
 
 CREATE TABLE Categories (
@@ -404,37 +406,76 @@ CREATE TABLE Reservations (
   PriorExaminationImg VARCHAR(200) NULL,
   AppointmentDate datetime,
   Status varchar(20) NOT NULL,
+  CancellationReason varchar(255) NULL, 
+  UpdatedDate datetime NOT NULL DEFAULT GETDATE(), 
   PRIMARY KEY (ReservationId),
   CONSTRAINT PatientId_FK FOREIGN KEY (PatientId) REFERENCES Patients (PatientId),
   CONSTRAINT DoctorScheduleId_FK FOREIGN KEY (DoctorScheduleId) REFERENCES DoctorSchedules (DoctorScheduleId)
 );
 
-INSERT INTO Reservations (PatientId, DoctorScheduleId, Reason, PriorExaminationImg, AppointmentDate, Status)
+INSERT INTO Reservations (PatientId, DoctorScheduleId, Reason, PriorExaminationImg, AppointmentDate, Status, CancellationReason, UpdatedDate)
 VALUES
-(23, 10, 'Diabetes consultation', 'http://example.com/prior_exam_17', '2025-01-10 09:15:00', 'Completed'),
-(23, 1, 'Routine checkup', 'http://example.com/prior_exam_1', '2025-01-15 09:00:00', 'Completed'),
-(23, 1, 'Routine checkup', 'http://example.com/prior_exam_2', '2025-01-20 10:00:00', 'Pending'),
-(23, 5, 'Eye examination', 'http://example.com/prior_exam_5', '2025-01-19 11:00:00', 'Confirmed'),
-(23, 10, 'Hearing test', 'http://example.com/prior_exam_13', '2025-01-27 14:00:00', 'Confirmed'),
-(23, 9, 'Dermatology consultation', NULL, '2025-01-23 09:30:00', 'Confirmed'),
+(23, 10, 'Diabetes consultation', 'http://example.com/prior_exam_17', '2025-01-10 09:15:00', 'Completed', NULL, '2025-01-10 09:15:00'),
+(23, 1, 'Routine checkup', 'http://example.com/prior_exam_1', '2025-01-15 09:00:00', 'Completed', NULL, '2025-01-15 09:00:00'),
+(23, 1, 'Routine checkup', 'http://example.com/prior_exam_2', '2025-01-20 10:00:00', 'Pending', NULL, '2025-01-20 10:00:00'),
+(23, 5, 'Eye examination', 'http://example.com/prior_exam_5', '2025-01-19 11:00:00', 'Confirmed', NULL, '2025-01-19 11:00:00'),
+(23, 10, 'Hearing test', 'http://example.com/prior_exam_13', '2025-01-27 14:00:00', 'Confirmed', NULL, '2025-01-27 14:00:00'),
+(23, 9, 'Dermatology consultation', NULL, '2025-01-23 09:30:00', 'Confirmed', NULL, '2025-01-23 09:30:00'),
+(25, 3, 'Follow-up for diabetes management', NULL, '2025-01-17 14:30:00', 'Confirmed', NULL, '2025-01-17 14:30:00'),
+(26, 4, 'General health check', 'http://example.com/prior_exam_4', '2025-01-18 08:30:00', 'Cancelled', 'Patient canceled', '2025-01-18 08:30:00'),
+(24, 6, 'Psychological consultation', 'http://example.com/prior_exam_6', '2025-01-20 13:00:00', 'No-show', NULL, '2025-01-20 13:00:00'),
+(25, 7, 'Pediatric consultation', NULL, '2025-01-21 15:00:00', 'Confirmed', NULL, '2025-01-21 15:00:00'),
+(26, 8, 'Ultrasound check', 'http://example.com/prior_exam_8', '2025-01-22 16:30:00', 'Pending', NULL, '2025-01-22 16:30:00'),
+(24, 1, 'Nutritional counseling', 'http://example.com/prior_exam_10', '2025-01-24 10:45:00', 'Cancelled', 'Patient canceled', '2025-01-24 10:45:00'),
+(25, 2, 'Vaccination', NULL, '2025-01-25 12:00:00', 'Completed', NULL, '2025-01-25 12:00:00'),
+(26, 3, 'Chiropractic consultation', 'http://example.com/prior_exam_12', '2025-01-26 11:00:00', 'No-show', NULL, '2025-01-26 11:00:00'),
+(24, 4, 'Cardiology checkup', NULL, '2025-01-28 08:00:00', 'Confirmed', NULL, '2025-01-28 08:00:00'),
+(25, 5, 'Orthopedic consultation', 'http://example.com/prior_exam_15', '2025-01-29 13:30:00', 'Completed', NULL, '2025-01-29 13:30:00'),
+(26, 6, 'Fertility consultation', NULL, '2025-01-30 15:00:00', 'Confirmed', NULL, '2025-01-30 15:00:00'),
+(24, 8, 'Respiratory therapy', 'http://example.com/prior_exam_18', '2025-02-02 11:30:00', 'Cancelled', 'Patient canceled', '2025-02-02 11:30:00'),
+(25, 9, 'Gastroenterology consultation', NULL, '2025-02-03 14:45:00', 'No-show', NULL, '2025-02-03 14:45:00'),
+(26, 10, 'Emergency care', 'http://example.com/prior_exam_20', '2025-02-04 08:30:00', 'Confirmed', NULL, '2025-02-04 08:30:00');
 
-(25, 3, 'Follow-up for diabetes management', NULL, '2025-01-17 14:30:00', 'Confirmed'),
-(26, 4, 'General health check', 'http://example.com/prior_exam_4', '2025-01-18 08:30:00', 'Cancelled'),
-(24, 6, 'Psychological consultation', 'http://example.com/prior_exam_6', '2025-01-20 13:00:00', 'No-show'),
-(25, 7, 'Pediatric consultation', NULL, '2025-01-21 15:00:00', 'Confirmed'),
-(26, 8, 'Ultrasound check', 'http://example.com/prior_exam_8', '2025-01-22 16:30:00', 'Pending'),
-(24, 1, 'Nutritional counseling', 'http://example.com/prior_exam_10', '2025-01-24 10:45:00', 'Cancelled'),
-(25, 2, 'Vaccination', NULL, '2025-01-25 12:00:00', 'Completed'),
-(26, 3, 'Chiropractic consultation', 'http://example.com/prior_exam_12', '2025-01-26 11:00:00', 'No-show'),
-(24, 4, 'Cardiology checkup', NULL, '2025-01-28 08:00:00', 'Confirmed'),
-(25, 5, 'Orthopedic consultation', 'http://example.com/prior_exam_15', '2025-01-29 13:30:00', 'Completed'),
-(26, 6, 'Fertility consultation', NULL, '2025-01-30 15:00:00', 'Confirmed'),
-(24, 8, 'Respiratory therapy', 'http://example.com/prior_exam_18', '2025-02-02 11:30:00', 'Cancelled'),
-(25, 9, 'Gastroenterology consultation', NULL, '2025-02-03 14:45:00', 'No-show'),
-(26, 10, 'Emergency care', 'http://example.com/prior_exam_20', '2025-02-04 08:30:00', 'Confirmed');
+
 
 
 -------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE MedicalRecords (
+  MedicalRecordId INT NOT NULL IDENTITY(1,1),
+  ReservationId INT NOT NULL,
+  Symptoms TEXT, 
+  Diagnosis TEXT, 
+  TreatmentPlan TEXT, 
+  FollowUpDate DATETIME NULL, 
+  Notes TEXT NULL, 
+  CreatedAt DATETIME NOT NULL DEFAULT GETDATE(), 
+  PRIMARY KEY (MedicalRecordId),
+  CONSTRAINT FK_ReservationId FOREIGN KEY (ReservationId) REFERENCES Reservations(ReservationId)
+);
+INSERT INTO MedicalRecords (ReservationId, Symptoms, Diagnosis, TreatmentPlan, FollowUpDate, Notes)
+VALUES
+-- Patient 23
+(1, 'Increased thirst and frequent urination', 'Type 2 Diabetes', 'Medication adjustment and dietary counseling', '2025-01-20', 'Monitor blood sugar levels daily'),
+(2, 'No symptoms reported', 'Routine check-up: Healthy', 'Continue regular exercise and balanced diet', NULL, 'Maintain yearly check-ups'),
+(4, 'Blurred vision and mild discomfort', 'Eye strain', 'Prescribed corrective lenses', '2025-01-30', 'Follow up if symptoms persist'),
+(5, 'Reduced hearing in the left ear', 'Partial hearing loss', 'Recommended hearing aid consultation', '2025-02-10', 'Avoid exposure to loud noises'),
+
+-- Patient 25
+(7, 'Fatigue and irregular blood sugar levels', 'Diabetes management', 'Adjust insulin dosage', '2025-02-05', 'Discuss further adjustments during follow-up'),
+(13, 'Persistent joint pain', 'Arthritis', 'Physical therapy and anti-inflammatory medications', '2025-02-15', 'Consider X-ray if no improvement'),
+
+-- Patient 26
+(17, 'Severe abdominal cramps', 'Ulcer symptoms', 'Prescribed antacids and dietary restrictions', '2025-02-20', 'Schedule endoscopy if pain worsens'),
+(20, 'Emergency: high fever and dizziness', 'Viral infection', 'Intravenous fluids and rest', '2025-02-10', 'Monitor fever daily and report any complications'),
+
+-- Patient 24
+(14, 'Chest pain during exertion', 'Early signs of coronary artery disease', 'Lifestyle changes and aspirin therapy', '2025-02-12', 'Schedule stress test next visit');
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
 CREATE TABLE Feedbacks (
   FeedbackId int NOT NULL IDENTITY(1,1),
   ReservationId int NOT NULL,

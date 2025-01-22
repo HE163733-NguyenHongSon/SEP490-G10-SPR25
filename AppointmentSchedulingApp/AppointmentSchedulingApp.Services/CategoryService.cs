@@ -7,18 +7,18 @@ namespace AppointmentSchedulingApp.Services
 {
     public class CategoryService : ICategoryService
     {
-        private ICategoryRepository _categoryRepository;
-        private readonly IMapper _mapper;
+        private readonly IMapper mapper;
+        private readonly ICategoryRepository categoryRepository;
 
-        public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
+        public CategoryService(IMapper mapper, ICategoryRepository categoryRepository)
         {
-            _categoryRepository = categoryRepository;
-            _mapper = mapper;
+            this.mapper = mapper;
+            this.categoryRepository = categoryRepository;
         }
 
         public async Task<List<CategoryDTO>> GetListCategory()
         {
-            return _mapper.Map<List<CategoryDTO>>(await _categoryRepository.GetAll());
+           return  mapper.Map<List<CategoryDTO>>(categoryRepository.GetAll());
         }
     }
 }

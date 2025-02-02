@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import PatientApp from "./PatientApp.tsx";
+import PatientRoutes  from "./routes/PatientRoutes.tsx";
 import ReceptionistApp from "./ReceptionistApp.tsx";
 import { useState } from "react";
 
@@ -10,7 +10,7 @@ const App = () => {
 
   return (
     <StrictMode>
-      {userRole === "patient" ? <PatientApp /> : <ReceptionistApp />}
+      {userRole === "patient" ? <PatientRoutes /> : <ReceptionistApp />}
     </StrictMode>
   );
 };

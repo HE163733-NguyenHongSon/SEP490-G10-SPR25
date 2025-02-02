@@ -1,8 +1,12 @@
-
-export const AppointmentBooking = () => {
+export const AppointmentBookingPage = () => {
   return (
-    <div className="my-24 z-30">
-      <form>
+    <div
+      className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center justify-center z-10"
+      style={{ backgroundImage: 'url("/background_register_treatment.jpeg")' }}
+      id="Body"
+    >
+      <div className="absolute  inset-0 bg-black bg-opacity-50 z-20"></div>
+      <form className="mt-28 mb-10  z-30">
         <div className=" bg-white rounded-3xl p-10 text-2xl bg-opacity-95">
           <div className="border-b border-gray-900/10 pb-12">
             <h2 className="text-2xl font-semibold text-gray-900">

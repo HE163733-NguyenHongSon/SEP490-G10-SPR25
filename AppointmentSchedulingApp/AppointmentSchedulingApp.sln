@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "appointment_scheduling_app_client", "appointment_scheduling_app_client\appointment_scheduling_app_client.esproj", "{0C147468-8F9C-404D-89CF-7382808EBBDD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628} = {9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentSchedulingApp.Domain", "AppointmentSchedulingApp.Domain\AppointmentSchedulingApp.Domain.csproj", "{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}"
 EndProject

@@ -26,11 +26,12 @@ var config = provider.GetService<IConfiguration>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
+    options.AddDefaultPolicy(policy =>
     {
-        builder.WithOrigins(config.GetValue<string>("Frontend_url"))
+        policy.WithOrigins(config.GetValue<string>("Frontend_url"))
                .AllowAnyMethod()
                .AllowAnyHeader();
+
     });
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -58,6 +59,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors();
 
 app.UseHttpsRedirection();
 

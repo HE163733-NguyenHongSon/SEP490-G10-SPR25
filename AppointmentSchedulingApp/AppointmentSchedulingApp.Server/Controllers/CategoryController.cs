@@ -18,7 +18,7 @@ namespace AppointmentSchedulingApp.Server.Controllers
             _logger = logger;
         }
 
-        [HttpGet("getListCategory")]
+        [HttpGet("categories")]
         [EnableQuery]
         public async Task<IActionResult> Get()
         {

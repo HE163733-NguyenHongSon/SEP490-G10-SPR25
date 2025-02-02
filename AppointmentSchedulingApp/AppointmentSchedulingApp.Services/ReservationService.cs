@@ -1,7 +1,10 @@
 ﻿using AppointmentSchedulingApp.Domain.Contracts.Repositories;
 using AppointmentSchedulingApp.Domain.Contracts.Services;
 using AppointmentSchedulingApp.Domain.DTOs;
+using AppointmentSchedulingApp.Domain.Models;
+using AppointmentSchedulingApp.Infrastructure.Repositories;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +29,23 @@ namespace AppointmentSchedulingApp.Services
         {
             return mapper.Map<List<ReservationDTO>>(await reservationRepository.GetAll()) ;
         }
+
+        public async Task<List<ReservationDTO>> GetListReservationByFilterAndSort(string status , string sortBy , int pageIndex)
+        {
+            IQueryable<Reservation> queryable = await reservationRepository.GetListReservationByStatus(status);
+
+            queryable = sortBy switch
+            {
+                "UpcomingAppointment" => queryable.Where(r => r.AppointmentDate >= DateTime.Now).OrderBy(r => r.AppointmentDate),
+                "PastAppointment" => queryable.Where(r => r.AppointmentDate < DateTime.Now).OrderByDescending(r => r.AppointmentDate),
+                "ServicePriceAscending" => queryable.OrderBy(r => r.DoctorSchedule.Service.Price),
+                _ => queryable.OrderByDescending(r => r.DoctorSchedule.Service.Price),
+            };
+
+            return   mapper.Map<List<ReservationDTO >> (await queryable.OrderBy(r => r.AppointmentDate).Skip((pageIndex - 1) * 8).Take(8).ToListAsync());
+        }
+       
+
+
     }
 }

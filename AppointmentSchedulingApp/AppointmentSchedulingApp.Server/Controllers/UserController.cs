@@ -30,7 +30,7 @@ namespace AppointmentSchedulingApp.Server.Controllers
 
             return Ok(user);
         }
-
+        //cmt
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegistrationDTO registrationDto)
         {

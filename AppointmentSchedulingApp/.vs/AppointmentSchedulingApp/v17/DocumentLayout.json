@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\PC\\Desktop\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|c:\\users\\pc\\desktop\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.server\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|solutionrelative:appointmentschedulingapp.server\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+      "AbsoluteMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|c:\\users\\pc\\desktop\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.domain\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|solutionrelative:appointmentschedulingapp.domain\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|c:\\users\\pc\\desktop\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.server\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|solutionrelative:appointmentschedulingapp.server\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|c:\\users\\pc\\desktop\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.server\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|solutionrelative:appointmentschedulingapp.server\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|c:\\users\\pc\\desktop\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -17,10 +21,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|c:\\users\\pc\\desktop\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|solutionrelative:appointmentschedulingapp.services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|c:\\users\\pc\\desktop\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.domain\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|solutionrelative:appointmentschedulingapp.domain\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|c:\\users\\pc\\desktop\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.domain\\profiles\\reservationprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -42,7 +42,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -62,7 +62,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": ".gitignore",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Server\\.gitignore",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Server\\.gitignore",
@@ -70,16 +70,11 @@
               "RelativeToolTip": "AppointmentSchedulingApp.Server\\.gitignore",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-02-04T10:26:55.782Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "WhenOpened": "2025-02-04T10:26:55.782Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "UserService.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Services\\UserService.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Services\\UserService.cs",
@@ -87,12 +82,11 @@
               "RelativeToolTip": "AppointmentSchedulingApp.Services\\UserService.cs",
               "ViewState": "AgIAAEQAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-04T10:14:24.958Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-04T10:14:24.958Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": ".gitignore",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\.gitignore",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\.gitignore",
@@ -111,7 +105,7 @@
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Server\\Controllers\\UserController.cs",
               "ToolTip": "C:\\Users\\PC\\Desktop\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Server\\Controllers\\UserController.cs",
               "RelativeToolTip": "AppointmentSchedulingApp.Server\\Controllers\\UserController.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAqwCAAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAABMAAAAAAAAAAAAIwCMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-04T09:43:19.372Z",
               "EditorCaption": ""
@@ -154,7 +148,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Server\\Program.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Server\\Program.cs",
@@ -162,8 +156,7 @@
               "RelativeToolTip": "AppointmentSchedulingApp.Server\\Program.cs",
               "ViewState": "AgIAABIAAAAAAAAAAAAAADMAAABWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-01T08:25:55.943Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-01T08:25:55.943Z"
             }
           ]
         }

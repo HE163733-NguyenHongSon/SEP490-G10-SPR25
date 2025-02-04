@@ -1,15 +1,25 @@
 import API from "./API";
 
-interface Reservation {
-  reservationId: number;
-  status: string;
+// interface Reservation {
+//   reservationId: number;
+//   status: string;
+// }
+interface Status{
+  name:string;
+  count:number;
 }
 
 const ReservationService = {
-  async getAllReservations() {
-    const response = await API.get("/Reservation/ReservationList/All");
-    return response.data;
+  async getListReservationByStatusAndSort(status:string, sortBy:string) {
+    const response = await API.get(`/api/Reservations/${status}/${sortBy}`);
+    return  response.data;
   },
+  
+  async getReservationCountByStatus(status: string): Promise<Status> {
+    const response = await API.get(`/odata/Reservations/$count?$filter=status eq '${status}'`);
+    return { name: status, count: response.data };
+  },
+  
 
   async getReservationById(id: string) {
     const response = await API.get(`/Reservation/${id}`);

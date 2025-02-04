@@ -7,7 +7,7 @@ export const AppointmentBookingPage = () => {
     >
       <div className="absolute  inset-0 bg-black bg-opacity-50 z-20"></div>
       <form className="mt-28 mb-10  z-30">
-        <div className=" bg-white rounded-3xl p-10 text-2xl bg-opacity-95">
+        <div className=" bg-white rounded-3xl p-10 text-xl bg-opacity-95">
           <div className="border-b border-gray-900/10 pb-12">
             <h2 className="text-2xl font-semibold text-gray-900">
               Patient Information

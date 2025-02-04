@@ -6,7 +6,7 @@ import SpecialtyPage from "../pages/patient/SpecialtyPage";
 import DoctorPage from "../pages/patient/DoctorPage";
 import { AppointmentBookingPage } from "../pages/patient/AppointmentBookingPage";
 import ProfilePage from "../pages/patient/ProfilePage";
-import MedicalReport from "../components/patient/MedicalReport";
+import MedicalReportPage from "../pages/patient/MedicalReportPage";
 import PersonLayout from "../layouts/patient/PersonLayout";
 import ReservationPage from "../pages/patient/ReservationPage";
 
@@ -28,7 +28,7 @@ const PatientRoutes = () => {
             <Route index element={<Navigate to="profile" />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="reservations" element={<ReservationPage />} />
-            <Route path="medical-report" element={<MedicalReport />} />
+            <Route path="medical-report" element={<MedicalReportPage />} />
           </Route>
         </Route>
       </Routes>

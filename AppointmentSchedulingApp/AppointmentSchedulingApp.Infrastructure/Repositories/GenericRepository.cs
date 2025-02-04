@@ -53,5 +53,7 @@ namespace AppointmentSchedulingApp.Infrastructure
         {
             _dbContext.Update(entity);
         }
+
+
     }
 }

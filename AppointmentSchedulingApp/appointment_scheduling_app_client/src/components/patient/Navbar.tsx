@@ -1,93 +1,124 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { assets } from "../../assets/assets";
-import { useState } from "react";
-import { useContext } from "react";
-import { NavContext } from "../../context/NavContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Navbar: React.FC = () => {
   const [isShowMobileMenu, setIsShowMobileMenu] = useState(false);
-  const navContext = useContext(NavContext);
-  if (!navContext) {
-    throw new Error("NavContext is undefined");
-  }
-  const {nav, setNav } = navContext;
+  const location = useLocation();
+  const [user, setUser] = useState<{ name?: string; avatar?: string }>({});
 
-    useEffect(() => {
-          document.body.style.overflow = isShowMobileMenu ? 'hidden' : 'auto';
-          return () => {
-            document.body.style.overflow = 'auto';
-          }
-    }, [isShowMobileMenu]);
+  const routes = [
+    { path: "/", name: "Home" },
+    { path: "/specialties", name: "Specialties " },
+    { path: "/doctors", name: "Doctors" },
+    { path: "/services", name: "Services" },
+    { path: "/appointment-booking", name: "Appointment Booking" },
+    { path: "/login", name: "Login" },
+    { path: "/register", name: "Register" },
+    { path: "/person", name: "Person" },
+    { path: "/logout", name: "Logout" },
+  ];
+  const handleLogout = () => {
+    sessionStorage.removeItem("user");
+    document.cookie = `user=; expires=${Date.now}; path=/;`;
+    setUser({});
+    toast.success("Logout successfully!", { position: "top-right" });
+  };
+  useEffect(() => {
+    const storedUser = sessionStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else {
+      const cookies = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("user="));
+      if (cookies) {
+        setUser(JSON.parse(decodeURIComponent(cookies.split("=")[1])));
+      }
+    }
+  }, []);
+  useEffect(() => {
+    document.body.style.overflow = isShowMobileMenu ? "hidden" : "auto";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isShowMobileMenu]);
+
   return (
-    <div className="fixed  top-0 left-0 w-full z-30   bg-black bg-opacity-50 backdrop-blur-md  ">
-      <div
-        className="container mx-auto flex justify-between items-center
-       py-4 px-6 md:px-20 lg:px-32 bg-transparent"
-      >
-        <img className="w-12 h-12" src={assets.logo} alt="" />
-        <ul className=" hidden  md:flex gap-16 text-white text-center  ">
-          <a  className={`cursor-pointer ${nav==='Home'?'text-cyan-500 underline underline-offset-4':'text-white'} text-xl hover:text-cyan-500 hover:underline underline-offset-6`} 
-        onClick={() => setNav('Home')}>          
-             Home
-          </a>
-          <a  className={`cursor-pointer ${nav==='Specialties'?'text-cyan-500 underline underline-offset-4':'text-white'} text-xl hover:text-cyan-500 hover:underline underline-offset-6`} 
-            onClick={() => setNav('Specialties')}>
-            Specialties
-          </a>
-          <a  className={`cursor-pointer ${nav==='Doctors'?'text-cyan-500 underline underline-offset-4':'text-white'} text-xl hover:text-cyan-500 hover:underline underline-offset-6`} 
-            onClick={() => setNav('Doctors')}>
-            Doctors
-          </a>
-          <a  className={`cursor-pointer ${nav==='Services'?'text-cyan-500 underline underline-offset-4':'text-white'} text-xl hover:text-cyan-500 hover:underline underline-offset-6`} 
-          onClick={() => setNav('Services')}>
-            Services
-          </a>
-          <a  className={`cursor-pointer ${nav==='Blogs'?'text-cyan-500 underline underline-offset-4':'text-white'} text-xl hover:text-cyan-500 hover:underline underline-offset-6`} 
-            onClick={() => setNav('Blogs')}>
-            Blogs
-          </a>
-          <a  className={`cursor-pointer ${nav==='AppointmentBooking'?'text-cyan-500 underline underline-offset-4':'text-white'} text-xl hover:text-cyan-500 hover:underline underline-offset-6`} 
-            onClick={() => setNav('AppointmentBooking')}>
-           Appointment booking
-          </a>
-          <li className="flex gap-4">
-            <button className="hidden md:block bg-white px-8 py-2 rounded-full text-black hover:bg-cyan-500 hover:text-white">
-              Sign up{" "}
-            </button>
-            <button className="hidden md:block bg-white px-8 py-2 rounded-full text-black hover:bg-cyan-500 hover:text-white">
-              Sign up{" "}
-            </button>
-          </li>
+    <div className=" fixed top-0 left-0 w-full z-30 bg-black bg-opacity-50 backdrop-blur-md">
+      <div className="container mx-auto flex justify-between items-center py-4 px-6 md:px-20 lg:px-32 bg-transparent">
+        <img className="w-12 h-12" src={assets.logo} alt="Logo" />
+
+        <ul className="hidden md:flex gap-8 text-white text-center">
+          {routes.map((route) => (
+            <li key={route.path}>
+              <Link
+                to={route.path}
+                className={`text-xl hover:text-cyan-500 hover:underline underline-offset-4 ${
+                  location.pathname === route.path
+                    ? "text-cyan-500 underline underline-offset-4"
+                    : "text-white"
+                }`}
+              >
+                {route.name}
+              </Link>
+              {user.name &&
+                (route.path === "person" ? (
+                  <Link to={route.path}>
+                    <img
+                      src=""
+                      className="w-10 h-10 cursor-pointer rounded-full"
+                      onClick={() => setIsShowMobileMenu(true)}
+                      alt="Avatar"
+                    />{" "}
+                  </Link>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleLogout}
+                      className="hidden md:block bg-white px-6 py-2 rounded-full text-black hover:bg-cyan-500 hover:text-white"
+                    >
+                      Logout
+                    </button>
+                    <ToastContainer />
+                  </>
+                ))}
+            </li>
+          ))}
         </ul>
-            <img
-            onClick={() => setIsShowMobileMenu(true)}
-            className="md:hidden w-8 h-8"
-            src={assets.menu}
-            alt="Menu"
-          />
-      </div>
-      {/* mobile menu */}
-      <div
-        className={`md:hidden ${isShowMobileMenu ? 'fixed w-full' : 'h-0 w-0'} right-0 top-0 bottom-0 overflow-hidden bg-white transition-all `}
-      >
-        <div className="flex justify-end p-6 ">
-          <img onClick={() => setIsShowMobileMenu(false)} className="w-8" src={assets.close} alt="Close" />
-        </div>
-        <ul className="flex flex-col items-center gap-2 mt-5 px-5 text-lg font-medium">
-          <a href="#Header" onClick={() => setIsShowMobileMenu(false)} className="px-4 py-2 rounded-full inline-block">
-            Home
-          </a>
-          <a href="#About" onClick={() => setIsShowMobileMenu(false)} className="px-4 py-2 rounded-full inline-block">
-            Specialties
-          </a>
-          <a href="#Projects" onClick={() => setIsShowMobileMenu(false)} className="px-4 py-2 rounded-full inline-block">
-            Doctors
-          </a>
-          <a href="#Blog" onClick={() => setIsShowMobileMenu(false)} className="px-4 py-2 rounded-full inline-block">
-            Blog
-          </a>
-        </ul>
+
+        <img
+          onClick={() => setIsShowMobileMenu(true)}
+          className="md:hidden w-8 h-8 cursor-pointer"
+          src={assets.menu}
+          alt="Menu"
+        />
       </div>
 
+      {/* Mobile menu */}
+      {isShowMobileMenu && (
+        <div className="fixed inset-0 bg-white flex flex-col items-center pt-16">
+          <button
+            className="absolute top-5 right-5"
+            onClick={() => setIsShowMobileMenu(false)}
+          >
+            <img src={assets.close} className="w-8" alt="Close" />
+          </button>
+
+          {routes.map((route) => (
+            <Link
+              key={route.path}
+              to={route.path}
+              className="text-lg py-2 text-black hover:text-cyan-500"
+              onClick={() => setIsShowMobileMenu(false)}
+            >
+              {route.name}
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

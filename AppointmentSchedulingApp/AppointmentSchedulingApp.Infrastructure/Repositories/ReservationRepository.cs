@@ -1,6 +1,8 @@
 ﻿using AppointmentSchedulingApp.Domain.Contracts.Repositories;
+using AppointmentSchedulingApp.Domain.DTOs;
 using AppointmentSchedulingApp.Domain.Models;
 using AppointmentSchedulingApp.Infrastructure.Database;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,11 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
         {
         }
 
-       
+        public async Task<IQueryable<Reservation>> GetListReservationByStatus(string status)
+        {
+            return base._entitySet.Where(r => r.Status.Equals(status));
+        }
+
+
     }
 }

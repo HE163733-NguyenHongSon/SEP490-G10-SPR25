@@ -31,6 +31,9 @@ namespace AppointmentSchedulingApp.Server.Controllers
             return Ok(user);
         }
         //cmt
+
+        // thu commit tren github déktop
+
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegistrationDTO registrationDto)
         {

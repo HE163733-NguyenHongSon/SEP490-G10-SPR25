@@ -26,6 +26,7 @@ namespace AppointmentSchedulingApp.Domain.DTOs
         public string RoomName { get; set; } = null!;
         public string Location { get; set; } = null!;
         public string? Reason { get; set; }
+        public string Status { get; set; }
     }
 
 }

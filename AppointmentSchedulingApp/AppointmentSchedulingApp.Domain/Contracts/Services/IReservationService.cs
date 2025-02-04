@@ -11,6 +11,6 @@ namespace AppointmentSchedulingApp.Domain.Contracts.Services
     public interface IReservationService
     {
         Task<List<ReservationDTO>> GetListReservation();
-        public Task<List<ReservationDTO>> GetListReservationByFilterAndSort(string status , string sortBy , int pageIndex );
+        public Task<List<ReservationDTO>> GetListReservationByStatusAndSort(string status, string sortBy);
     }
 }

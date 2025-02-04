@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<CategoryDTO>("Category");
-modelBuilder.EntitySet<ReservationDTO>("Reservation");
+modelBuilder.EntitySet<ReservationDTO>("Reservations");
 
 var provider = builder.Services.BuildServiceProvider();
 var config = provider.GetService<IConfiguration>();

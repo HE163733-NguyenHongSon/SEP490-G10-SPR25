@@ -6,20 +6,24 @@ import { imgs } from "react-toastify";
 
 const PersonLayout = () => {
   const location = useLocation();
-  console.log(location.pathname)
+  console.log(location.pathname);
   const routes = [
     { path: "profile", name: "Profile", img: assets.profile },
     { path: "reservations", name: "Reservations ", img: assets.reservation },
-    { path: "medical-report",  name: "Medical Report", img: assets.medical_report}
+    {
+      path: "medical-report",
+      name: "Medical Report",
+      img: assets.medical_report,
+    },
   ];
   return (
     <div
-      className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center justify-center z-10"
+      className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center  z-10"
       style={{ backgroundImage: 'url("/background_register_treatment.jpeg")' }}
       id="Body"
     >
       <div className=" absolute  inset-0 bg-black bg-opacity-50 z-20"></div>
-      <div className=" container mt-28 mb-10   z-30 grid grid-cols-5 gap-4 text-gray-700 bg-white  rounded-xl shadow-2xl drop-shadow-2xl ">
+      <div className="container mt-28 mb-10 z-30 grid grid-cols-5  text-gray-700 bg-white rounded-xl shadow-2xl">
         <div className="col-span-1 border-r border-gray-300 ">
           <div className="flex flex-row items-center justify-center gap-2 p-4  ">
             <h2 className="text-xl">Nguyen Hong Son</h2>
@@ -43,7 +47,7 @@ const PersonLayout = () => {
                     flex items-center justify-start min-w-fit h-12 gap-4 border border-gray-300 
                      ${
                        location.pathname.includes(route.path)
-                         ? "bg-cyan-500 text-white"
+                         ? "bg-cyan-500 text-white  underline underline-offset-2"
                          : " bg-white"
                      } shadow-md`}
                   >
@@ -56,7 +60,7 @@ const PersonLayout = () => {
           </nav>
         </div>
 
-        <div className="col-span-4 p-4">
+        <div className="col-span-4 ">
           <Outlet />
         </div>
       </div>

@@ -32,6 +32,7 @@ namespace AppointmentSchedulingApp.Domain.Profiles
              .ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.DoctorSchedule.Room.RoomName))
              .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.DoctorSchedule.Room.Location))
              .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason))
+             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
 
 
 

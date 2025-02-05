@@ -7,18 +7,18 @@ namespace AppointmentSchedulingApp.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CategoryController : ControllerBase
+    public class CategoriesController : ControllerBase
     {
         private ICategoryService categoryService;
-        private readonly ILogger<CategoryController> _logger;
+        private readonly ILogger<CategoriesController> _logger;
 
-        public CategoryController(ICategoryService categoryService, ILogger<CategoryController> logger)
+        public CategoriesController(ICategoryService categoryService, ILogger<CategoriesController> logger)
         {
             this.categoryService = categoryService;
             _logger = logger;
         }
 
-        [HttpGet("categories")]
+        [HttpGet]
         [EnableQuery]
         public async Task<IActionResult> Get()
         {

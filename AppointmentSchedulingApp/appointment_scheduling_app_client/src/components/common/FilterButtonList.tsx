@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { memo } from "react";
 
 interface T {
   name: string;
@@ -24,4 +25,4 @@ const FilterButtonList: FC<ItemList> = ({ itemList }) => {
   );
 };
 
-export default FilterButtonList;
+export default memo(FilterButtonList);

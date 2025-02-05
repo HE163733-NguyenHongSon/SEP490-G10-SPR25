@@ -1,25 +1,11 @@
 import React from "react";
-
-interface Reservation {
-  reservationId: string;
-  serviceImage: string;
-  serviceName: string;
-  servicePrice: string;
-  doctorName: string;
-  appointmentDate: string;
-  slotStartTime: string;
-  slotEndTime: string;
-  roomName: string;
-  reason: string;
-  updatedDate: string;
-  status: "Pending" | "Confirmed" | "Completed" | "No-show" | "Canceled";
-}
+import { Reservation } from "../../types/reservation";
 
 interface ReservationListProps {
   reservationList: Reservation[];
 }
 
-function ReservationList({ reservationList }: ReservationListProps) {
+const ReservationList = ({ reservationList }: ReservationListProps) => {
   return (
     <div className="reservation-list">
       <table className=" border-separate   border border-gray-300 rounded-md    ">
@@ -66,9 +52,30 @@ function ReservationList({ reservationList }: ReservationListProps) {
                     </div>
                   </div>
                   <div className="flex justify-center flex-col col-span-2 w-fit mx-6">
-                    <p>Examination by <span className="font-semibold">{reservation.doctorName}</span> doctor</p>
                     <p>
-                      Examination on <span className="font-semibold">{reservation.appointmentDate}</span> from <span className="font-semibold">{reservation.slotStartTime}</span> to <span className="font-semibold">{reservation.slotEndTime}</span> in  <span className="font-semibold">{reservation.roomName}</span>
+                      Examination by{" "}
+                      <span className="font-semibold">
+                        {reservation.doctorName}
+                      </span>{" "}
+                      doctor
+                    </p>
+                    <p>
+                      Examination on{" "}
+                      <span className="font-semibold">
+                        {reservation.appointmentDate}
+                      </span>{" "}
+                      from{" "}
+                      <span className="font-semibold">
+                        {reservation.slotStartTime}
+                      </span>{" "}
+                      to{" "}
+                      <span className="font-semibold">
+                        {reservation.slotEndTime}
+                      </span>{" "}
+                      in{" "}
+                      <span className="font-semibold">
+                        {reservation.roomName}
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -94,6 +101,6 @@ function ReservationList({ reservationList }: ReservationListProps) {
       </table>
     </div>
   );
-}
+};
 
 export default ReservationList;

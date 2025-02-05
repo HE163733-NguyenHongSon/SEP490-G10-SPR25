@@ -18,6 +18,7 @@ builder.Services.AddControllers();
 ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<CategoryDTO>("Category");
 modelBuilder.EntitySet<ReservationDTO>("Reservations");
+modelBuilder.EntitySet<MedicalRecordDTO>("MedicalRecords");
 
 var provider = builder.Services.BuildServiceProvider();
 var config = provider.GetService<IConfiguration>();
@@ -50,6 +51,10 @@ builder.Services.AddScoped<IReservationRepository,ReservationRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+
+builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
+builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

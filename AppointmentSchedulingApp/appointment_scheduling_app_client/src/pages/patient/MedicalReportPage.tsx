@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { assets } from "../../assets/assets";
 import MedicalRecordList from "../../components/patient/MedicalRecordList";
+import { medicalRecordService } from "../../services/medicalRecordService";
+import { MedicalRecord } from "../../types";
 
 const MedicalReportPage = () => {
+  const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([]);
+  useEffect(() => {
+    const fetchMedicalRecords = async () => {
+      const res = await medicalRecordService.getMedicalRecordList();
+      setMedicalRecords(res);
+    };
+    fetchMedicalRecords();
+  }, []);
   return (
     <div className="  flex flex-col m-5 ">
       <div className="grid grid-cols-2 p-5  border-b-2  border-gray-300">
@@ -77,7 +87,7 @@ const MedicalReportPage = () => {
         </div>
       </div>
 
-      <MedicalRecordList />
+      <MedicalRecordList medicalRecordList={medicalRecords} />
     </div>
   );
 };

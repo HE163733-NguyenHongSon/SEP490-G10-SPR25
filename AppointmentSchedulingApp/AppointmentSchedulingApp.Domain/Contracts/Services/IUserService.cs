@@ -11,5 +11,6 @@ namespace AppointmentSchedulingApp.Domain.Contracts.Services
     {
         Task<UserDTO?> LoginUser(SignInDTO userLogin, StringBuilder message);
         Task<UserDTO?> RegisterUser(RegistrationDTO registrationDto, StringBuilder message);
+        string GenerateToken(UserDTO user);
     }
 }

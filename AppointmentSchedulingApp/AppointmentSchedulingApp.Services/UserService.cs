@@ -2,8 +2,11 @@
 using AppointmentSchedulingApp.Domain.Contracts.Services;
 using AppointmentSchedulingApp.Domain.DTOs;
 using AppointmentSchedulingApp.Domain.Models;
+using AppointmentSchedulingApp.Services.Helper;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -14,12 +17,21 @@ namespace AppointmentSchedulingApp.Services
     public class UserService : IUserService
     {
         private readonly IGenericRepository<User> _userRepository;
+        private readonly AppSettings _appSettings;
 
-        public UserService(IGenericRepository<User> userRepository)
+        public UserService(IGenericRepository<User> userRepository, IOptionsMonitor<AppSettings> optionsMonitor)
         {
             _userRepository = userRepository;
+            _appSettings = optionsMonitor.CurrentValue;
         }
-        
+
+
+        // chua xong - di hop da~
+        public string GenerateToken(UserDTO user)
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+            return null;
+        }
 
         public async Task<UserDTO?> LoginUser(SignInDTO userLogin, StringBuilder message)
         {

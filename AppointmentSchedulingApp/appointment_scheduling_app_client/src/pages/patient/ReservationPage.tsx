@@ -4,30 +4,49 @@ import StatusButtonList from "../../components/patient/StatusButtonList";
 import ReservationService from "../../services/ReservationService";
 import { useEffect, useState } from "react";
 import PaginatedItems from "../../components/common/PaginatedItems ";
+
+interface Status {
+  name: string;
+  number: number;
+}
+
 const ReservationPage = () => {
   const [reservationList, setReservationList] = useState([]);
+  const [status, setStatus] = useState("pending");
+  const [sortBy, setSortBy] = useState("price_asc");
+  const [statusList, setStatusList] = useState<Status[]>([]);
+  // useEffect(() => {
+  //   const fetchReservations = async () => {
+  //     const reservations =
+  //       await ReservationService.getListReservationByStatusAndSort(
+  //         status,
+  //         sortBy
+  //       );
+  //     setReservationList(reservations);
+  //     console.log(reservations);
+  //   };
+  //   fetchReservations();
+  // }, [status, sortBy]);
 
   useEffect(() => {
-    const fetchReservations = async () => {
-      const reservations = await ReservationService.getAllReservations();
-      setReservationList(reservations);
-      console.log(reservations);
+    const fetchReservationNumbersByStatus = async () => {
+      const [reservation,...statuses] = await Promise.all([
+                 ReservationService.getListReservationByStatusAndSort(
+
+        ReservationService.getReservationCountByStatus("Pending"),
+        ReservationService.getReservationCountByStatus("Confirmed"),
+        ReservationService.getReservationCountByStatus("Completed"),
+        ReservationService.getReservationCountByStatus("No-show"),
+        ReservationService.getReservationCountByStatus("Cancelled"),
+      ]);
+      setStatusList(res);
     };
-    fetchReservations();
+    fetchReservationNumbersByStatus();
   }, []);
   return (
     <div className="p-4 ">
       <h1 className="text-xl font-bold mb-4">Reservations</h1>
-
-      <StatusButtonList
-        statusList={[
-          { name: "Pending", number: 4 },
-          { name: "Confirm", number: 8 },
-          { name: "Complete", number: 12 },
-          { name: "No show", number: 2 },
-          { name: "Cancel", number: 6 },
-        ]}
-      />
+      <StatusButtonList statusList={statusList} />
       <PaginatedItems
         itemsPerPage={4}
         items={reservationList}

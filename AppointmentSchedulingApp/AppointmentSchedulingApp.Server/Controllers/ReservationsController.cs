@@ -8,29 +8,26 @@ namespace AppointmentSchedulingApp.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReservationController : ControllerBase
+    public class ReservationsController : ControllerBase
     {
         private IReservationService reservationService;
 
-        public ReservationController(IReservationService reservationService)
+        public ReservationsController(IReservationService reservationService)
         {
             this.reservationService = reservationService;
         }
 
-        [HttpGet("ReservationList/All")] 
+        [HttpGet()]
         [EnableQuery]
         public async Task<IActionResult> Get()
         {
             return Ok(await reservationService.GetListReservation());
         }
 
-        [HttpGet("ReservationList/Filter")] 
-        public async Task<IActionResult> GetReservations(
-            [FromQuery] string? status = "Pending",
-            [FromQuery] string? sortBy = "ServicePriceAscending",
-            [FromQuery] int pageIndex = 1)
+        [HttpGet("{status}/{sortBy}")]
+        public async Task<IActionResult> GetListReservationByStatusAndSort( string? status = "pending", string? sortBy = "price_asc")
         {
-            var reservations = await reservationService.GetListReservationByFilterAndSort(status, sortBy, pageIndex);
+            var reservations = await reservationService.GetListReservationByStatusAndSort(status, sortBy);
             return Ok(reservations);
         }
 

@@ -3,6 +3,34 @@
   "WorkspaceRootPath": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.services\\reservationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|solutionrelative:appointmentschedulingapp.services\\reservationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.server\\controllers\\reservationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|solutionrelative:appointmentschedulingapp.server\\controllers\\reservationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|solutionrelative:appointmentschedulingapp.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.services\\medicalrecordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|solutionrelative:appointmentschedulingapp.services\\medicalrecordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|solutionrelative:appointmentschedulingapp.services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.domain\\profiles\\medicalrecordprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|solutionrelative:appointmentschedulingapp.domain\\profiles\\medicalrecordprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.domain\\dtos\\medicalrecorddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|solutionrelative:appointmentschedulingapp.domain\\dtos\\medicalrecorddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.server\\controllers\\medicalrecordscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|solutionrelative:appointmentschedulingapp.server\\controllers\\medicalrecordscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -11,20 +39,12 @@
       "RelativeMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|solutionrelative:appointmentschedulingapp.domain\\contracts\\services\\imedicalrecordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|solutionrelative:appointmentschedulingapp.services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|solutionrelative:appointmentschedulingapp.server\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.server\\controllers\\categoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|solutionrelative:appointmentschedulingapp.server\\controllers\\categoriescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.services\\medicalrecordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|solutionrelative:appointmentschedulingapp.services\\medicalrecordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D3B96E50-F665-4945-90FC-156D072309E0}|AppointmentSchedulingApp.Infrastructure\\AppointmentSchedulingApp.Infrastructure.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.infrastructure\\repositories\\medicalrecordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -45,22 +65,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.domain\\contracts\\services\\ireservationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|solutionrelative:appointmentschedulingapp.domain\\contracts\\services\\ireservationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.services\\reservationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5D3122CE-0D8A-4A79-8AAB-C9C490C4CCEE}|AppointmentSchedulingApp.Services\\AppointmentSchedulingApp.Services.csproj|solutionrelative:appointmentschedulingapp.services\\reservationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.domain\\profiles\\medicalrecordprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|solutionrelative:appointmentschedulingapp.domain\\profiles\\medicalrecordprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.domain\\dtos\\medicalrecorddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|solutionrelative:appointmentschedulingapp.domain\\dtos\\medicalrecorddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.server\\controllers\\reservationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|solutionrelative:appointmentschedulingapp.server\\controllers\\reservationscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.domain\\profiles\\reservationprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -89,10 +93,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.domain\\dtos\\doctordetaildto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{AF187FFB-FDEA-4A61-A4A8-19BF9DC0D05B}|AppointmentSchedulingApp.Domain\\AppointmentSchedulingApp.Domain.csproj|solutionrelative:appointmentschedulingapp.domain\\dtos\\doctordetaildto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|c:\\users\\son\\onedrive\\m\u00E1y t\u00EDnh\\appointmentschedulingapp\\appointmentschedulingapp\\appointmentschedulingapp.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{9D9E102C-91B5-408C-B3D1-3D8AEC5A1628}|AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj|solutionrelative:appointmentschedulingapp.server\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -102,11 +102,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 13,
               "Title": "IMedicalRecordRepository.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\Contracts\\Repositories\\IMedicalRecordRepository.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\Contracts\\Repositories\\IMedicalRecordRepository.cs",
@@ -119,7 +119,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 11,
               "Title": "MedicalRecordRepository.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Infrastructure\\Repositories\\MedicalRecordRepository.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Infrastructure\\Repositories\\MedicalRecordRepository.cs",
@@ -132,7 +132,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 14,
               "Title": "IReservationRepository.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\Contracts\\Repositories\\IReservationRepository.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\Contracts\\Repositories\\IReservationRepository.cs",
@@ -145,7 +145,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 8,
               "Title": "IMedicalRecordService.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\Contracts\\Services\\IMedicalRecordService.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\Contracts\\Services\\IMedicalRecordService.cs",
@@ -158,46 +158,46 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "MedicalRecordService.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Services\\MedicalRecordService.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Services\\MedicalRecordService.cs",
               "ToolTip": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Services\\MedicalRecordService.cs",
               "RelativeToolTip": "AppointmentSchedulingApp.Services\\MedicalRecordService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-05T04:08:58.843Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "UserService.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Services\\UserService.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Services\\UserService.cs",
               "ToolTip": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Services\\UserService.cs",
               "RelativeToolTip": "AppointmentSchedulingApp.Services\\UserService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFMAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAAAF0AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-05T04:08:23.93Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 7,
               "Title": "MedicalRecordsController.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Server\\Controllers\\MedicalRecordsController.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Server\\Controllers\\MedicalRecordsController.cs",
-              "ToolTip": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Server\\Controllers\\MedicalRecordsController.cs*",
-              "RelativeToolTip": "AppointmentSchedulingApp.Server\\Controllers\\MedicalRecordsController.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAABAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Server\\Controllers\\MedicalRecordsController.cs",
+              "RelativeToolTip": "AppointmentSchedulingApp.Server\\Controllers\\MedicalRecordsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-05T04:07:05.308Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 12,
               "Title": "ReservationRepository.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Infrastructure\\Repositories\\ReservationRepository.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Infrastructure\\Repositories\\ReservationRepository.cs",
@@ -210,7 +210,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "ServiceProfile.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\Profiles\\ServiceProfile.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\Profiles\\ServiceProfile.cs",
@@ -222,7 +222,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 15,
               "Title": "IReservationService.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\Contracts\\Services\\IReservationService.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\Contracts\\Services\\IReservationService.cs",
@@ -235,20 +235,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 0,
               "Title": "ReservationService.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Services\\ReservationService.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Services\\ReservationService.cs",
-              "ToolTip": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Services\\ReservationService.cs",
-              "RelativeToolTip": "AppointmentSchedulingApp.Services\\ReservationService.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAcwCkAAABWAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Services\\ReservationService.cs*",
+              "RelativeToolTip": "AppointmentSchedulingApp.Services\\ReservationService.cs*",
+              "ViewState": "AgIAABkAAAAAAAAAAAAcwCwAAABTAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-03T07:02:47.875Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 10,
               "Title": "CategoriesController.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Server\\Controllers\\CategoriesController.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Server\\Controllers\\CategoriesController.cs",
@@ -261,19 +261,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 1,
               "Title": "ReservationsController.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Server\\Controllers\\ReservationsController.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Server\\Controllers\\ReservationsController.cs",
               "ToolTip": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Server\\Controllers\\ReservationsController.cs",
               "RelativeToolTip": "AppointmentSchedulingApp.Server\\Controllers\\ReservationsController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABcAAABFAAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABsAAACDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-03T05:48:32.156Z"
+              "WhenOpened": "2025-02-03T05:48:32.156Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "CategoryProfile.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\Profiles\\CategoryProfile.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\Profiles\\CategoryProfile.cs",
@@ -285,20 +286,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 5,
               "Title": "MedicalRecordProfile.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\Profiles\\MedicalRecordProfile.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\Profiles\\MedicalRecordProfile.cs",
               "ToolTip": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\Profiles\\MedicalRecordProfile.cs",
               "RelativeToolTip": "AppointmentSchedulingApp.Domain\\Profiles\\MedicalRecordProfile.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAABVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-03T04:50:37.403Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "MedicalRecord.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\Models\\MedicalRecord.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\Models\\MedicalRecord.cs",
@@ -310,7 +311,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "DoctorDTO.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\DTOs\\DoctorDTO.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\DTOs\\DoctorDTO.cs",
@@ -322,7 +323,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "DoctorDetailDTO.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\DTOs\\DoctorDetailDTO.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\DTOs\\DoctorDetailDTO.cs",
@@ -334,20 +335,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 6,
               "Title": "MedicalRecordDTO.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\DTOs\\MedicalRecordDTO.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\DTOs\\MedicalRecordDTO.cs",
               "ToolTip": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\DTOs\\MedicalRecordDTO.cs",
               "RelativeToolTip": "AppointmentSchedulingApp.Domain\\DTOs\\MedicalRecordDTO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-03T04:36:03.099Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "ReservationProfile.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\Profiles\\ReservationProfile.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\Profiles\\ReservationProfile.cs",
@@ -359,7 +360,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "ReservationDTO.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\DTOs\\ReservationDTO.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\DTOs\\ReservationDTO.cs",
@@ -371,19 +372,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Server\\appsettings.json",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Server\\appsettings.json",
               "ToolTip": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Server\\appsettings.json",
               "RelativeToolTip": "AppointmentSchedulingApp.Server\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAhAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-02-01T08:26:50.83Z"
+              "WhenOpened": "2025-02-01T08:26:50.83Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 9,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Server\\Program.cs",
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Server\\Program.cs",

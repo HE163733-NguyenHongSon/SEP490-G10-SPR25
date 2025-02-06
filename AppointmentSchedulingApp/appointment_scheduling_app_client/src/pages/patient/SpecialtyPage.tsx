@@ -8,9 +8,9 @@ const SpecialtyPage = () => {
       id="Body"
     >
       {/* <div className="absolute  inset-0 bg-black bg-opacity-50 z-20"></div> */}
-      <div className="relative z-30">
+      {/* <div className="relative z-30"> */}
         <SpecialtyList />
-      </div>
+      {/* </div> */}
     </div>
     
   );

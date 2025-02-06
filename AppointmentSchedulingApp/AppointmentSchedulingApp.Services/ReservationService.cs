@@ -42,7 +42,7 @@ namespace AppointmentSchedulingApp.Services
                 _ => queryable.OrderByDescending(r => r.DoctorSchedule.Service.Price),
             };
 
-            return mapper.Map<List<ReservationDTO>>(await queryable.OrderBy(r => r.AppointmentDate).ToListAsync());
+            return mapper.Map<List<ReservationDTO>>(await queryable.ToListAsync());
         }
 
 

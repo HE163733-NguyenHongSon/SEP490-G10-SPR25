@@ -2,6 +2,7 @@
 using AppointmentSchedulingApp.Domain.Contracts.Services;
 using AppointmentSchedulingApp.Domain.DTOs;
 using AppointmentSchedulingApp.Domain.Models;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,14 @@ namespace AppointmentSchedulingApp.Services
     public class UserService : IUserService
     {
         private readonly IGenericRepository<User> _userRepository;
+        private readonly IMapper _mapper;
 
-        public UserService(IGenericRepository<User> userRepository)
+        public UserService(IGenericRepository<User> userRepository,IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
-        
+
 
         public async Task<UserDTO?> LoginUser(SignInDTO userLogin, StringBuilder message)
         {
@@ -38,7 +41,7 @@ namespace AppointmentSchedulingApp.Services
                 Password = user.Password,
                 Phone = user.Phone,
                 Gender = user.Gender,
-                Dob = user.Dob
+                //Dob = user.Dob
             };
 
             return userDTO;
@@ -53,30 +56,33 @@ namespace AppointmentSchedulingApp.Services
             }
 
             var hashedPassword = HashPassword(registrationDto.Password);
-            var user = new User
-            {
-                UserName = registrationDto.UserName,
-                Email = registrationDto.Email,
-                Password = hashedPassword,
-                Phone = registrationDto.Phone,
-                Gender = registrationDto.Gender,
-                Dob = registrationDto.Dob
-            };
 
-            _userRepository.Add(user);
+            //var user = new User
+            //{
+            //    UserName = registrationDto.UserName,
+            //    Email = registrationDto.Email,
+            //    Password = hashedPassword,
+            //    Phone = registrationDto.Phone,
+            //    Gender = registrationDto.Gender,
+            //    Dob = registrationDto.Dob
+            //};
 
-            var userDTO = new UserDTO
-            {
-                UserId = user.UserId,
-                Email = user.Email,
-                UserName = user.UserName,
-                Password = hashedPassword,
-                Phone = user.Phone,
-                Gender = user.Gender,
-                Dob = user.Dob
-            };
+            var user = _mapper.Map<User>(registrationDto);
+            //_userRepository.Add(user);
 
-            return userDTO;
+            //var userDTO = new UserDTO
+            //{
+            //    UserId = user.UserId,
+            //    Email = user.Email,
+            //    UserName = user.UserName,
+            //    Password = hashedPassword,
+            //    Phone = user.Phone,
+            //    Gender = user.Gender,
+            //    Dob = user.Dob
+            //};
+
+            var c= _mapper.Map<UserDTO>(user);
+            return c;
         }
 
         private string HashPassword(string password)

@@ -1,14 +1,16 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { SpecialtyDetails } from "../components/patient/SpecialtyDetails";
+import { SpecialtyList } from "../components/patient/SpecialtyList";
 import PatientLayout from "../layouts/patient/PatientLayout";
+import PersonLayout from "../layouts/patient/PersonLayout";
+import { AppointmentBookingPage } from "../pages/patient/AppointmentBookingPage";
+import DoctorPage from "../pages/patient/DoctorPage";
 import { HomePage } from "../pages/patient/HomePage";
+import MedicalReportPage from "../pages/patient/MedicalReportPage";
+import ProfilePage from "../pages/patient/ProfilePage";
+import ReservationPage from "../pages/patient/ReservationPage";
 import ServicePage from "../pages/patient/ServicePage";
 import SpecialtyPage from "../pages/patient/SpecialtyPage";
-import DoctorPage from "../pages/patient/DoctorPage";
-import { AppointmentBookingPage } from "../pages/patient/AppointmentBookingPage";
-import ProfilePage from "../pages/patient/ProfilePage";
-import MedicalReportPage from "../pages/patient/MedicalReportPage";
-import PersonLayout from "../layouts/patient/PersonLayout";
-import ReservationPage from "../pages/patient/ReservationPage";
 
 const PatientRoutes = () => {
   return (
@@ -31,6 +33,10 @@ const PatientRoutes = () => {
             <Route path="medical-report" element={<MedicalReportPage />} />
           </Route>
         </Route>
+
+        <Route path="/" element={<SpecialtyList />} />
+        <Route path="/specialty/:id" element={<SpecialtyDetails />} />
+        
       </Routes>
     </BrowserRouter>
   );

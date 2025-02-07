@@ -1,14 +1,23 @@
+import { useNavigate } from "react-router-dom";
+
 export const SpecialtyList = () => {
+  const navigate = useNavigate();
+
+  // Dummy data
   const specialtys = Array(6).fill({
+    id: Math.random().toString(36).substr(2, 6), // Unique ID
     title: "General Consultation",
     image: "https://via.placeholder.com/150",
-    link: "#", // Đường dẫn liên kết giả (thay đổi theo nhu cầu)
   });
 
+  const handleNavigate = (id: string) => {
+    navigate(`/specialty/${id}`);
+  };
+
   return (
-    <div className="p-10 relative z-20">
-      {/* Thanh tìm kiếm */}
-      <div className="flex justify-center mb-8 mt-14">
+    <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl mx-auto">
+      {/* Search Bar */}
+      <div className="flex justify-center mb-8 mt-6">
         <div className="relative flex items-center w-[500px] bg-white rounded-full shadow-md border border-gray-300">
           <div className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-l-full">
             <span className="text-sm font-semibold">Name</span>
@@ -47,16 +56,16 @@ export const SpecialtyList = () => {
         </div>
       </div>
 
-      {/* Danh sách dịch vụ */}
+      {/* Specialty List */}
       <h2 className="text-2xl font-bold mb-4">
-        SpecialtyList (<span className="text-blue-500">22 result</span>)
+        SpecialtyList (<span className="text-blue-500">{specialtys.length} results</span>)
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {specialtys.map((specialty, index) => (
-          <a
-            key={index}
-            href={specialty.link} // Đường dẫn liên kết
-            className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow cursor-pointer block"
+        {specialtys.map((specialty) => (
+          <div
+            key={specialty.id}
+            onClick={() => handleNavigate(specialty.id)}
+            className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow cursor-pointer"
           >
             <img
               src={specialty.image}
@@ -66,7 +75,7 @@ export const SpecialtyList = () => {
             <div className="mt-4">
               <h3 className="text-lg font-semibold">{specialty.title}</h3>
             </div>
-          </a>
+          </div>
         ))}
       </div>
 

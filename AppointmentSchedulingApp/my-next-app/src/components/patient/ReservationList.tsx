@@ -1,7 +1,7 @@
 import React from "react";
 import Image  from "next/image";
 interface ReservationListProps {
-  reservationList: Reservation[];
+  reservationList: IReservation[];
 }
 
 const ReservationList = ({ reservationList }: ReservationListProps) => {
@@ -28,7 +28,7 @@ const ReservationList = ({ reservationList }: ReservationListProps) => {
           </tr>
         </thead>
         <tbody>
-          {reservationList.map((reservation: Reservation) => (
+          {reservationList.map((reservation: IReservation) => (
             <tr key={reservation.reservationId}>
               <td className="border border-gray-300 rounded-md  px-10">
                 {reservation.reservationId}

@@ -3,13 +3,13 @@ import React from "react";
 
 
 interface SelectSortProps {
-  options: SortOption[];
+  options: ISortOption[];
   onSortChange: (value: string) => void;
 }
 
 const SelectSort: React.FC<SelectSortProps> = ({ options, onSortChange }) => {
   return (
-    <div className="flex flex-row  gap-2 h-fit">
+    <div className="flex flex-row items-center justify-center  gap-x-2  ">
       <label htmlFor="sort" className="font-medium text-gray-700">
         Sort:
       </label>

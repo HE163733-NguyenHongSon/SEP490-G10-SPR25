@@ -1,5 +1,4 @@
 import api from "./api";
-import {Status} from "../types"
 
 
 const reservationService = {
@@ -8,7 +7,7 @@ const reservationService = {
     return  response.data;
   },
   
-  async getReservationCountByStatus(status: string): Promise<Status> {
+  async getReservationCountByStatus(status: string): Promise<IStatus> {
     const response = await api.get(`/odata/Reservations/$count?$filter=status eq '${status}'`);
     return { name: status, count: response.data };
   },

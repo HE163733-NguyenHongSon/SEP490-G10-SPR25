@@ -8,11 +8,11 @@
       <div className="absolute  inset-0 bg-black bg-opacity-50 z-20"></div>
       <form className="mt-28 mb-10  z-30">
         <div className=" bg-white rounded-3xl p-10 text-xl bg-opacity-95">
-          <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-2xl font-semibold text-gray-900">
+          <div className="border-b-2 border-gray-300  pb-12">
+            <h2 className="text-xl font-semibold text-gray-600">
               Patient Information
             </h2>
-            <p className="mt-1 text-xl text-gray-600">
+            <p className="mt-1 text-lg text-gray-600">
               The information provided here will be visible to others. Please
               ensure that you only share appropriate and accurate details.
             </p>
@@ -21,13 +21,13 @@
               <div className="sm:col-span-1 ">
                 <label
                   htmlFor="username"
-                  className="block text-xl font-medium text-gray-900"
+                  className="block text-base font-medium text-gray-900"
                 >
                   User Name
                 </label>
                 <div className="mt-2">
                   <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
-                    <div className="shrink-0 select-none text-base text-gray-500 sm:text-xl">
+                    <div className="shrink-0 select-none text-base text-gray-500 ">
                       workcation.com/
                     </div>
                     <input
@@ -35,7 +35,7 @@
                       name="username"
                       id="username"
                       disabled
-                      className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-xl"
+                      className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 "
                       placeholder="janesmith"
                     />
                   </div>
@@ -45,7 +45,7 @@
                 <div className="sm:col-span-1">
                   <label
                     htmlFor="age"
-                    className="block text-xl font-medium text-gray-900"
+                    className="block text-base  font-medium text-gray-900"
                   >
                     Age
                   </label>
@@ -56,7 +56,7 @@
                         name="age"
                         disabled
                         id="age"
-                        className="block w-full grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-xl"
+                        className="block w-full grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 "
                         min="0"
                       />
                     </div>
@@ -64,7 +64,7 @@
                 </div>
                 <div className="sm:col-span-1  ">
                   <fieldset>
-                    <legend className="text-xl col-span-1 font-semibold text-gray-900">
+                    <legend className="text-base col-span-1 font-semibold text-gray-900">
                       Gender
                     </legend>
 
@@ -79,7 +79,7 @@
                         />
                         <label
                           htmlFor="gender_male"
-                          className="block text-xl   text-gray-500"
+                          className="block text-base   text-gray-500"
                         >
                           Male
                         </label>
@@ -94,7 +94,7 @@
                         />
                         <label
                           htmlFor="gender_female"
-                          className="block text-xl   text-gray-500"
+                          className="block text-base   text-gray-500"
                         >
                           Female
                         </label>
@@ -109,7 +109,7 @@
               <div className="sm:col-span-1 ">
                 <label
                   htmlFor="mail"
-                  className="block text-xl font-medium text-gray-900"
+                  className="block text-base font-medium text-gray-900"
                 >
                   Email
                 </label>
@@ -120,7 +120,7 @@
                     id="mail"
                     autoComplete="family-mail"
                     disabled
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-xl"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 "
                   />
                   <button
                     type="button"
@@ -134,7 +134,7 @@
               <div className="sm:col-span-1">
                 <label
                   htmlFor="phone"
-                  className="block text-xl font-medium text-gray-900"
+                  className="block text-base font-medium text-gray-900"
                 >
                   Phone
                 </label>
@@ -144,7 +144,7 @@
                     name="phone"
                     id="phone"
                     autoComplete="tel"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-xl"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 "
                     disabled
                   />
                   <button
@@ -161,7 +161,7 @@
               <div className="col-span-full">
                 <label
                   htmlFor="address"
-                  className="block text-xl font-medium text-gray-900"
+                  className="block text-base font-medium text-gray-900"
                 >
                   Address
                 </label>
@@ -171,18 +171,18 @@
                     id="address"
                     rows={2}
                     placeholder="Enter your full address "
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-xl"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 "
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="border-y-4 border-gray-500 py-12">
-            <h2 className="text-2xl font-semibold text-gray-900">
+          <div className="border-b-2 border-gray-300 py-12">
+            <h2 className="text-xl font-semibold text-gray-600">
               Appoitment Information
             </h2>
-            <p className="mt-1 text-xl text-gray-600">
+            <p className="mt-1 text-lg text-gray-600">
               You can book your appointment online by choosing a suitable time
               for your consultation.
             </p>
@@ -191,7 +191,7 @@
               <div className="sm:col-span-1">
                 <label
                   htmlFor="specialty"
-                  className="block text-xl font-medium text-gray-900"
+                  className="block text-base font-medium text-gray-900"
                 >
                   Choose specialty
                 </label>
@@ -200,7 +200,7 @@
                     id="specialty"
                     name="specialty"
                     autoComplete="specialty-name"
-                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-xl"
+                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 "
                   >
                     <option>Cardiology</option>
                     <option>Neurology</option>
@@ -226,7 +226,7 @@
               <div className="sm:col-span-1">
                 <label
                   htmlFor="medical-service"
-                  className="block text-xl font-medium text-gray-900"
+                  className="block text-base font-medium text-gray-900"
                 >
                   Choose medical service
                 </label>
@@ -235,7 +235,7 @@
                     id="medical-service"
                     name="medical-service"
                     autoComplete="medical-service-name"
-                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-xl"
+                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 "
                   >
                     <option>Khám tim mạch (Cardiology)</option>
                     <option>Khám thần kinh (Neurology)</option>
@@ -263,22 +263,22 @@
             <div className="mt-10  gap-x-6 gap-y-8 ">
               <label
                 htmlFor="appointment-type"
-                className="block text-xl font-medium text-gray-900"
+                className="block text-base font-medium text-gray-900"
               >
                 Choose an appointment
               </label>
-              <div className="mt-2 flex  ">
+              <div className="mt-2 flex flex-row ">
                 <button
                   type="button"
                   id="by-doctor"
-                  className="w-full px-4 py-2 text-lg font-medium text-gray-900 bg-white border rounded-l-md border-gray-300  shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+                  className="w-full h-9   px-4  text-base font-medium text-gray-900 bg-white border rounded-l-md border-gray-300  shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
                 >
                   Follow the doctor
                 </button>
                 <button
                   type="button"
                   id="by-date"
-                  className="w-full px-4 py-2 text-lg font-medium text-gray-900 bg-white border rounded-r-md  border-gray-300  shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+                  className="w-full h-9 px-4  text-base font-medium text-gray-900 bg-white border rounded-r-md  border-gray-300  shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
                 >
                   Follow the date
                 </button>
@@ -289,7 +289,7 @@
               <div className="sm:col-span-1">
                 <label
                   htmlFor="doctor"
-                  className="block text-xl font-medium text-gray-900"
+                  className="block text-base font-medium text-gray-900"
                 >
                   Choose Doctor
                 </label>
@@ -298,7 +298,7 @@
                     id="doctor"
                     name="doctor"
                     autoComplete="doctor-name"
-                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-xl"
+                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 "
                   >
                     <option>Dr. John Doe (Cardiology)</option>
                     <option>Dr. Jane Smith (Neurology)</option>
@@ -325,7 +325,7 @@
               <div className="sm:col-span-1">
                 <label
                   htmlFor="appointment-time"
-                  className="block text-xl font-medium text-gray-900"
+                  className="block text-base font-medium text-gray-900"
                 >
                   Choose Date and Time
                 </label>
@@ -334,7 +334,7 @@
                     id="appointment-time"
                     name="appointment-time"
                     autoComplete="appointment-time"
-                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-xl"
+                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 "
                   >
                     <option>January 20, 2025 - 10:00 AM</option>
                     <option>January 20, 2025 - 2:00 PM</option>
@@ -363,7 +363,7 @@
             <div className="mt-10">
               <label
                 htmlFor="reason"
-                className="block text-xl font-medium text-gray-900"
+                className="block text-base font-medium text-gray-900"
               >
                 Reason
               </label>
@@ -373,12 +373,12 @@
                   id="reason"
                   rows={5}
                   placeholder="Provide a detailed description of the reason for the visit, symptoms, or concerns."
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-xl"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 "
                 />
               </div>
             </div>
             <div className="mt-10">
-              <h3 className="text-xl font-semibold text-gray-900  inline-flex">
+              <h3 className="text-base font-semibold text-gray-900  inline-flex">
                 The before treatment plan photo
                 <span className="block  font-normal text-gray-400">
                   ( if has )
@@ -400,10 +400,10 @@
                       clipRule="evenodd"
                     />
                   </svg>
-                  <div className="mt-4 flex text-xl text-gray-600">
+                  <div className="mt-4 flex text-base text-gray-600">
                     <label
                       htmlFor="before-treatment-photo-upload"
-                      className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                      className="relative cursor-pointer rounded-md bg-white font-semibold text-cyan-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
                     >
                       <span>Upload Photo</span>
                       <input
@@ -427,13 +427,13 @@
           <div className="mt-6 flex items-center justify-end gap-x-6">
             <button
               type="button"
-              className="text-xl font-semibold text-gray-900"
+              className="text-base font-semibold text-gray-700"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-md bg-indigo-600 px-3 py-2 text-xl font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="rounded-md bg-cyan-500 px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Confirm reservation
             </button>

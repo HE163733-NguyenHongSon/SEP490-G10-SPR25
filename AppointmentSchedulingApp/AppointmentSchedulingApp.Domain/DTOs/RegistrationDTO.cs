@@ -27,6 +27,6 @@ namespace AppointmentSchedulingApp.Domain.DTOs
         public string Gender { get; set; }
 
         [Required]
-        public DateOnly Dob { get; set; }
+        public string Dob { get; set; }
     }
 }

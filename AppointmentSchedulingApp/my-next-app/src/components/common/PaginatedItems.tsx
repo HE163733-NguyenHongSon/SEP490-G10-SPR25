@@ -1,9 +1,19 @@
-import  {  useState } from "react";
+'use client'
+import { useState } from "react";
 import ReactPaginate from "react-paginate";
+import { memo } from "react";
 
+interface PaginatedItemsProps<T> {
+  itemsPerPage: number;
+  items: T[];
+  renderItems: (items: T[]) => JSX.Element;
+}
 
-
-function PaginatedItems<T>({ itemsPerPage, items, renderItems }: { itemsPerPage: number; items: T[]; renderItems: (items: T[]) => JSX.Element }) {
+const PaginatedItems = <T,>({
+  itemsPerPage,
+  items,
+  renderItems,
+}: PaginatedItemsProps<T>) => {
   const [itemOffset, setItemOffset] = useState(0);
 
   const endOffset = itemOffset + itemsPerPage;
@@ -11,7 +21,7 @@ function PaginatedItems<T>({ itemsPerPage, items, renderItems }: { itemsPerPage:
   const pageCount = Math.ceil(items.length / itemsPerPage);
 
   const handlePageClick = (event: { selected: number }) => {
-    const newOffset = (event.selected * itemsPerPage) % items.length;   
+    const newOffset = (event.selected * itemsPerPage) % items.length;
     setItemOffset(newOffset);
   };
 
@@ -28,15 +38,15 @@ function PaginatedItems<T>({ itemsPerPage, items, renderItems }: { itemsPerPage:
         pageCount={pageCount}
         renderOnZeroPageCount={null}
         containerClassName="flex items-center space-x-2 mt-4"
-        pageClassName="px-3 py-2 rounded-lg border  text-gray-700 hover:bg-cyan-500 hover:text-white transition "
+        pageClassName="px-3 py-2 rounded-lg border text-gray-700 hover:bg-cyan-500 hover:text-white transition"
         pageLinkClassName="block"
         activeClassName="bg-cyan-500 text-white border-cyan-500"
-        previousClassName="px-3 py-2 rounded-lg  hover:bg-cyan-500 hover:text-white transition"
-        nextClassName="px-3 py-2 rounded-lg  hover:bg-cyan-500 hover:text-white transition"
+        previousClassName="px-3 py-2 rounded-lg hover:bg-cyan-500 hover:text-white transition"
+        nextClassName="px-3 py-2 rounded-lg hover:bg-cyan-500 hover:text-white transition"
         disabledClassName="opacity-50 cursor-not-allowed"
       />
     </div>
   );
-}
+};
 
-export default PaginatedItems;
+export default memo(PaginatedItems);

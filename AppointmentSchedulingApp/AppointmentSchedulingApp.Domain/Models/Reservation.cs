@@ -25,7 +25,7 @@ public partial class Reservation
 
     public virtual DoctorSchedule DoctorSchedule { get; set; } = null!;
 
-    public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+    public virtual Feedback Feedback { get; set; } = new Feedback();
 
     public virtual ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
 

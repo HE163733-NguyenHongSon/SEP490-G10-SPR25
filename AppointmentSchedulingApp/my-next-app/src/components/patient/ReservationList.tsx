@@ -1,5 +1,5 @@
 import React from "react";
-import Image  from "next/image";
+import Image from "next/image";
 interface ReservationListProps {
   reservationList: IReservation[];
 }
@@ -35,13 +35,16 @@ const ReservationList = ({ reservationList }: ReservationListProps) => {
               </td>
               <td className="border border-gray-300 rounded-md ">
                 <div className="grid grid-cols-3 py-3 px-8">
-                  <div className=" service col-span-1 p-1   gap-2 grid grid-cols-3   border-r-2 border-gray-300 ">
-                    <Image
-                      className="col-span-1   border border-gray-300 rounded-md "
-                      width={16} height={16}
-                      src={reservation.serviceImage}
-                      alt=""
-                    />
+                  <div className=" service col-span-1    gap-2 grid grid-cols-3   border-r-2 border-gray-300 ">
+                    <div className="col-span-1 flex justify-center items-center">
+                      <Image
+                        className="border border-gray-300 rounded-md"
+                        width={200}
+                        height={100}
+                        src={reservation.serviceImage}
+                        alt=""
+                      />
+                    </div>
                     <div className="col-span-2 flex justify-center flex-col ">
                       <p className="text-base w-fit">
                         {reservation.serviceName}
@@ -51,6 +54,7 @@ const ReservationList = ({ reservationList }: ReservationListProps) => {
                       </p>
                     </div>
                   </div>
+
                   <div className="flex justify-center flex-col col-span-2 w-fit mx-6">
                     <p>
                       Examination by{" "}

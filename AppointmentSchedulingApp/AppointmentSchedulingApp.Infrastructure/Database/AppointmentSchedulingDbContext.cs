@@ -182,8 +182,8 @@ public partial class AppointmentSchedulingDbContext : DbContext
             entity.Property(e => e.FeedbackDate).HasColumnType("datetime");
             entity.Property(e => e.ServiceFeedbackContent).HasColumnType("text");
 
-            entity.HasOne(d => d.Reservation).WithMany(p => p.Feedbacks)
-                .HasForeignKey(d => d.ReservationId)
+            entity.HasOne(d => d.Reservation).WithOne(p => p.Feedback)
+                .HasForeignKey<Feedback>(d => d.ReservationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ReservationId_FK");
         });

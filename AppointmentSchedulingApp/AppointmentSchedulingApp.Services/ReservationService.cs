@@ -36,8 +36,8 @@ namespace AppointmentSchedulingApp.Services
 
             queryable = sortBy switch
             {
-                "upcoming_appointment" => queryable.Where(r => r.AppointmentDate >= DateTime.Now).OrderBy(r => r.AppointmentDate),
-                "past_appointment" => queryable.Where(r => r.AppointmentDate < DateTime.Now).OrderByDescending(r => r.AppointmentDate),
+                "recent_appointment" => queryable.OrderByDescending(r => r.AppointmentDate),
+                "past_appointment" => queryable.OrderBy(r => r.AppointmentDate),
                 "price_asc" => queryable.OrderBy(r => r.DoctorSchedule.Service.Price),
                 _ => queryable.OrderByDescending(r => r.DoctorSchedule.Service.Price),
             };

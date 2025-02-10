@@ -17,7 +17,7 @@ namespace AppointmentSchedulingApp.Domain.Profiles
         .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
         .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
         .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
-        //.ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob.ToString("dd/MM/yyyy")))
+        .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob.ToString("dd/MM/yyyy")))
         .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
         .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
         .ReverseMap();

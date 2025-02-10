@@ -2,12 +2,12 @@
 using AppointmentSchedulingApp.Domain.Contracts.Services;
 using AppointmentSchedulingApp.Domain.DTOs;
 using AppointmentSchedulingApp.Domain.Models;
-<<<<<<< HEAD
+
 using AppointmentSchedulingApp.Services.Helper;
 using Microsoft.Extensions.Options;
-=======
+
 using AutoMapper;
->>>>>>> main
+
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,7 +21,7 @@ namespace AppointmentSchedulingApp.Services
     public class UserService : IUserService
     {
         private readonly IGenericRepository<User> _userRepository;
-<<<<<<< HEAD
+ 
         private readonly AppSettings _appSettings;
 
         public UserService(IGenericRepository<User> userRepository, IOptionsMonitor<AppSettings> optionsMonitor)
@@ -37,7 +37,7 @@ namespace AppointmentSchedulingApp.Services
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             return null;
         }
-=======
+
         private readonly IMapper _mapper;
 
         public UserService(IGenericRepository<User> userRepository,IMapper mapper)
@@ -46,7 +46,6 @@ namespace AppointmentSchedulingApp.Services
             _mapper = mapper;
         }
 
->>>>>>> main
 
         public async Task<UserDTO?> LoginUser(SignInDTO userLogin, StringBuilder message)
         {

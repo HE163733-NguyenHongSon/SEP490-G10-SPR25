@@ -20,6 +20,7 @@ modelBuilder.EntitySet<CategoryDTO>("Category");
 modelBuilder.EntitySet<ReservationDTO>("Reservations");
 modelBuilder.EntitySet<MedicalRecordDTO>("MedicalRecords");
 modelBuilder.EntitySet<DoctorDTO>("Doctors");
+modelBuilder.EntitySet<SpecialtyDTO>("Specialties");
 
 var provider = builder.Services.BuildServiceProvider();
 var config = provider.GetService<IConfiguration>();
@@ -59,6 +60,9 @@ builder.Services.AddScoped<IMedicalRecordRepository, MedicalRecordRepository>();
 
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+
+builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
+builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

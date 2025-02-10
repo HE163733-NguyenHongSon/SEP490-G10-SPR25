@@ -52,21 +52,23 @@ const ReservationPage = () => {
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">Reservations</h1>
-      <div className="flex flex-row items-center justify-center  ">
+      <div className="flex flex-row items-center justify-center gap-3  ">
         {isLoadingReservations || isLoadingStatus ? (
           <p>Loading...</p>
         ) : (
-          <SelectSort
-            options={sortOptions}
-            onSortChange={(value) => setSortBy(value)}
-            selectedOption={sortBy}
-          />
+          <>
+            <SelectSort
+              options={sortOptions}
+              onSortChange={(value) => setSortBy(value)}
+              selectedOption={sortBy}
+            />
+            <FilterButtonList
+              itemList={statusList}
+              onFilterSelect={(value) => setStatus(value)}
+              selectedItem={status}
+            />
+          </>
         )}
-        <FilterButtonList
-          itemList={statusList}
-          onFilterSelect={(value) => setStatus(value)}
-          selectedItem={status}
-        />
       </div>
 
       {isLoadingReservations || isLoadingStatus ? (
@@ -80,7 +82,7 @@ const ReservationPage = () => {
           renderItems={(currentItems) =>
             currentItems.length > 0 ? (
               <ReservationList
-                reservationList={currentItems as IReservations}
+                reservationList={currentItems as IReservation[]}
               />
             ) : (
               <p>No reservations found.</p>

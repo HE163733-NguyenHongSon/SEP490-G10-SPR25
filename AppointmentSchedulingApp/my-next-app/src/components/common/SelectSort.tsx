@@ -1,4 +1,6 @@
 import React from "react";
+import Image from "next/image";
+import { assets } from "../../../public/images/assets";
 
 interface SelectSortProps {
   options: ISortOption[];
@@ -12,9 +14,10 @@ const SelectSort: React.FC<SelectSortProps> = ({
   selectedOption,
 }) => {
   return (
-    <div className="flex flex-row items-center justify-center  gap-x-2 mx-3 ">
-      <label htmlFor="sort" className="font-medium text-gray-700">
-        Sort:
+    <div className="flex flex-row items-center justify-start  gap-x-2  ">
+      <label htmlFor="sort" className="font-medium text-gray-700 flex flex-row gap-1">
+        <Image src={assets.sort} width={20} height={20} alt="Sort" />
+        Sort by
       </label>
       <select
         id="sort"

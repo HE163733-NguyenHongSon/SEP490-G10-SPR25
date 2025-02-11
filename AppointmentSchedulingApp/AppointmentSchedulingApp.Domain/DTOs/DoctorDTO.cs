@@ -19,6 +19,8 @@ namespace AppointmentSchedulingApp.Domain.DTOs
 
         public string DoctorName { get; set; }
 
+        public string AvatarUrl { get; set; }
+
         public string? CurrentWork { get; set; }
 
         public string DoctorDescription { get; set; }

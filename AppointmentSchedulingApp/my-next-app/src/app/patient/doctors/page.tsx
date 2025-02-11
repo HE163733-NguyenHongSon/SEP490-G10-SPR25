@@ -1,19 +1,24 @@
+// DoctorsPage.tsx
+"use client";
 
-import React from "react";
-import { DoctorList } from "@/components/patient/DoctorList";
 import { doctorService } from "@/services/doctorService";
+import React from "react";
+import PaginatedItems from "@/components/common/PaginatedItems";
+import { DoctorList } from "@/components/patient/DoctorList";
+
 const DoctorsPage = async () => {
-  
-  const doctors: IDoctor[] = await doctorService.getDoctorList();
+  const doctors = await doctorService.getDoctorList();
+
   return (
-    
+    <div className="z-30">
+      <h2>Doctor List</h2>
 
-      <div className="z-30">
-        <h2>Doctor List</h2>
-
-        <DoctorList doctorList={doctors} />
-      </div>
-    
+      <PaginatedItems
+        items={doctors}
+        itemsPerPage={8}
+        RenderComponent={DoctorList} 
+      />
+    </div>
   );
 };
 

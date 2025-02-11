@@ -18,6 +18,7 @@ namespace AppointmentSchedulingApp.Domain.Profiles
             .ForMember(dest => dest.AcademicTitle, opt => opt.MapFrom(src => src.AcademicTitle))
             .ForMember(dest => dest.Degree, opt => opt.MapFrom(src => src.Degree))
             .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.DoctorNavigation.UserName))
+            .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => src.DoctorNavigation.AvatarUrl))
             .ForMember(dest => dest.CurrentWork, opt => opt.MapFrom(src => src.CurrentWork))
             .ForMember(dest => dest.DoctorDescription, opt => opt.MapFrom(src => new string(src.DoctorDescription.Take(50).ToArray())))
             .ForMember(dest => dest.SpecialtyNames, opt => opt.MapFrom(src => string.Join(", ", src.Specialties.Select(s => s.SpecialtyName))))

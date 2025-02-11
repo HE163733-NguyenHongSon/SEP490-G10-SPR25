@@ -23,7 +23,7 @@ function RatingStars({ rating }: {rating:number }) {
   };
 
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row text-yellow-500">
       <p>{rating}</p>
       <div>
         {renderStars().map((star, index) => (

@@ -59,13 +59,13 @@ export default function DoctorsLayout({
   });
   return (
     <div
-      className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center justify-center z-10"
+      className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center z-10"
       style={{ backgroundImage: 'url("/images/background_doctors.jpeg")' }}
       id="Body"
     >
       <div className="absolute inset-0 bg-black bg-opacity-50 z-20"></div>
 
-      <div className="container   mt-28 mb-10 z-30 grid grid-cols-5  bg-white rounded-xl shadow-2xl ">
+      <div className=" container   mt-28 mb-10 z-30 grid grid-cols-5  bg-white rounded-xl shadow-2xl ">
         <div className="col-span-1 border-r border-gray-300 text-gray-700">
           <div className="border-b border-gray-300 flex flex-row items-center justify-center gap-4  py-5 font-medium mx-5">
             <h1 className="text-xl  font-semibold">Filter and sort</h1>
@@ -106,7 +106,7 @@ export default function DoctorsLayout({
             </div>
 
             <section {...getSpecialtiesCollapseProps()}>
-              { specialties.map((s) => (
+              {specialties.map((s) => (
                 <div
                   className="mx-5 p-2 border-b border-gray-300 gap-2 flex flex-row"
                   key={s.specialtyId}

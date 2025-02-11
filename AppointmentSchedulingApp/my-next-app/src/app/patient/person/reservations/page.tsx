@@ -79,15 +79,7 @@ const ReservationPage = () => {
         <PaginatedItems
           itemsPerPage={4}
           items={reservationList}
-          renderItems={(currentItems) =>
-            currentItems.length > 0 ? (
-              <ReservationList
-                reservationList={currentItems as IReservation[]}
-              />
-            ) : (
-              <p>No reservations found.</p>
-            )
-          }
+          RenderComponent={ReservationList}
         />
       )}
     </div>

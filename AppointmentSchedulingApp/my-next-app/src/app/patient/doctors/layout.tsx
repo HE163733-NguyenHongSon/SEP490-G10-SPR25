@@ -5,15 +5,35 @@ import { useCollapse } from "react-collapsed";
 import Image from "next/image";
 import { assets } from "../../../../public/images/assets";
 import SelectSort from "@/components/common/SelectSort";
+import { useQuery } from "@tanstack/react-query";
+import { specialtyService } from "@/services/specialtyService";
 export default function DoctorsLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const [specialtyId, setSpecialtyId] = useState<number | null>(null);
   const [degree, setDegree] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("rating");
-  const { getCollapseProps, getToggleProps, isExpanded } = useCollapse();
-  const router = useRouter();
 
+  const {
+    getCollapseProps: getSpecialtiesCollapseProps,
+    getToggleProps: getSpecialtiesToggleProps,
+    isExpanded: isSpecialtiesExpanded,
+  } = useCollapse({ defaultExpanded: true });
+  const {
+    getCollapseProps: getTitlesCollapseProps,
+    getToggleProps: getTitlesToggleProps,
+    isExpanded: isTitlesExpanded,
+  } = useCollapse();
+  const {
+    getCollapseProps: getDegreesCollapseProps,
+    getToggleProps: getDegreesToggleProps,
+    isExpanded: isDegreesExpanded,
+  } = useCollapse();
+
+  const router = useRouter();
+  const academicTitles = ["GS.TS", "PGS", "PGS.TS"];
+  const degrees = ["BS.CKI", "BS.CKII"];
+ 
   const sortOptions: ISortOption[] = [
     { label: "Highest Rated", value: "rating_desc" },
     { label: "Most Examinations", value: "exam_desc" },
@@ -26,6 +46,17 @@ export default function DoctorsLayout({
     }
   }, [specialtyId, degree]);
 
+  const {
+    data: specialties = [],
+    isLoading: isLoadingSpecialties,
+    error: specialtiesError,
+  } = useQuery({
+    queryKey: ["specialties"],
+    queryFn: async () => {
+      return await specialtyService.getSpecialtyList();
+    },
+    staleTime:Infinity,
+  });
   return (
     <div
       className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center justify-center z-10"
@@ -56,17 +87,105 @@ export default function DoctorsLayout({
             />
           </div>
 
-          <button {...getToggleProps()}>
-            {isExpanded ? "Collapse" : "Expand"}
-          </button>
-          <section {...getCollapseProps()}>Collapsed content 🙈</section>
+          <div className="flex flex-col border border-gray-300 rounded-md shadow-md m-4">
+            <div className="relative flex flex-row items-center border border-gray-300 p-5">
+              <h1 className="absolute font-semibold text-lg left-7">
+                Specialties
+              </h1>
+              <button
+                className="absolute right-7 flex"
+                {...getSpecialtiesToggleProps()}
+              >
+                <Image
+                  src={isSpecialtiesExpanded ? assets.collapse : assets.expand}
+                  width={20}
+                  height={20}
+                  alt="collapse-expand"
+                />
+              </button>
+            </div>
 
-          <button
+            <section {...getSpecialtiesCollapseProps()}>
+              { specialties.map((s) => (
+                <div
+                  className="mx-5 p-2 border-b border-gray-300 gap-2 flex flex-row"
+                  key={s.specialtyId}
+                >
+                  <input id={s.specialtyId} type="checkbox" />
+                  <label htmlFor={`specialty_${s.specialtyId}`}>
+                    {s.specialtyName}
+                  </label>
+                </div>
+              ))}
+            </section>
+          </div>
+
+          <div className="flex flex-col border border-gray-300 rounded-md shadow-md m-4">
+            <div className="relative flex flex-row items-center border border-gray-300 p-5">
+              <h1 className="absolute font-semibold text-lg left-7">
+                Academic Title
+              </h1>
+              <button
+                className="absolute right-7 flex"
+                {...getTitlesToggleProps()}
+              >
+                <Image
+                  src={isTitlesExpanded ? assets.collapse : assets.expand}
+                  width={20}
+                  height={20}
+                  alt="collapse-expand"
+                />
+              </button>
+            </div>
+
+            <section {...getTitlesCollapseProps()}>
+              {academicTitles.map((at) => (
+                <div
+                  className="mx-5 p-2 border-b border-gray-300 gap-2 flex flex-row"
+                  key={at}
+                >
+                  <input id={at} type="checkbox" />
+                  <label htmlFor={at}>{at}</label>
+                </div>
+              ))}
+            </section>
+          </div>
+
+          <div className="flex flex-col border border-gray-300 rounded-md shadow-md m-4">
+            <div className="relative flex flex-row items-center border border-gray-300 p-5">
+              <h1 className="absolute font-semibold text-lg left-7">Degrees</h1>
+              <button
+                className="absolute right-7 flex"
+                {...getDegreesToggleProps()}
+              >
+                <Image
+                  src={isDegreesExpanded ? assets.collapse : assets.expand}
+                  width={20}
+                  height={20}
+                  alt="collapse-expand"
+                />
+              </button>
+            </div>
+
+            <section {...getDegreesCollapseProps()}>
+              {degrees.map((d) => (
+                <div
+                  className="mx-5 p-2 border-b border-gray-300 gap-2 flex flex-row"
+                  key={d}
+                >
+                  <input id={d} type="checkbox" />
+                  <label htmlFor={d}>{d}</label>
+                </div>
+              ))}
+            </section>
+          </div>
+
+          {/* <button
             className="flex justify-center items-center text-2xl text-white z-30 bg-cyan-600"
             onClick={() => setDegree("cardiologist")}
           >
             Filter Degree
-          </button>
+          </button> */}
         </div>
 
         <div className="col-span-4 ">{children}</div>

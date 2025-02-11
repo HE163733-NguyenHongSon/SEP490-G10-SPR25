@@ -39,7 +39,7 @@ namespace AppointmentSchedulingApp.Server.Controllers
                 {
                     Success = true,
                     Message = "Authenticate Success",
-                    //Data = await _userService.GenerateToken(user) 
+                    Data = _userService.GenerateToken(user)
                 });
             }
         }

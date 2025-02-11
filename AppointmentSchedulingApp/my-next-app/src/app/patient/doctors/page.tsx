@@ -1,5 +1,3 @@
-// DoctorsPage.tsx
-"use client";
 
 import { doctorService } from "@/services/doctorService";
 import React from "react";
@@ -10,13 +8,13 @@ const DoctorsPage = async () => {
   const doctors = await doctorService.getDoctorList();
 
   return (
-    <div className="z-30">
+    <div >
       <h2>Doctor List</h2>
 
       <PaginatedItems
         items={doctors}
-        itemsPerPage={8}
-        RenderComponent={DoctorList} 
+        itemsPerPage={6}
+        RenderComponent={DoctorList}
       />
     </div>
   );

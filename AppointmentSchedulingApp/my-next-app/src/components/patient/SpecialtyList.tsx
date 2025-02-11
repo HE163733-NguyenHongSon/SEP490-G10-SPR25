@@ -1,11 +1,18 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
 
 export const SpecialtyList = () => {
-  const specialtys = Array(6).fill({
-    title: "General Consultation",
-    image: "https://via.placeholder.com/150",
-    link: "#", // Đường dẫn liên kết giả (thay đổi theo nhu cầu)
-  });
+  // Danh sách specialty có id
+  const specialties = [
+    { id: 1, title: "General Consultation", image: "https://via.placeholder.com/150" },
+    { id: 2, title: "Cardiology", image: "https://via.placeholder.com/150" },
+    { id: 3, title: "Dermatology", image: "https://via.placeholder.com/150" },
+    { id: 4, title: "Neurology", image: "https://via.placeholder.com/150" },
+    { id: 5, title: "Ophthalmology", image: "https://via.placeholder.com/150" },
+    { id: 6, title: "Pediatrics", image: "https://via.placeholder.com/150" },
+  ];
 
   return (
     <div className="p-10 relative z-20">
@@ -51,25 +58,27 @@ export const SpecialtyList = () => {
 
       {/* Danh sách dịch vụ */}
       <h2 className="text-2xl font-bold mb-4">
-        SpecialtyList (<span className="text-blue-500">22 result</span>)
+        SpecialtyList (<span className="text-blue-500">{specialties.length} results</span>)
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {specialtys.map((specialty, index) => (
-          <a
-            key={index}
-            href={specialty.link} // Đường dẫn liên kết
+        {specialties.map((specialty) => (
+          <Link
+            key={specialty.id}
+            href={`/specialty/${specialty.id}`} // Dẫn đến trang chi tiết
             className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow cursor-pointer block"
           >
             <Image
               src={specialty.image}
               alt={specialty.title}
               className="object-cover rounded-t-lg"
-              width={40} height={40}
+              width={300}
+              height={200}
+              layout="responsive"
             />
             <div className="mt-4">
               <h3 className="text-lg font-semibold">{specialty.title}</h3>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
 

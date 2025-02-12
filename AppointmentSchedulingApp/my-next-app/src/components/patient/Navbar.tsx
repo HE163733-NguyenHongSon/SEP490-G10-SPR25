@@ -1,26 +1,26 @@
-'use client'
+"use client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-// import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { assets } from "../../../public/images/assets";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
+import "react-toastify/dist/ReactToastify.css";
 
 const Navbar: React.FC = () => {
   const [isShowMobileMenu, setIsShowMobileMenu] = useState(false);
   const [user, setUser] = useState<{ name?: string; avatar?: string }>({});
-  //  const currentRoute=useRouter()
+  const currentPath = usePathname();
   const routes = [
-    { path: "/patient/home", name: "Home" },
+    { path: "/patient", name: "Home" },
     { path: "/patient/specialties", name: "Specialties " },
     { path: "/patient/doctors", name: "Doctors" },
     { path: "/patient/services", name: "Services" },
     { path: "/patient/blogs", name: "Blogs" },
     { path: "/patient/appointment-booking", name: "Appointment Booking" },
-    { path: "/patient/login", name: "Login" },
-    { path: "/patient/register", name: "Register" },
+    { path: "/auth/login", name: "Login" },
+    { path: "/auth/register", name: "Register" },
     { path: "/patient/person", name: "Person" },
     { path: "/patient/logout", name: "Logout" },
   ];
@@ -52,19 +52,20 @@ const Navbar: React.FC = () => {
 
   return (
     <div className=" fixed top-0 left-0 w-full z-30 bg-black bg-opacity-50 backdrop-blur-md">
-      <div className="container mx-auto flex justify-between items-center py-4 px-6 md:px-20 lg:px-32 bg-transparent">
-        <Image width={12} height={12} src={assets.logo} alt="Logo" />
-
-        <ul className="hidden md:flex gap-8 text-white text-center">
+      <div className="container mx-auto flex  items-center justify-center py-3  px-6 md:px-15 lg:px-20 bg-transparent  ">
+        <ul className=" md:flex flex items-center gap-8    text-white text-center  ">
+          <li>
+            <Image width={40} height={40} src={assets.logo} alt="Logo" />
+          </li>
           {routes.map((route) => (
             <li key={route.path}>
               <Link
                 href={route.path}
-                // className={`text-xl hover:text-cyan-500 hover:underline underline-offset-4 ${
-                //   currentRoute.pathname === route.path
-                //     ? "text-cyan-500 underline underline-offset-4"
-                //     : "text-white"
-                // }`}
+                className={` text-lg hover:text-cyan-500 hover:underline underline-offset-4 ${
+                  currentPath === route.path
+                    ? "text-cyan-500 underline underline-offset-4"
+                    : "text-white"
+                }`}
               >
                 {route.name}
               </Link>
@@ -95,7 +96,8 @@ const Navbar: React.FC = () => {
 
         <Image
           onClick={() => setIsShowMobileMenu(true)}
-          width={8} height={8}
+          width={8}
+          height={8}
           className="md:hidden  cursor-pointer"
           src={assets.menu}
           alt="Menu"
@@ -119,7 +121,7 @@ const Navbar: React.FC = () => {
               className="text-lg py-2 text-black hover:text-cyan-500"
               onClick={() => setIsShowMobileMenu(false)}
             >
-              {route.name}
+              { route.name==='Person'?<Image src="" width={20} height={20} className="rounded-full" alt="Profile"/>:route.name}
             </Link>
           ))}
         </div>

@@ -1,16 +1,23 @@
-import React from "react";
 
-const DoctorPage = () => {
+import { doctorService } from "@/services/doctorService";
+import React from "react";
+import PaginatedItems from "@/components/common/PaginatedItems";
+import { DoctorList } from "@/components/patient/DoctorList";
+
+const DoctorsPage = async () => {
+  const doctors = await doctorService.getDoctorList();
+
   return (
-    <div
-      className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center justify-center z-10"
-      style={{ backgroundImage: 'url("/images/background_doctors.jpeg")' }}
-      id="Body"
-    >
-      <div className="absolute  inset-0 bg-black bg-opacity-50 z-20"></div>
-      <div>DoctorPage</div>
+    <div >
+      <h2>Doctor List</h2>
+
+      <PaginatedItems
+        items={doctors}
+        itemsPerPage={6}
+        RenderComponent={DoctorList}
+      />
     </div>
   );
 };
 
-export default DoctorPage;
+export default DoctorsPage;

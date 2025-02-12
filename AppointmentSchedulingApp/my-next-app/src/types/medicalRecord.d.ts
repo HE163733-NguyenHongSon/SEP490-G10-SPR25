@@ -1,4 +1,4 @@
- interface MedicalRecord {
+ interface IMedicalRecord {
     medicalRecordId: number;
     appointmentDate: string;
     symptoms: string;
@@ -7,4 +7,3 @@
     followUpDate?: string;  
     notes?: string;  
   }
-  

@@ -1,4 +1,4 @@
- interface Status {
+ interface IStatus {
   name: string;
   count: number;
 }

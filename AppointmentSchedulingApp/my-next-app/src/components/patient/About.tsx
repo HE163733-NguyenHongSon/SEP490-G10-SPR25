@@ -7,13 +7,13 @@ export const About = () => {
       className="my-64  flex flex-col items-center justify-center container p-14 md:px-20 lg:px-32 w-full bg-white rounded-3xl "
       id="About"
     >
-      <h1 className="text-cyan-600 text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2">
+      <h1 className="text-cyan-600 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2">
         Meet
         <span className="underline underline-offset-4 decoration-1 font-light">
           Our Doctor Team
         </span>
       </h1>
-      <p className="text-cyan-500 text-xl sm:text-xl md:max-w-6xl lg:max-w-full text-center mb-8">
+      <p className="text-cyan-500 text-base sm:text-base md:max-w-6xl lg:max-w-full text-center mb-8">
         Our team of expert doctors is dedicated to providing you with the best
         healthcare services. Passionate, skilled, and experienced in various
         medical fields, we are here to ensure your health and well-being.
@@ -44,7 +44,7 @@ export const About = () => {
               <p>Happy Patients</p>
             </div>
           </div>
-          <p className="m-4 max-w-lg">
+          <p className="m-4 max-w-lg ">
             Our doctors are always ready to assist you with personalized care
             and attention. Together, we strive to make every patient&apos;s journey
             smooth and stress-free.

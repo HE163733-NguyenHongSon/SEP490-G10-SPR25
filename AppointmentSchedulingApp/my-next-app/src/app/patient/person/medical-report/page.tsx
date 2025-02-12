@@ -18,13 +18,13 @@ const MedicalReportPage = () => {
     <div className="  flex flex-col m-5 ">
       <div className="grid grid-cols-2 p-5  border-b-2  border-gray-300">
         <div className="col-span-1  flex flex-row  ">
-          <Image src={assets.logo} alt="Hospital Logo" width={14} height={14} />
-          <h1 className="flex items-center mx-2 text-2xl text-cyan-500 gap-x-2   ">
+          <Image src={assets.logo} alt="Hospital Logo" width={30} height={20} />
+          <h1 className="flex items-center mx-2 text-xl text-cyan-500 gap-x-2   ">
             <span className="font-bold ">HAS</span>Hospital
           </h1>
         </div>
         <div className="col-span-1 flex flex-row  ">
-          <h1 className="text-2xl text-cyan-500 font-bold flex items-center">
+          <h1 className="text-xl text-cyan-500 font-bold flex items-center">
             Patient medical report from 3/2023-1/2025
           </h1>
         </div>
@@ -32,7 +32,7 @@ const MedicalReportPage = () => {
 
       <div className="grid grid-cols-2 p-5 border-b-2  border-gray-300">
         <div className="col-span-1 flex flex-col ">
-          <h1 className="text-xl">Patient information</h1>
+          <h1 className="text-lg">Patient information</h1>
           <p className="gap-x-2">
             CitizenId:
             <span className="font-light text-base text-gray-500">
@@ -66,7 +66,7 @@ const MedicalReportPage = () => {
         </div>
 
         <div className="col-span-1 flex flex-col ">
-          <h1 className="text-xl">Summary of medical examination history</h1>
+          <h1 className="text-lg">Summary of medical examination history</h1>
           <p className="gap-x-2">
             Total number of visits:
             <span className="font-light text-base text-gray-500">

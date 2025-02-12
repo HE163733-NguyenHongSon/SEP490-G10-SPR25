@@ -1,4 +1,4 @@
- interface Reservation {
+ interface IReservation {
     reservationId: string;
     serviceImage: string;
     serviceName: string;

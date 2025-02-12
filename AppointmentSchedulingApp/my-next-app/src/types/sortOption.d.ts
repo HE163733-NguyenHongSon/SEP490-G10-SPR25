@@ -1,4 +1,4 @@
- interface SortOption {
+ interface ISortOption {
     label: string;
     value: string;
   }

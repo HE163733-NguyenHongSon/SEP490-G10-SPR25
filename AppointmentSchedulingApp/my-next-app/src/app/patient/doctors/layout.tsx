@@ -7,6 +7,8 @@ import { assets } from "../../../../public/images/assets";
 import SelectSort from "@/components/common/SelectSort";
 import { useQuery } from "@tanstack/react-query";
 import { specialtyService } from "@/services/specialtyService";
+
+
 export default function DoctorsLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {

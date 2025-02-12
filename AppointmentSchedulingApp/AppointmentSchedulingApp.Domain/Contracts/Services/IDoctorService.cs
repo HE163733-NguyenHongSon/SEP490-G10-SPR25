@@ -10,5 +10,6 @@ namespace AppointmentSchedulingApp.Domain.Contracts.Services
     public interface IDoctorService
     {
         Task<List<DoctorDTO>> GetDoctorList();
+        Task<DoctorDetailDTO> GetDoctorDetailById(int doctorId);
     }
 }

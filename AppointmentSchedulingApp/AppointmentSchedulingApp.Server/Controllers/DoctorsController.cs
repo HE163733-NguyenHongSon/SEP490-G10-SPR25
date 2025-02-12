@@ -22,5 +22,11 @@ namespace AppointmentSchedulingApp.Server.Controllers
         {
             return Ok(await doctorService.GetDoctorList());
         }
+
+        [HttpGet("{doctorId}")]
+        public async Task<IActionResult> GetDoctorDetailById(int doctorId)
+        {
+            return Ok(await doctorService.GetDoctorDetailById(doctorId));
+        }
     }
 }

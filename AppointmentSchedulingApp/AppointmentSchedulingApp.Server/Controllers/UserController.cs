@@ -66,15 +66,24 @@ namespace AppointmentSchedulingApp.Server.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegistrationDTO registrationDto)
         {
-            var message = new StringBuilder();
+            StringBuilder message = new StringBuilder();
             var user = await _userService.RegisterUser(registrationDto, message);
 
             if (user == null)
             {
-                return BadRequest(new { Message = message.ToString() });
+                return BadRequest(new ApiResponse
+                {
+                    Success = false,
+                    Message = message.ToString()
+                });
             }
 
-            return Ok(user);
+            return Ok(new ApiResponse
+            {
+                Success = true,
+                Message = "Registration Successful",
+                Data = user
+            });
         }
     }
 }

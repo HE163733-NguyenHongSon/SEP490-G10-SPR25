@@ -33,7 +33,7 @@ namespace AppointmentSchedulingApp.Services
             _mapper = mapper;
         }
         
-        // chua xong - di hop da~
+        
         public string GenerateToken(UserDTO user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
@@ -53,56 +53,17 @@ namespace AppointmentSchedulingApp.Services
                 new Claim("TokenId", Guid.NewGuid().ToString()),
             };
 
-            // chua dung den
-
-
-            //foreach (var roleName in User.RoleInformations)
-            //{
-            //    authClaims.Add(new Claim(ClaimTypes.Role, roleName.RoleName));
-            //    authClaims.Add(new Claim("RoleId", roleName.RoleId));
-            //}
             var tokenDescription = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(authClaims),
-                Expires = DateTime.UtcNow.AddMinutes(1),
-                //Expires = DateTime.UtcNow.AddDays(_appSettings.ExpiryInDays),
+                Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha512Signature),
             };
             var token = jwtTokenHandler.CreateToken(tokenDescription);
 
 
-            // tam thoi chua dung
-
-            //var accessToken = jwtTokenHandler.WriteToken(token);
-            //return new TokenModel
-            //{
-            //    AccessToken = accessToken,
-            //    RefeshToken = GenerateRefeshToken()
-            //};
-
             return jwtTokenHandler.WriteToken(token);
         }
-
-        // tam thoi chua dung
-
-        //private string GenerateRefeshToken()
-        //{
-        //    var randomBytes = new byte[32];
-        //    using (var rngCsp = RandomNumberGenerator.Create())
-        //    {
-        //        rngCsp.GetBytes(randomBytes);
-        //        return Convert.ToBase64String(randomBytes);
-        //    }
-        //}
-
-
-
-        //public UserService(IGenericRepository<User> userRepository,IMapper mapper)
-        //{
-        //    _userRepository = userRepository;
-        //    _mapper = mapper;
-        //}
-
 
         public async Task<UserDTO?> LoginUser(SignInDTO userLogin, StringBuilder message)
         {
@@ -128,61 +89,49 @@ namespace AppointmentSchedulingApp.Services
         }
         public async Task<UserDTO?> RegisterUser(RegistrationDTO registrationDto, StringBuilder message)
         {
-            var existingUser = await _userRepository.Get(u => u.UserName == registrationDto.UserName || u.Email == registrationDto.Email);
+            var existingUser = await _userRepository.Get(u => u.Email == registrationDto.Email);
             if (existingUser != null)
             {
-                message.Append("Username or Email already exists");
+                message.Append("Email already exists");
                 return null;
             }
 
-            //var hashedPassword = HashPassword(registrationDto.Password);
+            var newUser = new User
+            {
+                UserName = registrationDto.UserName,
+                Email = registrationDto.Email,
+                Password = registrationDto.Password,
+                Phone = registrationDto.Phone,
+                Gender = registrationDto.Gender,
+                Dob = registrationDto.Dob,
+                Address = registrationDto.Address,
+                Role = "Patient"
+            };
 
-            //var user = new User
-            //{
-            //    UserName = registrationDto.UserName,
-            //    Email = registrationDto.Email,
-            //    Password = hashedPassword,
-            //    Phone = registrationDto.Phone,
-            //    Gender = registrationDto.Gender,
-            //    Dob = registrationDto.Dob
-            //};
+            _userRepository.Add(newUser);
 
-            var user = _mapper.Map<User>(registrationDto);
-            //_userRepository.Add(user);
+            var userDTO = new UserDTO()
+            {
+                UserName = newUser.UserName,
+                Email = newUser.Email,
+                Password = newUser.Password,
+                Phone = newUser.Phone,
+                Gender = newUser.Gender,
+                Dob = newUser.Dob,
+                Address = newUser.Address,
+                Role= newUser.Role
+            };
 
-            //var userDTO = new UserDTO
-            //{
-            //    UserId = user.UserId,
-            //    Email = user.Email,
-            //    UserName = user.UserName,
-            //    Password = hashedPassword,
-            //    Phone = user.Phone,
-            //    Gender = user.Gender,
-            //    Dob = user.Dob
-            //};
 
-            var c= _mapper.Map<UserDTO>(user);
-            return c;
+            return userDTO;
+
+            //var user = _mapper.Map<User>(registrationDto);
+            //var c = _mapper.Map<UserDTO>(user);
+            //return c;
+            //var newUser = _mapper.Map<User>(registrationDto);
+            //_userRepository.Add(newUser);
+            //return _mapper.Map<UserDTO>(newUser);
         }
-
-        //private string HashPassword(string password)
-        //{
-        //    using (var sha256 = SHA256.Create())
-        //    {
-        //        var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-        //        var builder = new StringBuilder();
-        //        for (int i = 0; i < bytes.Length; i++)
-        //        {
-        //            builder.Append(bytes[i].ToString("x2"));
-        //        }
-        //        return builder.ToString();
-        //    }
-        //}
-
-        //private bool VerifyPassword(string enteredPassword, string storedPassword)
-        //{
-        //    return HashPassword(enteredPassword) == storedPassword;
-        //}
 
         private bool VerifyPassword(string enteredPassword, string storedPassword)
         {

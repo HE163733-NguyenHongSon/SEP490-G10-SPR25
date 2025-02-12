@@ -20,7 +20,7 @@ namespace AppointmentSchedulingApp.Domain.Profiles
             .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.DoctorNavigation.UserName))
             .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => src.DoctorNavigation.AvatarUrl))
             .ForMember(dest => dest.CurrentWork, opt => opt.MapFrom(src => src.CurrentWork))
-            .ForMember(dest => dest.DoctorDescription, opt => opt.MapFrom(src => new string(src.DoctorDescription.Take(50).ToArray())))
+            .ForMember(dest => dest.BasicDescription, opt => opt.MapFrom(src => new string(src.DoctorDescription.Take(40).ToArray())))
             .ForMember(dest => dest.SpecialtyNames, opt => opt.MapFrom(src => string.Join(", ", src.Specialties.Select(s => s.SpecialtyName))))
             .ForMember(dest => dest.NumberOfService, opt => opt.MapFrom(src => src.Services.Count))
             .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.DoctorSchedules.
@@ -31,8 +31,23 @@ namespace AppointmentSchedulingApp.Domain.Profiles
            .ForMember(dest => dest.NumberOfExamination, opt => opt.MapFrom(src => src.DoctorSchedules.
            SelectMany(ds=>ds.Reservations.Where(r=>r.Status.Equals("Completed"))).ToList().Count ))
 
+        .ForMember(dest => dest.ExperienceYear, opt => opt.MapFrom(src =>
+           Convert.ToInt32(System.Text.RegularExpressions.Regex.Match(src.WorkExperience, @"\d+").Value)))
+
             .ReverseMap();
-             
+
+
+            CreateMap<Doctor, DoctorDetailDTO>()
+                .IncludeBase<Doctor, DoctorDTO>()
+                .ForMember(dest => dest.DetailDescription, opt => opt.MapFrom(src => src.DoctorDescription))
+                .ForMember(dest => dest.WorkExperience, opt => opt.MapFrom(src => src.WorkExperience))
+                .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => src.Organization))
+                .ForMember(dest => dest.Prize, opt => opt.MapFrom(src => src.Prize))
+                .ForMember(dest => dest.ResearchProject, opt => opt.MapFrom(src => src.ResearchProject))
+                .ForMember(dest => dest.TrainingProcess, opt => opt.MapFrom(src => src.TrainingProcess)).ReverseMap();
+
+
+
         }
     }
 }

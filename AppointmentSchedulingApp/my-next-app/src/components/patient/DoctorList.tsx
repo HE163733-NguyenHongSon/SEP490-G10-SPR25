@@ -20,8 +20,11 @@ export const DoctorList = ({ items }: IDoctors) => {
           className=" border border-gray-300 rounded-md shadow-md "
         >
           <Link href={`/patient/doctors/${doctor.doctorId}`}>
-            <h1 className=" text-center font-semibold text-lg text-gray-700 mt-3">
-              {doctor.academicTitle}.{doctor.degree} {doctor.doctorName}
+            <h1 className=" text-center font-semibold  text-lg text-gray-700 mt-3">
+              <span className=" mr-2">
+                {doctor.academicTitle}.{doctor.degree}
+              </span>
+              {doctor.doctorName}
             </h1>
 
             <div className="grid grid-cols-3 my-3">

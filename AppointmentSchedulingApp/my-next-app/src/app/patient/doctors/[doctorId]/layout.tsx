@@ -1,28 +1,72 @@
-     import React from 'react'
-     import Image from 'next/image'
+import React from "react";
+import Image from "next/image";
+import { doctorService } from "@/services/doctorService";
+import RatingStars from "@/components/common/RatingStars";
+import Navigation from "@/components/common/Navigation";
 
-     const DoctorDetailLayout = () => {
-       return (
-         <div className="flex flex-col">
-           <div className="grid grid-cols-2">
-             <div className="col-span-1">
-               <Image width={200} height={200} alt="image-doctor" src={""} />
-             </div>
-             {/* <div className="col-span-2 flex flex-col justify-between font-sans px-3">
-               <h2 className="text-lg text-gray-700 ">{doctor.currentWork}</h2>
-               <p>{doctor.doctorDescription}...</p>
-               <p className="text-gray-400">{doctor.specialtyNames}</p>
-               <p className="font-semibold">
-                 ({doctor.numberOfService} service take on)
-               </p>
-               <div className="flex flex-row">
-                 <RatingStars rating={doctor.rating} />
-                 <p>({doctor.numberOfExamination} examination)</p>
-               </div>
-             </div> */}
-           </div>
-         </div>
-       );
-     }
-     
-     export default DoctorDetailLayout
+const DoctorDetailLayout = async ({
+  children,
+  params,
+}: Readonly<{ children: React.ReactNode; params: { doctorId: string } }>) => {
+  const doctorId = await params.doctorId;
+  const doctorDetail: IDoctorDetail = await doctorService.getDoctorDetailById(
+    doctorId
+  );
+ 
+
+  const routes = [
+    { path: `/patient/doctors/${doctorId}`
+    , name: "Overall" },
+    {
+      path: `/patient/doctors/${doctorId}/doctor-schedule`,
+      name: "Doctor's schedule",
+    },
+    {
+      path: "#",
+      name: "Service take on",
+    },
+  ];
+  return (
+    <div className=" flex flex-col  justify-items-start text-gray-700 border border-gray-300  mx-5 my-16 rounded-md shadow-md">
+      <div className="flex flex-row   p-10">
+        <div className="">
+          <Image
+            width={200}
+            height={150}
+            alt="image-doctor"
+            src={doctorDetail.avatarUrl}
+            className="rounded-2xl"
+          />
+        </div>
+        <div className=" flex flex-col justify-between font-sans px-5">
+          <h1 className=" font-semibold  text-lg text-gray-700 ">
+            <span className=" mr-2">
+              {doctorDetail.academicTitle}.{doctorDetail.degree}
+            </span>
+            {doctorDetail.doctorName}
+          </h1>
+          <h2 className="text-lg text-gray-700 ">{doctorDetail.currentWork}</h2>
+          <p className="text-gray-400">{doctorDetail.specialtyNames}</p>
+          <p className="font-semibold">
+            ({doctorDetail.numberOfService} service take on)
+          </p>
+          <div className="flex flex-row">
+            <RatingStars rating={doctorDetail.rating} />
+            <p>({doctorDetail.numberOfExamination} examination)</p>
+          </div>
+          <button className="px-3 w-fit bg-cyan-500 text-white  rounded-full">
+            Booking doctor
+          </button>
+        </div>
+      </div>
+      <div className="py-2 mx-10 border-b border-gray-300">
+        <Navigation routes={routes} isWhiteText={false} />
+      </div>
+      <div className="flex flex-col  justify-items-start px-5  ">
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export default DoctorDetailLayout;

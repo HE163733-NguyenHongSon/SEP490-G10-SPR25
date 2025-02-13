@@ -23,11 +23,14 @@ namespace AppointmentSchedulingApp.Services
 
         public async Task<DoctorDetailDTO> GetDoctorDetailById(int doctorId)
         {
+
+
             return mapper.Map<DoctorDetailDTO>(await doctorRepository.Get(d=>d.DoctorId.Equals(doctorId)));
         }
 
         public async Task<List<DoctorDTO>> GetDoctorList()
         {
+
             return mapper.Map<List<DoctorDTO>>(await doctorRepository.GetAll());
         }
     }

@@ -10,4 +10,5 @@
    numberOfService: string;
    rating: number ;
    numberOfExamination: string;
+   experienceYear:string;
  }

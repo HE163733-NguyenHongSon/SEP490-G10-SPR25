@@ -1,5 +1,5 @@
    interface ISpecialty {
-     specialtyId:string | undefined
+     specialtyId:string 
      specialtyName:string
      image:string
    }

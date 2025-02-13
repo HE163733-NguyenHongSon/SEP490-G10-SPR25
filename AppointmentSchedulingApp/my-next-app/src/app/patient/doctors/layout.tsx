@@ -7,7 +7,6 @@ import CheckboxList from "@/components/common/CheckboxList";
 export default async function DoctorsLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-
   const academicTitles: ICheckboxOption[] = ["GS.TS", "PGS", "PGS.TS"].map(
     (title) => {
       return {
@@ -27,7 +26,7 @@ export default async function DoctorsLayout({
   ).map((sp) => {
     return {
       label: sp.specialtyName,
-      value: sp.specialtyId,
+      value: sp.specialtyName,
       isChecked: false,
     };
   });
@@ -69,19 +68,26 @@ export default async function DoctorsLayout({
           </div>
           <CollapsibleSection
             title={"Specialties"}
-            content={<CheckboxList items={specialties} />}
+            content={
+              <CheckboxList items={specialties} searchParam="specialties" />
+            }
             defaultExpanded={true}
           />
 
           <CollapsibleSection
-            title={"Academic Title"}
-            content={<CheckboxList items={academicTitles} />}
+            title={"Academic Titles"}
+            content={
+              <CheckboxList
+                items={academicTitles}
+                searchParam="academicTitles"
+              />
+            }
             defaultExpanded={false}
           />
 
           <CollapsibleSection
             title={"Degrees"}
-            content={<CheckboxList items={degrees} />}
+            content={<CheckboxList items={degrees} searchParam="degrees" />}
             defaultExpanded={false}
           />
         </div>

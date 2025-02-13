@@ -15,6 +15,7 @@ export const SpecialtyList = () => {
   ];
 
   return (
+    <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl mx-auto">
     <div className="p-10 relative z-20">
       {/* Thanh tìm kiếm */}
       <div className="flex justify-center mb-8 mt-14">
@@ -57,38 +58,37 @@ export const SpecialtyList = () => {
       </div>
 
       {/* Danh sách dịch vụ */}
-      <h2 className="text-2xl font-bold mb-4">
+      <h2 className="text-2xl font-bold mb-4 text-black">
         SpecialtyList (<span className="text-blue-500">{specialties.length} results</span>)
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {specialties.map((specialty) => (
-          <Link
-            key={specialty.id}
-            href={`/specialty/${specialty.id}`} // Dẫn đến trang chi tiết
-            className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow cursor-pointer block"
-          >
-            <Image
-              src={specialty.image}
-              alt={specialty.title}
-              className="object-cover rounded-t-lg"
-              width={300}
-              height={200}
-              layout="responsive"
-            />
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold">{specialty.title}</h3>
-            </div>
-          </Link>
+          <Link href={`/patient/specialties/${specialty.id}`}>
+  <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow cursor-pointer block">
+    <Image
+      src={specialty.image}
+      alt={specialty.title}
+      className="object-cover rounded-t-lg"
+      width={300}
+      height={200}
+      layout="responsive"
+    />
+    <div className="mt-4">
+      <h3 className="text-lg font-semibold text-black">{specialty.title}</h3>
+    </div>
+  </div>
+</Link>
         ))}
       </div>
 
       {/* Pagination */}
       <div className="flex justify-center items-center mt-6 space-x-4">
-        <button className="px-4 py-2 bg-gray-200 rounded">1</button>
-        <button className="px-4 py-2 bg-gray-200 rounded">2</button>
-        <button className="px-4 py-2 bg-gray-200 rounded">3</button>
+        <button className="px-4 py-2 bg-gray-300 text-black rounded">1</button>
+        <button className="px-4 py-2 bg-gray-300 text-black rounded">2</button>
+        <button className="px-4 py-2 bg-gray-300 text-black rounded">3</button>
         <button className="px-4 py-2 bg-blue-500 text-white rounded">→</button>
       </div>
+    </div>
     </div>
   );
 };

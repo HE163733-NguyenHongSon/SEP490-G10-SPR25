@@ -9,7 +9,7 @@ public partial class Doctor
 
     public string? CurrentWork { get; set; }
 
-    public string? DoctorDescription { get; set; }
+    public string DoctorDescription { get; set; }
 
     public string? Organization { get; set; }
 

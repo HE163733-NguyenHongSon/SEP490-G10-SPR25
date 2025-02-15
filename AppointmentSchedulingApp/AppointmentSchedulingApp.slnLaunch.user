@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "AppointmentSchedulingApp.Server\\AppointmentSchedulingApp.Server.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "appointment_scheduling_app_client\\appointment_scheduling_app_client.esproj",
+        "Action": "StartWithoutDebugging"
+      }
+    ]
+  }
+]

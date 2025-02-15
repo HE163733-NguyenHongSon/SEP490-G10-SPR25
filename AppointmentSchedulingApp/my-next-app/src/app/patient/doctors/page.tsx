@@ -12,6 +12,8 @@ const DoctorsPage = async ({
     degrees?: string;
   };
 }) => {
+  // console.log(`specialties:${searchParams.specialties}---academicTitles:${searchParams.academicTitles}`);
+
   const doctors = await doctorService.getDoctorListByFilter(
     searchParams.specialties ? searchParams.specialties.split(",") : [],
     searchParams.academicTitles ? searchParams.academicTitles.split(",") : [],

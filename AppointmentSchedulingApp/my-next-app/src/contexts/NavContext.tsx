@@ -20,4 +20,4 @@ const NavContext = createContext<NavContextType | undefined>(undefined);
       </NavContext.Provider>
     );
   };
-  export  {NavProvider,NavContext} ;
+  export  {NavProvider,NavContext} 

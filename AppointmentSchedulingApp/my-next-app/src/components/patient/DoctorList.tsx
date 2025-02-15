@@ -42,8 +42,8 @@ export const DoctorList = ({ items }: IDoctors) => {
               </div>
               <div className="col-span-2 flex flex-col justify-between font-sans px-3">
                 <h2 className="text-lg text-gray-700 ">{doctor.currentWork}</h2>
-                <p>{doctor.doctorDescription}...</p>
-                <p className="text-gray-400">{doctor.specialtyNames}</p>
+                <p>{doctor.basicDescription}...</p>
+                <p className="text-gray-400">{doctor.specialtyNames.join(', ')}</p>
                 <p className="font-semibold">
                   ({doctor.numberOfService} service take on)
                 </p>

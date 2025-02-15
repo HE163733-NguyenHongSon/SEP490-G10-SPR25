@@ -4,7 +4,7 @@ export const doctorService = {
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
-    console.log("fetch doctors");
+    // console.log("fetch doctors");
 
     return res.json();
   },
@@ -25,21 +25,25 @@ export const doctorService = {
   ): Promise<IDoctor[]> {
     let query = [];
 
-    if ( specialties.length > 0) {
+    if (specialties.length > 0) {
       query.push(
-        `specialtyNames in (${specialties.map((s) => `'${s}'`).join(",")})`
+        `specialtyNames/any(s: ${specialties.map((sp)=>`s eq '${sp}'`).join(' or ')})`
       );
     }
-    if (  academicTitles.length > 0) {
+    if (academicTitles.length > 0) {
       query.push(
         `academicTitle in (${academicTitles.map((a) => `'${a}'`).join(",")})`
       );
     }
-    if ( degrees.length > 0) {
+    if (degrees.length > 0) {
       query.push(`degree in (${degrees.map((d) => `'${d}'`).join(",")})`);
     }
-
-    const res = await fetch( `http://localhost:5220/api/Doctors${ query.length > 0 ? `?$filter=${query.join(" or ")}` : ""}`)
+    console.log(query);
+    const res = await fetch(
+      `http://localhost:5220/api/Doctors${
+        query.length > 0 ? `?$filter=${query.join(" or ")}` : ""
+      }`
+    );
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }

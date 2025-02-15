@@ -96,7 +96,15 @@ namespace AppointmentSchedulingApp.Services
                 return null;
             }
 
-            var newUser = new User
+            //var newUser = _mapper.Map<User>(registrationDto);
+            //newUser.Role = "Patient";
+
+            //_userRepository.Add(newUser);
+
+
+            //return _mapper.Map<UserDTO>(newUser);
+
+            var newUser = new User()
             {
                 UserName = registrationDto.UserName,
                 Email = registrationDto.Email,
@@ -105,7 +113,9 @@ namespace AppointmentSchedulingApp.Services
                 Gender = registrationDto.Gender,
                 Dob = registrationDto.Dob,
                 Address = registrationDto.Address,
-                Role = "Patient"
+                Role = "Patient",
+                CitizenId = registrationDto.CitizenId
+                
             };
 
             _userRepository.Add(newUser);
@@ -119,9 +129,9 @@ namespace AppointmentSchedulingApp.Services
                 Gender = newUser.Gender,
                 Dob = newUser.Dob,
                 Address = newUser.Address,
-                Role= newUser.Role
+                Role = newUser.Role,
+                CitizenId = newUser.CitizenId
             };
-
 
             return userDTO;
 

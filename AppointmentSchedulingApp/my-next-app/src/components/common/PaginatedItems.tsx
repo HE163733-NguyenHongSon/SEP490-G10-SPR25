@@ -1,19 +1,15 @@
-'use client'
+"use client";
+
 import { useState } from "react";
 import ReactPaginate from "react-paginate";
-import { memo } from "react";
 
 interface PaginatedItemsProps<T> {
   itemsPerPage: number;
   items: T[];
-  renderItems: (items: T[]) => JSX.Element;
+  RenderComponent: React.ComponentType<{ items: T[] }>; 
 }
 
-const PaginatedItems = <T,>({
-  itemsPerPage,
-  items,
-  renderItems,
-}: PaginatedItemsProps<T>) => {
+const PaginatedItems = <T,>({itemsPerPage,items,RenderComponent}: PaginatedItemsProps<T>) => {
   const [itemOffset, setItemOffset] = useState(0);
 
   const endOffset = itemOffset + itemsPerPage;
@@ -27,7 +23,7 @@ const PaginatedItems = <T,>({
 
   return (
     <div className="flex flex-col items-center">
-      {renderItems(currentItems)}
+      <RenderComponent items={currentItems} />
 
       <ReactPaginate
         breakLabel="..."
@@ -49,4 +45,4 @@ const PaginatedItems = <T,>({
   );
 };
 
-export default memo(PaginatedItems);
+export default PaginatedItems;

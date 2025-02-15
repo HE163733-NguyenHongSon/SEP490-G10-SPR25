@@ -7,4 +7,3 @@
     followUpDate?: string;  
     notes?: string;  
   }
-  type IMedicalRecords=IMedicalRecord[]

@@ -4,7 +4,6 @@ import { assets } from "../../../../public/images/assets";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const PersonLayout = ({
   children,
@@ -12,7 +11,6 @@ const PersonLayout = ({
   children: React.ReactNode;
 }>) => {
   const currentPath = usePathname();
-  const queryClient = new QueryClient(); 
 
   const routes = [
     { path: "/patient/person", name: "Profile", Image: assets.profile },
@@ -34,10 +32,9 @@ const PersonLayout = ({
       style={{
         backgroundImage: 'url("/images/background_register_treatment.jpeg")',
       }}
-      id="Body"
     >
       <div className=" absolute inset-0 bg-black bg-opacity-50 z-20"></div>
-      <div className="container mt-28 mb-10 z-30 grid grid-cols-5 text-gray-700 bg-white rounded-xl shadow-2xl">
+      <div className="container  mt-28 mb-10 z-30 grid grid-cols-5 text-gray-700 bg-white rounded-xl shadow-2xl ">
         <div className="col-span-1 border-r border-gray-300">
           <div className="flex flex-row items-center justify-center gap-2 p-4">
             <h2 className="text-xl text-center">Nguyen Hong Son</h2>
@@ -77,11 +74,7 @@ const PersonLayout = ({
           </nav>
         </div>
 
-        <div className="col-span-4">
-          <QueryClientProvider client={queryClient}>
-            {children}
-          </QueryClientProvider>
-        </div>
+        <div className="col-span-4 ">{children}</div>
       </div>
     </div>
   );

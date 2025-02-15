@@ -12,4 +12,3 @@
     updatedDate: string;
     status: "Pending" | "Confirmed" | "Completed" | "No-show" | "Canceled";
   }
-  type IReservations=IReservation[]

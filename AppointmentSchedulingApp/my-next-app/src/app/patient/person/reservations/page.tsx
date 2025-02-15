@@ -6,28 +6,30 @@ import ReservationList from "../../../../components/patient/ReservationList";
 import SelectSort from "../../../../components/common/SelectSort";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-
+import { LoadingTable } from "../../../../components/common/LoadingTable";
 const ReservationPage = () => {
-  const [status, setStatus] = useState("pending");
-  const [sortBy, setSortBy] = useState("price_asc");
+  const [status, setStatus] = useState("Pending");
+  const [sortBy, setSortBy] = useState("recent_appointment");
 
   const sortOptions: ISortOption[] = [
-    { label: "Upcoming appointment", value: "upcoming_appointment" },
+    { label: "Recent appointment", value: "recent_appointment" },
     { label: "Past appointment", value: "past_appointment" },
     { label: "Service price ascending", value: "price_asc" },
     { label: "Service price descending", value: "price_desc" },
   ];
 
   const {
-    data: reservationList =[],
+    data: reservationList = [],
     isLoading: isLoadingReservations,
     error: reservationError,
+    fetchStatus,
   } = useQuery({
     queryKey: ["reservations", status, sortBy],
     queryFn: () =>
       reservationService.getListReservationByStatusAndSort(status, sortBy),
     staleTime: 30000,
   });
+  console.log(fetchStatus);
 
   const {
     data: statusList = [],
@@ -47,38 +49,37 @@ const ReservationPage = () => {
     },
     staleTime: 30000,
   });
-
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">Reservations</h1>
-      <div className="flex flex-row items-center justify-center">
-        <SelectSort
-          options={sortOptions}
-          onSortChange={(value) => setSortBy(value)}
-        />
-        <FilterButtonList
-          itemList={statusList}
-          onFilterSelect={(value) => setStatus(value)}
-        />
+      <div className="flex flex-row items-center justify-center gap-3  ">
+        {isLoadingReservations || isLoadingStatus ? (
+          <p>Loading...</p>
+        ) : (
+          <>
+            <SelectSort
+              options={sortOptions}
+              onSortChange={(value) => setSortBy(value)}
+              selectedOption={sortBy}
+            />
+            <FilterButtonList
+              itemList={statusList}
+              onFilterSelect={(value) => setStatus(value)}
+              selectedItem={status}
+            />
+          </>
+        )}
       </div>
 
       {isLoadingReservations || isLoadingStatus ? (
-        <p>Loading...</p>
+        <LoadingTable />
       ) : reservationError || statusError ? (
         <p>Error loading data</p>
       ) : (
         <PaginatedItems
           itemsPerPage={4}
           items={reservationList}
-          renderItems={(currentItems) =>
-            currentItems.length > 0 ? (
-              <ReservationList
-                reservationList={currentItems as IReservations}
-              />
-            ) : (
-              <p>No reservations found.</p>
-            )
-          }
+          RenderComponent={ReservationList}
         />
       )}
     </div>

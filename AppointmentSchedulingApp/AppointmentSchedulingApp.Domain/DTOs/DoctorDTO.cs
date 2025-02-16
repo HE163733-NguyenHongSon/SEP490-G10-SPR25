@@ -7,7 +7,7 @@ namespace AppointmentSchedulingApp.Domain.DTOs
     {
         [Key]
         [JsonPropertyOrder(1)]
-        public string DoctorId { get; set; }
+        public int  DoctorId { get; set; }
 
         [JsonPropertyOrder(2)]
         public string? AcademicTitle { get; set; }
@@ -31,15 +31,15 @@ namespace AppointmentSchedulingApp.Domain.DTOs
         public string[] SpecialtyNames { get; set; }
 
         [JsonPropertyOrder(9)]
-        public string NumberOfService { get; set; }
+        public int  NumberOfService { get; set; }
 
         [JsonPropertyOrder(10)]
         public double? Rating { get; set; }
 
         [JsonPropertyOrder(11)]
-        public string NumberOfExamination { get; set; }
+        public int  NumberOfExamination { get; set; }
 
         [JsonPropertyOrder(12)]
-        public string ExperienceYear { get; set; }
+        public double ExperienceYear { get; set; }
     }
 }

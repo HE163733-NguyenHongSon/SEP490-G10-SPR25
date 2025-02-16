@@ -7,7 +7,7 @@ import { assets } from "../../../public/images/assets";
 
 interface CollapsibleSectionProps {
   title: string;
-  titleImage?:string;
+  titleImage?: string;
   content: string | React.ReactNode;
   defaultExpanded: boolean;
 }
@@ -16,7 +16,7 @@ export default function CollapsibleSection({
   title,
   titleImage,
   content,
-  defaultExpanded
+  defaultExpanded,
 }: CollapsibleSectionProps) {
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse({
     defaultExpanded: defaultExpanded,
@@ -24,20 +24,23 @@ export default function CollapsibleSection({
 
   return (
     <div className="flex flex-col   mx-5 border-b border-gray-300 ">
-      <div className="relative  flex flex-row items-center  p-2 gap-2">
+      <button
+        className="relative  flex flex-row items-center  p-2 gap-2"
+        {...getToggleProps()}
+      >
+        {" "}
         {titleImage && (
           <Image src={titleImage} width={20} height={20} alt="title image" />
         )}
-        <h1 className=" font-semibold text-lg ">{title}</h1>
-        <button className="absolute right-2 flex" {...getToggleProps()}>
-          <Image
-            src={isExpanded ? assets.collapse : assets.expand}
-            width={20}
-            height={20}
-            alt="collapse-expand"
-          />
-        </button>
-      </div>
+        <h1 className=" font-semibold text-base ">{title}</h1>
+        <Image
+          className="absolute right-2"
+          src={isExpanded ? assets.collapse : assets.expand}
+          width={20}
+          height={20}
+          alt="collapse-expand"
+        />
+      </button>
 
       <section className="flex items-center px-2" {...getCollapseProps()}>
         {typeof content === "string" ? (

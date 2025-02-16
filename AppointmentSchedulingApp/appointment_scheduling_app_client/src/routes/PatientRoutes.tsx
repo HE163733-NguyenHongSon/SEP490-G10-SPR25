@@ -11,6 +11,9 @@ import ProfilePage from "../pages/patient/ProfilePage";
 import ReservationPage from "../pages/patient/ReservationPage";
 import ServicePage from "../pages/patient/ServicePage";
 import SpecialtyPage from "../pages/patient/SpecialtyPage";
+import { LoginPage } from "../pages/patient/LoginPage";
+import { RegisterPage } from "../pages/patient/RegisterPage";
+
 
 const PatientRoutes = () => {
   return (
@@ -25,6 +28,9 @@ const PatientRoutes = () => {
             path="appointment-booking"
             element={<AppointmentBookingPage />}
           />
+          <Route path="login" element={<LoginPage/>}/>
+          <Route path="register" element={<RegisterPage/>}/>
+
 
           <Route path="person" element={<PersonLayout />}>
             <Route index element={<Navigate to="profile" />} />

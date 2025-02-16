@@ -21,7 +21,7 @@ namespace AppointmentSchedulingApp.Infrastructure
         public void Add(T entity)
         {
             _dbContext.Add(entity);
-
+            _dbContext.SaveChanges();
 
         }
 

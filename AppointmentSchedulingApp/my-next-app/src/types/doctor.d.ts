@@ -5,8 +5,8 @@
    doctorName: string;
    avatarUrl:string;
    currentWork?: string;
-   doctorDescription: string;
-   specialtyNames: string;
+   basicDescription: string;
+   specialtyNames: string[];
    numberOfService: string;
    rating: number ;
    numberOfExamination: string;

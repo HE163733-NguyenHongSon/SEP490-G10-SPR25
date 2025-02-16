@@ -3,7 +3,7 @@ import Image from "next/image";
 import { doctorService } from "@/services/doctorService";
 import RatingStars from "@/components/common/RatingStars";
 import Navigation from "@/components/common/Navigation";
-
+import Link from "next/link";
 const DoctorDetailLayout = async ({
   children,
   params,
@@ -28,16 +28,20 @@ const DoctorDetailLayout = async ({
   ];
   return (
     <div className=" flex flex-col  justify-items-start text-gray-700 border border-gray-300  mx-5 my-16 rounded-md shadow-md">
-      <div className="flex flex-row   p-10">
-        <div className="">
-          <Image
-            width={200}
-            height={150}
-            alt="image-doctor"
-            src={doctorDetail.avatarUrl}
-            className="rounded-2xl"
-          />
-        </div>
+      <div className="flex flex-row  p-10 relative">
+        <Link
+          className="absolute top-0 left-3 text-3xl font-semibold     hover:text-cyan-500 "
+          href={"/patient/doctors"}
+        >
+          ←
+        </Link>
+        <Image
+          width={200}
+          height={150}
+          alt="image-doctor"
+          src={doctorDetail.avatarUrl}
+          className="rounded-2xl"
+        />
         <div className=" flex flex-col justify-between font-sans px-5">
           <h1 className=" font-semibold  text-lg text-gray-700 ">
             <span className=" mr-2">

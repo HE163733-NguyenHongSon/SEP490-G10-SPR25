@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface CheckboxListProps {
@@ -10,18 +10,24 @@ interface CheckboxListProps {
 const CheckboxList = ({ items, searchParam }: CheckboxListProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const checkboxRef = useRef<HTMLInputElement>(null);
 
   const initialSelectedItems = searchParams.get(searchParam)?.split(",") || [];
 
-  const [selectedItems, setSelectedItems] = useState<string[]>(initialSelectedItems);
+  const [selectedItems, setSelectedItems] =
+    useState<string[]>(initialSelectedItems);
 
   useEffect(() => {
-    const updatedSelectedItems =searchParams.get(searchParam)?.split(",") || [];
+    const updatedSelectedItems =
+      searchParams.get(searchParam)?.split(",") || [];
     setSelectedItems(updatedSelectedItems);
   }, [searchParams, searchParam]);
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>,key: string) => {
-    let updatedSelectedItems = event.target.checked
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    key: string
+  ) => {
+    const updatedSelectedItems = event.target.checked
       ? [...selectedItems, key]
       : selectedItems.filter((item) => item !== key);
 
@@ -47,10 +53,16 @@ const CheckboxList = ({ items, searchParam }: CheckboxListProps) => {
         <div className="p-2 gap-3 flex flex-row" key={item.value}>
           <input
             id={item.value}
+            ref={checkboxRef}
             type="checkbox"
             checked={selectedItems.includes(item.value)}
             onChange={(e) => handleCheckboxChange(e, item.value)}
+            className="appearance-none w-5 h-5 border-2 border-gray-300 rounded-md checked:bg-cyan-500 checked:border-none relative 
+             checked:before:content-['✓'] checked:before:text-white checked:before:absolute 
+             checked:before:left-1/2 checked:before:top-1/2 checked:before:-translate-x-1/2 checked:before:-translate-y-1/2 
+             checked:before:text-base checked:before:font-bold"
           />
+
           <label htmlFor={item.value}>{item.label}</label>
         </div>
       ))}

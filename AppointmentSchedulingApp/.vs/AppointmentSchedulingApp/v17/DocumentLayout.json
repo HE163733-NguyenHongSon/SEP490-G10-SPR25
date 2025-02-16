@@ -326,8 +326,7 @@
               "RelativeToolTip": "AppointmentSchedulingApp.Server\\Controllers\\DoctorsController.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-10T09:32:25.706Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-10T09:32:25.706Z"
             },
             {
               "$type": "Document",
@@ -387,8 +386,7 @@
               "RelativeToolTip": "AppointmentSchedulingApp.Infrastructure\\Repositories\\DoctorRepository.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-10T09:26:21.158Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-10T09:26:21.158Z"
             },
             {
               "$type": "Document",
@@ -400,8 +398,7 @@
               "RelativeToolTip": "AppointmentSchedulingApp.Services\\DoctorService.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAB4AAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-10T09:25:33.437Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-10T09:25:33.437Z"
             },
             {
               "$type": "Document",
@@ -435,7 +432,7 @@
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\Profiles\\DoctorProfile.cs",
               "ToolTip": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\Profiles\\DoctorProfile.cs*",
               "RelativeToolTip": "AppointmentSchedulingApp.Domain\\Profiles\\DoctorProfile.cs*",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABsAAABWAAAAAAAAAA==",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAACQAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-10T08:35:54.735Z",
               "EditorCaption": ""
@@ -641,8 +638,7 @@
               "RelativeToolTip": "AppointmentSchedulingApp.Services\\UserService.cs",
               "ViewState": "AgIAACQAAAAAAAAAAAAgwEUAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-05T04:08:23.93Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-05T04:08:23.93Z"
             },
             {
               "$type": "Document",
@@ -772,7 +768,7 @@
               "RelativeDocumentMoniker": "AppointmentSchedulingApp.Domain\\DTOs\\DoctorDTO.cs",
               "ToolTip": "C:\\Users\\Son\\OneDrive\\M\u00E1y t\u00EDnh\\AppointmentSchedulingApp\\AppointmentSchedulingApp\\AppointmentSchedulingApp.Domain\\DTOs\\DoctorDTO.cs*",
               "RelativeToolTip": "AppointmentSchedulingApp.Domain\\DTOs\\DoctorDTO.cs*",
-              "ViewState": "AgIAAA0AAAAAAAAAAAASwB4AAAAXAAAAAAAAAA==",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAACYAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-02-03T04:36:09.971Z",
               "EditorCaption": ""

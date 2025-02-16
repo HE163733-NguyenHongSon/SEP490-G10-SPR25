@@ -18,16 +18,19 @@ export const doctorService = {
 
     return res.json();
   },
-  async getDoctorListByFilter(
+  async getDoctorListByFilterAndSort(
     specialties: string[],
     academicTitles: string[],
-    degrees: string[]
+    degrees: string[],
+    sortBy: string
   ): Promise<IDoctor[]> {
-    let query = [];
+    const query = [];
 
     if (specialties.length > 0) {
       query.push(
-        `specialtyNames/any(s: ${specialties.map((sp)=>`s eq '${sp}'`).join(' or ')})`
+        `specialtyNames/any(s: ${specialties
+          .map((sp) => `s eq '${sp}'`)
+          .join(" or ")})`
       );
     }
     if (academicTitles.length > 0) {
@@ -40,9 +43,13 @@ export const doctorService = {
     }
     console.log(query);
     const res = await fetch(
-      `http://localhost:5220/api/Doctors${
-        query.length > 0 ? `?$filter=${query.join(" or ")}` : ""
-      }`
+      `http://localhost:5220/api/Doctors?${
+        query.length > 0 ? `$filter=${query.join(" or ")}&` : ""
+      }$orderby=${
+        sortBy === "most_exp"? "experienceYear"
+          : sortBy === "most_exam" ? "numberOfExamination"
+          : "rating"
+      } desc`
     );
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);

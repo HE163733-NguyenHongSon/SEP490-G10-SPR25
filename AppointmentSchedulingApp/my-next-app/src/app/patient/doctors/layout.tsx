@@ -1,9 +1,9 @@
-import Image from "next/image";
-import { assets } from "../../../../public/images/assets";
 import SelectSort from "@/components/common/SelectSort";
 import { specialtyService } from "@/services/specialtyService";
 import CollapsibleSection from "@/components/common/CollapsibleSection";
 import CheckboxList from "@/components/common/CheckboxList";
+import SelectFilter from "@/components/common/SelectFilter";
+import Link from "next/link";
 export default async function DoctorsLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -34,9 +34,9 @@ export default async function DoctorsLayout({
   });
 
   const sortOptions: ISortOption[] = [
-    { label: "Highest Rated", value: "rating_desc" },
-    { label: "Most Examinations", value: "exam_desc" },
-    { label: "Most Experienced ", value: "experience_desc" },
+    { label: "Highest Rated", value: "highest_rated" },
+    { label: "Most Examinations", value: "most_exam" },
+    { label: "Most Experienced ", value: "most_exp" },
   ];
 
   return (
@@ -47,25 +47,23 @@ export default async function DoctorsLayout({
     >
       <div className="absolute inset-0 bg-black bg-opacity-50 z-20"></div>
 
-      <div className=" container   mt-28 mb-10 z-30 grid grid-cols-5  bg-white rounded-xl shadow-2xl ">
-        <div className="col-span-1 border-r border-gray-300 text-gray-700 pb-20">
+      <div className=" container   mt-28 mb-10 z-30 grid grid-cols-5  bg-white   rounded-xl shadow-2xl ">
+        <div className=" col-span-1 border-r border-gray-300 text-gray-700 pb-20  ">
           <div className="border-b border-gray-300 flex flex-row items-center justify-center gap-4  py-5 font-medium mx-5">
             <h1 className="text-xl  font-semibold">Filter and sort</h1>
-            <button className="text-cyan-500 underline underline-offset-2  hover:bg-cyan-500 hover:text-white px-2 rounded-full ">
+            <Link href="/patient/doctors" className="text-cyan-500 underline underline-offset-2  hover:bg-cyan-500 hover:text-white px-2 rounded-full ">
               Clear
-            </button>
+            </Link>
           </div>
 
           <div className="flex flex-col gap-2  border-b border-gray-300 mx-5 py-5">
-            <div className=" flex flex-row items-center justify-start gap-1   ">
-              <Image src={assets.filter} width={20} height={20} alt="Filter" />
-              <h2>Filter by: </h2>
-              <h2 className="text-cyan-500">(2 options)</h2>
-            </div>
+            <SelectFilter
+              searchParamList={["specialties", "academicTitles", "degrees"]}
+            />
             <SelectSort
               options={sortOptions}
               initialSelectedValue="rating_desc"
-              url="/patient/doctors"
+              path="/patient/doctors"
             />
           </div>
           <CollapsibleSection

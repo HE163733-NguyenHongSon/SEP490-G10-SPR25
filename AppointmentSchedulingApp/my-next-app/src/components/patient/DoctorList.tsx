@@ -28,7 +28,7 @@ export const DoctorList = ({ items }: IDoctors) => {
             </h1>
 
             <div className="grid grid-cols-3 my-3">
-              <div className="col-span-1 flex flex-col items-center  justify-start p-2 border-r border-gray-300">
+              <div className="gap-3 col-span-1 flex flex-col items-center  justify-start p-2 border-r border-gray-300">
                 <Image
                   className="rounded-lg"
                   src={doctor.avatarUrl}
@@ -36,14 +36,19 @@ export const DoctorList = ({ items }: IDoctors) => {
                   width={100}
                   alt="avatar doctor"
                 />
-                <button className="my-5 bg-cyan-500 text-white px-3 rounded-full">
+                <p className="text-cyan-500 font-light">
+                  <span className="font-semibold text-lg">{doctor.experienceYear}</span> year exp
+                </p>
+                <button className=" bg-cyan-500 text-white px-3 rounded-full">
                   Booking{" "}
                 </button>
               </div>
               <div className="col-span-2 flex flex-col justify-between font-sans px-3">
                 <h2 className="text-lg text-gray-700 ">{doctor.currentWork}</h2>
                 <p>{doctor.basicDescription}...</p>
-                <p className="text-gray-400">{doctor.specialtyNames.join(', ')}</p>
+                <p className="text-gray-400">
+                  {doctor.specialtyNames.join(", ")}
+                </p>
                 <p className="font-semibold">
                   ({doctor.numberOfService} service take on)
                 </p>

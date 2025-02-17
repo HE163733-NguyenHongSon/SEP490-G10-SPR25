@@ -1,11 +1,10 @@
 import React from "react";
-import { Reservation } from "../../types/reservation";
-
+import Image from "next/image";
 interface ReservationListProps {
-  reservationList: Reservation[];
+  items: IReservation[];
 }
 
-const ReservationList = ({ reservationList }: ReservationListProps) => {
+const ReservationList = ({ items  }: ReservationListProps) => {
   return (
     <div className="reservation-list">
       <table className=" border-separate   border border-gray-300 rounded-md    ">
@@ -29,19 +28,23 @@ const ReservationList = ({ reservationList }: ReservationListProps) => {
           </tr>
         </thead>
         <tbody>
-          {reservationList.map((reservation: Reservation) => (
+          {items.map((reservation: IReservation) => (
             <tr key={reservation.reservationId}>
               <td className="border border-gray-300 rounded-md  px-10">
                 {reservation.reservationId}
               </td>
               <td className="border border-gray-300 rounded-md ">
                 <div className="grid grid-cols-3 py-3 px-8">
-                  <div className=" service col-span-1 p-1   gap-2 grid grid-cols-3   border-r-2 border-gray-300 ">
-                    <img
-                      className="col-span-1 w-16 h-16  border border-gray-300 rounded-md "
-                      src={reservation.serviceImage}
-                      alt=""
-                    />
+                  <div className=" service col-span-1    gap-2 grid grid-cols-3   border-r-2 border-gray-300 ">
+                    <div className="col-span-1 flex justify-center items-center">
+                      <Image
+                        className="border border-gray-300 rounded-md"
+                        width={200}
+                        height={100}
+                        src={reservation.serviceImage}
+                        alt=""
+                      />
+                    </div>
                     <div className="col-span-2 flex justify-center flex-col ">
                       <p className="text-base w-fit">
                         {reservation.serviceName}
@@ -51,6 +54,7 @@ const ReservationList = ({ reservationList }: ReservationListProps) => {
                       </p>
                     </div>
                   </div>
+
                   <div className="flex justify-center flex-col col-span-2 w-fit mx-6">
                     <p>
                       Examination by{" "}

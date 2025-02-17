@@ -1,5 +1,7 @@
 ﻿using AppointmentSchedulingApp.Domain.Contracts.Services;
 using AppointmentSchedulingApp.Domain.DTOs;
+
+using AppointmentSchedulingApp.Services.Helper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
@@ -20,16 +22,43 @@ namespace AppointmentSchedulingApp.Server.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(SignInDTO signInDto)
         {
-            var message = new StringBuilder();
+            StringBuilder message = new StringBuilder();
             var user = await _userService.LoginUser(signInDto, message);
 
             if (user == null)
             {
-                return BadRequest(new { Message = message.ToString() });
+                return Ok(new ApiResponse
+                {
+                    Success = false,
+                    Message = "Invalid username/ password"
+                });
             }
-
-            return Ok(user);
+            else
+            {
+                return Ok(new ApiResponse
+                {
+                    Success = true,
+                    Message = "Authenticate Success",
+                    Data = _userService.GenerateToken(user)
+                });
+            }
         }
+
+        // Login v1
+
+        //[HttpPost("login")]
+        //public async Task<IActionResult> Login(SignInDTO signInDto)
+        //{
+        //    var message = new StringBuilder();
+        //    var user = await _userService.LoginUser(signInDto, message);
+
+        //    if (user == null)
+        //    {
+        //        return BadRequest(new { Message = message.ToString() });
+        //    }
+
+        //    return Ok(user);
+        //}
         //cmt
 
         // thu commit tren github déktop
@@ -37,15 +66,24 @@ namespace AppointmentSchedulingApp.Server.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegistrationDTO registrationDto)
         {
-            var message = new StringBuilder();
+            StringBuilder message = new StringBuilder();
             var user = await _userService.RegisterUser(registrationDto, message);
 
             if (user == null)
             {
-                return BadRequest(new { Message = message.ToString() });
+                return BadRequest(new ApiResponse
+                {
+                    Success = false,
+                    Message = message.ToString()
+                });
             }
 
-            return Ok(user);
+            return Ok(new ApiResponse
+            {
+                Success = true,
+                Message = "Registration Successful",
+                Data = user
+            });
         }
     }
 }

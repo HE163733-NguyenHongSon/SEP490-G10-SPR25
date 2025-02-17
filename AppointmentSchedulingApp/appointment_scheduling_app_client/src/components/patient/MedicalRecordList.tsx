@@ -1,5 +1,4 @@
 import React from "react";
-import { MedicalRecord } from "../../types/medicalRecord";
 
 interface MedicalRecordListProps {
   medicalRecordList: MedicalRecord[];

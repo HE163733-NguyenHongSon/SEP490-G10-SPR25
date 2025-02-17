@@ -96,6 +96,10 @@ namespace AppointmentSchedulingApp.Services
                 return null;
             }
 
+            // ma~ hoa mat khau
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(registrationDto.Password);
+
+
             //var newUser = _mapper.Map<User>(registrationDto);
             //newUser.Role = "Patient";
 
@@ -108,7 +112,8 @@ namespace AppointmentSchedulingApp.Services
             {
                 UserName = registrationDto.UserName,
                 Email = registrationDto.Email,
-                Password = registrationDto.Password,
+                //Password = registrationDto.Password,
+                Password = hashedPassword,
                 Phone = registrationDto.Phone,
                 Gender = registrationDto.Gender,
                 Dob = registrationDto.Dob,
@@ -143,9 +148,14 @@ namespace AppointmentSchedulingApp.Services
             //return _mapper.Map<UserDTO>(newUser);
         }
 
+        //private bool VerifyPassword(string enteredPassword, string storedPassword)
+        //{
+        //    return enteredPassword == storedPassword;
+        //}
+
         private bool VerifyPassword(string enteredPassword, string storedPassword)
         {
-            return enteredPassword == storedPassword;
+            return BCrypt.Net.BCrypt.Verify(enteredPassword, storedPassword);
         }
 
     }

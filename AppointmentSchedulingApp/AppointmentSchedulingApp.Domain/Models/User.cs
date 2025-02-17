@@ -35,4 +35,7 @@ public partial class User
     public virtual Doctor? Doctor { get; set; }
 
     public virtual Patient? Patient { get; set; }
+
+    //public string themmoi { get; set; } = null!;
+
 }

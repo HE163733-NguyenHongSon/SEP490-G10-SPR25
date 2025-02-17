@@ -18,6 +18,13 @@
     <PackageJsonDependenciesReactToastify Condition="$(PackageJsonDependenciesReactToastify) == ''">^11.0.3</PackageJsonDependenciesReactToastify>
     <PackageJsonDevdependenciesEslintJs Condition="$(PackageJsonDevdependenciesEslintJs) == ''">^9.17.0</PackageJsonDevdependenciesEslintJs>
     <PackageJsonDevdependenciesTypesAxios Condition="$(PackageJsonDevdependenciesTypesAxios) == ''">^0.14.4</PackageJsonDevdependenciesTypesAxios>
+    <PackageJsonDevdependenciesTypesBabelCore Condition="$(PackageJsonDevdependenciesTypesBabelCore) == ''">^7.20.5</PackageJsonDevdependenciesTypesBabelCore>
+    <PackageJsonDevdependenciesTypesBabelGenerator Condition="$(PackageJsonDevdependenciesTypesBabelGenerator) == ''">^7.6.8</PackageJsonDevdependenciesTypesBabelGenerator>
+    <PackageJsonDevdependenciesTypesBabelTemplate Condition="$(PackageJsonDevdependenciesTypesBabelTemplate) == ''">^7.4.4</PackageJsonDevdependenciesTypesBabelTemplate>
+    <PackageJsonDevdependenciesTypesBabelTraverse Condition="$(PackageJsonDevdependenciesTypesBabelTraverse) == ''">^7.20.6</PackageJsonDevdependenciesTypesBabelTraverse>
+    <PackageJsonDevdependenciesTypesCookie Condition="$(PackageJsonDevdependenciesTypesCookie) == ''">^0.6.0</PackageJsonDevdependenciesTypesCookie>
+    <PackageJsonDevdependenciesTypesEstree Condition="$(PackageJsonDevdependenciesTypesEstree) == ''">^1.0.6</PackageJsonDevdependenciesTypesEstree>
+    <PackageJsonDevdependenciesTypesJsonSchema Condition="$(PackageJsonDevdependenciesTypesJsonSchema) == ''">^7.0.15</PackageJsonDevdependenciesTypesJsonSchema>
     <PackageJsonDevdependenciesTypesNode Condition="$(PackageJsonDevdependenciesTypesNode) == ''">^22.13.1</PackageJsonDevdependenciesTypesNode>
     <PackageJsonDevdependenciesTypesReact Condition="$(PackageJsonDevdependenciesTypesReact) == ''">^18.3.18</PackageJsonDevdependenciesTypesReact>
     <PackageJsonDevdependenciesTypesReactDom Condition="$(PackageJsonDevdependenciesTypesReactDom) == ''">^18.3.5</PackageJsonDevdependenciesTypesReactDom>

@@ -1,24 +1,28 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { assets } from "../../assets/assets";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { assets } from "../../../public/images/assets";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Navbar: React.FC = () => {
   const [isShowMobileMenu, setIsShowMobileMenu] = useState(false);
-  const location = useLocation();
   const [user, setUser] = useState<{ name?: string; avatar?: string }>({});
-
+  const currentPath = usePathname();
   const routes = [
-    { path: "/", name: "Home" },
-    { path: "/specialties", name: "Specialties " },
-    { path: "/doctors", name: "Doctors" },
-    { path: "/services", name: "Services" },
-    { path: "/appointment-booking", name: "Appointment Booking" },
-    { path: "/login", name: "Login" },
-    { path: "/register", name: "Register" },
-    { path: "/person", name: "Person" },
-    { path: "/logout", name: "Logout" },
+    { path: "/patient", name: "Home" },
+    { path: "/patient/specialties", name: "Specialties " },
+    { path: "/patient/doctors", name: "Doctors" },
+    { path: "/patient/services", name: "Services" },
+    { path: "/patient/blogs", name: "Blogs" },
+    { path: "/patient/appointment-booking", name: "Appointment Booking" },
+    { path: "/auth/login", name: "Login" },
+    { path: "/auth/register", name: "Register" },
+    { path: "/patient/person", name: "Person" },
+    { path: "/patient/logout", name: "Logout" },
   ];
   const handleLogout = () => {
     sessionStorage.removeItem("user");
@@ -48,16 +52,17 @@ const Navbar: React.FC = () => {
 
   return (
     <div className=" fixed top-0 left-0 w-full z-30 bg-black bg-opacity-50 backdrop-blur-md">
-      <div className="container mx-auto flex justify-between items-center py-4 px-6 md:px-20 lg:px-32 bg-transparent">
-        <img className="w-12 h-12" src={assets.logo} alt="Logo" />
-
-        <ul className="hidden md:flex gap-8 text-white text-center">
+      <div className="container mx-auto flex  items-center justify-center py-3  px-6 md:px-15 lg:px-20 bg-transparent  ">
+        <ul className=" md:flex flex items-center gap-8    text-white text-center  ">
+          <li>
+            <Image width={40} height={40} src={assets.logo} alt="Logo" />
+          </li>
           {routes.map((route) => (
             <li key={route.path}>
               <Link
-                to={route.path}
-                className={`text-xl hover:text-cyan-500 hover:underline underline-offset-4 ${
-                  location.pathname === route.path
+                href={route.path}
+                className={` text-lg hover:text-cyan-500 hover:underline underline-offset-4 ${
+                  currentPath === route.path
                     ? "text-cyan-500 underline underline-offset-4"
                     : "text-white"
                 }`}
@@ -66,8 +71,8 @@ const Navbar: React.FC = () => {
               </Link>
               {user.name &&
                 (route.path === "person" ? (
-                  <Link to={route.path}>
-                    <img
+                  <Link href={route.path}>
+                    <Image
                       src=""
                       className="w-10 h-10 cursor-pointer rounded-full"
                       onClick={() => setIsShowMobileMenu(true)}
@@ -89,9 +94,11 @@ const Navbar: React.FC = () => {
           ))}
         </ul>
 
-        <img
+        <Image
           onClick={() => setIsShowMobileMenu(true)}
-          className="md:hidden w-8 h-8 cursor-pointer"
+          width={8}
+          height={8}
+          className="md:hidden  cursor-pointer"
           src={assets.menu}
           alt="Menu"
         />
@@ -104,17 +111,17 @@ const Navbar: React.FC = () => {
             className="absolute top-5 right-5"
             onClick={() => setIsShowMobileMenu(false)}
           >
-            <img src={assets.close} className="w-8" alt="Close" />
+            <Image src={assets.close} width={8} height={8} alt="Close" />
           </button>
 
           {routes.map((route) => (
             <Link
               key={route.path}
-              to={route.path}
+              href={route.path}
               className="text-lg py-2 text-black hover:text-cyan-500"
               onClick={() => setIsShowMobileMenu(false)}
             >
-              {route.name}
+              { route.name==='Person'?<Image src="" width={20} height={20} className="rounded-full" alt="Profile"/>:route.name}
             </Link>
           ))}
         </div>

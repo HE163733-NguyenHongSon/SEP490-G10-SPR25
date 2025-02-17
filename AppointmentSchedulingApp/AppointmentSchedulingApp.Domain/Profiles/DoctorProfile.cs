@@ -23,8 +23,8 @@ namespace AppointmentSchedulingApp.Domain.Profiles
             .ForMember(dest => dest.BasicDescription, opt => opt.MapFrom(src => new string(src.DoctorDescription.Take(50).ToArray())))
             .ForMember(dest => dest.SpecialtyNames, opt => opt.MapFrom(src => src.Specialties.Select(s => s.SpecialtyName).ToArray()))
             .ForMember(dest => dest.NumberOfService, opt => opt.MapFrom(src => src.Services.Count))
-            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.DoctorSchedules.
 
+            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.DoctorSchedules.
             SelectMany(ds => ds.Reservations).Where(r => r.Status.Equals("Completed"))
             .Average(r=>r.Feedback.DoctorFeedbackGrade)))
 

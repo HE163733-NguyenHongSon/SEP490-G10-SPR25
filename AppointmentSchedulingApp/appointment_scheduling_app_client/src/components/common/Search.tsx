@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
+
 const Search = ({
   optionSearch,
   initialSearchValue,
@@ -23,6 +24,7 @@ const Search = ({
           className="relative flex flex-row items-center border-2  border-cyan-500 text-cyan-500 w-[195px] rounded-l-full px-3 py-1 text-left focus:outline-cyan-500"
         >
           {optionSearch.find((opt) => opt === searchBy)}
+
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="absolute right-1 h-5 w-5"
@@ -56,7 +58,7 @@ const Search = ({
         <input
           type="text"
           placeholder="Enter the doctor's info to search"
-          className="w-full px-4 py-1 rounded-r-full outline-none text-gray-700"
+          className="w-full px-4 py-1 rounded-r-full outline-none text-gray-700"    
         />
         <button className="absolute right-3 text-gray-500">
           <svg

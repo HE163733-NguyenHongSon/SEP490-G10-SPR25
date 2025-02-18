@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using AppointmentSchedulingApp.Domain.Contracts.Repositories;
 using AppointmentSchedulingApp.Domain.Models;
-using AppointmentSchedulingApp.Infrastructure.Database;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 

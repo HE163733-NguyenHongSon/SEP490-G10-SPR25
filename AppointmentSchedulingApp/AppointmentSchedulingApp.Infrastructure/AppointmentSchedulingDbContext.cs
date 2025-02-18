@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using AppointmentSchedulingApp.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppointmentSchedulingApp.Infrastructure.Database;
+namespace AppointmentSchedulingApp.Infrastructure;
 
 public partial class AppointmentSchedulingDbContext : DbContext
 {
@@ -373,7 +373,7 @@ public partial class AppointmentSchedulingDbContext : DbContext
                 .HasMaxLength(6)
                 .IsUnicode(false);
             entity.Property(e => e.Password)
-                .HasMaxLength(20)
+                .HasMaxLength(300)
                 .IsUnicode(false);
             entity.Property(e => e.Phone)
                 .HasMaxLength(12)

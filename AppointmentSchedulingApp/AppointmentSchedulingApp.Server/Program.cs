@@ -4,7 +4,6 @@ using AppointmentSchedulingApp.Domain.Contracts.Services;
 using AppointmentSchedulingApp.Domain.DTOs;
 using AppointmentSchedulingApp.Domain.Models;
 using AppointmentSchedulingApp.Infrastructure;
-using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.Repositories;
 using AppointmentSchedulingApp.Services;
 using AppointmentSchedulingApp.Services.Helper;

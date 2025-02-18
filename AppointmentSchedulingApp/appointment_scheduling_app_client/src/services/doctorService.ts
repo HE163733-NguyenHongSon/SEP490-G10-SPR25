@@ -39,7 +39,7 @@ export const doctorService = {
     if (degrees.length > 0) {
       query.push(`degree in (${degrees.map((d) => `'${d}'`).join(",")})`);
     }
-    console.log(query);
+    // console.log(query);
     const res = await fetch(
       `http://localhost:5220/api/Doctors?${
         query.length > 0 ? `$filter=${query.join(" or ")}&` : ""
@@ -48,6 +48,8 @@ export const doctorService = {
           ? "experienceYear"
           : sortBy === "most_exam"
           ? "numberOfExamination"
+          : sortBy === "most_service"
+          ? "numberOfService"
           : "rating"
       } desc`
     );

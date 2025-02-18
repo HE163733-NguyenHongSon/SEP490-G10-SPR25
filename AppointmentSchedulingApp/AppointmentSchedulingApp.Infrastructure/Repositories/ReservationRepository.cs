@@ -1,7 +1,6 @@
 ﻿using AppointmentSchedulingApp.Domain.Contracts.Repositories;
 using AppointmentSchedulingApp.Domain.DTOs;
 using AppointmentSchedulingApp.Domain.Models;
-using AppointmentSchedulingApp.Infrastructure.Database;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System;

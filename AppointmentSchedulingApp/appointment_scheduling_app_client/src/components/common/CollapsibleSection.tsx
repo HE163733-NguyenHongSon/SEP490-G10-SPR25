@@ -25,7 +25,7 @@ export default function CollapsibleSection({
   return (
     <div className="flex flex-col   mx-5 border-b border-gray-300 ">
       <button
-        className="relative  flex flex-row items-center  p-2 gap-2"
+        className="relative  flex flex-row items-center  px-1 py-3 gap-2"
         {...getToggleProps()}
       >
         {" "}

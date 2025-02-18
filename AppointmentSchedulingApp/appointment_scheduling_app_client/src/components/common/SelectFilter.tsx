@@ -7,8 +7,10 @@ const SelectFilter = ({ searchParamList }: { searchParamList: string[] }) => {
   const searchParams = useSearchParams();
   return (
     <div className="flex flex-row items-center justify-items-start ">
-      <Image src={assets.filter} width={20} height={20} alt="Filter" />
-      <h2>Filter</h2>
+      <label className="font-medium text-gray-700 flex items-center gap-1">
+        <Image src={assets.filter} width={20} height={20} alt="Filter" />
+        <h2>Filter</h2>
+      </label>
       <div className="text-cyan-500 flex flex-col ml-2 gap-2 ">
         {searchParamList
           .flatMap((sp) => searchParams.get(sp)?.split(",") || [])

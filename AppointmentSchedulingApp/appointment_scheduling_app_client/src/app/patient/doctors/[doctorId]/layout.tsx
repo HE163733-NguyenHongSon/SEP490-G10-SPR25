@@ -54,7 +54,7 @@ const DoctorDetailLayout = async ({
           <p className="font-semibold">
             ({doctorDetail.numberOfService} service take on)
           </p>
-          <div className="flex flex-row">
+          <div className="flex flex-row gap-2">
             <RatingStars rating={doctorDetail.rating} />
             <p>({doctorDetail.numberOfExamination} examination)</p>
           </div>

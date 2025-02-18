@@ -39,6 +39,7 @@ export default async function DoctorsLayout({
     { label: "Highest Rated", value: "highest_rated" },
     { label: "Most Examinations", value: "most_exam" },
     { label: "Most Experienced ", value: "most_exp" },
+    { label: "Take On Most Service", value: "most_service" },
   ];
 
   return (
@@ -67,7 +68,7 @@ export default async function DoctorsLayout({
             />
             <SelectSort
               options={sortOptions}
-              initialSelectedValue="rating_desc"
+              initialSelectedValue="highest_rated"
               path="/patient/doctors"
             />
           </div>
@@ -97,7 +98,7 @@ export default async function DoctorsLayout({
           />
         </div>
 
-        <div className="col-span-4 ">{children}</div>
+        <div className="col-span-4  ">{children}</div>
       </div>
     </div>
   );

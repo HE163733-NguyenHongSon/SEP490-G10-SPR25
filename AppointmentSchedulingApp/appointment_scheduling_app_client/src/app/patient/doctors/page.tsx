@@ -2,6 +2,7 @@ import { doctorService } from "@/services/doctorService";
 import React from "react";
 import PaginatedItems from "@/components/common/PaginatedItems";
 import { DoctorList } from "@/components/patient/DoctorList";
+import Search from "@/components/common/Search";
 
 const DoctorsPage = async ({
   searchParams,
@@ -23,8 +24,11 @@ const DoctorsPage = async ({
   );
 
   return (
-    <div>
-      <h2>Doctor List</h2>
+    <div className="flex items-center justify-center flex-col gap-y-7  mt-7 ">
+      <Search
+        optionSearch={["Doctor name", "Service name", "Current work"]}
+        initialSearchValue="Doctor name"
+      />
 
       <PaginatedItems
         items={doctors}

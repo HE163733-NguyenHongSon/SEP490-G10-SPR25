@@ -8,17 +8,10 @@ export const SpecialtyList = () => {
   });
 
   return (
-<<<<<<< HEAD
-    <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-6xl mx-auto">
-      {/* Search Bar */}
-      <div className="flex justify-center mb-8 mt-6">
-        <div className="relative flex items-center w-[500px] bg-white rounded-full shadow-md border border-gray-300" >
-=======
     <div className="p-10 relative z-20">
       {/* Thanh tìm kiếm */}
       <div className="flex justify-center mb-8 mt-14">
         <div className="relative flex items-center w-[500px] bg-white rounded-full shadow-md border border-gray-300">
->>>>>>> 4576b0046b336d7591d1cbd220e4fb5e5faedcee
           <div className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-l-full">
             <span className="text-sm font-semibold">Name</span>
             <svg

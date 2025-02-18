@@ -1,8 +1,14 @@
 import React from "react";
 
-const Search = () => {
+interface SearchProps {
+  search: string;
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  className?: string;
+}
+
+const Search: React.FC<SearchProps> = ({ search, setSearch, className }) => {
   return (
-    <div className="flex justify-center mb-8 mt-14">
+    <div className={`flex justify-center mb-8 mt-14 ${className}`}>
       <div className="relative flex items-center w-[500px] bg-white rounded-full shadow-md border border-gray-300">
         <div className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-l-full">
           <span className="text-sm font-semibold">Name</span>
@@ -21,6 +27,8 @@ const Search = () => {
         </div>
         <input
           type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           placeholder="Enter the service's name to search"
           className="w-full px-4 py-2 rounded-r-full outline-none text-gray-700"
         />

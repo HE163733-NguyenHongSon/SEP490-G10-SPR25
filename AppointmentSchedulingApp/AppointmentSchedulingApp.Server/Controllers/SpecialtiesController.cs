@@ -20,6 +20,14 @@ namespace AppointmentSchedulingApp.Server.Controllers
         {
             return Ok(await specialtyService.GetSpecialtyList());
         }
-
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetSpecialtyById(int id)
+        {
+            var specialtyDetail = await specialtyService.GetSpecialtyDetailById(id);
+            if (specialtyDetail == null) { 
+                return NotFound(); 
+            }
+            return Ok(specialtyDetail);
+        }
     }
 }

@@ -25,5 +25,10 @@ namespace AppointmentSchedulingApp.Services
         {
             return mapper.Map<List<SpecialtyDTO>>(await specialtyRepository.GetAll());
         }
+
+        public async Task<SpecialtyDetailDTO> GetSpecialtyDetailById(int id)
+        {
+            return mapper.Map<SpecialtyDetailDTO>(await specialtyRepository.Get(s => s.SpecialtyId.Equals(id)));
+        }
     }
 }

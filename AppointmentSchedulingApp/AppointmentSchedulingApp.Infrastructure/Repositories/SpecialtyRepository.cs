@@ -10,8 +10,10 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
 {
     public class SpecialtyRepository : GenericRepository<Specialty>, ISpecialtyRepository
     {
+
         public SpecialtyRepository(AppointmentSchedulingDbContext dbContext) : base(dbContext)
         {
+
         }
     }
 }

@@ -3,10 +3,10 @@ import React from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { assets } from "../../../public/images/assets";
-const SelectFilter = ({ searchParamList }: { searchParamList: string[] }) => {
+const OptionFilter = ({ searchParamList }: { searchParamList: string[] }) => {
   const searchParams = useSearchParams();
   return (
-    <div className="flex flex-row items-center justify-items-start ">
+    <div className="flex flex-row  ">
       <label className="font-medium text-gray-700 flex items-center gap-1">
         <Image src={assets.filter} width={20} height={20} alt="Filter" />
         <h2>Filter</h2>
@@ -27,4 +27,4 @@ const SelectFilter = ({ searchParamList }: { searchParamList: string[] }) => {
     </div>
   );
 };
-export default SelectFilter;
+export default OptionFilter;

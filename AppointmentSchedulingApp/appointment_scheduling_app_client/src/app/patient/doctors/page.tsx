@@ -24,17 +24,21 @@ const DoctorsPage = async ({
   );
 
   return (
-    <div className="flex items-center justify-center flex-col gap-y-7  mt-7 ">
-      <Search
-        optionSearch={["Doctor name", "Service name", "Current work"]}
-        initialSearchValue="Doctor name"
-      />
+    <div className="flex flex-col h-screen  mt-10">
+        <Search
+          optionSearch={["Doctor name", "Current work"]}
+          initialSearchValue="Doctor name"
+        />
+      
 
-      <PaginatedItems
-        items={doctors}
-        itemsPerPage={6}
-        RenderComponent={DoctorList}
-      />
+      <div className="flex-1 overflow-y-auto p-4 my-2">
+        <PaginatedItems
+          items={doctors}
+          itemsPerPage={6}
+          RenderComponent={DoctorList}
+          defaultDisplayView="grid"
+        />
+      </div>
     </div>
   );
 };

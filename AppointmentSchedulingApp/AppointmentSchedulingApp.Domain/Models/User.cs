@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace AppointmentSchedulingApp.Domain.Models;
 
-public partial class User
+public partial class User : IdentityUser
 {
-    [Key]
-    public int UserId { get; set; }
+    //[Key]
+    //public int UserId { get; set; }
     
     public long CitizenId { get; set; }
 

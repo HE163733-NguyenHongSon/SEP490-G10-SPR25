@@ -30,7 +30,7 @@ namespace AppointmentSchedulingApp.Server.Controllers
                 return Ok(new ApiResponse
                 {
                     Success = false,
-                    Message = "Invalid username/ password"
+                    Message = "Invalid phone/ password"
                 });
             }
             else
@@ -84,6 +84,29 @@ namespace AppointmentSchedulingApp.Server.Controllers
                 Message = "Registration Successful",
                 Data = user
             });
+        }
+
+
+        [HttpPost("Register-Patient")]
+        public async Task<IActionResult> RegisterPatient(RegistrationDTO registrationDTO)
+        {
+            var user = await _userService.RegisterPatient(registrationDTO);
+            if (user == null)
+            {
+                return Ok(new
+                {
+                    Success = false,
+                    Message = "Register Failed"
+                });
+            }
+            else
+            {
+                return Ok(new
+                {
+                    Success = true,
+                    Message = "Register Success",
+                });
+            }
         }
     }
 }

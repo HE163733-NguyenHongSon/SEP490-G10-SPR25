@@ -17,6 +17,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace AppointmentSchedulingApp.Services
 {
@@ -24,16 +26,29 @@ namespace AppointmentSchedulingApp.Services
     {
         private readonly IGenericRepository<User> _userRepository;
         private readonly AppSettings _appSettings;
-        private readonly IMapper _mapper;
+        public readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly IConfiguration _configuration;
 
-        public UserService(IGenericRepository<User> userRepository, IOptionsMonitor<AppSettings> optionsMonitor, IMapper mapper)
+        private readonly IMapper _mapper;
+        
+
+        public UserService(IGenericRepository<User> userRepository,
+            IOptionsMonitor<AppSettings> optionsMonitor,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            IConfiguration configuration,
+            IMapper mapper)
         {
             _userRepository = userRepository;
             _appSettings = optionsMonitor.CurrentValue;
+            _userManager = userManager;
             _mapper = mapper;
+            _signInManager = signInManager;
+            _configuration = configuration;
         }
-        
-        
+
+
         public string GenerateToken(UserDTO user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
@@ -48,7 +63,7 @@ namespace AppointmentSchedulingApp.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 
                 new Claim("UserName", user.UserName ),
-                new Claim("Id", user.UserId.ToString()),
+                //new Claim("Id", user.UserId.ToString()),
                 
                 new Claim("TokenId", Guid.NewGuid().ToString()),
             };
@@ -64,35 +79,36 @@ namespace AppointmentSchedulingApp.Services
 
             return jwtTokenHandler.WriteToken(token);
         }
+        // da~ oke
 
-        public async Task<UserDTO?> LoginUser(SignInDTO userLogin, StringBuilder message)
-        {
-            var user = await _userRepository.Get(u => u.Email == userLogin.Email);
-            if (user == null || !VerifyPassword(userLogin.Password, user.Password))
-            {
-                message.Append("Invalid Email/Password");
-                return null;
-            }
+        //public async Task<UserDTO?> LoginUser(SignInDTO userLogin, StringBuilder message)
+        //{
+        //    var user = await _userRepository.Get(u => u.Phone == userLogin.Phone);
+        //    if (user == null || !VerifyPassword(userLogin.Password, user.Password))
+        //    {
+        //        message.Append("Invalid Phone/Password");
+        //        return null;
+        //    }
 
-            var userDTO = new UserDTO
-            {
-                UserId = user.UserId,
-                Email = user.Email,
-                UserName = user.UserName,
-                Password = user.Password,
-                Phone = user.Phone,
-                Gender = user.Gender,
-                Dob = user.Dob
-            };
+        //    var userDTO = new UserDTO
+        //    {
+        //        //UserId = user.UserId,
+        //        Email = user.Email,
+        //        UserName = user.UserName,
+        //        Password = user.Password,
+        //        Phone = user.Phone,
+        //        Gender = user.Gender,
+        //        Dob = user.Dob
+        //    };
 
-            return userDTO;
-        }
+        //    return userDTO;
+        //}
         public async Task<UserDTO?> RegisterUser(RegistrationDTO registrationDto, StringBuilder message)
         {
-            var existingUser = await _userRepository.Get(u => u.Email == registrationDto.Email);
+            var existingUser = await _userRepository.Get(u => u.Phone == registrationDto.Phone);
             if (existingUser != null)
             {
-                message.Append("Email already exists");
+                message.Append("Phone already exists");
                 return null;
             }
 
@@ -148,6 +164,44 @@ namespace AppointmentSchedulingApp.Services
             //return _mapper.Map<UserDTO>(newUser);
         }
 
+
+        //chua xong
+        public async Task<string> SignInAsync(SignInDTO signInDTO)
+        {
+            var result = await _signInManager.PasswordSignInAsync(signInDTO.Phone, signInDTO.Password, false, false);
+
+            if(!result.Succeeded)
+            {
+                return string.Empty;
+            }
+
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, signInDTO.Phone),
+            };
+            return "a";
+
+
+        }
+
+
+        public async Task<IdentityResult> SignUpAsync(RegistrationDTO registrationDTO)
+        {
+            var user = new User
+            {
+                UserName = registrationDTO.UserName,
+                Email = registrationDTO.Email,
+                //Password = registrationDTO.Password,
+                Phone = registrationDTO.Phone,
+                Gender = registrationDTO.Gender,
+                Dob = registrationDTO.Dob,
+                Address = registrationDTO.Address,
+                Role = registrationDTO.Role,
+                CitizenId = registrationDTO.CitizenId
+            };
+            return await _userManager.CreateAsync(user, registrationDTO.Password);
+        }
+
         //private bool VerifyPassword(string enteredPassword, string storedPassword)
         //{
         //    return enteredPassword == storedPassword;
@@ -156,6 +210,123 @@ namespace AppointmentSchedulingApp.Services
         private bool VerifyPassword(string enteredPassword, string storedPassword)
         {
             return BCrypt.Net.BCrypt.Verify(enteredPassword, storedPassword);
+        }
+
+        public async Task<UserDTO?> LoginUser(SignInDTO userLogin, StringBuilder message)
+        {
+            var user = await _userManager.FindByNameAsync(userLogin.Phone);
+            var checkPassword = await _userManager.CheckPasswordAsync(user, userLogin.Password);
+            if (user == null || !checkPassword)
+            {
+                message.Append("Invalid Username/Password");
+                return null;
+            }
+            if (checkLockoutAccount(user, message))
+            {
+
+                return null;
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(userLogin.Phone, userLogin.Password, false, false);
+            if (result.Succeeded)
+            {
+                //var userDTO = new UserDTO
+                //{
+                //    Id = user.Id,
+                //    FirstName = user.FirstName,
+                //    LastName = user.LastName,
+                //    Email = user.Email,
+                //    UserName = user.UserName,
+                //    BirthDate = user.BirthDate,
+                //    RoleInformations = await _roleService.GetRoleInformationsByUserId(user.Id)
+                //    //RoleNames = (await userManager.GetRolesAsync(user)).ToList()
+
+                //};
+
+                var userDTO = new UserDTO
+                {
+                    //UserId = user.UserId,
+                    Email = user.Email,
+                    UserName = user.UserName,
+                    Password = user.Password,
+                    Phone = user.Phone,
+                    Gender = user.Gender,
+                    Dob = user.Dob
+                };
+
+                return userDTO;
+            }
+            message.Append("Invalid Username/Password");
+            return null;
+        }
+
+        public async Task<IdentityResult?> RegisterPatient(RegistrationDTO registrationDTO)
+        {
+            //var validatedInformationRequest = await ValidatedInformationRequest(registrationDTO);
+            //if (validatedInformationRequest == null)
+            //{
+            //    return null;
+            //}
+            //else
+            //{
+            //    var newUser = new User
+            //    {
+
+            //        FirstName = validatedInformationRequest.FirstName,
+            //        LastName = validatedInformationRequest.LastName,
+            //        Email = validatedInformationRequest.Email,
+            //        UserName = validatedInformationRequest.UserName,
+            //        TwoFactorEnabled = true,
+            //    };
+            //    var result = await _userManager.CreateAsync(newUser, registrationDTO.Password);
+            //    if (result.Succeeded)
+            //    {
+            //        await _userManager.AddToRoleAsync(newUser, AppRole.Patient);
+            //        return result;
+            //    }
+            //}
+
+            var user = new User
+            {
+                UserName = registrationDTO.UserName,
+                Email = registrationDTO.Email,
+                //Password = registrationDTO.Password,
+                Phone = registrationDTO.Phone,
+                Gender = registrationDTO.Gender,
+                Dob = registrationDTO.Dob,
+                Address = registrationDTO.Address,
+                Role = registrationDTO.Role,
+                CitizenId = registrationDTO.CitizenId
+            };
+            return await _userManager.CreateAsync(user, registrationDTO.Password);
+        }
+
+
+
+        public bool checkLockoutAccount(User
+             user, StringBuilder message)
+        {
+            // Check if the account is locked out
+            if (user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTime.UtcNow)
+            {
+                // Account is locked out
+                message.Append("Account is locked out");
+                return true;
+            }
+
+            return false;
+        }
+
+
+        private async Task<RegistrationDTO> ValidatedInformationRequest(RegistrationDTO registrationDTO)
+        {
+            //Validate information
+
+            if (true)
+            {
+                return registrationDTO;
+            }
+            return null;
         }
 
     }

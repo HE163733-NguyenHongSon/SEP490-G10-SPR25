@@ -5,7 +5,7 @@ namespace AppointmentSchedulingApp.Domain.Models;
 
 public partial class Doctor
 {
-    public int DoctorId { get; set; }
+    public string DoctorId { get; set; }
 
     public string? CurrentWork { get; set; }
 
@@ -26,6 +26,7 @@ public partial class Doctor
     public string? Degree { get; set; }
 
     public virtual ICollection<Certification> Certifications { get; set; } = new List<Certification>();
+
 
     public virtual User DoctorNavigation { get; set; } = null!;
 

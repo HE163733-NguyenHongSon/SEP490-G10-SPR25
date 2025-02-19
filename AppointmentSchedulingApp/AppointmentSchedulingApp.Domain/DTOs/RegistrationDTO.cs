@@ -10,8 +10,8 @@ namespace AppointmentSchedulingApp.Domain.DTOs
 {
     public class RegistrationDTO
     {
-        [Key]
-        public int UserId { get; set; }
+        //[Key]
+        //public int UserId { get; set; }
 
         [Required]
         public string UserName { get; set; }
@@ -23,6 +23,9 @@ namespace AppointmentSchedulingApp.Domain.DTOs
         [Required]
         [MinLength(6)]
         public string Password { get; set; }
+
+        [Required]
+        public string ConfirmPassword { get; set; }
 
         [Required]
         public string Phone { get; set; }

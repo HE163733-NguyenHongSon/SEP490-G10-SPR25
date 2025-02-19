@@ -1,3 +1,4 @@
+using System.Data;
 using System.Text;
 using AppointmentSchedulingApp.Domain.Contracts.Repositories;
 using AppointmentSchedulingApp.Domain.Contracts.Services;
@@ -8,6 +9,7 @@ using AppointmentSchedulingApp.Infrastructure.Repositories;
 using AppointmentSchedulingApp.Services;
 using AppointmentSchedulingApp.Services.Helper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -46,31 +48,61 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // JWT
-builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("Appsettings"));
-var secretKey = builder.Configuration["Appsettings:SecretKey"];
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("Jwt"));
+var secretKey = builder.Configuration["Jwt:Key"];
 var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(opt =>
-{
-    opt.TokenValidationParameters = new TokenValidationParameters
-    {
-        // t? c?p token
-        ValidateIssuer = false,
-        ValidateAudience = false,
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(opt =>
+//{
+//    opt.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        // t? c?p token
+//        ValidateIssuer = false,
+//        ValidateAudience = false,
 
-        // ký vào token
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
+//        // ký vào token
+//        ValidateIssuerSigningKey = true,
+//        IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
 
-        ClockSkew = TimeSpan.Zero,
-    };
-});
+//        ClockSkew = TimeSpan.Zero,
+//    };
+//});
 
 builder.Services.AddControllers().AddOData(opt => opt.Select().Filter().SetMaxTop(100).Expand().OrderBy().Count().AddRouteComponents("odata", modelBuilder.GetEdmModel()));
 
+builder.Services.AddIdentity<User, IdentityRole>(opts =>
+{
+    // C?u hình th?i gian h?t h?n token
+    opts.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
+}
+
+                ).AddEntityFrameworkStores<AppointmentSchedulingDbContext>()
+                .AddDefaultTokenProviders();
+
 builder.Services.AddDbContext<AppointmentSchedulingDbContext>(options =>
     options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("MyDatabase")));
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
+        ClockSkew = TimeSpan.Zero
+    };
+});
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();

@@ -26,8 +26,8 @@ namespace AppointmentSchedulingApp.Domain.Profiles
         .ReverseMap();
 
             CreateMap<User, UserDTO>()
-              .IncludeBase<User, RegistrationDTO>()
-              .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId)).ReverseMap();
+              .IncludeBase<User, RegistrationDTO>();
+              //.ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId)).ReverseMap();
 
 
 

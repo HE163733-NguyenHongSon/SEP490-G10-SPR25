@@ -10,7 +10,9 @@ namespace AppointmentSchedulingApp.Domain.DTOs
     public class SignInDTO
     {
         [Required]
-        public string Email { get; set; }
+        //public string Email { get; set; }
+        public string Phone { get; set; }
+
         [Required]
         public string Password { get; set; }
     }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AppointmentSchedulingApp.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class changeDataType : Migration
+    public partial class AddIdentityAuthentication : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,6 +38,20 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__Devices__49E1231180B6D9C3", x => x.DeviceId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Roles",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -87,8 +101,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CitizenId = table.Column<long>(type: "bigint", nullable: false),
                     Email = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: true),
                     Password = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: false),
@@ -99,11 +112,44 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     Address = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
                     Role = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false),
                     AvatarUrl = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
-                    IsVerify = table.Column<bool>(type: "bit", nullable: false)
+                    IsVerify = table.Column<bool>(type: "bit", nullable: false),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Users__1788CC4CCC2C18AD", x => x.UserId);
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RoleClaims_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -162,7 +208,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "Doctors",
                 columns: table => new
                 {
-                    DoctorId = table.Column<int>(type: "int", nullable: false),
+                    DoctorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CurrentWork = table.Column<string>(type: "text", nullable: true),
                     DoctorDescription = table.Column<string>(type: "text", nullable: false),
                     Organization = table.Column<string>(type: "text", nullable: true),
@@ -180,14 +226,14 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         name: "Doctor_FK",
                         column: x => x.DoctorId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Patients",
                 columns: table => new
                 {
-                    PatientId = table.Column<int>(type: "int", nullable: false),
+                    PatientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Rank = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: true, defaultValueSql: "(NULL)")
                 },
                 constraints: table =>
@@ -197,7 +243,92 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         name: "Patient_FK",
                         column: x => x.PatientId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserClaims_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserLogins",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_UserLogins_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_UserRoles_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserRoles_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_UserTokens_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -230,7 +361,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 {
                     CertificationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DoctorId = table.Column<int>(type: "int", nullable: false),
+                    DoctorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CertificationUrl = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true, defaultValueSql: "(NULL)")
                 },
                 constraints: table =>
@@ -249,7 +380,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 {
                     DoctorScheduleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DoctorId = table.Column<int>(type: "int", nullable: false),
+                    DoctorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ServiceId = table.Column<int>(type: "int", nullable: false),
                     DayOfWeek = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false),
                     RoomId = table.Column<int>(type: "int", nullable: false),
@@ -284,7 +415,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "DoctorServices",
                 columns: table => new
                 {
-                    DoctorId = table.Column<int>(type: "int", nullable: false),
+                    DoctorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ServiceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -306,7 +437,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "DoctorSpecialties",
                 columns: table => new
                 {
-                    DoctorId = table.Column<int>(type: "int", nullable: false),
+                    DoctorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SpecialtyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -330,7 +461,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 {
                     ReservationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientId = table.Column<int>(type: "int", nullable: false),
+                    PatientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DoctorScheduleId = table.Column<int>(type: "int", nullable: false),
                     Reason = table.Column<string>(type: "text", nullable: true),
                     PriorExaminationImg = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
@@ -468,6 +599,18 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RoleClaims_RoleId",
+                table: "RoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "Roles",
+                column: "NormalizedName",
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Services_CategoryId",
                 table: "Services",
                 column: "CategoryId");
@@ -476,6 +619,21 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "IX_Services_SpecialtyId",
                 table: "Services",
                 column: "SpecialtyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserClaims_UserId",
+                table: "UserClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLogins_UserId",
+                table: "UserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_RoleId",
+                table: "UserRoles",
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "CitizenId_Unique",
@@ -491,10 +649,22 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 filter: "[Email] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "Users",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
                 name: "Phone_Unique",
                 table: "Users",
                 column: "Phone",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "Users",
+                column: "NormalizedUserName",
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
         }
 
         /// <inheritdoc />
@@ -522,10 +692,28 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "MedicalRecords");
 
             migrationBuilder.DropTable(
+                name: "RoleClaims");
+
+            migrationBuilder.DropTable(
+                name: "UserClaims");
+
+            migrationBuilder.DropTable(
+                name: "UserLogins");
+
+            migrationBuilder.DropTable(
+                name: "UserRoles");
+
+            migrationBuilder.DropTable(
+                name: "UserTokens");
+
+            migrationBuilder.DropTable(
                 name: "Devices");
 
             migrationBuilder.DropTable(
                 name: "Reservations");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "DoctorSchedules");

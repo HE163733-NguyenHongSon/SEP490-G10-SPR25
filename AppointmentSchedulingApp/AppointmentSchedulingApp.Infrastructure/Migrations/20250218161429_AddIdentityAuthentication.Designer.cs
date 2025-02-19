@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppointmentSchedulingApp.Infrastructure.Migrations
 {
     [DbContext(typeof(AppointmentSchedulingDbContext))]
-    [Migration("20250217151757_changeDataType")]
-    partial class changeDataType
+    [Migration("20250218161429_AddIdentityAuthentication")]
+    partial class AddIdentityAuthentication
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,8 +65,9 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .HasColumnType("varchar(200)")
                         .HasDefaultValueSql("(NULL)");
 
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
+                    b.Property<string>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("CertificationId")
                         .HasName("PK__Certific__1237E58A3720D143");
@@ -104,8 +105,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
 
             modelBuilder.Entity("AppointmentSchedulingApp.Domain.Models.Doctor", b =>
                 {
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
+                    b.Property<string>("DoctorId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AcademicTitle")
                         .HasMaxLength(50)
@@ -159,8 +160,9 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(10)");
 
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
+                    b.Property<string>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
@@ -263,8 +265,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
 
             modelBuilder.Entity("AppointmentSchedulingApp.Domain.Models.Patient", b =>
                 {
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
+                    b.Property<string>("PatientId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Rank")
                         .ValueGeneratedOnAdd()
@@ -298,8 +300,9 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.Property<int>("DoctorScheduleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PatientId")
-                        .HasColumnType("int");
+                    b.Property<string>("PatientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PriorExaminationImg")
                         .HasMaxLength(200)
@@ -465,11 +468,11 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
 
             modelBuilder.Entity("AppointmentSchedulingApp.Domain.Models.User", b =>
                 {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -485,6 +488,10 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.Property<long>("CitizenId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateOnly>("Dob")
                         .HasColumnType("date");
 
@@ -492,6 +499,9 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .HasMaxLength(30)
                         .IsUnicode(false)
                         .HasColumnType("varchar(30)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -502,11 +512,28 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.Property<bool>("IsVerify")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(255)
                         .IsUnicode(false)
                         .HasColumnType("varchar(255)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -514,11 +541,23 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(12)");
 
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasMaxLength(20)
                         .IsUnicode(false)
                         .HasColumnType("varchar(20)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -526,8 +565,15 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
-                    b.HasKey("UserId")
-                        .HasName("PK__Users__1788CC4CCC2C18AD");
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.HasIndex(new[] { "CitizenId" }, "CitizenId_Unique")
                         .IsUnique();
@@ -539,7 +585,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.HasIndex(new[] { "Phone" }, "Phone_Unique")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("DeviceService", b =>
@@ -576,8 +622,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
 
             modelBuilder.Entity("DoctorService", b =>
                 {
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
+                    b.Property<string>("DoctorId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ServiceId")
                         .HasColumnType("int");
@@ -592,8 +638,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
 
             modelBuilder.Entity("DoctorSpecialty", b =>
                 {
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
+                    b.Property<string>("DoctorId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("SpecialtyId")
                         .HasColumnType("int");
@@ -604,6 +650,139 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.HasIndex("SpecialtyId");
 
                     b.ToTable("DoctorSpecialties", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("Roles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("RoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("UserTokens", (string)null);
                 });
 
             modelBuilder.Entity("AppointmentSchedulingApp.Domain.Models.Certification", b =>
@@ -794,6 +973,57 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .HasForeignKey("SpecialtyId")
                         .IsRequired()
                         .HasConstraintName("FK__DoctorSpe__Speci__4CA06362");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("AppointmentSchedulingApp.Domain.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("AppointmentSchedulingApp.Domain.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AppointmentSchedulingApp.Domain.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("AppointmentSchedulingApp.Domain.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AppointmentSchedulingApp.Domain.Models.Category", b =>

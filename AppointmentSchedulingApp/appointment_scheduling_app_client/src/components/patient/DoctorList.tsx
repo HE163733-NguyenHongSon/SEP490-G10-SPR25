@@ -7,7 +7,7 @@ import Link from "next/link";
 
 interface IDoctors {
   items: IDoctor[];
-  displayView:string;
+  displayView?:string;
 }
 
 export const DoctorList = ({ items,displayView }: IDoctors) => {

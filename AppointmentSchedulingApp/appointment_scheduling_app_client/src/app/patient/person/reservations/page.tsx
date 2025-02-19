@@ -7,9 +7,14 @@ import SelectSort from "../../../../components/common/SelectSort";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingTable } from "../../../../components/common/LoadingTable";
+import { useSearchParams } from "next/navigation";
 const ReservationPage = () => {
+  const searchParams = useSearchParams();
   const [status, setStatus] = useState("Pending");
-  const [sortBy, setSortBy] = useState("recent_appointment");
+  const sortBy = searchParams.get("sortBy") || "recent_appointment";
+  // const [sortBy, setSortBy] = useState(
+  //   searchParams.get("sortBy") || "recent_appointment"
+  // );
 
   const sortOptions: ISortOption[] = [
     { label: "Recent appointment", value: "recent_appointment" },
@@ -59,8 +64,8 @@ const ReservationPage = () => {
           <>
             <SelectSort
               options={sortOptions}
-              onSortChange={(value) => setSortBy(value)}
-              selectedOption={sortBy}
+              path="/patient/person/reservations"
+              initialSelectedValue="recent_appointment"
             />
             <FilterButtonList
               itemList={statusList}

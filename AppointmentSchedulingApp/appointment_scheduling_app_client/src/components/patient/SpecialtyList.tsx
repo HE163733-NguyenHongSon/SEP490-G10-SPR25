@@ -1,12 +1,20 @@
+"use client";
 import Image from "next/image";
-
+import { specialtyService } from "@/services/specialtyService";
+import { useState, useEffect } from "react";
 export const SpecialtyList = () => {
-  const specialtys = Array(6).fill({
-    title: "General Consultation",
-    image: "https://via.placeholder.com/150",
-    link: "#", // Đường dẫn liên kết giả (thay đổi theo nhu cầu)
-  });
-
+  const [specialtys, setSpecialtys] = useState<ISpecialty[]>([]);
+  useEffect(() => {
+    const fetchSpecialties = async () => {
+      try {
+        const data = await specialtyService.getSpecialtyList();
+        setSpecialtys(data);
+      } catch (error) {
+        console.error("Fetch error:", error);
+      }
+    };
+    fetchSpecialties();
+  }, []);
   return (
     <div className="p-10 relative z-20">
       {/* Thanh tìm kiếm */}
@@ -51,23 +59,23 @@ export const SpecialtyList = () => {
 
       {/* Danh sách dịch vụ */}
       <h2 className="text-2xl font-bold mb-4">
-        SpecialtyList (<span className="text-blue-500">22 result</span>)
+        SpecialtyList (<span className="text-blue-500">{specialtys.length}</span>)
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {specialtys.map((specialty, index) => (
           <a
             key={index}
-            href={specialty.link} // Đường dẫn liên kết
+            href={specialty.image} // Đường dẫn liên kết
             className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow cursor-pointer block"
           >
             <Image
               src={specialty.image}
-              alt={specialty.title}
+              alt={specialty.specialtyName}
               className="object-cover rounded-t-lg"
               width={40} height={40}
             />
             <div className="mt-4">
-              <h3 className="text-lg font-semibold">{specialty.title}</h3>
+              <h3 className="text-lg font-semibold">{specialty.specialtyName}</h3>
             </div>
           </a>
         ))}

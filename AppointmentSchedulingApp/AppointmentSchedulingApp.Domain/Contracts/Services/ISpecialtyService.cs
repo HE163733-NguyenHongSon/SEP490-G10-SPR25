@@ -10,5 +10,6 @@ namespace AppointmentSchedulingApp.Domain.Contracts.Services
     public interface ISpecialtyService
     {
         Task<List<SpecialtyDTO>> GetSpecialtyList();
+        Task<SpecialtyDetailDTO> GetSpecialtyDetailById(int id);
     }
 }

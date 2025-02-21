@@ -1,6 +1,7 @@
 'use client';
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FaSearch, FaChevronRight } from "react-icons/fa";
 import { BsFilter } from "react-icons/bs";
 
@@ -11,8 +12,14 @@ export function ServiceList() {
   const [selectedCategory, setSelectedCategory] = useState("Surgery");
   const [selectedDate, setSelectedDate] = useState("27/1/2025 - 15h30");
 
+  const router = useRouter();
+
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1);
+  };
+
+  const handleServiceClick = (serviceId: number) => {
+    router.push(`services/service-detail`);
   };
 
   return (
@@ -75,7 +82,11 @@ export function ServiceList() {
             {/* Service List */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, index) => (
-                <div key={index} className="bg-white shadow-md rounded-lg p-4">
+                <div
+                  key={index}
+                  className="bg-white shadow-md rounded-lg p-4 cursor-pointer hover:shadow-lg transition"
+                  onClick={() => handleServiceClick(index + 1)}
+                >
                   <Image src="/service-image.jpg" alt="Service" width={200} height={150} className="rounded-md" />
                   <h3 className="text-lg font-semibold mt-2">General Consultation</h3>
                   <p className="text-gray-600">Basic health counseling services...</p>

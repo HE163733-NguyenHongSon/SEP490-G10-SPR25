@@ -1,12 +1,12 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 export const SpecialtyDetails = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const history = useHistory();
   return (
     <div className="bg-gray-50 min-h-screen p-8">
       <div className="bg-white rounded-lg shadow-lg p-6 max-w-6xl mx-auto">
       <button
-          onClick={() => navigate(-1)}
+          onClick={() => history.goBack()}
           className="flex items-center text-blue-500 hover:underline mb-4"
         >
           <svg

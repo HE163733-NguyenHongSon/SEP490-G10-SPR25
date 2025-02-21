@@ -17,7 +17,7 @@ export const DoctorList = ({ items,displayView }: IDoctors) => {
     <div
       className={`w-[1200px] grid   ${
         displayView === "grid"
-          ? "sm:grid-cols-1  lg:grid-cols-2 xl:grid-cols-3 2xl:grid-col-4"
+          ? "sm:grid-cols-1  lg:grid-cols-1 xl:grid-cols-3 2xl:grid-col-4"
           : "grid-cols-1"
       }    p-5  text-gray-500 gap-5`}
     >

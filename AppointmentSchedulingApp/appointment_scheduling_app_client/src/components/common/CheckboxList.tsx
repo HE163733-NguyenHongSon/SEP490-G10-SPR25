@@ -10,18 +10,23 @@ interface CheckboxListProps {
 const CheckboxList = ({ items, searchParam }: CheckboxListProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-    const checkboxRef = useRef<HTMLInputElement>(null);
+  const checkboxRef = useRef<HTMLInputElement>(null);
 
   const initialSelectedItems = searchParams.get(searchParam)?.split(",") || [];
 
-  const [selectedItems, setSelectedItems] = useState<string[]>(initialSelectedItems);
+  const [selectedItems, setSelectedItems] =
+    useState<string[]>(initialSelectedItems);
 
   useEffect(() => {
-    const updatedSelectedItems =searchParams.get(searchParam)?.split(",") || [];
+    const updatedSelectedItems =
+      searchParams.get(searchParam)?.split(",") || [];
     setSelectedItems(updatedSelectedItems);
   }, [searchParams, searchParam]);
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>,key: string) => {
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    key: string
+  ) => {
     const updatedSelectedItems = event.target.checked
       ? [...selectedItems, key]
       : selectedItems.filter((item) => item !== key);
@@ -31,6 +36,7 @@ const CheckboxList = ({ items, searchParam }: CheckboxListProps) => {
 
     if (updatedSelectedItems.length > 0) {
       newSearchParams.set(searchParam, updatedSelectedItems.join(","));
+      newSearchParams.delete("searchBy");
     } else {
       newSearchParams.delete(searchParam);
     }
@@ -45,7 +51,7 @@ const CheckboxList = ({ items, searchParam }: CheckboxListProps) => {
   return (
     <div className="mb-3">
       {items.map((item) => (
-        <div className="p-2 gap-3 flex flex-row" key={item.value}>
+        <div className="py-2 gap-3 flex flex-row" key={item.value}>
           <input
             id={item.value}
             type="checkbox"

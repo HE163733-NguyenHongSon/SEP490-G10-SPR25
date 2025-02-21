@@ -50,17 +50,17 @@ export default async function DoctorsLayout({
 
       <div className=" container   mt-20 mb-5 z-30 grid grid-cols-5  bg-white rounded-xl shadow-2xl ">
         <div className="col-span-1 border-r border-gray-300 text-gray-700  ">
-          <div className="border-b border-gray-300 flex flex-col items-center justify-center gap-4  py-5 font-medium mx-5">
-            <div className="flex flex-row">
-              <h1 className="text-xl  font-semibold">Filter and sort</h1>
-              <Link
-                href="/patient/doctors"
-                className="text-cyan-500 underline underline-offset-2  hover:bg-cyan-500 hover:text-white px-2 rounded-full "
-              >
-                Clear
-              </Link>
-            </div>
+          <div className="flex flex-row items-center justify-center border-b border-gray-300 gap-4  py-5 font-medium mx-5">
+            <h1 className="text-xl  font-semibold">Filter and sort</h1>
+            <Link
+              href="/patient/doctors"
+              className="  bg-cyan-500 text-white px-3 py-1 rounded-full "
+            >
+              Clear
+            </Link>
+          </div>
 
+          <div className="flex flex-col  border-b border-gray-300 gap-4  py-5 mx-5">
             <OptionFilter
               searchParamList={["specialties", "academicTitles", "degrees"]}
             />
@@ -71,7 +71,7 @@ export default async function DoctorsLayout({
             />
           </div>
 
-          <div className="flex flex-col gap-2  border-b border-gray-300 mx-5 py-5  h-[700px] overflow-y-auto">
+          <div className="flex flex-col  mx-5   h-[700px] overflow-y-auto">
             <CollapsibleSection
               title={"Specialties"}
               content={

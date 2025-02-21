@@ -40,7 +40,7 @@ const SelectSort: React.FC<SelectSortProps> = ({
 
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="relative flex flex-row items-center border-2  border-cyan-500 text-cyan-500 w-[195px] rounded-md px-2 py-1 text-left focus:outline-cyan-500"
+          className="relative flex flex-row items-center border-2  border-cyan-500 text-cyan-500 w-[200px] rounded-md px-2 py-1 text-left focus:outline-cyan-500"
         >
           {options.find((opt) => opt.value === sortBy)?.label}
           <svg
@@ -59,7 +59,7 @@ const SelectSort: React.FC<SelectSortProps> = ({
       </div>
 
       {isOpen && (
-        <ul className="absolute text-gray-700 left-16 mt-2 w-fit border border-cyan-500 rounded-md bg-white shadow-lg z-10">
+        <ul className="absolute text-gray-700 left-16  mt-2  border border-gray-300 rounded-md bg-white shadow-lg z-10 w-[200px]">
           {options.map((option) => (
             <li
               key={option.value}

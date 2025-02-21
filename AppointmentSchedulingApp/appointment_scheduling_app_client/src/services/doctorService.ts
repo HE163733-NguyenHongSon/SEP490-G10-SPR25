@@ -8,6 +8,13 @@ export const doctorService = {
 
     return res.json();
   },
+
+  async getDoctorListByIdList(idList: string): Promise<IDoctor[]> {
+    const doctors = (await this.getDoctorList()).filter((d) =>
+      idList.includes(d.doctorId)
+    );
+    return doctors;
+  },
   async getDoctorDetailById(doctorId: string | number): Promise<IDoctorDetail> {
     const res = await fetch(`http://localhost:5220/api/Doctors/${doctorId}`);
     if (!res.ok) {

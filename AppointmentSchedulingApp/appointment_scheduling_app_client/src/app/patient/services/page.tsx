@@ -12,7 +12,6 @@ const ServicesPage = () => {
         <ServiceList />
       </div>
     </div>
-
   );
 };
 

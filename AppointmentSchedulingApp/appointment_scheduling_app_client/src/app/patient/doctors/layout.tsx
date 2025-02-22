@@ -4,7 +4,7 @@ import CollapsibleSection from "@/components/common/CollapsibleSection";
 import CheckboxList from "@/components/common/CheckboxList";
 import Link from "next/link";
 import OptionFilter from "@/components/common/OptionFilter";
-
+import ClearButton from "@/components/common/ClearButton";
 export default async function DoctorsLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -33,12 +33,7 @@ export default async function DoctorsLayout({
     };
   });
 
-  const sortOptions: ISortOption[] = [
-    { label: "Highest Rated", value: "highest_rated" },
-    { label: "Most Examinations", value: "most_exam" },
-    { label: "Most Experienced ", value: "most_exp" },
-    { label: "Take On Most Service", value: "most_service" },
-  ];
+
 
   return (
     <div
@@ -50,25 +45,20 @@ export default async function DoctorsLayout({
 
       <div className=" container   mt-20 mb-5 z-30 grid grid-cols-5  bg-white rounded-xl shadow-2xl ">
         <div className="col-span-1 border-r border-gray-300 text-gray-700  ">
-          <div className="flex flex-row items-center justify-center border-b border-gray-300 gap-4  py-5 font-medium mx-5">
-            <h1 className="text-xl  font-semibold">Filter and sort</h1>
-            <Link
-              href="/patient/doctors"
-              className="  bg-cyan-500 text-white px-3 py-1 rounded-full "
-            >
-              Clear
-            </Link>
+          <div className="flex flex-row items-center justify-center border-b border-gray-300 gap-4  py-11 font-medium mx-5">
+            <h1 className="text-xl  font-semibold">Filter</h1>
+            <ClearButton
+              path="/patient/doctors"
+              keptSearchParams={["sortBy", "displayView"]}
+              labelName="Clear filter"
+            />
           </div>
 
           <div className="flex flex-col  border-b border-gray-300 gap-4  py-5 mx-5">
             <OptionFilter
               searchParamList={["specialties", "academicTitles", "degrees"]}
             />
-            <SelectSort
-              options={sortOptions}
-              initialSelectedValue="highest_rated"
-              path="/patient/doctors"
-            />
+           
           </div>
 
           <div className="flex flex-col  mx-5   h-[700px] overflow-y-auto">

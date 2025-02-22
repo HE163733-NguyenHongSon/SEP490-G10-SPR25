@@ -15,11 +15,11 @@ export const DoctorList = ({ items,displayView }: IDoctors) => {
 
   return (
     <div
-      className={`w-[1200px] grid   ${
+      className={`w-full  grid   ${
         displayView === "grid"
           ? "sm:grid-cols-1  lg:grid-cols-1 xl:grid-cols-3 2xl:grid-col-4"
           : "grid-cols-1"
-      }    p-5  text-gray-500 gap-5`}
+      }      text-gray-500 gap-5 `}
     >
       {items?.map((doctor) => (
         <Link
@@ -27,17 +27,17 @@ export const DoctorList = ({ items,displayView }: IDoctors) => {
           href={`/patient/doctors/${doctor.doctorId}`}
           className=" border border-gray-300 rounded-md shadow-md "
         >
-          <h1 className=" text-center font-semibold  text-lg text-gray-700 mt-3">
+          <h1 className=" text-center font-semibold  text-lg text-gray-700 mt-3 ">
             <span className=" mr-2">
               {doctor.academicTitle}.{doctor.degree}
             </span>
             {doctor.doctorName}
           </h1>
 
-          <div className="grid grid-cols-3 my-3">
+          <div className="grid grid-cols-3 my-3 ">
             <div className="gap-3 col-span-1 flex flex-col items-center  justify-start p-2 border-r border-gray-300">
               <Image
-                className="rounded-lg"
+                className="rounded-lg "
                 src={doctor.avatarUrl}
                 height={200}
                 width={100}

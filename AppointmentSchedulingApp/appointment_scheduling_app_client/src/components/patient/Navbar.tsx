@@ -15,7 +15,10 @@ const Navbar: React.FC = () => {
   const routes = [
     { path: "/patient", name: "Home" },
     { path: "/patient/specialties", name: "Specialties " },
-    { path: "/patient/doctors", name: "Doctors" },
+    {
+      path: "/patient/doctors?sortBy=highest_rated&displayView=grid",
+      name: "Doctors",
+    },
     { path: "/patient/services", name: "Services" },
     { path: "/patient/blogs", name: "Blogs" },
     { path: "/patient/appointment-booking", name: "Appointment Booking" },

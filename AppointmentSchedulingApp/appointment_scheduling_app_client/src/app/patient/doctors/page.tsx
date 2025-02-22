@@ -4,6 +4,7 @@ import PaginatedItems from "@/components/common/PaginatedItems";
 import { DoctorList } from "@/components/patient/DoctorList";
 import Search from "@/components/common/Search";
 import DisplayToggle from "@/components/common/DisplayToggle";
+import SelectSort from "@/components/common/SelectSort";
 
 const DoctorsPage = async ({
   searchParams,
@@ -20,11 +21,18 @@ const DoctorsPage = async ({
   // console.log(`specialties:${searchParams.specialties}---academicTitles:${searchParams.academicTitles}`);
 
   let doctors: IDoctor[] = [];
+  const sortOptions: ISortOption[] = [
+    { label: "Highest Rated", value: "highest_rated" },
+    { label: "Most Examinations", value: "most_exam" },
+    { label: "Most Experienced ", value: "most_exp" },
+    { label: "Take On Most Service", value: "most_service" },
+  ];
   if (
+    !searchParams.searchBy && (
     searchParams.specialties ||
     searchParams.academicTitles ||
     searchParams.degrees ||
-    searchParams.sortBy
+    searchParams.sortBy)
   ) {
     doctors = await doctorService.getDoctorListByFilterAndSort(
       searchParams.specialties ? searchParams.specialties.split(",") : [],
@@ -32,9 +40,8 @@ const DoctorsPage = async ({
       searchParams.degrees ? searchParams.degrees.split(",") : [],
       searchParams.sortBy
     );
-    console.log(doctors);
   } else if (searchParams.searchBy) {
-    doctors = await doctorService.getDoctorListByIdList(searchParams.searchBy);
+    doctors = await doctorService.getDoctorListByIdListAndSort(searchParams.searchBy,searchParams.sortBy);
   } else {
     doctors = await doctorService.getDoctorList();
   }
@@ -42,22 +49,24 @@ const DoctorsPage = async ({
     await doctorService.getDoctorList()
   ).map((d) => ({
     label: d.doctorName,
-    value: d.doctorId,
+    value: d.doctorId.toString(),
   }));
   return (
-    <div className="flex flex-col h-screen  mt-10">
-      <div className="flex flex-row items-center justify-center gap-5">
+    <div className="flex flex-col h-screen mt-10 gap-5 ">
+      <div className="flex flex-row flex-wrap items-center justify-center gap-5">
+        <SelectSort
+          options={sortOptions}
+          initialSelectedValue="highest_rated"
+          path="/patient/doctors"
+        />
         <DisplayToggle />
         <Search
           suggestedData={searchOptions}
           placeholder="Select or search by doctor name"
           path="/patient/doctors"
         />
-        <h2 className="text-cyan-500 font-semibold text-lg ml-2  ">
-          {doctors.length} results
-        </h2>
       </div>
-      <div className=" overflow-y-auto  my-4">
+      <div className=" overflow-y-auto  ">
         <PaginatedItems
           items={doctors}
           itemsPerPage={6}

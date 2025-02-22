@@ -1,5 +1,5 @@
  interface IDoctor {
-   doctorId: string;
+   doctorId: number ;
    academicTitle?: string;
    degree: string;
    doctorName: string;
@@ -7,8 +7,8 @@
    currentWork?: string;
    basicDescription: string;
    specialtyNames: string[];
-   numberOfService: string;
+   numberOfService: number;
    rating: number ;
-   numberOfExamination: string;
-   experienceYear:string;
+   numberOfExamination: number;
+   experienceYear:number;
  }

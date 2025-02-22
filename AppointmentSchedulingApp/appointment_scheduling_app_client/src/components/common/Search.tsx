@@ -99,22 +99,30 @@ const Search = ({
     setCurrentOptions(options);
     if (options.length > 0) {
       router.push(
-        `${path}?searchBy=${options.map((op) => op.value).join(",")}`
+        `${path}?searchBy=${options
+          .map((op) => op.value)
+          .join(",")}&sortBy=${searchParams.get(
+          "sortBy"
+        )}&displayView=${searchParams.get("displayView")}`
       );
     } else {
-      router.push(path);
+      router.push(
+        `${path}?sortBy=${searchParams.get(
+          "sortBy"
+        )}&displayView=${searchParams.get("displayView")}`
+      );
     }
   };
   return (
-    <div className="flex w-[700px] ">
+    <div className="flex w-[525px]  ">
       <Select
-        closeMenuOnSelect={false}
+        closeMenuOnSelect={true}
         components={{ ClearIndicator }}
         styles={customStyles}
         isMulti
         value={currentOptions}
         options={suggestedData}
-        className="w-full relative"
+        className="w-full "
         placeholder={placeholder}
         onChange={(options) => handleOptionsChange(options as ISearchOption[])}
       />

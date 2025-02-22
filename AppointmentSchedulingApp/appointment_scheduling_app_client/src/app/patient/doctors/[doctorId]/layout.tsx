@@ -28,7 +28,7 @@ const DoctorDetailLayout = async ({
   ];
   return (
     <div className=" flex flex-col  justify-items-start text-gray-700 border border-gray-300  mx-5 my-16 rounded-md shadow-md">
-      <div className="flex flex-row  p-10 relative">
+      <div className="flex flex-row  p-6 relative">
         <Link
           className="absolute top-0 left-3 text-3xl font-semibold     hover:text-cyan-500 "
           href={"/patient/doctors"}
@@ -63,10 +63,10 @@ const DoctorDetailLayout = async ({
           </button>
         </div>
       </div>
-      <div className="py-2 mx-10 border-b border-gray-300">
+      <div className="py-2 mx-6 border-b border-gray-300">
         <Navigation routes={routes} isWhiteText={false} />
       </div>
-      <div className="flex flex-col  justify-items-start px-5  ">
+      <div className="flex flex-col  justify-items-start px-5  h-screen overflow-y-auto">
         {children}
       </div>
     </div>

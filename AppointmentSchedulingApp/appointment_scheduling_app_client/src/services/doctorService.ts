@@ -1,6 +1,8 @@
 export const doctorService = {
   async getDoctorList(): Promise<IDoctor[]> {
-    const res = await fetch("http://localhost:5220/api/Doctors");
+    const res = await fetch(
+      "http://localhost:5220/api/Doctors?$orderby=rating desc"
+    );
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
@@ -9,12 +11,30 @@ export const doctorService = {
     return res.json();
   },
 
-  async getDoctorListByIdList(idList: string): Promise<IDoctor[]> {
+  async getDoctorListByIdListAndSort(
+    idList: string,
+    sortBy: string
+  ): Promise<IDoctor[]> {
+    const sortOptions: Record<string, keyof IDoctor> = {
+      most_exp: "experienceYear",
+      most_exam: "numberOfExamination",
+      most_service: "numberOfService",
+    };
+
     const doctors = (await this.getDoctorList()).filter((d) =>
-      idList.includes(d.doctorId)
+      idList.includes(d.doctorId.toString())
     );
+
+    const sortKey = sortOptions[sortBy];
+    if (sortKey) {
+      return doctors.sort(
+        (a, b) => (b[sortKey] as number ) - (a[sortKey] as number)
+      );
+    }
+
     return doctors;
   },
+
   async getDoctorDetailById(doctorId: string | number): Promise<IDoctorDetail> {
     const res = await fetch(`http://localhost:5220/api/Doctors/${doctorId}`);
     if (!res.ok) {
@@ -27,9 +47,15 @@ export const doctorService = {
     specialties: string[],
     academicTitles: string[],
     degrees: string[],
-    sortBy: string
+    sortBy: keyof typeof sortOptions
   ): Promise<IDoctor[]> {
     const query = [];
+    const sortOptions: { [key: string]: string } = {
+      most_exp: "experienceYear",
+      most_exam: "numberOfExamination",
+      most_service: "numberOfService",
+    };
+    const orderBy = sortOptions[sortBy] || "rating";
 
     if (specialties.length > 0) {
       query.push(
@@ -46,19 +72,11 @@ export const doctorService = {
     if (degrees.length > 0) {
       query.push(`degree in (${degrees.map((d) => `'${d}'`).join(",")})`);
     }
-    // console.log(query);
+
     const res = await fetch(
       `http://localhost:5220/api/Doctors?${
         query.length > 0 ? `$filter=${query.join(" or ")}&` : ""
-      }$orderby=${
-        sortBy === "most_exp"
-          ? "experienceYear"
-          : sortBy === "most_exam"
-          ? "numberOfExamination"
-          : sortBy === "most_service"
-          ? "numberOfService"
-          : "rating"
-      } desc`
+      }$orderby=${orderBy} desc`
     );
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);

@@ -39,27 +39,32 @@ const PaginatedItems = <T,>({
   };
 
   return (
-    <div className="flex flex-col items-center mb-7">
+    <div className="flex flex-col items-center mb-7 p-5">
       <RenderComponent items={currentItems} displayView={displayView} />
 
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel="Next >"
-        previousLabel="< Prev"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={2}
-        pageCount={pageCount}
-        forcePage={currentPage}
-        renderOnZeroPageCount={null}
-        containerClassName="flex items-center space-x-2 mt-4"
-        pageClassName="px-3 py-2 rounded-lg border text-gray-700 hover:bg-cyan-500 hover:text-white transition"
-        pageLinkClassName="block"
-        activeClassName="bg-cyan-500 text-white border-cyan-500"
-        previousClassName="text-gray-700 font-semibold px-3 py-2 rounded-lg hover:bg-cyan-500 hover:text-white transition"
-        nextClassName="text-gray-700 font-semibold px-3 py-2 rounded-lg hover:bg-cyan-500 hover:text-white transition"
-        disabledClassName="opacity-50 cursor-not-allowed"
-        breakClassName="text-gray-700 font-semibold"
-      />
+      <div className="flex flex-row items-center justify-center mt-5">
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel="Next >"
+          previousLabel="< Prev"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={2}
+          pageCount={pageCount}
+          forcePage={currentPage}
+          renderOnZeroPageCount={null}
+          containerClassName="flex items-center space-x-2 "
+          pageClassName="px-3 py-2 rounded-lg border text-gray-700 hover:bg-cyan-500 hover:text-white transition"
+          pageLinkClassName="block"
+          activeClassName="bg-cyan-500 text-white border-cyan-500"
+          previousClassName="text-gray-700 font-semibold px-3 py-2 rounded-lg hover:bg-cyan-500 hover:text-white transition"
+          nextClassName="text-gray-700 font-semibold px-3 py-2 rounded-lg hover:bg-cyan-500 hover:text-white transition"
+          disabledClassName="opacity-50 cursor-not-allowed"
+          breakClassName="text-gray-700 font-semibold"
+        />
+        <h2 className="text-gray-700 font-semibold text-lg ml-2  ">
+          {items.length} results
+        </h2>
+      </div>
     </div>
   );
 };

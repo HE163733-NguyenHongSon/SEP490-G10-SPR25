@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AppointmentSchedulingApp.Domain.Models;
 
-public partial class User : IdentityUser
+public partial class User : IdentityUser<int>
 {
     //[Key]
     //public int UserId { get; set; }
@@ -15,9 +15,10 @@ public partial class User : IdentityUser
 
     public string? Email { get; set; }
 
-    public string Password { get; set; } = null!;
+    //public string Password { get; set; } = null!;
 
-    public string UserName { get; set; } = null!;
+    // sua username
+    public string Name { get; set; } = null!;
 
     public string Phone { get; set; } = null!;
 

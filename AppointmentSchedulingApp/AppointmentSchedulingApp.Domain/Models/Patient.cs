@@ -5,7 +5,7 @@ namespace AppointmentSchedulingApp.Domain.Models;
 
 public partial class Patient
 {
-    public string PatientId { get; set; }
+    public int PatientId { get; set; }
 
     public string? Rank { get; set; }
 

@@ -57,28 +57,51 @@ namespace AppointmentSchedulingApp.Services
 
             var authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.DateOfBirth,user.Dob.ToString()),
+                new Claim(ClaimTypes.DateOfBirth,user.Dob?.ToString("yyyy-MM-dd") ?? ""),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-               
+                new Claim(JwtRegisteredClaimNames.NameId, user.UserId.ToString()),
+                new Claim("UserName", user.Phone),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                
-                new Claim("UserName", user.UserName ),
+                new Claim(ClaimTypes.Role, user.Role),
+                //new Claim("UserName", user.UserName ),
                 //new Claim("Id", user.UserId.ToString()),
                 
                 new Claim("TokenId", Guid.NewGuid().ToString()),
             };
+            //foreach (var roleName in user.RoleInformations)
+            //{
+            //    authClaims.Add(new Claim(ClaimTypes.Role, roleName.RoleName));
+            //    authClaims.Add(new Claim("RoleId", roleName.RoleId));
+            //}
+
+
+            //var tokenDescription = new SecurityTokenDescriptor
+            //{
+            //    Subject = new ClaimsIdentity(authClaims),
+            //    Expires = DateTime.UtcNow.AddDays(1),
+            //    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha512Signature),
+            //};
 
             var tokenDescription = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(authClaims),
-                Expires = DateTime.UtcNow.AddDays(1),
+                Expires = DateTime.UtcNow.AddDays(_appSettings.ExpiryInDays),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha512Signature),
+                Issuer = _appSettings.Issuer,
+                Audience = _appSettings.Audience,
+
             };
+
             var token = jwtTokenHandler.CreateToken(tokenDescription);
+            var accessToken = jwtTokenHandler.WriteToken(token);
 
 
-            return jwtTokenHandler.WriteToken(token);
+
+            return accessToken;
         }
+
+
+
         // da~ oke
 
         //public async Task<UserDTO?> LoginUser(SignInDTO userLogin, StringBuilder message)
@@ -103,104 +126,121 @@ namespace AppointmentSchedulingApp.Services
 
         //    return userDTO;
         //}
-        public async Task<UserDTO?> RegisterUser(RegistrationDTO registrationDto, StringBuilder message)
-        {
-            var existingUser = await _userRepository.Get(u => u.Phone == registrationDto.Phone);
-            if (existingUser != null)
-            {
-                message.Append("Phone already exists");
-                return null;
-            }
-
-            // ma~ hoa mat khau
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(registrationDto.Password);
 
 
-            //var newUser = _mapper.Map<User>(registrationDto);
-            //newUser.Role = "Patient";
+        // tat tam di de migration
+        //public async Task<UserDTO?> RegisterUser(RegistrationDTO registrationDto, StringBuilder message)
+        //{
+        //    var existingUser = await _userRepository.Get(u => u.Phone == registrationDto.Phone);
+        //    if (existingUser != null)
+        //    {
+        //        message.Append("Phone already exists");
+        //        return null;
+        //    }
 
-            //_userRepository.Add(newUser);
+        //    // ma~ hoa mat khau
+        //    var hashedPassword = BCrypt.Net.BCrypt.HashPassword(registrationDto.Password);
 
 
-            //return _mapper.Map<UserDTO>(newUser);
+        //    //var newUser = _mapper.Map<User>(registrationDto);
+        //    //newUser.Role = "Patient";
 
-            var newUser = new User()
-            {
-                UserName = registrationDto.UserName,
-                Email = registrationDto.Email,
-                //Password = registrationDto.Password,
-                Password = hashedPassword,
-                Phone = registrationDto.Phone,
-                Gender = registrationDto.Gender,
-                Dob = registrationDto.Dob,
-                Address = registrationDto.Address,
-                Role = "Patient",
-                CitizenId = registrationDto.CitizenId
+        //    //_userRepository.Add(newUser);
+
+
+        //    //return _mapper.Map<UserDTO>(newUser);
+
+        //    var newUser = new User()
+        //    {
+        //        UserName = registrationDto.UserName,
+        //        Email = registrationDto.Email,
+        //        //Password = registrationDto.Password,
+        //        Password = hashedPassword,
+        //        Phone = registrationDto.Phone,
+        //        Gender = registrationDto.Gender,
+        //        Dob = registrationDto.Dob,
+        //        Address = registrationDto.Address,
+        //        Role = "Patient",
+        //        CitizenId = registrationDto.CitizenId
                 
-            };
+        //    };
 
-            _userRepository.Add(newUser);
+        //    _userRepository.Add(newUser);
 
-            var userDTO = new UserDTO()
-            {
-                UserName = newUser.UserName,
-                Email = newUser.Email,
-                Password = newUser.Password,
-                Phone = newUser.Phone,
-                Gender = newUser.Gender,
-                Dob = newUser.Dob,
-                Address = newUser.Address,
-                Role = newUser.Role,
-                CitizenId = newUser.CitizenId
-            };
+        //    var userDTO = new UserDTO()
+        //    {
+        //        UserName = newUser.UserName,
+        //        Email = newUser.Email,
+        //        Password = newUser.Password,
+        //        Phone = newUser.Phone,
+        //        Gender = newUser.Gender,
+        //        Dob = newUser.Dob,
+        //        Address = newUser.Address,
+        //        Role = newUser.Role,
+        //        CitizenId = newUser.CitizenId
+        //    };
 
-            return userDTO;
+        //    return userDTO;
 
-            //var user = _mapper.Map<User>(registrationDto);
-            //var c = _mapper.Map<UserDTO>(user);
-            //return c;
-            //var newUser = _mapper.Map<User>(registrationDto);
-            //_userRepository.Add(newUser);
-            //return _mapper.Map<UserDTO>(newUser);
-        }
+        //    //var user = _mapper.Map<User>(registrationDto);
+        //    //var c = _mapper.Map<UserDTO>(user);
+        //    //return c;
+        //    //var newUser = _mapper.Map<User>(registrationDto);
+        //    //_userRepository.Add(newUser);
+        //    //return _mapper.Map<UserDTO>(newUser);
+        //}
 
 
         //chua xong
-        public async Task<string> SignInAsync(SignInDTO signInDTO)
-        {
-            var result = await _signInManager.PasswordSignInAsync(signInDTO.Phone, signInDTO.Password, false, false);
+        // tat tam di de migration
 
-            if(!result.Succeeded)
-            {
-                return string.Empty;
-            }
+        //public async Task<string> SignInAsync(SignInDTO signInDTO)
+        //{
+        //    var result = await _signInManager.PasswordSignInAsync(signInDTO.Phone, signInDTO.Password, false, false);
 
-            var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, signInDTO.Phone),
-            };
-            return "a";
+        //    if(!result.Succeeded)
+        //    {
+        //        return string.Empty;
+        //    }
+
+        //    var authClaims = new List<Claim>
+        //    {
+        //        new Claim(ClaimTypes.Name, signInDTO.Phone),
+        //    };
+        //    return "a";
 
 
-        }
+        //}
 
 
-        public async Task<IdentityResult> SignUpAsync(RegistrationDTO registrationDTO)
-        {
-            var user = new User
-            {
-                UserName = registrationDTO.UserName,
-                Email = registrationDTO.Email,
-                //Password = registrationDTO.Password,
-                Phone = registrationDTO.Phone,
-                Gender = registrationDTO.Gender,
-                Dob = registrationDTO.Dob,
-                Address = registrationDTO.Address,
-                Role = registrationDTO.Role,
-                CitizenId = registrationDTO.CitizenId
-            };
-            return await _userManager.CreateAsync(user, registrationDTO.Password);
-        }
+
+
+
+        // tat tam di de migration
+
+        //public async Task<IdentityResult> SignUpAsync(RegistrationDTO registrationDTO)
+        //{
+        //    var user = new User
+        //    {
+        //        UserName = registrationDTO.UserName,
+        //        Email = registrationDTO.Email,
+        //        //Password = registrationDTO.Password,
+        //        Phone = registrationDTO.Phone,
+        //        Gender = registrationDTO.Gender,
+        //        Dob = registrationDTO.Dob,
+        //        Address = registrationDTO.Address,
+        //        Role = registrationDTO.Role,
+        //        CitizenId = registrationDTO.CitizenId
+        //    };
+        //    return await _userManager.CreateAsync(user, registrationDTO.Password);
+        //}
+
+
+
+
+
+
+
 
         //private bool VerifyPassword(string enteredPassword, string storedPassword)
         //{
@@ -230,25 +270,12 @@ namespace AppointmentSchedulingApp.Services
             var result = await _signInManager.PasswordSignInAsync(userLogin.Phone, userLogin.Password, false, false);
             if (result.Succeeded)
             {
-                //var userDTO = new UserDTO
-                //{
-                //    Id = user.Id,
-                //    FirstName = user.FirstName,
-                //    LastName = user.LastName,
-                //    Email = user.Email,
-                //    UserName = user.UserName,
-                //    BirthDate = user.BirthDate,
-                //    RoleInformations = await _roleService.GetRoleInformationsByUserId(user.Id)
-                //    //RoleNames = (await userManager.GetRolesAsync(user)).ToList()
-
-                //};
-
                 var userDTO = new UserDTO
                 {
                     //UserId = user.UserId,
                     Email = user.Email,
-                    UserName = user.UserName,
-                    Password = user.Password,
+                    Name = user.Name,
+                    Role = user.Role,
                     Phone = user.Phone,
                     Gender = user.Gender,
                     Dob = user.Dob
@@ -288,7 +315,8 @@ namespace AppointmentSchedulingApp.Services
 
             var user = new User
             {
-                UserName = registrationDTO.UserName,
+                Name = registrationDTO.Name,
+                UserName = registrationDTO.Phone,
                 Email = registrationDTO.Email,
                 //Password = registrationDTO.Password,
                 Phone = registrationDTO.Phone,
@@ -296,9 +324,25 @@ namespace AppointmentSchedulingApp.Services
                 Dob = registrationDTO.Dob,
                 Address = registrationDTO.Address,
                 Role = registrationDTO.Role,
-                CitizenId = registrationDTO.CitizenId
+                CitizenId = registrationDTO.CitizenId,
+              
             };
-            return await _userManager.CreateAsync(user, registrationDTO.Password);
+
+
+            //return await _userManager.CreateAsync(user, registrationDTO.Password);
+            var result = await _userManager.CreateAsync(user, registrationDTO.Password);
+            if (result.Succeeded)
+            {
+                Console.WriteLine("Tạo tài khoản thành công!");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    Console.WriteLine($"Lỗi: {error.Code} - {error.Description}");
+                }
+            }
+            return result;
         }
 
 

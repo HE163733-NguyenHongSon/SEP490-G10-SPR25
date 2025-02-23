@@ -7,7 +7,7 @@ public partial class DoctorSchedule
 {
     public int DoctorScheduleId { get; set; }
 
-    public string DoctorId { get; set; }
+    public int DoctorId { get; set; }
 
     public int ServiceId { get; set; }
 

@@ -62,9 +62,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .HasColumnType("varchar(200)")
                         .HasDefaultValueSql("(NULL)");
 
-                    b.Property<string>("DoctorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
 
                     b.HasKey("CertificationId")
                         .HasName("PK__Certific__1237E58A3720D143");
@@ -102,8 +101,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
 
             modelBuilder.Entity("AppointmentSchedulingApp.Domain.Models.Doctor", b =>
                 {
-                    b.Property<string>("DoctorId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
 
                     b.Property<string>("AcademicTitle")
                         .HasMaxLength(50)
@@ -157,9 +156,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(10)");
 
-                    b.Property<string>("DoctorId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
 
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
@@ -262,8 +260,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
 
             modelBuilder.Entity("AppointmentSchedulingApp.Domain.Models.Patient", b =>
                 {
-                    b.Property<string>("PatientId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Rank")
                         .ValueGeneratedOnAdd()
@@ -297,9 +295,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.Property<int>("DoctorScheduleId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PatientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
 
                     b.Property<string>("PriorExaminationImg")
                         .HasMaxLength(200)
@@ -465,8 +462,11 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
 
             modelBuilder.Entity("AppointmentSchedulingApp.Domain.Models.User", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -515,6 +515,12 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -522,12 +528,6 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -557,10 +557,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -619,8 +617,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
 
             modelBuilder.Entity("DoctorService", b =>
                 {
-                    b.Property<string>("DoctorId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ServiceId")
                         .HasColumnType("int");
@@ -635,8 +633,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
 
             modelBuilder.Entity("DoctorSpecialty", b =>
                 {
-                    b.Property<string>("DoctorId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("DoctorId")
+                        .HasColumnType("int");
 
                     b.Property<int>("SpecialtyId")
                         .HasColumnType("int");
@@ -649,10 +647,13 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.ToTable("DoctorSpecialties", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -676,7 +677,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.ToTable("Roles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -690,9 +691,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -701,7 +701,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.ToTable("RoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -715,9 +715,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -726,7 +725,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.ToTable("UserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -737,9 +736,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -748,13 +746,13 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.ToTable("UserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -763,10 +761,10 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     b.ToTable("UserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -972,16 +970,16 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .HasConstraintName("FK__DoctorSpe__Speci__4CA06362");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.HasOne("AppointmentSchedulingApp.Domain.Models.User", null)
                         .WithMany()
@@ -990,7 +988,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.HasOne("AppointmentSchedulingApp.Domain.Models.User", null)
                         .WithMany()
@@ -999,9 +997,9 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1014,7 +1012,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.HasOne("AppointmentSchedulingApp.Domain.Models.User", null)
                         .WithMany()

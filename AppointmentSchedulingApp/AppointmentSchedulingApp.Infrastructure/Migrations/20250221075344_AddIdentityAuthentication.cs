@@ -44,7 +44,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -101,11 +102,11 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CitizenId = table.Column<long>(type: "bigint", nullable: false),
                     Email = table.Column<string>(type: "varchar(30)", unicode: false, maxLength: 30, nullable: true),
-                    Password = table.Column<string>(type: "varchar(255)", unicode: false, maxLength: 255, nullable: false),
-                    UserName = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Name = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     Phone = table.Column<string>(type: "varchar(12)", unicode: false, maxLength: 12, nullable: false),
                     Gender = table.Column<string>(type: "varchar(6)", unicode: false, maxLength: 6, nullable: false),
                     Dob = table.Column<DateOnly>(type: "date", nullable: false),
@@ -113,6 +114,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     Role = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false),
                     AvatarUrl = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
                     IsVerify = table.Column<bool>(type: "bit", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
@@ -137,7 +139,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -208,7 +210,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "Doctors",
                 columns: table => new
                 {
-                    DoctorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DoctorId = table.Column<int>(type: "int", nullable: false),
                     CurrentWork = table.Column<string>(type: "text", nullable: true),
                     DoctorDescription = table.Column<string>(type: "text", nullable: false),
                     Organization = table.Column<string>(type: "text", nullable: true),
@@ -233,7 +235,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "Patients",
                 columns: table => new
                 {
-                    PatientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
                     Rank = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: true, defaultValueSql: "(NULL)")
                 },
                 constraints: table =>
@@ -252,7 +254,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -274,7 +276,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -291,8 +293,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "UserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -315,7 +317,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "UserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -361,7 +363,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 {
                     CertificationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DoctorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DoctorId = table.Column<int>(type: "int", nullable: false),
                     CertificationUrl = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true, defaultValueSql: "(NULL)")
                 },
                 constraints: table =>
@@ -380,7 +382,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 {
                     DoctorScheduleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DoctorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DoctorId = table.Column<int>(type: "int", nullable: false),
                     ServiceId = table.Column<int>(type: "int", nullable: false),
                     DayOfWeek = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false),
                     RoomId = table.Column<int>(type: "int", nullable: false),
@@ -415,7 +417,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "DoctorServices",
                 columns: table => new
                 {
-                    DoctorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DoctorId = table.Column<int>(type: "int", nullable: false),
                     ServiceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -437,7 +439,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 name: "DoctorSpecialties",
                 columns: table => new
                 {
-                    DoctorId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DoctorId = table.Column<int>(type: "int", nullable: false),
                     SpecialtyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -461,7 +463,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Migrations
                 {
                     ReservationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
                     DoctorScheduleId = table.Column<int>(type: "int", nullable: false),
                     Reason = table.Column<string>(type: "text", nullable: true),
                     PriorExaminationImg = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),

@@ -63,28 +63,30 @@ namespace AppointmentSchedulingApp.Server.Controllers
 
         // thu commit tren github déktop
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegistrationDTO registrationDto)
-        {
-            StringBuilder message = new StringBuilder();
-            var user = await _userService.RegisterUser(registrationDto, message);
+        // tat tam di de migration
 
-            if (user == null)
-            {
-                return BadRequest(new ApiResponse
-                {
-                    Success = false,
-                    Message = message.ToString()
-                });
-            }
+        //[HttpPost("register")]
+        //public async Task<IActionResult> Register(RegistrationDTO registrationDto)
+        //{
+        //    StringBuilder message = new StringBuilder();
+        //    var user = await _userService.RegisterUser(registrationDto, message);
 
-            return Ok(new ApiResponse
-            {
-                Success = true,
-                Message = "Registration Successful",
-                Data = user
-            });
-        }
+        //    if (user == null)
+        //    {
+        //        return BadRequest(new ApiResponse
+        //        {
+        //            Success = false,
+        //            Message = message.ToString()
+        //        });
+        //    }
+
+        //    return Ok(new ApiResponse
+        //    {
+        //        Success = true,
+        //        Message = "Registration Successful",
+        //        Data = user
+        //    });
+        //}
 
 
         [HttpPost("Register-Patient")]

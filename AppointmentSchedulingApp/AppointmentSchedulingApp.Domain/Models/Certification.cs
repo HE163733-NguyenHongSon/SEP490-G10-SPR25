@@ -7,7 +7,7 @@ public partial class Certification
 {
     public int CertificationId { get; set; }
 
-    public string DoctorId { get; set; }
+    public int DoctorId { get; set; }
 
     public string? CertificationUrl { get; set; }
 

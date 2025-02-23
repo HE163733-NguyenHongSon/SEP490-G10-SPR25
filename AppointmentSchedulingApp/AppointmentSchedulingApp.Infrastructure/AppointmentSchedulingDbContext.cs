@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using AppointmentSchedulingApp.Domain.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentSchedulingApp.Infrastructure;
 
-public partial class AppointmentSchedulingDbContext : IdentityDbContext<User>
+public partial class AppointmentSchedulingDbContext : IdentityDbContext<User, IdentityRole<int>, int>
+
 {
     public AppointmentSchedulingDbContext()
     {
@@ -396,16 +398,16 @@ public partial class AppointmentSchedulingDbContext : IdentityDbContext<User>
             entity.Property(e => e.Gender)
                 .HasMaxLength(6)
                 .IsUnicode(false);
-            entity.Property(e => e.Password)
-                .HasMaxLength(255)
-                .IsUnicode(false);
+            //entity.Property(e => e.Password)
+            //    .HasMaxLength(255)
+            //    .IsUnicode(false);
             entity.Property(e => e.Phone)
                 .HasMaxLength(12)
                 .IsUnicode(false);
             entity.Property(e => e.Role)
                 .HasMaxLength(20)
                 .IsUnicode(false);
-            entity.Property(e => e.UserName)
+            entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });

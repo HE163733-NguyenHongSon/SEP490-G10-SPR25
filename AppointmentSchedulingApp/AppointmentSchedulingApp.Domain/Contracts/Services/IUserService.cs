@@ -11,12 +11,12 @@ namespace AppointmentSchedulingApp.Domain.Contracts.Services
     public interface IUserService
     {
         Task<UserDTO?> LoginUser(SignInDTO userLogin, StringBuilder message);
-        Task<UserDTO?> RegisterUser(RegistrationDTO registrationDto, StringBuilder message);
+        //Task<UserDTO?> RegisterUser(RegistrationDTO registrationDto, StringBuilder message);
         string GenerateToken(UserDTO user);
 
 
-        public Task<IdentityResult> SignUpAsync(RegistrationDTO registrationDTO);
-        public Task<string> SignInAsync(SignInDTO signInDTO);
+        //public Task<IdentityResult> SignUpAsync(RegistrationDTO registrationDTO);
+        //public Task<string> SignInAsync(SignInDTO signInDTO);
 
 
         public Task<IdentityResult?> RegisterPatient(RegistrationDTO registrationDTO);

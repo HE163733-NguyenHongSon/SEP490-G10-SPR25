@@ -20,7 +20,7 @@ namespace AppointmentSchedulingApp.Server.Controllers
         [EnableQuery]
         public async Task<IActionResult> Get()
         {
-            return Ok(await medicalRecordService.GetMedicalRecordList());
+            return Ok(await medicalRecordService.GetMedicalRecordList())
         }
     }
 }

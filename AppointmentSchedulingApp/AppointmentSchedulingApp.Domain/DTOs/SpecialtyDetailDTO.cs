@@ -11,6 +11,5 @@ namespace AppointmentSchedulingApp.Domain.DTOs
     {
         [JsonPropertyOrder(4)]
         public string? SpecialtyDescription { get; set; }
-        ;;
     }
 }

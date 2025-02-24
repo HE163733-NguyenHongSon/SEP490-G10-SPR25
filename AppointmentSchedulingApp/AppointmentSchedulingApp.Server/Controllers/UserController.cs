@@ -44,24 +44,7 @@ namespace AppointmentSchedulingApp.Server.Controllers
             }
         }
 
-        // Login v1
-
-        //[HttpPost("login")]
-        //public async Task<IActionResult> Login(SignInDTO signInDto)
-        //{
-        //    var message = new StringBuilder();
-        //    var user = await _userService.LoginUser(signInDto, message);
-
-        //    if (user == null)
-        //    {
-        //        return BadRequest(new { Message = message.ToString() });
-        //    }
-
-        //    return Ok(user);
-        //}
-        //cmt
-
-        // thu commit tren github déktop
+    
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegistrationDTO registrationDto)

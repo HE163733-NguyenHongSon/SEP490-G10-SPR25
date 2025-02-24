@@ -44,8 +44,6 @@ namespace AppointmentSchedulingApp.Server.Controllers
             }
         }
 
-    
-
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegistrationDTO registrationDto)
         {

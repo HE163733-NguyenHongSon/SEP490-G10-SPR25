@@ -2,12 +2,19 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function SpecialtyDetails() {
   const router = useRouter();
-  const params = useParams();
-  const id = params?.id as string;
-
+  const { id } = useParams()
+  
+  const [specialty, setSpecialty] = useState([])
+  useEffect(() => {
+    fetch(`http://localhost:5220/api/Specialties/${id}`)
+    .then((res) => res.json())
+    .then((data) => setSpecialty(data))
+    .catch((error) => console.error("Error fetching specialty:", error));
+  }, [id])
   return (
     <div className="bg-gray-50 min-h-screen p-8">
       <div className="bg-white rounded-lg shadow-lg p-6 max-w-6xl mx-auto">
@@ -34,7 +41,7 @@ export default function SpecialtyDetails() {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold">Specialty Details (ID: {id})</h1>
+            <h1 className="text-2xl font-bold">{specialty.specialtyName}</h1>
             <div className="text-gray-600 mt-2 space-y-2">
               <Link href="#introduce" className="block text-blue-500 hover:underline">
                 · Introduce
@@ -73,8 +80,7 @@ export default function SpecialtyDetails() {
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-2">Description</h2>
             <p className="text-gray-700">
-              Limit waiting time: All medical examination/treatment steps are
-              prioritized to be carried out quickly...
+              {specialty.specialtyDescription}
             </p>
           </div>
 

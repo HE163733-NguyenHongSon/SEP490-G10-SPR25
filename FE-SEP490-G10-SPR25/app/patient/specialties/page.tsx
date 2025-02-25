@@ -1,4 +1,4 @@
-import { SpecialtyList } from "../components/SpecialtyList";
+import { SpecialtyList } from "../../../components/patient/SpecialtyList";
 
 const SpecialtiesPage = () => {
   return (
@@ -12,6 +12,7 @@ const SpecialtiesPage = () => {
         <SpecialtyList />
       </div>
     </div>
+    
   );
 };
 

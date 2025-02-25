@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { specialtyService } from "@/services/specialtyService";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 export const SpecialtyList = () => {
   const [specialtys, setSpecialtys] = useState<ISpecialty[]>([]);
   useEffect(() => {
@@ -59,29 +60,25 @@ export const SpecialtyList = () => {
 
       {/* Danh sách dịch vụ */}
       <h2 className="text-2xl font-bold mb-4">
-        SpecialtyList (
-        <span className="text-blue-500">{specialtys.length}</span>)
+        SpecialtyList (<span className="text-blue-500">{specialtys.length}</span>)
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {specialtys.map((specialty, index) => (
-          <a
+          <Link
             key={index}
-            href={specialty.image} // Đường dẫn liên kết
+            href={`specialties/${specialty.specialtyId}`} 
             className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow cursor-pointer block"
           >
             <Image
               src={specialty.image}
               alt={specialty.specialtyName}
               className="object-cover rounded-t-lg"
-              width={40}
-              height={40}
+              width={40} height={40}
             />
             <div className="mt-4">
-              <h3 className="text-lg font-semibold">
-                {specialty.specialtyName}
-              </h3>
+              <h3 className="text-lg font-semibold">{specialty.specialtyName}</h3>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
 

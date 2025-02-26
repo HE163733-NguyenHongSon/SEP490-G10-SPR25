@@ -36,13 +36,13 @@ export const DoctorList = ({ items,displayView }: IDoctors) => {
 
           <div className="grid grid-cols-3 my-3 ">
             <div className="gap-3 col-span-1 flex flex-col items-center  justify-start p-2 border-r border-gray-300">
-              <Image
+              {/* <Image
                 className="rounded-lg "
                 src={doctor.avatarUrl}
                 height={200}
                 width={100}
                 alt="avatar doctor"
-              />
+              /> */}
               <p className="text-cyan-500 font-light ">
                 <span className="font-semibold text-lg mr-1">
                   {doctor.experienceYear}

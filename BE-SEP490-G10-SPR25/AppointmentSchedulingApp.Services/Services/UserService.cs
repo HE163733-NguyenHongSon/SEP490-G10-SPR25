@@ -5,7 +5,6 @@ using AppointmentSchedulingApp.Domain.Models;
 
 using AppointmentSchedulingApp.Services.Helper;
 using Microsoft.Extensions.Options;
-
 using AutoMapper;
 using System;
 using System.Collections.Generic;

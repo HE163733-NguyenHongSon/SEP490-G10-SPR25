@@ -1,5 +1,5 @@
-﻿using AppointmentSchedulingApp.Domain.Contracts.Repositories;
-using AppointmentSchedulingApp.Domain.Contracts.UnitOfWork;
+﻿using AppointmentSchedulingApp.Domain.Repositories;
+using AppointmentSchedulingApp.Domain.UnitOfWork;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.Repositories;
 

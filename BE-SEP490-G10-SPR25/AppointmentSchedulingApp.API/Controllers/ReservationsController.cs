@@ -1,5 +1,5 @@
-﻿using AppointmentSchedulingApp.Domain.Contracts.Services;
-using AppointmentSchedulingApp.Domain.Models;
+﻿using AppointmentSchedulingApp.Services.Services;
+using AppointmentSchedulingApp.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;

@@ -1,4 +1,4 @@
-﻿using AppointmentSchedulingApp.Domain.Contracts.Services;
+﻿using AppointmentSchedulingApp.Services.Services;
 using AppointmentSchedulingApp.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

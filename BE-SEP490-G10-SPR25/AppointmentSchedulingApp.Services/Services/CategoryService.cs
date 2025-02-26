@@ -1,10 +1,8 @@
-﻿using AppointmentSchedulingApp.Domain.Contracts.Repositories;
-using AppointmentSchedulingApp.Domain.Contracts.Services;
-using AppointmentSchedulingApp.Domain.Contracts.UnitOfWork;
-using AppointmentSchedulingApp.Domain.DTOs;
+﻿using AppointmentSchedulingApp.Domain.UnitOfWork;
+using AppointmentSchedulingApp.Services.DTOs;
 using AutoMapper;
 
-namespace AppointmentSchedulingApp.Services
+namespace AppointmentSchedulingApp.Services.Services
 {
     public class CategoryService : ICategoryService
     {

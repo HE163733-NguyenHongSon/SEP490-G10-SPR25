@@ -1,5 +1,5 @@
-﻿using AppointmentSchedulingApp.Domain.Contracts.Repositories;
-using AppointmentSchedulingApp.Domain.Models;
+﻿using AppointmentSchedulingApp.Domain.Repositories;
+using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using System;
 using System.Collections.Generic;

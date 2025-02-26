@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 
-namespace AppointmentSchedulingApp.Server.Controllers
+namespace AppointmentSchedulingApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

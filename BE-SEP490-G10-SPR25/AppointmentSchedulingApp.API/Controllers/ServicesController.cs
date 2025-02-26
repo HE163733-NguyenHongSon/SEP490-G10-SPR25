@@ -2,15 +2,15 @@
 using AppointmentSchedulingApp.Services.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AppointmentSchedulingApp.Server.Controllers
+namespace AppointmentSchedulingApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ServiceController : ControllerBase
+    public class ServicesController : ControllerBase
     {
         private readonly IServiceService _serviceService;
 
-        public ServiceController(IServiceService serviceService)
+        public ServicesController(IServiceService serviceService)
         {
             _serviceService = serviceService;
         }

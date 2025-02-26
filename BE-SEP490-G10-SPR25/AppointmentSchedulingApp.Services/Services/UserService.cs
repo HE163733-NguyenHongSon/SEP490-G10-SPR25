@@ -1,19 +1,14 @@
-﻿using AppointmentSchedulingApp.Domain.Contracts.Repositories;
-using AppointmentSchedulingApp.Domain.Contracts.Services;
-using AppointmentSchedulingApp.Domain.DTOs;
-using AppointmentSchedulingApp.Domain.Models;
+﻿
 using AppointmentSchedulingApp.Services.Helper;
 using Microsoft.Extensions.Options;
 using AutoMapper;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using AppointmentSchedulingApp.Services.DTOs;
+using AppointmentSchedulingApp.Domain.Repositories;
+using AppointmentSchedulingApp.Domain.Entities;
 
 namespace AppointmentSchedulingApp.Services.Services
 {

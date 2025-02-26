@@ -3,7 +3,7 @@ using AppointmentSchedulingApp.Services.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 
-namespace AppointmentSchedulingApp.Server.Controllers
+namespace AppointmentSchedulingApp.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]

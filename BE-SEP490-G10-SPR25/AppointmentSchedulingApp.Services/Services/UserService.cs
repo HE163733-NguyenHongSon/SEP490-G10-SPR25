@@ -2,7 +2,6 @@
 using AppointmentSchedulingApp.Domain.Contracts.Services;
 using AppointmentSchedulingApp.Domain.DTOs;
 using AppointmentSchedulingApp.Domain.Models;
-
 using AppointmentSchedulingApp.Services.Helper;
 using Microsoft.Extensions.Options;
 using AutoMapper;

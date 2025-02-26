@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using AppointmentSchedulingApp.Domain.Contracts.Repositories;
-using AppointmentSchedulingApp.Domain.Models;
+﻿using AppointmentSchedulingApp.Domain.Repositories;
+using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Infrastructure.Database;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentSchedulingApp.Infrastructure.Repositories
 {

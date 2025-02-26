@@ -1,5 +1,5 @@
-﻿using AppointmentSchedulingApp.Domain.Contracts.Services;
-using AppointmentSchedulingApp.Domain.DTOs;
+﻿using AppointmentSchedulingApp.Services.Services;
+using AppointmentSchedulingApp.Services.DTOs;
 
 using AppointmentSchedulingApp.Services.Helper;
 using Microsoft.AspNetCore.Http;

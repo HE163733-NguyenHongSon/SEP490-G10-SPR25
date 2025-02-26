@@ -1,13 +1,12 @@
 using System.Text;
-using AppointmentSchedulingApp.Domain.Contracts.Repositories;
-using AppointmentSchedulingApp.Domain.Contracts.Services;
-using AppointmentSchedulingApp.Domain.Contracts.UnitOfWork;
-using AppointmentSchedulingApp.Domain.DTOs;
-using AppointmentSchedulingApp.Domain.Models;
+using AppointmentSchedulingApp.Domain.Repositories;
+using AppointmentSchedulingApp.Domain.UnitOfWork;
+using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Infrastructure;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.Repositories;
 using AppointmentSchedulingApp.Infrastructure.UnitOfWork;
+using AppointmentSchedulingApp.Services.DTOs;
 using AppointmentSchedulingApp.Services.Helper;
 using AppointmentSchedulingApp.Services.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

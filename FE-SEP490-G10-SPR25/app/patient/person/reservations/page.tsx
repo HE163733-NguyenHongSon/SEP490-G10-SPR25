@@ -1,12 +1,12 @@
 "use client";
-import FilterButtonList from "../../../components/FilterButtonList";
-import reservationService from "../../../services/reservationService";
-import PaginatedItems from "../../../components/PaginatedItems";
+import FilterButtonList from "@/components/FilterButtonList";
+import reservationService from "@/services/reservationService";
+import PaginatedItems from "@/components/PaginatedItems";
 import ReservationList from "../../components/ReservationList";
-import SelectSort from "../../../components/SelectSort";
+import SelectSort from "@/components/SelectSort";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { LoadingTable } from "../../../components/LoadingTable";
+import { LoadingTable } from "@/components/LoadingTable";
 import { useSearchParams } from "next/navigation";
 const ReservationPage = () => {
   const searchParams = useSearchParams();

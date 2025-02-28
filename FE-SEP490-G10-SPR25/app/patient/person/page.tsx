@@ -1,4 +1,4 @@
-import { assets } from "../../../../public/images/assets";
+import { assets } from "@/public/images/assets";
 import Image from "next/image";
 const ProfilePage = () => {
   return (

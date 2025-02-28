@@ -3,7 +3,7 @@
 import { useCollapse } from "react-collapsed";
 import Image from "next/image";
 import React from "react";
-import { assets } from "../../../public/images/assets";
+import { assets } from "@/public/images/assets";
 
 interface CollapsibleSectionProps {
   title: string;

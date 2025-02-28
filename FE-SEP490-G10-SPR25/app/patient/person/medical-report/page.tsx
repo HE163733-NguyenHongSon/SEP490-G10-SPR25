@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { assets } from "../../../../../public/images/assets";
-import MedicalRecordList from "../../components/MedicalRecordList";
-import { medicalRecordService } from "../../../services/medicalRecordService";
+import { assets } from "@/public/images/assets";
+import MedicalRecordList from "@/patient/components/MedicalRecordList";
+import { medicalRecordService } from "@/services/medicalRecordService";
 import Image from "next/image";
 const MedicalReportPage = () => {
-  const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>([]);
+  const [medicalRecords, setMedicalRecords] = useState<IMedicalRecord[]>([]);
   useEffect(() => {
     const fetchMedicalRecords = async () => {
       const res = await medicalRecordService.getMedicalRecordList();

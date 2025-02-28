@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 // import { useRouter } from "next/navigation";
-import RatingStars from "../../components/RatingStars";
-import Image from "next/image";
+import RatingStars from "@/components/RatingStars";
 import Link from "next/link";
 
 interface IDoctors {

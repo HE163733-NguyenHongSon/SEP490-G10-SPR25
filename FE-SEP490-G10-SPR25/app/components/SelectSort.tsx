@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { assets } from "../../../public/images/assets";
+import { assets } from "@/public/images/assets";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface SelectSortProps {

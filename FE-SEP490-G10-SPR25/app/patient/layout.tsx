@@ -1,7 +1,7 @@
 "use client";
-import "../../app/globals.css";
-import Navbar from "./components/Navbar";
-import { Footer } from "./components/Footer";
+import "@/globals.css";
+import Navbar from "@/patient/components/Navbar";
+import { Footer } from "@/patient/components/Footer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function PatientLayout({

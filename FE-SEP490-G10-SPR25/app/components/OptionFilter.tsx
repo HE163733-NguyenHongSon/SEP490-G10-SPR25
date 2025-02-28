@@ -2,7 +2,7 @@
 import React, { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
-import { assets } from "../../../public/images/assets";
+import { assets } from "@/public/images/assets";
 const OptionFilter = ({ searchParamList }: { searchParamList: string[] }) => {
   const searchParams = useSearchParams();
 

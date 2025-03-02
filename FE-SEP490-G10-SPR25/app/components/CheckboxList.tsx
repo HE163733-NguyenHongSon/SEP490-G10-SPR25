@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FaLessThanEqual } from "react-icons/fa6";
 
 interface CheckboxListProps {
   items: ICheckboxOption[];

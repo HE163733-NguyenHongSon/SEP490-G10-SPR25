@@ -5,7 +5,7 @@ function RatingStars({ rating }: {rating:number }) {
   const emptyStars = 5 - fullStars - halfStars; 
 
   const renderStars = () => {
-    let stars = [];
+    const stars = [];
 
     for (let i = 0; i < fullStars; i++) {
       stars.push("★"); 

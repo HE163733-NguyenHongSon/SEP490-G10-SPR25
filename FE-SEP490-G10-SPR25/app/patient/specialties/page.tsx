@@ -1,5 +1,4 @@
-import { SpecialtyList } from "../../../components/patient/SpecialtyList";
-
+import { SpecialtyList } from "@/patient/components/SpecialtyList";
 const SpecialtiesPage = () => {
   return (
     <div

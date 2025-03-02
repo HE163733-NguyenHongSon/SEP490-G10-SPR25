@@ -1,8 +1,8 @@
 "use client";
-import Image from "next/image";
 import { specialtyService } from "@/services/specialtyService";
-import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 export const SpecialtyList = () => {
   const [specialtys, setSpecialtys] = useState<ISpecialty[]>([]);
   useEffect(() => {

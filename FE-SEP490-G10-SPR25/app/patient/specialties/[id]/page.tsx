@@ -15,8 +15,9 @@ export default function SpecialtyDetails() {
     .then((data) => setSpecialty(data))
     .catch((error) => console.error("Error fetching specialty:", error));
   }, [id])
+  
   return (
-    <div className="bg-gray-50 min-h-screen p-8">
+    <div className="bg-gray-100 min-h-screen p-8 pt-24">
       <div className="bg-white rounded-lg shadow-lg p-6 max-w-6xl mx-auto">
         {/* Nút Back */}
         <button
@@ -41,7 +42,7 @@ export default function SpecialtyDetails() {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold">{specialty.specialtyName}</h1>
+            <h1 className="text-2xl font-bold text-black">{specialty.specialtyName}</h1>
             <div className="text-gray-600 mt-2 space-y-2">
               <Link href="#introduce" className="block text-blue-500 hover:underline">
                 · Introduce
@@ -78,7 +79,7 @@ export default function SpecialtyDetails() {
         <div>
           {/* Description */}
           <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-2">Description</h2>
+            <h2 className="text-lg font-semibold mb-2 text-black">Description</h2>
             <p className="text-gray-700">
               {specialty.specialtyDescription}
             </p>
@@ -86,7 +87,7 @@ export default function SpecialtyDetails() {
 
           {/* Devices */}
           <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-2">Devices</h2>
+            <h2 className="text-lg font-semibold mb-2 text-black" >Devices</h2>
             <ul className="text-gray-700 list-disc pl-5">
               <li>MRI Scanner: Provides detailed imaging of internal organs.</li>
               <li>X-Ray Machine: Produces X-ray images for diagnostic purposes.</li>
@@ -95,7 +96,7 @@ export default function SpecialtyDetails() {
 
           {/* Process */}
           <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-2">Process</h2>
+            <h2 className="text-lg font-semibold mb-2 text-black">Process</h2>
             <ul className="text-gray-700 list-disc pl-5">
               <li>Registration via hotline or hospital.</li>
               <li>Receive confirmation and prepare documents.</li>
@@ -106,7 +107,7 @@ export default function SpecialtyDetails() {
 
           {/* Relevant Services */}
           <div>
-            <h2 className="text-lg font-semibold mb-4">Relevant Services</h2>
+            <h2 className="text-lg font-semibold mb-4 text-black">Relevant Services</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4].map((_, index) => (
                 <div
@@ -116,7 +117,7 @@ export default function SpecialtyDetails() {
                   <img
                     src="https://via.placeholder.com/150"
                     alt="General Consultation"
-                    className="w-full h-40 object-cover rounded-t-lg"
+                    className="w-full h-40 object-cover rounded-t-lg text-black"
                   />
                 </div>
               ))}

@@ -7,15 +7,21 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Services.DTOs
 {
-    public class UserDTO:RegistrationDTO
+    public class UserDTO
+    //:RegistrationDTO
     {
-        //[Key]
-        //public int UserId { get; set; }
-        //public string Email { get; set; }
-        //public string UserName { get; set; } = null!;
-        //public string Password { get; set; }
-        //public string Phone { get; set; } = null!;
-        //public string Gender { get; set; } = null!;
-        //public DateOnly? Dob { get; set; }
+        [Key]
+        public int UserId { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string Name { get; set; } = null!;
+        public string Password { get; set; }
+        public string PhoneNumber { get; set; } = null!;
+        public string Gender { get; set; } = null!;
+        public DateOnly? Dob { get; set; }
+        //public string Role { get; set; } = null!;
+
+        public List<RoleInformation> RoleInformations { get; set; }
+
     }
 }

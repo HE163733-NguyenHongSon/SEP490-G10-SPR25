@@ -10,9 +10,11 @@ namespace AppointmentSchedulingApp.Services.DTOs
 {
     public class RegistrationDTO
     {
-        [Key]
-        public int UserId { get; set; }
+        //[Key]
+        //public int UserId { get; set; }
 
+        [Required]
+        public string Name { get; set; }
         [Required]
         public string UserName { get; set; }
 
@@ -25,7 +27,10 @@ namespace AppointmentSchedulingApp.Services.DTOs
         public string Password { get; set; }
 
         [Required]
-        public string Phone { get; set; }
+        public string ConfirmPassword { get; set; }
+
+        [Required]
+        public string PhoneNumber { get; set; }
 
         [Required]
         public string Gender { get; set; }
@@ -36,8 +41,8 @@ namespace AppointmentSchedulingApp.Services.DTOs
         [Required]
         public string Address { get; set; }
 
-        [Required]
-        public string Role { get; set; }
+        //[Required]
+        //public string Role { get; set; }
 
         [Required]
         public long CitizenId { get; set; }

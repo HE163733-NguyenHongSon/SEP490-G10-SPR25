@@ -1,11 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using AppointmentSchedulingApp.Domain.Entities;
+﻿using AppointmentSchedulingApp.Domain.Entities;
+using AppointmentSchedulingApp.Infrastructure.Helper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace AppointmentSchedulingApp.Infrastructure.Database;
 
-public partial class AppointmentSchedulingDbContext : DbContext
+public partial class AppointmentSchedulingDbContext
+    : IdentityDbContext<User, Role, int,
+                        IdentityUserClaim<int>,
+                        UserRole,
+                        IdentityUserLogin<int>,
+                        IdentityRoleClaim<int>,
+                        IdentityUserToken<int>>
+
 {
     public AppointmentSchedulingDbContext()
     {
@@ -46,10 +57,32 @@ public partial class AppointmentSchedulingDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=AppointmentSchedulingDB; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
+            //=> optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=AppointmentSchedulingDB; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
+
+            //=> optionsBuilder.UseSqlServer("Server=(local); uid=sa;pwd=12345678;TrustServerCertificate=true;Integrated Security =true; Database=AppointmentSchedulingDB");
+            => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=AppointmentSchedulingDB; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<UserRole>(entity =>
+        {
+            //entity.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            // Cấu hình quan hệ giữa ApplicationUserRole và ApplicationUser
+            entity.HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+
+            // Cấu hình quan hệ giữa ApplicationUserRole và ApplicationRole
+            entity.HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+        });
+
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A0BFFF2A0D1");
@@ -88,6 +121,19 @@ public partial class AppointmentSchedulingDbContext : DbContext
 
         modelBuilder.Entity<Doctor>(entity =>
         {
+
+            // Cấu hình quan hệ giữa ApplicationUserRole và ApplicationUser
+            entity.HasOne(ur => ur.DoctorNavigation)
+                //.WithMany(u => u.UserRoles)
+                .WithOne(u => u.Doctor)
+                .HasForeignKey<Doctor>(ur => ur.DoctorId);
+
+            //// Cấu hình quan hệ giữa ApplicationUserRole và ApplicationRole
+            //entity.HasOne(ur => ur.Role)
+            //    .WithMany(r => r.UserRoles)
+            //    .HasForeignKey(ur => ur.RoleId)
+            //    .IsRequired();
+
             entity.HasKey(e => e.DoctorId).HasName("PK__Doctors__2DC00EBFB42CF4E4");
 
             entity.Property(e => e.DoctorId).ValueGeneratedNever();
@@ -221,6 +267,11 @@ public partial class AppointmentSchedulingDbContext : DbContext
                 .HasForeignKey<Patient>(d => d.PatientId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Patient_FK");
+
+            entity.HasOne(ur => ur.PatientNavigation)
+                //.WithMany(u => u.UserRoles)
+                .WithOne(u => u.Patient)
+                .HasForeignKey<Patient>(ur => ur.PatientId);
         });
 
         modelBuilder.Entity<Reservation>(entity =>
@@ -352,13 +403,13 @@ public partial class AppointmentSchedulingDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4CCC2C18AD");
+            //entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4CCC2C18AD");
 
             entity.HasIndex(e => e.CitizenId, "CitizenId_Unique").IsUnique();
 
             entity.HasIndex(e => e.Email, "Email_Unique").IsUnique();
 
-            entity.HasIndex(e => e.Phone, "Phone_Unique").IsUnique();
+            entity.HasIndex(e => e.PhoneNumber, "Phone_Unique").IsUnique();
 
             entity.Property(e => e.Address)
                 .HasMaxLength(100)
@@ -372,22 +423,45 @@ public partial class AppointmentSchedulingDbContext : DbContext
             entity.Property(e => e.Gender)
                 .HasMaxLength(6)
                 .IsUnicode(false);
-            entity.Property(e => e.Password)
-                .HasMaxLength(300)
-                .IsUnicode(false);
-            entity.Property(e => e.Phone)
-                .HasMaxLength(12)
-                .IsUnicode(false);
-            entity.Property(e => e.Role)
-                .HasMaxLength(20)
-                .IsUnicode(false);
-            entity.Property(e => e.UserName)
+            //entity.Property(e => e.Password)
+            //    .HasMaxLength(255)
+            //    .IsUnicode(false);
+            //entity.Property(e => e.PhoneNumber)
+            //    .HasMaxLength(12)
+            //    .IsUnicode(false);
+            //entity.Property(e => e.Role)
+            //    .HasMaxLength(20)
+            //    .IsUnicode(false);
+            entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });
 
+        DeleteIdentityPrefix(modelBuilder);
+        RoleSeedData(modelBuilder);
+
         OnModelCreatingPartial(modelBuilder);
     }
 
+    public void RoleSeedData(ModelBuilder modelBuilder)
+    {
+        // Seed roles
+        modelBuilder.Entity<Role>().HasData(
+            new Role { Id = 1, Name = AppRole.Patient, NormalizedName = AppRole.Patient.ToUpper(), ConcurrencyStamp = "acccef8b-20f3-4de0-8ee9-5a3690f094ed" },
+            new Role { Id = 2, Name = AppRole.Doctor, NormalizedName = AppRole.Doctor.ToUpper(), ConcurrencyStamp = "1a777fbf-24db-4247-bd76-db376d703ea9" }
+        );
+    }
+
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    public void DeleteIdentityPrefix(ModelBuilder modelBuilder)
+    {
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            var tableName = entityType.GetTableName();
+            if (tableName.StartsWith("AspNet"))
+            {
+                entityType.SetTableName(tableName.Substring(6));
+            }
+        }
+    }
 }

@@ -13,14 +13,14 @@ public partial class User : IdentityUser<int>
     
     public long CitizenId { get; set; }
 
-    public string? Email { get; set; }
+    //public string Email { get; set; }
 
     //public string Password { get; set; } = null!;
 
     // sua username
     public string Name { get; set; } = null!;
 
-    public string Phone { get; set; } = null!;
+    //public string Phone { get; set; } = null!;
 
     public string Gender { get; set; } = null!;
 
@@ -28,7 +28,7 @@ public partial class User : IdentityUser<int>
 
     public string Address { get; set; } = null!;
 
-    public string Role { get; set; } = null!;
+    //public string Role { get; set; } = null!;
 
     public string? AvatarUrl { get; set; }
 
@@ -39,5 +39,7 @@ public partial class User : IdentityUser<int>
     public virtual Patient? Patient { get; set; }
 
     //public string themmoi { get; set; } = null!;
+    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+
 
 }

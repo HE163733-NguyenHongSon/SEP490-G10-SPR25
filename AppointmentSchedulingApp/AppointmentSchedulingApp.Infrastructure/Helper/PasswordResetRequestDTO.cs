@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppointmentSchedulingApp.Services.Helper
+namespace AppointmentSchedulingApp.Infrastructure.Helper
 {
     internal class PasswordResetRequestDTO
     {

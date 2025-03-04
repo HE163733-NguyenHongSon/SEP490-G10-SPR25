@@ -1,13 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using AppointmentSchedulingApp.Domain.Models;
+using AppointmentSchedulingApp.Infrastructure.Helper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace AppointmentSchedulingApp.Infrastructure;
 
-public partial class AppointmentSchedulingDbContext : IdentityDbContext<User, IdentityRole<int>, int>
+//public partial class AppointmentSchedulingDbContext : IdentityDbContext<User, IdentityRole<int>, int>
+
+
+public partial class AppointmentSchedulingDbContext
+    : IdentityDbContext<User, Role, int,
+                        IdentityUserClaim<int>,
+                        UserRole,
+                        IdentityUserLogin<int>,
+                        IdentityRoleClaim<int>,
+                        IdentityUserToken<int>> 
 
 {
     public AppointmentSchedulingDbContext()
@@ -57,6 +68,23 @@ public partial class AppointmentSchedulingDbContext : IdentityDbContext<User, Id
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<UserRole>(entity =>
+        {
+            //entity.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            // Cấu hình quan hệ giữa ApplicationUserRole và ApplicationUser
+            entity.HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+
+            // Cấu hình quan hệ giữa ApplicationUserRole và ApplicationRole
+            entity.HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+        });
 
         modelBuilder.Entity<Category>(entity =>
         {
@@ -384,7 +412,7 @@ public partial class AppointmentSchedulingDbContext : IdentityDbContext<User, Id
 
             entity.HasIndex(e => e.Email, "Email_Unique").IsUnique();
 
-            entity.HasIndex(e => e.Phone, "Phone_Unique").IsUnique();
+            entity.HasIndex(e => e.PhoneNumber, "Phone_Unique").IsUnique();
 
             entity.Property(e => e.Address)
                 .HasMaxLength(100)
@@ -401,21 +429,30 @@ public partial class AppointmentSchedulingDbContext : IdentityDbContext<User, Id
             //entity.Property(e => e.Password)
             //    .HasMaxLength(255)
             //    .IsUnicode(false);
-            entity.Property(e => e.Phone)
+            entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(12)
                 .IsUnicode(false);
-            entity.Property(e => e.Role)
-                .HasMaxLength(20)
-                .IsUnicode(false);
+            //entity.Property(e => e.Role)
+            //    .HasMaxLength(20)
+            //    .IsUnicode(false);
             entity.Property(e => e.Name)
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });
 
         DeleteIdentityPrefix(modelBuilder);
-
+        RoleSeedData(modelBuilder);
 
         OnModelCreatingPartial(modelBuilder);
+    }
+
+    public void RoleSeedData(ModelBuilder modelBuilder)
+    {
+        // Seed roles
+        modelBuilder.Entity<Role>().HasData(
+            new Role { Id = 1, Name = AppRole.Patient, NormalizedName = AppRole.Patient.ToUpper(), ConcurrencyStamp = "acccef8b-20f3-4de0-8ee9-5a3690f094ed" },
+            new Role { Id = 2, Name = AppRole.Doctor, NormalizedName = AppRole.Doctor.ToUpper(), ConcurrencyStamp = "1a777fbf-24db-4247-bd76-db376d703ea9" }
+        );
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

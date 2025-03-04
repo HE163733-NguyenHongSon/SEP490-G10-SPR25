@@ -1,4 +1,4 @@
-﻿namespace AppointmentSchedulingApp.Services.Helper
+﻿namespace AppointmentSchedulingApp.Infrastructure.Helper
 {
     public class AppSettings
     {

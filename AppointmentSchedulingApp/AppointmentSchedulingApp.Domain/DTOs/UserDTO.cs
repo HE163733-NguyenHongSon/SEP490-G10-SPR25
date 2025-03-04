@@ -12,15 +12,16 @@ namespace AppointmentSchedulingApp.Domain.DTOs
     {
         [Key]
         public int UserId { get; set; }
+        public string UserName { get; set; }
         public string Email { get; set; }
         public string Name { get; set; } = null!;
         public string Password { get; set; }
-        public string Phone { get; set; } = null!;
+        public string PhoneNumber { get; set; } = null!;
         public string Gender { get; set; } = null!;
         public DateOnly? Dob { get; set; }
-        public string Role { get; set; } = null!;
+        //public string Role { get; set; } = null!;
 
-        //public List<RoleInformation> RoleInformations { get; set; }
+        public List<RoleInformation> RoleInformations { get; set; }
 
     }
 }

@@ -1,4 +1,3 @@
-using System.Data;
 using System.Text;
 using AppointmentSchedulingApp.Domain.Contracts.Repositories;
 using AppointmentSchedulingApp.Domain.Contracts.Services;
@@ -7,13 +6,15 @@ using AppointmentSchedulingApp.Domain.Models;
 using AppointmentSchedulingApp.Infrastructure;
 using AppointmentSchedulingApp.Infrastructure.Repositories;
 using AppointmentSchedulingApp.Services;
-using AppointmentSchedulingApp.Services.Helper;
+using AppointmentSchedulingApp.Infrastructure.Helper;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -45,7 +46,35 @@ builder.Services.AddCors(options =>
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: ",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header
+                        },
+                        new string[] {}
+                    }
+                });
+});
 
 // JWT
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("JwtAppsettings"));
@@ -72,10 +101,18 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero
     };
 });
+//.AddGoogle(googleOptions =>
+//{
+//    IConfigurationSection googleAuthNSection =
+//        builder.Configuration.GetSection("Authentication:Google");
+
+//    googleOptions.ClientId = googleAuthNSection["ClientId"];
+//    googleOptions.ClientSecret = googleAuthNSection["ClientSecret"];
+//});
 
 builder.Services.AddControllers().AddOData(opt => opt.Select().Filter().SetMaxTop(100).Expand().OrderBy().Count().AddRouteComponents("odata", modelBuilder.GetEdmModel()));
 
-builder.Services.AddIdentity<User, IdentityRole<int>>(opts =>
+builder.Services.AddIdentity<User, Role>(opts =>
 {
     // C?u hình th?i gian h?t h?n token
     opts.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
@@ -83,7 +120,11 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(opts =>
 
                 ).AddEntityFrameworkStores<AppointmentSchedulingDbContext>()
                 .AddDefaultTokenProviders();
-
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+    //options.TokenLifespan = TimeSpan.FromHours(1);
+    options.TokenLifespan = TimeSpan.FromMinutes(10);
+});
 
 builder.Services.AddDbContext<AppointmentSchedulingDbContext>(options =>
     options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("MyDatabase")));
@@ -92,12 +133,14 @@ builder.Services.AddDbContext<AppointmentSchedulingDbContext>(options =>
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IReservationRepository,ReservationRepository>();
 
 builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 //builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 
@@ -112,6 +155,14 @@ builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 builder.Services.AddScoped<ISpecialtyRepository, SpecialtyRepository>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+
+
+
+// Add Email Configs
+var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

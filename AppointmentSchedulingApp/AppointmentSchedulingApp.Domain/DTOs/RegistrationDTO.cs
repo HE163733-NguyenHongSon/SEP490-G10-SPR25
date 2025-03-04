@@ -15,6 +15,8 @@ namespace AppointmentSchedulingApp.Domain.DTOs
 
         [Required]
         public string Name { get; set; }
+        [Required]
+        public string UserName { get; set; }
 
         [Required]
         [EmailAddress]
@@ -28,7 +30,7 @@ namespace AppointmentSchedulingApp.Domain.DTOs
         public string ConfirmPassword { get; set; }
 
         [Required]
-        public string Phone { get; set; }
+        public string PhoneNumber { get; set; }
 
         [Required]
         public string Gender { get; set; }
@@ -39,8 +41,8 @@ namespace AppointmentSchedulingApp.Domain.DTOs
         [Required]
         public string Address { get; set; }
 
-        [Required]
-        public string Role { get; set; }
+        //[Required]
+        //public string Role { get; set; }
 
         [Required]
         public long CitizenId { get; set; }

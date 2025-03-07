@@ -58,7 +58,6 @@ namespace AppointmentSchedulingApp.API.Controllers
                     Message = message.ToString()
                 });
             }
-
             return Ok(new ApiResponse
             {
                 Success = true,

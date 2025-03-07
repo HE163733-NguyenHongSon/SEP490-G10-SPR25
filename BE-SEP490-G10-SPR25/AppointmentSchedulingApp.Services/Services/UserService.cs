@@ -48,7 +48,7 @@ namespace AppointmentSchedulingApp.Services.Services
             var tokenDescription = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(authClaims),
-                Expires = DateTime.UtcNow.AddDays(1),
+                Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha512Signature),
             };
             var token = jwtTokenHandler.CreateToken(tokenDescription);

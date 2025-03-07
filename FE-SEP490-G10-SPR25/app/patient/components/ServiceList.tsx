@@ -1,9 +1,9 @@
 'use client';
 import Image from "next/image";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaSearch, FaChevronRight } from "react-icons/fa";
+import { useState } from "react";
 import { BsFilter } from "react-icons/bs";
+import { FaChevronRight, FaSearch } from "react-icons/fa";
 
 export function ServiceList() {
   const [search, setSearch] = useState("");

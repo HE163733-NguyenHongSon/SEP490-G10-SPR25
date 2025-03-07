@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AppointmentSchedulingApp.Services.DTOs;
 
-namespace AppointmentSchedulingApp.Services.Services
+namespace AppointmentSchedulingApp.Services.IServices
 {
     public interface IServiceService
     {

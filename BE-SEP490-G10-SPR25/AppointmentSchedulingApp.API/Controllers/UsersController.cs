@@ -1,6 +1,6 @@
 ﻿using AppointmentSchedulingApp.Infrastructure.Helper;
 using AppointmentSchedulingApp.Services.DTOs;
-using AppointmentSchedulingApp.Services.Services;
+using AppointmentSchedulingApp.Services.IServices;
 using Google.Apis.Oauth2.v2.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

@@ -20,6 +20,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
+using AppointmentSchedulingApp.Services.IServices;
 
 namespace AppointmentSchedulingApp.Services.Services
 {
@@ -88,7 +89,7 @@ namespace AppointmentSchedulingApp.Services.Services
             var tokenDescription = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(authClaims),
-                Expires = DateTime.UtcNow.AddDays(_appSettings.ExpiryInDays),
+                Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha512Signature),
                 Issuer = _appSettings.Issuer,
                 Audience = _appSettings.Audience,

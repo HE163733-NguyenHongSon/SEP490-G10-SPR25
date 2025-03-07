@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using AppointmentSchedulingApp.Services.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;

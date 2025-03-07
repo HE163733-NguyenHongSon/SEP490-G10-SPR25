@@ -1,7 +1,7 @@
-using AppointmentSchedulingApp.Services.Services;
 using AppointmentSchedulingApp.Services.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
+using AppointmentSchedulingApp.Services.IServices;
 
 namespace AppointmentSchedulingApp.API.Controllers
 {

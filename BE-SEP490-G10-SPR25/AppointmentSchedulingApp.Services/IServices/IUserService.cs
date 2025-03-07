@@ -9,12 +9,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppointmentSchedulingApp.Services.Services
+namespace AppointmentSchedulingApp.Services.IServices
 {
     public interface IUserService
     {
         Task<UserDTO?> LoginUser(SignInDTO userLogin, StringBuilder message);
-        
+
         string GenerateToken(UserDTO user);
         Task<IdentityResult?> RegisterPatient(RegistrationDTO registrationDTO);
 

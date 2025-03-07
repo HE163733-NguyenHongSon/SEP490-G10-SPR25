@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppointmentSchedulingApp.Services.Services
+namespace AppointmentSchedulingApp.Services.IServices
 {
     public interface IDoctorService
     {

@@ -20,6 +20,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
+using AppointmentSchedulingApp.Services.IServices;
 
 namespace AppointmentSchedulingApp.Services.Services
 {

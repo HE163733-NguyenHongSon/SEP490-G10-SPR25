@@ -1,6 +1,7 @@
 ﻿using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.UnitOfWork;
 using AppointmentSchedulingApp.Services.DTOs;
+using AppointmentSchedulingApp.Services.IServices;
 using AutoMapper;
 
 namespace AppointmentSchedulingApp.Services.Services

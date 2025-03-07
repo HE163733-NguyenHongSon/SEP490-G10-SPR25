@@ -1,4 +1,5 @@
 ﻿using AppointmentSchedulingApp.Services.DTOs;
+using AppointmentSchedulingApp.Services.IServices;
 using MailKit.Net.Smtp;
 using MimeKit;
 using System;

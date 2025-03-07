@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppointmentSchedulingApp.Services.Services
+namespace AppointmentSchedulingApp.Services.IServices
 {
-    public interface IMedicalRecordService
+    public interface IEmailService
     {
-        Task<List<MedicalRecordDTO>> GetMedicalRecordList();
+        void SendEmail(Message message);
     }
 }

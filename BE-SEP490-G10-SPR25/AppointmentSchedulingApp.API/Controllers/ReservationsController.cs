@@ -1,8 +1,8 @@
-﻿using AppointmentSchedulingApp.Services.Services;
-using AppointmentSchedulingApp.Domain.Entities;
+﻿using AppointmentSchedulingApp.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
+using AppointmentSchedulingApp.Services.IServices;
 
 namespace AppointmentSchedulingApp.API.Controllers
 {

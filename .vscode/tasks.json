@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start Next.js Server",
+			"type": "npm",
+			"script": "dev",
+			"path": "FE-SEP490-G10-SPR25",  // Đổi từ `cwd` sang `path`
+			"problemMatcher": [],
+			"detail": "next dev"
+		}
+	]
+}

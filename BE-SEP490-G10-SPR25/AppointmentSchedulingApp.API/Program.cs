@@ -115,7 +115,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers().AddOData(opt => opt.Select().Filter().SetMaxTop(100).Expand().OrderBy().Count().AddRouteComponents("odata", modelBuilder.GetEdmModel()));
 builder.Services.AddIdentity<User, Role>(opts =>
 {
-    // C?u hình th?i gian h?t h?n token
+    // C?u hï¿½nh th?i gian h?t h?n token
     opts.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
 }
 

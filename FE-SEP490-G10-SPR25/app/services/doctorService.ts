@@ -20,7 +20,6 @@ export const doctorService = {
       most_exam: "numberOfExamination",
       most_service: "numberOfService",
     };
-
     const doctors = (await this.getDoctorList()).filter((d) =>
       idList.includes(d.doctorId.toString())
     );

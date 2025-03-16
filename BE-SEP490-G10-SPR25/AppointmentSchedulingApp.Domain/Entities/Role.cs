@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
-namespace AppointmentSchedulingApp.Domain.Entities
+namespace AppointmentSchedulingApp.Domain.Entities;
+
+public class Role : IdentityRole<int>
 {
-    public class Role : IdentityRole<int>
-    {
-        public virtual ICollection<UserRole> UserRoles { get; set; }
-    }
+    public int RoleId { get; set; }
+
+    public string RoleName { get; set; } = null!;
+
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
+
+    public virtual ICollection<UserRole> UserRoles { get; set; }
+
 }

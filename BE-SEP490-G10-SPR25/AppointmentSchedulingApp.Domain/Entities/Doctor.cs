@@ -9,7 +9,7 @@ public partial class Doctor
 
     public string? CurrentWork { get; set; }
 
-    public string DoctorDescription { get; set; }
+    public string? DoctorDescription { get; set; }
 
     public string? Organization { get; set; }
 
@@ -30,6 +30,8 @@ public partial class Doctor
     public virtual User DoctorNavigation { get; set; } = null!;
 
     public virtual ICollection<DoctorSchedule> DoctorSchedules { get; set; } = new List<DoctorSchedule>();
+
+    public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
 
     public virtual ICollection<Service> Services { get; set; } = new List<Service>();
 

@@ -15,7 +15,5 @@ public partial class Specialty
 
     public virtual ICollection<Service> Services { get; set; } = new List<Service>();
 
-    public virtual ICollection<Device> Devices { get; set; } = new List<Device>();
-
     public virtual ICollection<Doctor> Doctors { get; set; } = new List<Doctor>();
 }

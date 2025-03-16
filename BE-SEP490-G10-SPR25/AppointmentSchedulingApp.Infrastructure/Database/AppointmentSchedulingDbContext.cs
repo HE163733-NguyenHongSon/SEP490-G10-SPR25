@@ -16,7 +16,6 @@ public partial class AppointmentSchedulingDbContext
                         IdentityUserLogin<int>,
                         IdentityRoleClaim<int>,
                         IdentityUserToken<int>>
-
 {
     public AppointmentSchedulingDbContext()
     {
@@ -71,23 +70,25 @@ public partial class AppointmentSchedulingDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<UserRole>(entity =>
         {
-            //entity.HasKey(ur => new { ur.UserId, ur.RoleId });
-            modelBuilder.Entity<UserRole>()
-          .HasKey(ur => new { ur.UserId, ur.RoleId }); // Định nghĩa khóa chính tổng hợp
-            // Cấu hình quan hệ giữa ApplicationUserRole và ApplicationUser
+            entity.HasKey(ur => new { ur.UserId, ur.RoleId });
+
             entity.HasOne(ur => ur.User)
                 .WithMany(u => u.UserRoles)
                 .HasForeignKey(ur => ur.UserId)
                 .IsRequired();
 
-            // Cấu hình quan hệ giữa ApplicationUserRole và ApplicationRole
             entity.HasOne(ur => ur.Role)
                 .WithMany(r => r.UserRoles)
                 .HasForeignKey(ur => ur.RoleId)
                 .IsRequired();
+
+            entity.ToTable("UserRoles");
         });
+
         modelBuilder.Entity<Certification>(entity =>
         {
             entity.HasKey(e => e.CertificationId).HasName("PK__Certific__1237E58A80003FAC");
@@ -438,7 +439,6 @@ public partial class AppointmentSchedulingDbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4C3AD105FF");
-
             entity.HasIndex(e => e.Phone, "Phone_Unique").IsUnique();
 
             entity.Property(e => e.Address).HasMaxLength(100);
@@ -456,23 +456,13 @@ public partial class AppointmentSchedulingDbContext
                 .IsUnicode(false);
             entity.Property(e => e.UserName).HasMaxLength(50);
 
-            entity.HasMany(d => d.Roles).WithMany(p => p.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                    "UserRole",
-                    r => r.HasOne<Role>().WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("Role_FK"),
-                    l => l.HasOne<User>().WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("User_FK"),
-                    j =>
-                    {
-                        j.HasKey("UserId", "RoleId").HasName("PK__UserRole__AF2760AD95813875");
-                        j.ToTable("UserRoles");
-                    });
+            // Cấu hình bảng trung gian UserRole
+            entity.HasMany(u => u.UserRoles)
+                .WithOne(ur => ur.User)
+                .HasForeignKey(ur => ur.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
+
         DeleteIdentityPrefix(modelBuilder);
         RoleSeedData(modelBuilder);
         OnModelCreatingPartial(modelBuilder);

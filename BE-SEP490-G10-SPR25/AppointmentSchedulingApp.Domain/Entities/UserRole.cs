@@ -9,8 +9,6 @@ namespace AppointmentSchedulingApp.Domain.Entities
 {
     public class UserRole : IdentityUserRole<int>
     {
-        public int UserRoleId { get; set; } // Khóa chính
-
         public virtual User User { get; set; }
         public virtual Role Role { get; set; }
     }

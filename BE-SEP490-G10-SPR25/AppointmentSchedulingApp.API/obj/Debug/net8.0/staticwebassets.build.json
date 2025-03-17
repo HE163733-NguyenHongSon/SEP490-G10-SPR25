@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "KTIY0NYwnH69az6G6thpMyp04L/dUQsUZp/AdVqinmc=",
+  "Source": "AppointmentSchedulingApp.API",
+  "BasePath": "_content/AppointmentSchedulingApp.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

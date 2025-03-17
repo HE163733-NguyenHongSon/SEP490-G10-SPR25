@@ -1,0 +1,50 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Next.js: Debug Server",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceFolder}/FE-SEP490-G10-SPR25/node_modules/next/dist/bin/next",
+        "args": ["dev"],
+        "cwd": "${workspaceFolder}/FE-SEP490-G10-SPR25",
+        "console": "integratedTerminal",
+        "autoAttachChildProcesses": true,
+        "preLaunchTask": "Start Next.js Server"
+      },
+      {
+        "name": "Next.js: Debug Client (Chrome)",
+        "type": "chrome",
+        "request": "launch",
+        "url": "http://localhost:3000/patient",
+        "webRoot": "${workspaceFolder}/FE-SEP490-G10-SPR25",
+        "preLaunchTask": "Start Next.js Server"
+      },
+      {
+        "name": "Next.js: Debug Client (Edge)",
+        "type": "msedge",
+        "request": "launch",
+        "url": "http://localhost:3000",
+        "webRoot": "${workspaceFolder}/FE-SEP490-G10-SPR25",
+        "preLaunchTask": "Start Next.js Server"
+      },
+      {
+        "name": "Next.js: Debug Full Stack",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceFolder}/FE-SEP490-G10-SPR25/node_modules/.bin/next",
+        "args": ["dev"],
+        "runtimeArgs": ["--inspect"],
+        "console": "integratedTerminal",
+        "skipFiles": ["<node_internals>/**"],
+        "serverReadyAction": {
+          "action": "debugWithChrome",
+          "pattern": "Local: (http://.+)",
+          "uriFormat": "%s",
+          "webRoot": "${workspaceFolder}/FE-SEP490-G10-SPR25"
+        },
+        "preLaunchTask": "Start Next.js Server"
+      }
+    ]
+  }
+  

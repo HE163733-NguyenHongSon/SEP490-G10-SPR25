@@ -9,8 +9,6 @@ public partial class Reservation
 
     public int PatientId { get; set; }
 
-    public int DoctorScheduleId { get; set; }
-
     public string? Reason { get; set; }
 
     public string? PriorExaminationImg { get; set; }
@@ -23,11 +21,13 @@ public partial class Reservation
 
     public DateTime UpdatedDate { get; set; }
 
-    public virtual DoctorSchedule DoctorSchedule { get; set; } = null!;
-
-    public virtual Feedback Feedback { get; set; } = new Feedback();
+    public virtual Feedback? Feedback { get; set; }
 
     public virtual ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
 
     public virtual Patient Patient { get; set; } = null!;
+
+    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
+    public virtual ICollection<DoctorSchedule> DoctorSchedules { get; set; } = new List<DoctorSchedule>();
 }

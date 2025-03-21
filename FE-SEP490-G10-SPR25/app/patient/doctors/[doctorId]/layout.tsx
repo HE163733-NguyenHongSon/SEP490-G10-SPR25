@@ -14,15 +14,19 @@ const DoctorDetailLayout = async ({
   );
 
   const routes = [
-    { path: `/patient/doctors/${doctorId}`, name: "Overall" },
+    { path: `/patient/doctors/${doctorId}`, name: "Tổng quan" },
     {
       path: `/patient/doctors/${doctorId}/doctor-schedule`,
-      name: "Doctor's schedule",
+      name: "Lịch bác sĩ",
     },
     {
       path: "#",
-      name: "Service take on",
+      name: "Dịch vụ đảm nhận",
     },
+    {
+      path: "#",
+      name: "Bình luận đánh giá",
+    }
   ];
   return (
     <div className=" flex flex-col  justify-items-start text-gray-700 border border-gray-300  mx-5 my-16 rounded-md shadow-md">
@@ -48,16 +52,18 @@ const DoctorDetailLayout = async ({
             {doctorDetail.doctorName}
           </h1>
           <h2 className="text-lg text-gray-700 ">{doctorDetail.currentWork}</h2>
-          <p className="text-gray-400">{doctorDetail.specialtyNames}</p>
+          <p className="text-gray-400">
+            {doctorDetail.specialtyNames.join(", ")}
+          </p>
           <p className="font-semibold">
-            ({doctorDetail.numberOfService} service take on)
+            ({doctorDetail.numberOfService} dịch vụ đảm nhận)
           </p>
           <div className="flex flex-row gap-2">
             <RatingStars rating={doctorDetail.rating} />
-            <p>({doctorDetail.numberOfExamination} examination)</p>
+            <p>({doctorDetail.numberOfExamination} đã khám)</p>
           </div>
           <button className="px-3 w-fit bg-cyan-500 text-white  rounded-full">
-            Booking doctor
+            Hẹn bác sĩ
           </button>
         </div>
       </div>

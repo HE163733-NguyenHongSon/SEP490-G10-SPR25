@@ -22,11 +22,12 @@ const DoctorsPage = async ({
 
   let doctors: IDoctor[] = [];
   const sortOptions: ISortOption[] = [
-    { label: "Highest Rated", value: "highest_rated" },
-    { label: "Most Examinations", value: "most_exam" },
-    { label: "Most Experienced ", value: "most_exp" },
-    { label: "Take On Most Service", value: "most_service" },
+    { label: "Đánh giá cao nhất", value: "highest_rated" },
+    { label: "Nhiều lần khám nhất", value: "most_exam" },
+    { label: "Kinh nghiệm nhất", value: "most_exp" },
+    { label: "Nhiều dịch vụ nhất", value: "most_service" },
   ];
+  
   if (
     !searchParams.searchBy &&
     (searchParams.specialties ||
@@ -65,7 +66,7 @@ const DoctorsPage = async ({
         <DisplayToggle />
         <Search
           suggestedData={searchOptions}
-          placeholder="Select or search by doctor name"
+          placeholder="Chọn hoặc tìm kiếm nhiều bác sĩ theo tên"
           path="/patient/doctors"
         />
       </div>

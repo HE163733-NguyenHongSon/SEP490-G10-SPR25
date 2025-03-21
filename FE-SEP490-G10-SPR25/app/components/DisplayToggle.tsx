@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-interface DisplayToggleProps {
-  displayView: string;
-  setDisplayView: (view: string) => void;
-}
+// interface DisplayToggleProps {
+//   displayView: string;
+//   setDisplayView: (view: string) => void;
+// }
 
 const DisplayToggle: React.FC = () => {
   const searchParams = useSearchParams();
@@ -44,7 +44,7 @@ const DisplayToggle: React.FC = () => {
         >
           <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm11 0h7v7h-7v-7z" />
         </svg>
-        Grid View
+        Lưới
       </button>
       <button
         className={`flex flex-row items-center justify-center h-[36px] px-3   rounded-md shadow-md  gap-x-1 ${
@@ -68,7 +68,7 @@ const DisplayToggle: React.FC = () => {
             d="M4 6h16M4 12h16M4 18h16"
           />
         </svg>
-        List View
+        Danh sách
       </button>
     </div>
   );

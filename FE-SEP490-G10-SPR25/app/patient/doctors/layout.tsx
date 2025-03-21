@@ -42,11 +42,11 @@ export default async function DoctorsLayout({
       <div className=" container   mt-20 mb-5 z-30 grid grid-cols-5  bg-white rounded-xl shadow-2xl ">
         <div className="col-span-1 border-r border-gray-300 text-gray-700  ">
           <div className="flex flex-row items-center justify-center border-b border-gray-300 gap-4  py-11 font-medium mx-5">
-            <h1 className="text-xl  font-semibold">Filter</h1>
+            <h1 className="text-xl  font-semibold">Lọc bác sĩ</h1>
             <ClearButton
               path="/patient/doctors"
               keptSearchParams={["sortBy", "displayView"]}
-              labelName="Clear filter"
+              labelName="Bỏ lọc"
             />
           </div>
 
@@ -58,7 +58,7 @@ export default async function DoctorsLayout({
 
           <div className="flex flex-col  mx-5   h-[700px] overflow-y-auto">
             <CollapsibleSection
-              title={"Specialties"}
+              title={"Chuyên khoa"}
               content={
                 <CheckboxList items={specialties} searchParam="specialties" />
               }
@@ -66,7 +66,7 @@ export default async function DoctorsLayout({
             />
 
             <CollapsibleSection
-              title={"Academic Titles"}
+              title={"Chức danh học thuật"}
               content={
                 <CheckboxList
                   items={academicTitles}
@@ -77,7 +77,7 @@ export default async function DoctorsLayout({
             />
 
             <CollapsibleSection
-              title={"Degrees"}
+              title={" Học vị"}
               content={<CheckboxList items={degrees} searchParam="degrees" />}
               defaultExpanded={true}
             />

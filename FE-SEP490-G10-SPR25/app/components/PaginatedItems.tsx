@@ -45,8 +45,8 @@ const PaginatedItems = <T,>({
       <div className="flex flex-row items-center justify-center mt-5">
         <ReactPaginate
           breakLabel="..."
-          nextLabel="Next >"
-          previousLabel="< Prev"
+          nextLabel="Tiếp >"
+          previousLabel="< Trước"
           onPageChange={handlePageClick}
           pageRangeDisplayed={2}
           pageCount={pageCount}
@@ -62,7 +62,7 @@ const PaginatedItems = <T,>({
           breakClassName="text-gray-700 font-semibold"
         />
         <h2 className="text-gray-700 font-semibold text-lg ml-2  ">
-          {items.length} results
+          {items.length} kết quả
         </h2>
       </div>
     </div>

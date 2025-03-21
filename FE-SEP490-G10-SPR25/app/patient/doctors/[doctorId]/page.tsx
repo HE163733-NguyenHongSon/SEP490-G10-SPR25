@@ -13,25 +13,25 @@ export default async function DoctorDetails({
   return (
     <>
       <CollapsibleSection
-        title="Description"
+        title="Mô tả"
         content={doctorDetail.detailDescription}
         defaultExpanded={true}
         titleImage={assets.description}
       />
       <CollapsibleSection
-        title="Member organization "
+        title="Tổ chức thành viên"
         content={doctorDetail.organization}
         defaultExpanded={true}
         titleImage={assets.organization}
       />
       <CollapsibleSection
-        title="Prize"
+        title="Giải thưởng"
         content={doctorDetail.prize}
         defaultExpanded={true}
         titleImage={assets.prize}
       />
       <CollapsibleSection
-        title="Research work"
+        title="Công trình nghiên cứu"
         content={doctorDetail.researchProject}
         defaultExpanded={true}
         titleImage={assets.research_work}

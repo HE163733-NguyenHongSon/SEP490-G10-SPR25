@@ -43,7 +43,7 @@ builder.Services.AddCors(options =>
                .AllowAnyMethod()
                .AllowAnyHeader();
 
-    });
+    });   
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -113,14 +113,15 @@ builder.Services.AddAuthentication(options =>
 //});
 
 builder.Services.AddControllers().AddOData(opt => opt.Select().Filter().SetMaxTop(100).Expand().OrderBy().Count().AddRouteComponents("odata", modelBuilder.GetEdmModel()));
-builder.Services.AddIdentity<User, Role>(opts =>
-{
-    // C?u h�nh th?i gian h?t h?n token
-    opts.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
-}
+//builder.Services.AddIdentity<User, Role>(opts =>
+//{
+//    // C?u h�nh th?i gian h?t h?n token
+//    opts.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
+//}
 
-                ).AddEntityFrameworkStores<AppointmentSchedulingDbContext>()
-                .AddDefaultTokenProviders();
+//                ).AddEntityFrameworkStores<AppointmentSchedulingDbContext>()
+//                .AddDefaultTokenProviders();
+
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
     //options.TokenLifespan = TimeSpan.FromHours(1);
@@ -139,9 +140,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<IReservationService, ReservationService>();
 
-builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IRoleService, RoleService>();
+//builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
+//builder.Services.AddScoped<IUserService, UserService>();
+//builder.Services.AddScoped<IRoleService, RoleService>();
 
 //builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 

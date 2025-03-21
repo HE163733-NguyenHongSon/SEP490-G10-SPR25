@@ -1,63 +1,57 @@
-import React from 'react';
+"use client";
+import Link from 'next/link';
+import { useState } from 'react';
+import { FaCalendarCheck, FaCog, FaList, FaSignOutAlt, FaUser } from 'react-icons/fa';
 
-const SpecialtyList: React.FC = () => {
+export default function Dashboard() {
+  const [selectedMenu, setSelectedMenu] = useState('Specialty List');
+
+  const menuItems = [
+    { name: 'Specialty List', icon: <FaList />, path: '/specialty-list' },
+    { name: 'Appointment', icon: <FaCalendarCheck />, path: '/appointment' },
+    { name: 'Appointment page', icon: <FaCalendarCheck />, path: '/appointment-page' },
+    { name: 'Setting', icon: <FaCog />, path: '/setting' },
+    { name: 'Profile', icon: <FaUser />, path: '/profile' },
+    { name: 'Log out', icon: <FaSignOutAlt />, path: '/logout' },
+  ];
+
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-12 mb-3 mb-lg-5">
-          <div className="overflow-hidden card table-nowrap table-card">
-            <div className="card-header d-flex justify-content-between align-items-center">
-              <h5 className="mb-0">New customers</h5>
-              <a href="#!" className="btn btn-light btn-sm">View All</a>
-            </div>
-            <div className="table-responsive">
-              <table className="table mb-0">
-                <thead className="small text-uppercase bg-body text-muted">
-                  <tr>
-                    <th>id</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Image</th>
-                    <th>Created Date</th>
-                    <th className="text-end">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[1,2,3,4,5].map((id) => (
-                    <tr key={id} className="align-middle">
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <img src={`https://bootdey.com/img/Content/avatar/avatar${id}.png`} className="avatar sm rounded-pill me-3 flex-shrink-0" alt="Customer" />
-                          <div>
-                            <div className="h6 mb-0 lh-1">Customer Name {id}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>customer{id}@email.com</td>
-                      <td><span className="d-inline-block align-middle">Country{id}</span></td>
-                      <td><span>****{(id*1234)%9999}</span></td>
-                      <td>01 Jan, 2023</td>
-                      <td className="text-end">
-                        <div className="dropdown">
-                          <a data-bs-toggle="dropdown" href="#!" className="btn p-1">
-                            <i className="fa fa-bars" aria-hidden="true"></i>
-                          </a>
-                          <div className="dropdown-menu dropdown-menu-end">
-                            <a href="#!" className="dropdown-item">View Details</a>
-                            <a href="#!" className="dropdown-item">Delete user</a>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+    <div className="flex h-screen w-full bg-gray-100">
+      {/* Sidebar */}
+      <div className="w-64 bg-white shadow-lg p-4 flex flex-col">
+        <div className="flex items-center space-x-3 mb-6">
+          <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
+          <div>
+            <h2 className="text-lg font-semibold">Doctor</h2>
+            <p className="text-sm text-gray-500">Ranking: Gold</p>
           </div>
+        </div>
+
+        {/* Menu Items */}
+        <nav className="flex flex-col space-y-2">
+          {menuItems.map((item) => (
+            <Link href={item.path} key={item.name}>
+              <button
+                onClick={() => setSelectedMenu(item.name)}
+                className={`flex items-center px-4 py-2 rounded-lg transition-all w-full text-left ${
+                  selectedMenu === item.name ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 border'
+                } hover:bg-blue-400 hover:text-white`}
+              >
+                <span className="mr-2">{item.icon}</span> {item.name}
+              </button>
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      {/* Content Area */}
+      <div className="flex-1 p-6 bg-white shadow-lg rounded-lg m-4">
+        <h1 className="text-2xl font-semibold mb-4">{selectedMenu}</h1>
+        <div className="border p-4 rounded-lg">
+          <p>List of items for: {selectedMenu}</p>
+          {/* Bạn có thể thêm danh sách dữ liệu động vào đây */}
         </div>
       </div>
     </div>
   );
-};
-
-export default SpecialtyList;
+}

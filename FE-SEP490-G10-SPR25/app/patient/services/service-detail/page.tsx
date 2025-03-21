@@ -1,6 +1,6 @@
 'use client';
-import React from "react";
 import { Star } from "lucide-react";
+import Image from 'next/image';
 
 const ServiceDetailPage = () => {
     return (
@@ -8,7 +8,7 @@ const ServiceDetailPage = () => {
             <div className="w-full max-w-4xl bg-white shadow-lg rounded-2xl p-6">
                 {/* Header Section */}
                 <div className="flex items-center space-x-6 border-b pb-4">
-                    <img src="/images/service_icon.png" alt="Service" className="w-24 h-24 rounded-lg" />
+                    <Image src="/images/service_icon.png" alt="Service" className="w-24 h-24 rounded-lg" />
                     <div>
                         <h1 className="text-3xl font-bold">General Consultation</h1>
                         <p className="text-gray-500">30-minute 1-to-1 doctor take on</p>
@@ -63,7 +63,7 @@ const ServiceDetailPage = () => {
                     <div className="mt-4 flex space-x-6 overflow-x-auto">
                         {[1, 2, 3].map((item) => (
                             <div key={item} className="min-w-[220px] p-4 shadow-md bg-white rounded-lg border">
-                                <img src="/images/service_icon.png" alt="Service" className="w-full h-28 object-cover rounded-lg" />
+                                <Image src="/images/service_icon.png" alt="Service" className="w-full h-28 object-cover rounded-lg" />
                                 <p className="text-sm font-semibold mt-3 text-center">General Consultation</p>
                                 <div className="flex justify-center items-center text-yellow-500 text-xs mt-2">
                                     <Star size={14} /> <span className="ml-1">4.7 (123)</span>

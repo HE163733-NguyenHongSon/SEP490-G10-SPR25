@@ -1,6 +1,7 @@
-import { useHistory, useParams } from "react-router-dom";
+import Image from 'next/image';
+import { useHistory } from "react-router-dom";
 export const SpecialtyDetails = () => {
-  const { id } = useParams<{ id: string }>();
+  // const { id } = useParams<{ id: string }>();
   const history = useHistory();
   return (
     <div className="bg-gray-50 min-h-screen p-8">
@@ -133,7 +134,7 @@ export const SpecialtyDetails = () => {
                   key={index}
                   className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
                 >
-                  <img
+                  <Image 
                     src="https://via.placeholder.com/150"
                     alt="General Consultation"
                     className="w-full h-40 object-cover rounded-t-lg"

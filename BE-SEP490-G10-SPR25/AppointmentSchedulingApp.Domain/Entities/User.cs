@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AppointmentSchedulingApp.Domain.Entities;
 
-public partial class User : IdentityUser<int>
+public partial class User 
 {
     public int UserId { get; set; }
 
@@ -40,8 +40,7 @@ public partial class User : IdentityUser<int>
 
     public virtual Receptionist? Receptionist { get; set; }
 
-    //public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
+    public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 
-    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 
 }

@@ -19,7 +19,7 @@ namespace AppointmentSchedulingApp.Application.Profiles
              .ForMember(dest => dest.ReservationId, opt => opt.MapFrom(src => src.ReservationId))
              .ForMember(dest => dest.PatientId, opt => opt.MapFrom(src => src.PatientId))
              .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.PatientNavigation.UserName))
-             .ForMember(dest => dest.PatientPhone, opt => opt.MapFrom(src => src.Patient.PatientNavigation.PhoneNumber))
+             .ForMember(dest => dest.PatientPhone, opt => opt.MapFrom(src => src.Patient.PatientNavigation.Phone))
              .ForMember(dest => dest.PatientEmail, opt => opt.MapFrom(src => src.Patient.PatientNavigation.Email))
              .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate.HasValue? src.AppointmentDate.Value.ToString("dd/MM/yyyy"):""))
              .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => src.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss ")))

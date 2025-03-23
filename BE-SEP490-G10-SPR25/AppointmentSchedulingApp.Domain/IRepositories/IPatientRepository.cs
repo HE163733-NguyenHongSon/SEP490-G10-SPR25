@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AppointmentSchedulingApp.Domain.Entities;
+using AppointmentSchedulingApp.Domain.Repositories;
 
 namespace AppointmentSchedulingApp.Domain.IRepositories
 {
-    public class IPatientRepository
+    public interface IPatientRepository : IGenericRepository<User>
     {
-        //public Task<IQueryable<PatientInforDTO>> GetAllPatientInformationByReceptionist();
 
     }
 }

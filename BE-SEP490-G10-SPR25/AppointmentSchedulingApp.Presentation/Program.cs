@@ -30,6 +30,7 @@ modelBuilder.EntitySet<MedicalRecordDTO>("MedicalRecords");
 modelBuilder.EntitySet<DoctorDTO>("Doctors");
 modelBuilder.EntitySet<SpecialtyDTO>("Specialties");
 modelBuilder.EntitySet<ServiceDTO>("Services");
+modelBuilder.EntitySet<PatientDTO>("Patients");
 var provider = builder.Services.BuildServiceProvider();
 var config = provider.GetService<IConfiguration>();
 
@@ -151,6 +152,7 @@ builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
 
 builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<IPatientService, PatientService>();
 
 builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 

@@ -10,7 +10,7 @@ namespace AppointmentSchedulingApp.Application.IServices
 {
     public interface IPatientService
     {
-        Task<List<PatientInforDTO>> GetAllPatientInformationByReceptionist();
-        //public Task<List<ReservationDTO>> GetListReservationByStatusAndSort(string status, string sortBy);
+        Task<List<PatientDTO>> GetPatientList();
+        //Task<DoctorDetailDTO> GetDoctorDetailById(int doctorId);
     }
 }

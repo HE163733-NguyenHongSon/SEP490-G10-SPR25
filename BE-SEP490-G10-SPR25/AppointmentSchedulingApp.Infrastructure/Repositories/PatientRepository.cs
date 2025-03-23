@@ -1,13 +1,19 @@
-﻿using System;
+﻿using AppointmentSchedulingApp.Domain.Entities;
+using AppointmentSchedulingApp.Domain.IRepositories;
+using AppointmentSchedulingApp.Domain.Repositories;
+using AppointmentSchedulingApp.Infrastructure.Database;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AppointmentSchedulingApp.Domain.IRepositories;
 
 namespace AppointmentSchedulingApp.Infrastructure.Repositories
 {
-    public class PatientRepository : IPatientRepository
+    public class PatientRepository : GenericRepository<User>, IPatientRepository
     {
+        public PatientRepository(AppointmentSchedulingDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }

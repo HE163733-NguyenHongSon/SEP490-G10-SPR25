@@ -12,25 +12,19 @@ namespace AppointmentSchedulingApp.Application.Services
 {
     public class PatientService : IPatientService
     {
-        private readonly IMapper mapper;
-        public IUnitOfWork unitOfWork { get; set; }
+        private readonly IMapper _mapper;
+        public IUnitOfWork _unitOfWork { get; set; }
 
         public PatientService(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            this.mapper = mapper;
-            this.unitOfWork = unitOfWork;
+            this._mapper = mapper;
+            this._unitOfWork = unitOfWork;
         }
 
-        //public async Task<List<ReservationDTO>> GetListReservation()
-        //{
-        //    var reservations = await unitOfWork.ReservationRepository.GetAll();
-        //    return mapper.Map<List<ReservationDTO>>(reservations);
-        //}
-
-        public async Task<List<PatientInforDTO>> GetAllPatientInformationByReceptionist()
+        public async Task<List<PatientDTO>> GetPatientList()
         {
-            var patients = await unitOfWork.PatientRepository.GetAll();
-            return mapper.Map<List<PatientInforDTO>>(reservations);
+            var patients = await _unitOfWork.PatientRepository.GetAll();
+            return _mapper.Map<List<PatientDTO>>(patients);
         }
     }
 }

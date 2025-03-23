@@ -24,7 +24,7 @@ export const DoctorList = ({ items, displayView }: IDoctors) => {
       {items?.map((doctor) => (
         <Link
           key={doctor.doctorId}
-          href={`/patient/doctors/${doctor.doctorId}`}
+          href={`/patient/doctor-detail/${doctor.doctorId}`}
           className=" border border-gray-300 rounded-md shadow-md "
         >
           <h1 className=" text-center font-semibold  text-lg text-gray-700 mt-3 ">

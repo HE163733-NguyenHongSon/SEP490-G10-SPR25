@@ -9,7 +9,7 @@ export default async function DoctorDetails({
   const doctorDetail: IDoctorDetail = await doctorService.getDoctorDetailById(
     params.doctorId
   );
-  console.log(doctorDetail.detailDescription);
+  console.log(doctorDetail);
   return (
     <>
       <CollapsibleSection

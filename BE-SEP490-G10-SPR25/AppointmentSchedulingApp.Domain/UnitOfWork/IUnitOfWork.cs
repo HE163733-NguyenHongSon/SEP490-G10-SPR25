@@ -1,4 +1,5 @@
-﻿using AppointmentSchedulingApp.Domain.Repositories;
+﻿using AppointmentSchedulingApp.Domain.IRepositories;
+using AppointmentSchedulingApp.Domain.Repositories;
 
 namespace AppointmentSchedulingApp.Domain.UnitOfWork
 {
@@ -9,6 +10,7 @@ namespace AppointmentSchedulingApp.Domain.UnitOfWork
         IReservationRepository ReservationRepository { get; }
         IServiceRepository ServiceRepository { get; }
         ISpecialtyRepository SpecialtyRepository { get; }
+        IPatientRepository PatientRepository { get; }
 
         void Commit();
 

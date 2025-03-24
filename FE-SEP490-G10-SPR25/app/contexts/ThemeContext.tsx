@@ -24,6 +24,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     const initialTheme = savedTheme || "light"; // Default to light theme
 
     setTheme(initialTheme);
+
     setIsInitialized(true);
   }, []);
 
@@ -48,6 +49,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     </ThemeContext.Provider>
   );
 };
+
+
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);

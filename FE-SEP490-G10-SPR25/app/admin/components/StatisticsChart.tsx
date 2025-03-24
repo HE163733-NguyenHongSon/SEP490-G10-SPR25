@@ -47,7 +47,7 @@ export default function StatisticsChart() {
         data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
         fill: true,
         backgroundColor: "rgba(70, 95, 255, 0.2)",
-        borderColor: "#465FFF",
+        borderColor: "#0891b2",
         borderWidth: 2,
         tension: 0.4,
       },
@@ -97,7 +97,7 @@ export default function StatisticsChart() {
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+    <div className="rounded-2xl max-h-fit border border-gray-300  p-5  dark:border-gray-700 sm:px-6 sm:pt-6 shadow-md">
       <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
         <div className="w-full">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">

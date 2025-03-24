@@ -8,7 +8,8 @@ const nextConfig = {
         return [
           {
             source: '/', 
-            destination: '/patient', 
+            // destination: '/patient', 
+            destination: '/admin', 
             permanent: false, 
           },
         ]

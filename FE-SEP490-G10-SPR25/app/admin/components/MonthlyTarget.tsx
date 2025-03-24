@@ -18,7 +18,7 @@ export default function MonthlyTarget() {
       {
         label: "Monthly Target",
         data: series,
-        backgroundColor: ["#465FFF"],
+        backgroundColor: ["#0891b2"],
         borderColor: ["#E4E7EC"],
         borderWidth: 10,
         cutout: "80%",
@@ -55,7 +55,7 @@ export default function MonthlyTarget() {
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-white/[0.03]">
+    <div className="rounded-2xl border border-gray-300  p-5  dark:border-gray-700 shadow-md">
       <div className="px-5 pt-5 bg-white shadow-default rounded-2xl pb-11 dark:bg-gray-900 sm:px-6 sm:pt-6">
         <div className="flex justify-between">
           <div>

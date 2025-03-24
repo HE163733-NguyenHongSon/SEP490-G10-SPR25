@@ -25,8 +25,8 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${outfit.variable} dark:bg-gray-900`}>
+    <html lang="en" > 
+      <body >
         <ThemeProvider>
           <SidebarProvider>
             <LayoutContent>{children}</LayoutContent>
@@ -49,7 +49,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen xl:flex">
-      {/* <Sidebar /> */}
+      <Sidebar />
       <Backdrop />
       <div
         className={`flex-1 transition-all duration-300 ease-in-out ${mainContentMargin}`}

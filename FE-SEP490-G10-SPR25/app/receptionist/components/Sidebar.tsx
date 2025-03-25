@@ -1,47 +1,23 @@
 "use client";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState,useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "@/contexts/SidebarContext";
-
+// import {
+//   BoxCubeIcon,
+//   CalenderIcon,
+//   ChevronDownIcon,
+//   GridIcon,
+//   HorizontaLDots,
+//   ListIcon,
+//   PageIcon,
+//   PieChartIcon,
+//   PlugInIcon,
+//   TableIcon,
+//   UserCircleIcon,
+// } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
-const DashboardIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M0 0h24v24H0z" fill="none" />
-    <path d="M3 13h8V3H3v10zm10 8h8V11h-8v10zM3 21h8v-6H3v6zm10-18v6h8V3h-8z" />
-  </svg>
-);
-const DoctorIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M0 0h24v24H0z" fill="none" />
-    <path d="M12 2a4 4 0 110 8 4 4 0 010-8zm6 16v2H6v-2c0-2.5 3.99-4 6-4s6 1.5 6 4zM4 10v1a2 2 0 004 0v-1h2v1a4 4 0 01-8 0v-1h2zm14 0v1a2 2 0 004 0v-1h2v1a4 4 0 01-8 0v-1h2z" />
-  </svg>
-);
-const ServiceIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M0 0h24v24H0z" fill="none" />
-    <path d="M19 3h-4.18C14.4 2.42 13.3 2 12 2s-2.4.42-2.82 1H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1-1 .45-1 1-1zm4 16h-2v2h-4v-2H8v-4h2v-2h4v2h2v4z" />
-  </svg>
-);
 
 type NavItem = {
   name: string;
@@ -52,22 +28,70 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    icon: <DashboardIcon />,
+    icon: "https://www.svgrepo.com/show/331482/dashboard.svg",
     name: "Dashboard",
-    path: "/admin/dashboard",
-    // subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
   {
-    icon: <DoctorIcon />,
-    name: "Doctors",
-    path: "/admin/doctors",
+    icon: "https://www.svgrepo.com/show/331491/calendar.svg",
+    name: "Calendar",
+    path: "/calendar",
   },
   {
-    icon: <ServiceIcon />,
-    name: "Services",
-    path: "/admin/services",
+    icon: "https://www.svgrepo.com/show/331457/user-circle.svg",
+    name: "User Profile",
+    path: "/profile",
   },
+  // {
+  //   name: "Forms",
+  //   icon: <ListIcon />,
+  //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+  // },
+  // {
+  //   name: "Tables",
+  //   icon: <TableIcon />,
+  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+  // },
+  // {
+  //   name: "Pages",
+  //   icon: <PageIcon />,
+  //   subItems: [
+  //     { name: "Blank Page", path: "/blank", pro: false },
+  //     { name: "404 Error", path: "/error-404", pro: false },
+  //   ],
+  // },
 ];
+
+// const othersItems: NavItem[] = [
+//   {
+//     icon: <PieChartIcon />,
+//     name: "Charts",
+//     subItems: [
+//       { name: "Line Chart", path: "/line-chart", pro: false },
+//       { name: "Bar Chart", path: "/bar-chart", pro: false },
+//     ],
+//   },
+//   {
+//     icon: <BoxCubeIcon />,
+//     name: "UI Elements",
+//     subItems: [
+//       { name: "Alerts", path: "/alerts", pro: false },
+//       { name: "Avatar", path: "/avatars", pro: false },
+//       { name: "Badge", path: "/badge", pro: false },
+//       { name: "Buttons", path: "/buttons", pro: false },
+//       { name: "Images", path: "/images", pro: false },
+//       { name: "Videos", path: "/videos", pro: false },
+//     ],
+//   },
+//   {
+//     icon: <PlugInIcon />,
+//     name: "Authentication",
+//     subItems: [
+//       { name: "Sign In", path: "/signin", pro: false },
+//       { name: "Sign Up", path: "/signup", pro: false },
+//     ],
+//   },
+// ];
 
 const Sidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
@@ -105,22 +129,23 @@ const Sidebar: React.FC = () => {
               {(isExpanded || isHovered || isMobileOpen) && (
                 <span className={`menu-item-text`}>{nav.name}</span>
               )}
-              {/* {(isExpanded || isHovered || isMobileOpen) && (
-                <ChevronDownIcon
-                  className={`ml-auto w-5 h-5 transition-transform duration-200  ${
-                    openSubmenu?.type === menuType &&
-                    openSubmenu?.index === index
-                      ? "rotate-180 text-brand-500"
-                      : ""
-                  }`}
-                />
-              )} */}
+              {(isExpanded || isHovered || isMobileOpen) && (
+                // <ChevronDownIcon
+                //   className={`ml-auto w-5 h-5 transition-transform duration-200  ${
+                //     openSubmenu?.type === menuType &&
+                //     openSubmenu?.index === index
+                //       ? "rotate-180 text-brand-500"
+                //       : ""
+                //   }`}
+                // />
+                "ChevronDownIcon"
+              )}
             </button>
           ) : (
             nav.path && (
               <Link
                 href={nav.path}
-                className={`flex text-xl gap-x-3 menu-item group ${
+                className={`menu-item group ${
                   isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                 }`}
               >
@@ -209,7 +234,7 @@ const Sidebar: React.FC = () => {
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // const isActive = (path: string) => path === pathname;
-  const isActive = useCallback((path: string) => path === pathname, [pathname]);
+   const isActive = useCallback((path: string) => path === pathname, [pathname]);
 
   // useEffect(() => {
   //   // Check if the current path matches any submenu item
@@ -283,10 +308,8 @@ const Sidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link
-          href="/"
-          className="flex min-w-[181px]:hidden items-center gap-x-3 text-cyan-500  font-semibold text-2xl"
-        >
+        <Link href="/" className="flex flex-wrap items-center gap-x-3 text-cyan-500  font-semibold text-xl">
+           
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <Image
@@ -312,7 +335,7 @@ const Sidebar: React.FC = () => {
               height={32}
             />
           )}
-          <span>Admin manager</span>
+          Admin manager
         </Link>
       </div>
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
@@ -326,10 +349,12 @@ const Sidebar: React.FC = () => {
                     : "justify-start"
                 }`}
               >
-                {isExpanded || isHovered || isMobileOpen
-                  ? "Menu"
-                  : // <HorizontaLDots />
-                    "Menu2"}
+                {isExpanded || isHovered || isMobileOpen ? (
+                  "Menu"
+                ) : (
+                  // <HorizontaLDots /> 
+                  "Menu2"
+                )}
               </h2>
               {renderMenuItems(navItems, "main")}
             </div>
@@ -342,7 +367,11 @@ const Sidebar: React.FC = () => {
                     : "justify-start"
                 }`}
               >
-                {isExpanded || isHovered || isMobileOpen ? "Others" : "Others2"}
+                {isExpanded || isHovered || isMobileOpen ? (
+                  "Others"
+                ) : (
+                  "Others2"
+                )}
               </h2>
               {/* {renderMenuItems(othersItems, "others")} */}
             </div>

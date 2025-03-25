@@ -25,8 +25,8 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" > 
-      <body >
+    <html lang="en">
+      <body>
         <ThemeProvider>
           <SidebarProvider>
             <LayoutContent>{children}</LayoutContent>

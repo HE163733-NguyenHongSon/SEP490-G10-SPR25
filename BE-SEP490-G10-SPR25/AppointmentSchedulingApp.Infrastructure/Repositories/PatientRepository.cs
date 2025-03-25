@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Infrastructure.Repositories
 {
-    public class PatientRepository : GenericRepository<User>, IPatientRepository
+    public class PatientRepository : GenericRepository<Patient>, IPatientRepository
     {
         public PatientRepository(AppointmentSchedulingDbContext dbContext) : base(dbContext)
         {

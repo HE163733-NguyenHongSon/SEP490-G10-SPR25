@@ -24,6 +24,7 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.PatientNavigation.Address))
                 .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => src.PatientNavigation.AvatarUrl))
                 .ReverseMap();
+
         }
     }
 }

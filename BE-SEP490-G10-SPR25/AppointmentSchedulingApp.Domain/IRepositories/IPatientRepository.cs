@@ -8,7 +8,7 @@ using AppointmentSchedulingApp.Domain.Repositories;
 
 namespace AppointmentSchedulingApp.Domain.IRepositories
 {
-    public interface IPatientRepository : IGenericRepository<User>
+    public interface IPatientRepository : IGenericRepository<Patient>
     {
 
     }

@@ -24,12 +24,6 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             return Ok(await _patientService.GetPatientList());
         }
 
-        //[HttpGet("{doctorId}")]
-        //public async Task<IActionResult> GetDoctorDetailById(int doctorId)
-        //{
-
-        //    return Ok(await _patientService.GetDoctorDetailById(doctorId));
-        //}
 
     }
 }

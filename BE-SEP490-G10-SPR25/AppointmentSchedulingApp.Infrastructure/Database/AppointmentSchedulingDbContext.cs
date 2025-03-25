@@ -231,7 +231,7 @@ public partial class AppointmentSchedulingDbContext : DbContext
                 .HasForeignKey(d => d.GuardianId)
                 .HasConstraintName("Guardian_FK");
 
-            entity.HasOne(d => d.PatientNavigation).WithOne(p => p.PatientPatientNavigation)
+            entity.HasOne(d => d.PatientNavigation).WithOne(p => p.PatientNavigation)
                 .HasForeignKey<Patient>(d => d.PatientId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("Patient_FK");

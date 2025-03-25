@@ -1,12 +1,11 @@
 export const doctorService = {
   async getDoctorList(): Promise<IDoctor[]> {
     const res = await fetch(
-      "http://localhost:5220/api/Doctors?$orderby=rating desc"
+      "http://localhost:5220/api/Doctors"
     );
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
-    // console.log("fetch doctors");
 
     return res.json();
   },
@@ -46,7 +45,7 @@ export const doctorService = {
     specialties: string[],
     academicTitles: string[],
     degrees: string[],
-    sortBy: keyof typeof sortOptions
+    sortBy: string
   ): Promise<IDoctor[]> {
     const query = [];
     const sortOptions: { [key: string]: string } = {

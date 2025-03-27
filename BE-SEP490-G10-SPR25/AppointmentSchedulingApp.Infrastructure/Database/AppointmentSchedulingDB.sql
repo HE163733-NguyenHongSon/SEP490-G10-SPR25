@@ -612,25 +612,25 @@ VALUES
   N'Khám tổng quát là quá trình kiểm tra sức khỏe toàn diện nhằm đánh giá tình trạng sức khỏe chung của bệnh nhân, phát hiện sớm các bệnh lý tiềm ẩn và tư vấn phòng ngừa bệnh tật. Khám tổng quát giúp kiểm tra các cơ quan và hệ thống trong cơ thể để phát hiện các dấu hiệu bất thường.',
   N'1. Khai thác bệnh sử và thói quen sinh hoạt của bệnh nhân.\n2. Đo các chỉ số sinh tồn như huyết áp, nhịp tim, nhịp thở và nhiệt độ.\n3. Khám lâm sàng các hệ cơ quan (hô hấp, tuần hoàn, tiêu hóa, thần kinh...).\n4. Thực hiện các xét nghiệm cơ bản như xét nghiệm máu, nước tiểu, siêu âm bụng.\n5. Đánh giá tổng quát sức khỏe và tư vấn điều trị hoặc theo dõi.',
   N'Sử dụng máy đo huyết áp tự động, nhiệt kế điện tử, máy đo nhịp tim, máy siêu âm bụng và các thiết bị xét nghiệm máu hiện đại.',
-  500000, '00:30:00', 0, NULL, 1, N'images/kham_tong_quat.jpg'),
+  500000, '00:15:00', 0, NULL, 1, N'images/kham_tong_quat.jpg'),
 
 (N'Khám răng',
   N'Khám răng là quá trình kiểm tra tình trạng sức khỏe răng miệng, phát hiện các vấn đề như sâu răng, viêm nướu hoặc các bệnh lý liên quan khác. Khám răng định kỳ giúp duy trì sức khỏe răng miệng tốt.',
   N'1. Kiểm tra răng miệng tổng quát.\n2. Đánh giá tình trạng nướu, men răng và các tổn thương khác.\n3. Chụp X-quang răng nếu cần thiết.\n4. Tư vấn về chăm sóc răng miệng và điều trị nếu có vấn đề.',
   N'Sử dụng máy khoan răng, máy cạo vôi răng, dụng cụ vệ sinh răng miệng và máy chụp X-quang.',
-  700000, '00:45:00', 1, 1, 2, N'images/kham_rang.jpg'),
+  700000, '00:05:00', 1, 1, 2, N'images/kham_rang.jpg'),
 
 (N'Khám mắt',
  N'Khám mắt là quy trình kiểm tra chức năng thị lực và các bệnh lý về mắt như cận thị, loạn thị, viễn thị và các vấn đề khác về võng mạc.',
  N'1. Đo thị lực bằng bảng kiểm tra.\n2. Đo nhãn áp để kiểm tra nguy cơ tăng nhãn áp.\n3. Soi đáy mắt để phát hiện bệnh lý võng mạc.\n4. Đánh giá tổng quan sức khỏe mắt.',
  N'Sử dụng máy đo thị lực tự động, máy đo nhãn áp, đèn soi đáy mắt và thiết bị laser nếu cần.',
- 800000, '01:00:00', 1, 1, 3, N'images/kham_mat.jpg'),
+ 800000, '01:05:00', 1, 1, 3, N'images/kham_mat.jpg'),
 
 (N'Xét nghiệm',
  N'Xét nghiệm y tế giúp chẩn đoán và theo dõi tình trạng sức khỏe của bệnh nhân thông qua việc phân tích mẫu máu, nước tiểu hoặc các mẫu sinh học khác.',
  N'1. Thu thập mẫu máu hoặc nước tiểu.\n2. Xét nghiệm sinh hóa, huyết học hoặc vi sinh.\n3. Đánh giá kết quả và lập báo cáo.\n4. Tư vấn về các chỉ số bất thường nếu có.',
  N'Sử dụng máy xét nghiệm tự động, máy phân tích sinh hóa và dụng cụ lấy mẫu vô trùng.',
- 300000, '00:20:00', 1, 1, 5, N'images/xet_nghiem.jpg'),
+ 300000, '00:05:00', 1, 1, 5, N'images/xet_nghiem.jpg'),
 
 (N'Vật lý trị liệu',
  N'Vật lý trị liệu là quá trình phục hồi chức năng vận động, giảm đau và cải thiện chất lượng cuộc sống cho bệnh nhân bị chấn thương hoặc các bệnh lý cơ xương khớp.',
@@ -745,11 +745,18 @@ CREATE TABLE DoctorSchedules (
 );
 INSERT INTO DoctorSchedules (DoctorId, ServiceId, DayOfWeek, SlotId, RoomId)
 VALUES
-(33, 1, N'Thứ Hai', 1, 1),
-(33, 2, N'Thứ Hai', 2, 1),
-(33, 3, N'Thứ Tư', 1, 2),
-(33, 4, N'Thứ Tư', 2, 2),
-(33, 5, N'Thứ Sáu', 1, 1),
+(33, 2, N'Thứ Hai', 1, 1),
+(34, 3, N'Thứ Hai', 1, 2),
+(35, 4, N'Thứ Hai', 1, 3),
+
+(33, 2, N'Thứ Tư', 1, 1),
+(34, 3, N'Thứ Tư', 1, 2),
+(35, 4, N'Thứ Tư', 1, 3),
+
+(33, 2, N'Thứ Sáu', 1, 1),
+(34, 3, N'Thứ Sáu', 1, 2),
+(35, 4, N'Thứ Sáu', 1, 3),
+
 
 (34, 6, N'Thứ Ba', 1, 1),
 (34, 7, N'Thứ Ba', 2, 1),
@@ -769,10 +776,10 @@ VALUES
 (37, 18, N'Thứ Sáu', 3, 3),
 
 (38, 19, N'Thứ Hai', 2, 4),
-(38, 20, N'Thứ Ba', 1, 4),
-(38, 1, N'Thứ Tư', 3, 4),
-(38, 2, N'Thứ Năm', 2, 4),
-(38, 3, N'Thứ Sáu', 1, 4),
+(38, 19, N'Thứ Ba', 2, 4),
+(38, 19, N'Thứ Tư', 2, 4),
+(38, 19, N'Thứ Năm', 2, 4),
+(38, 19, N'Thứ Sáu', 2, 4),
 
 (39, 4, N'Thứ Hai', 3, 5),
 (39, 5, N'Thứ Ba', 2, 5),
@@ -824,34 +831,38 @@ VALUES
 CREATE TABLE ReservationDoctorSchedules (
     ReservationId INT NOT NULL,
     DoctorScheduleId INT NOT NULL,
+	StartTime DATETIME NOT NULL,
+    EndTime DATETIME NOT NULL,
     PRIMARY KEY (DoctorScheduleId, ReservationId),
     CONSTRAINT FK_DoctorSchedule FOREIGN KEY (DoctorScheduleId) REFERENCES DoctorSchedules (DoctorScheduleId),
     CONSTRAINT FK_Reservation FOREIGN KEY (ReservationId) REFERENCES Reservations (ReservationId)
 );
-INSERT INTO ReservationDoctorSchedules (ReservationId, DoctorScheduleId)
+INSERT INTO ReservationDoctorSchedules (ReservationId, DoctorScheduleId, StartTime, EndTime)
 VALUES
-(1, 1),
-(1, 3),
-(2, 1),
-(2, 2),
-(3, 5),
-(4, 7),
-(5, 8),
-(6, 10),
-(7, 12),
-(8, 14),
-(9, 16),
-(10, 18),
-(11, 20),
-(12, 1),
-(13, 2),
-(14, 3),
-(15, 4),
-(16, 5),
-(17, 6),
-(18, 7),
-(19, 8),
-(20, 9);
+(1, 1, '2024-09-01 09:00:00', '2024-09-01 10:00:00'),
+(1, 2, '2024-09-01 10:30:00', '2024-09-01 11:30:00'),
+(1, 3, '2024-09-01 14:00:00', '2024-09-01 15:00:00'),
+(2, 1, '2024-09-02 08:00:00', '2024-09-02 09:00:00'),
+(2, 2, '2024-09-02 09:30:00', '2024-09-02 10:30:00'),
+(3, 5, '2024-09-03 11:00:00', '2024-09-03 12:00:00'),
+(4, 7, '2024-09-04 13:00:00', '2024-09-04 14:00:00'),
+(5, 8, '2024-09-05 15:30:00', '2024-09-05 16:30:00'),
+(6, 10, '2024-09-06 10:00:00', '2024-09-06 11:00:00'),
+(7, 12, '2024-09-07 12:30:00', '2024-09-07 13:30:00'),
+(8, 14, '2024-09-08 09:00:00', '2024-09-08 10:00:00'),
+(9, 16, '2024-09-09 14:00:00', '2024-09-09 15:00:00'),
+(10, 18, '2024-09-10 11:30:00', '2024-09-10 12:30:00'),
+(11, 20, '2024-09-11 08:00:00', '2024-09-11 09:00:00'),
+(12, 1, '2024-09-12 09:00:00', '2024-09-12 10:00:00'),
+(13, 2, '2024-09-13 10:30:00', '2024-09-13 11:30:00'),
+(14, 3, '2024-09-14 14:00:00', '2024-09-14 15:00:00'),
+(15, 4, '2024-09-15 08:30:00', '2024-09-15 09:30:00'),
+(16, 5, '2024-09-16 11:00:00', '2024-09-16 12:00:00'),
+(17, 6, '2024-09-17 13:30:00', '2024-09-17 14:30:00'),
+(18, 7, '2024-09-18 09:00:00', '2024-09-18 10:00:00'),
+(19, 8, '2024-09-19 15:30:00', '2024-09-19 16:30:00'),
+(20, 9, '2024-09-20 10:00:00', '2024-09-20 11:00:00');
+
 --------------------------------------------------------------------------------------------------------------
 CREATE TABLE DeviceServices (
     ServiceId INT NOT NULL,

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from 'next/image';
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -114,7 +115,7 @@ export default function SpecialtyDetails() {
                   key={index}
                   className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
                 >
-                  <img
+                  <Image 
                     src="https://via.placeholder.com/150"
                     alt="General Consultation"
                     className="w-full h-40 object-cover rounded-t-lg text-black"

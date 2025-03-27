@@ -21,8 +21,8 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string ServiceName { get; set; } = null!;
         public string ServicePrice { get; set; }
         public string DoctorName { get; set; } = null!;
-        public string SlotStartTime { get; set; }
-        public string SlotEndTime { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
         public string RoomName { get; set; } = null!;
         public string Location { get; set; } = null!;
         public string? Reason { get; set; }

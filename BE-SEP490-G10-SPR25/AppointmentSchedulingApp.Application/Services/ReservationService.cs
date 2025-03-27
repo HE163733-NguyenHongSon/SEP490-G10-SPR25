@@ -27,13 +27,13 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             var queryable = await unitOfWork.ReservationRepository.GetListReservationByStatus(status);
 
-            //queryable = sortBy switch
-            //{
-            //    "recent_appointment" => queryable.OrderByDescending(r => r.AppointmentDate),
-            //    "past_appointment" => queryable.OrderBy(r => r.AppointmentDate),
-            //    "price_asc" => queryable.OrderBy(r => r.DoctorSchedule.Service.Price),
-            //    _ => queryable.OrderByDescending(r => r.DoctorSchedule.Service.Price),
-            //};
+            queryable = sortBy switch
+            {
+                "recent_appointment" => queryable.OrderByDescending(r => r.AppointmentDate),
+                "past_appointment" => queryable.OrderBy(r => r.AppointmentDate),
+                "price_asc" => queryable.OrderBy(r => r.DoctorSchedule.Service.Price),
+                _ => queryable.OrderByDescending(r => r.DoctorSchedule.Service.Price),
+            };
 
             return mapper.Map<List<ReservationDTO>>(await queryable.ToListAsync());
         }

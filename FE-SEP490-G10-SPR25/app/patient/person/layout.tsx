@@ -13,18 +13,24 @@ const PersonLayout = ({
   const currentPath = usePathname();
 
   const routes = [
-    { path: "/patient/person", name: "Profile", Image: assets.profile },
+    { path: "/patient/person", name: "Hồ sơ", Image: assets.profile },
     {
       path: "/patient/person/reservations",
-      name: "Reservations",
+      name: "Lịch hẹn",
       Image: assets.reservation,
     },
     {
       path: "/patient/person/medical-report",
-      name: "Medical Report",
+      name: "Báo cáo y tế",
+      Image: assets.medical_report,
+    },
+    {
+      path: "/patient/person/invoice",
+      name: "Hóa đơn",
       Image: assets.medical_report,
     },
   ];
+
 
   return (
     <div

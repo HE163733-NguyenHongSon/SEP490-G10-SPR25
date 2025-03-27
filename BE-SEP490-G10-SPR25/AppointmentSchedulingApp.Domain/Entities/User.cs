@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
 
 namespace AppointmentSchedulingApp.Domain.Entities;
 
-public partial class User 
+public partial class User
 {
     public int UserId { get; set; }
 
@@ -34,13 +33,11 @@ public partial class User
 
     public virtual ICollection<Patient> PatientGuardians { get; set; } = new List<Patient>();
 
-    public virtual Patient? PatientNavigation { get; set; }
+    public virtual Patient? PatientPatientNavigation { get; set; }
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
     public virtual Receptionist? Receptionist { get; set; }
 
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
-
-
 }

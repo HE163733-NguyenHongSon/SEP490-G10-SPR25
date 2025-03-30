@@ -1,6 +1,7 @@
 ﻿using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Infrastructure.Database;
+using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Infrastructure.Repositories
 {
@@ -12,9 +13,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
 
         public async Task<IQueryable<Reservation>> GetListReservationByStatus(string status)
         {
-            return base._entitySet.Where(r => r.Status.Equals(status));
+            return _dbSet.Where(r => r.Status.Equals(status));
         }
-
-
     }
 }

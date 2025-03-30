@@ -8,16 +8,15 @@ export interface Service {
     treatmentTechniques: string;
     price: number;
     image: string;
-    categoryId: number;
     specialtyId: number;
     estimatedTime?: string;
     rating?: number;
     ratingCount?: number;
+    isPrepayment?: boolean;
 }
 
 export interface ServiceDetail extends Service {
     specialtyName: string;
-    isPrepayment?: boolean;
     relatedDoctors: string[];
     requiredDevices: string[];
 }
@@ -29,8 +28,9 @@ export interface ServiceCreateDTO {
     treatmentTechniques: string;
     price: number;
     image: string;
-    categoryId: number;
     specialtyId: number;
+    isPrepayment?: boolean;
+    estimatedTime?: string;
 }
 
 export interface ServiceUpdateDTO extends ServiceCreateDTO {

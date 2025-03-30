@@ -1,6 +1,7 @@
 ﻿using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentSchedulingApp.Infrastructure.Repositories
 {
@@ -15,12 +16,20 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
 
         public async Task<IQueryable<Service>> GetAll()
         {
-            return _dbContext.Services.AsQueryable();
+            return _dbContext.Services
+                .Include(s => s.Specialty)
+                .Include(s => s.Doctors)
+                .Include(s => s.Devices)
+                .AsQueryable();
         }
 
         public async Task<Service> GetById(int id)
         {
-            return await _dbContext.Services.FindAsync(id);
+            return await _dbContext.Services
+                .Include(s => s.Specialty)
+                .Include(s => s.Doctors)
+                .Include(s => s.Devices)
+                .FirstOrDefaultAsync(s => s.ServiceId == id);
         }
 
         public async Task Add(Service service)
@@ -47,7 +56,12 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
 
         public async Task<IQueryable<Service>> GetServicesBySpecialty(int specialtyId)
         {
-            return _dbContext.Services.Where(s => s.SpecialtyId == specialtyId).AsQueryable();
+            return _dbContext.Services
+                .Include(s => s.Specialty)
+                .Include(s => s.Doctors)
+                .Include(s => s.Devices)
+                .Where(s => s.SpecialtyId == specialtyId)
+                .AsQueryable();
         }
     }
 }

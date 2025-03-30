@@ -1,6 +1,6 @@
 ﻿
 using AppointmentSchedulingApp.Domain.Entities;
-using AppointmentSchedulingApp.Domain.Repositories;
+using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Infrastructure.Helper;
 using AutoMapper;
@@ -68,23 +68,23 @@ namespace AppointmentSchedulingApp.Application.Services
 
             var authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, userDTO.Name),
-                new Claim(ClaimTypes.DateOfBirth,userDTO.Dob?.ToString("yyyy-MM-dd") ?? ""),
+                //new Claim(ClaimTypes.Name, userDTO.Name),
+                //new Claim(ClaimTypes.DateOfBirth,userDTO.Dob?.ToString("yyyy-MM-dd") ?? ""),
                 new Claim(JwtRegisteredClaimNames.Email, userDTO.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.NameId, userDTO.UserId.ToString()),
-                new Claim("PhoneNumber", userDTO.PhoneNumber),
+                //new Claim("PhoneNumber", userDTO.PhoneNumber),
                 new Claim("UserName", userDTO.UserName),
                 //new Claim(ClaimTypes.Role, userDTO.Role),
                 //new Claim("UserName", user.UserName ),
                 //new Claim("Id", user.UserId.ToString()),
                 //new Claim("TokenId", Guid.NewGuid().ToString()),
             };
-            foreach (var roleName in userDTO.RoleInformations)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, roleName.RoleName));
-                authClaims.Add(new Claim("RoleId", roleName.RoleId));
-            }
+            //foreach (var roleName in userDTO.RoleInformations)
+            //{
+            //    authClaims.Add(new Claim(ClaimTypes.Role, roleName.RoleName));
+            //    authClaims.Add(new Claim("RoleId", roleName.RoleId));
+            //}
 
             var tokenDescription = new SecurityTokenDescriptor
             {
@@ -127,10 +127,10 @@ namespace AppointmentSchedulingApp.Application.Services
                     UserName = user.UserName,
                     //Name = user.Name,
                     //Role = user.Role,
-                    PhoneNumber = user.Phone,
+                    //PhoneNumber = user.Phone,
                     Gender = user.Gender,
-                    Dob = user.Dob,
-                    RoleInformations = await _roleService.GetRoleInformationsByUserId(user.UserId.ToString())
+                    //Dob = user.Dob,
+                    //RoleInformations = await _roleService.GetRoleInformationsByUserId(user.UserId.ToString())
 
                 };
 
@@ -292,10 +292,10 @@ namespace AppointmentSchedulingApp.Application.Services
                 UserId = user.UserId,
                 //Name = user.Name,
                 Email = user.Email,
-                PhoneNumber = user.Phone,
+                //PhoneNumber = user.Phone,
                 Gender = user.Gender,
                 //Role = user.Role,
-                RoleInformations = await _roleService.GetRoleInformationsByUserId(userinfo.Id)
+                //RoleInformations = await _roleService.GetRoleInformationsByUserId(userinfo.Id)
 
             };
             return userDTO;

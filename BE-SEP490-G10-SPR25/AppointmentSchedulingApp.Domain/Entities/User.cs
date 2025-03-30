@@ -33,7 +33,7 @@ public partial class User
 
     public virtual ICollection<Patient> PatientGuardians { get; set; } = new List<Patient>();
 
-    public virtual Patient? PatientPatientNavigation { get; set; }
+    public virtual Patient? PatientNavigation { get; set; }
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 

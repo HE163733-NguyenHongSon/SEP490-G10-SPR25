@@ -1,6 +1,6 @@
 ﻿
 
-using AppointmentSchedulingApp.Domain.Repositories;
+using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;

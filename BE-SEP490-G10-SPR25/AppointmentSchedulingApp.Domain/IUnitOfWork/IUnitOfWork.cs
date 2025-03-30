@@ -1,11 +1,6 @@
-﻿using AppointmentSchedulingApp.Domain.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AppointmentSchedulingApp.Domain.IRepositories;
 
-namespace AppointmentSchedulingApp.Domain.UnitOfWork
+namespace AppointmentSchedulingApp.Domain.IUnitOfWork
 {
     public interface IUnitOfWork
     {
@@ -14,8 +9,8 @@ namespace AppointmentSchedulingApp.Domain.UnitOfWork
         IReservationRepository ReservationRepository { get; }
         IServiceRepository ServiceRepository { get; }
         ISpecialtyRepository SpecialtyRepository { get; }
-        IFeedbackRepository FeedbackRepository { get; }
 
+        IUserRepository  UserRepository { get; }
         void Commit();
 
         void Rollback();

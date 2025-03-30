@@ -1,6 +1,6 @@
 using AppointmentSchedulingApp.Domain.Entities;
-using AppointmentSchedulingApp.Domain.Repositories;
-using AppointmentSchedulingApp.Domain.UnitOfWork;
+using AppointmentSchedulingApp.Domain.IRepositories;
+using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AppointmentSchedulingApp.Infrastructure;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.Repositories;
@@ -155,7 +155,8 @@ builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 
 builder.Services.AddScoped<IServiceService, ServiceService>();
-builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+
+builder.Services.AddScoped<IMedicalReportService,MedicalReportService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Add Email Configs

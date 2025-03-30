@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace AppointmentSchedulingApp.Domain.Repositories
+namespace AppointmentSchedulingApp.Domain.IRepositories
 {
     public interface IGenericRepository<T> where T : class
     {

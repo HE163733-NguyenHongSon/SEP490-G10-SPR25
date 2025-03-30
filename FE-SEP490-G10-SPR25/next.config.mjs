@@ -2,15 +2,31 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-      domains: ['via.placeholder.com','th.bing.com'], 
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 'via.placeholder.com',
+        },
+        {
+          protocol: 'https',
+          hostname: 'th.bing.com',
+        },
+        {
+          protocol: 'https',
+          hostname: 'images.unsplash.com',
+        },
+        {
+          protocol: 'https',
+          hostname: 'randomuser.me',
+        }
+      ],
     },
     async redirects() {
         return [
           {
-            source: '/', 
-            // destination: '/patient', 
-            destination: '/admin', 
-            permanent: false, 
+            source: '/',
+            destination: '/guest',
+            permanent: true,
           },
         ]
       },

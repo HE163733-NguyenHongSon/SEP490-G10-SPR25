@@ -1,5 +1,5 @@
 using AppointmentSchedulingApp.Domain.Entities;
-using AppointmentSchedulingApp.Domain.Repositories;
+using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -60,8 +60,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
             {
                 feedbacks = await _context.Feedbacks
                     .Include(f => f.Reservation)
-                    .ThenInclude(r => r.DoctorSchedules)
-                    .Where(f => f.Reservation.DoctorSchedules.Any(ds => ds.ServiceId == serviceId))
+                    .ThenInclude(r => r.DoctorSchedule)
+                    .Where(f => f.Reservation.DoctorSchedule.ServiceId == serviceId)
                     .ToListAsync();
             }
 

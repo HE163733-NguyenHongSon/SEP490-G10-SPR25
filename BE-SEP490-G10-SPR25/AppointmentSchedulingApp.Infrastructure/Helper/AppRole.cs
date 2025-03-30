@@ -8,9 +8,10 @@ namespace AppointmentSchedulingApp.Infrastructure.Helper
 {
     public class AppRole
     {
-        public const string Patient = "Patient";
-        public const string Doctor = "Doctor";
-
-
+        public const string Patient = "Bệnh nhân";
+        public const string Doctor = "Bác sĩ";
+        public const string Receptionist = "Lễ tân";
+        public const string Guardian = "Người giám hộ";
+        public const string Admin = "Quản trị viên";
     }
 }

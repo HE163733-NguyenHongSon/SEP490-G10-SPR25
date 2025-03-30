@@ -257,11 +257,20 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             try
             {
-                var services = await unitOfWork.ServiceRepository.GetAll();
-                var servicesList = services.ToList();
-                var serviceDTOs = mapper.Map<List<ServiceDTO>>(servicesList);
+                var servicesList = await unitOfWork.ServiceRepository.GetAll();
                 
-                // Cập nhật Rating cho mỗi dịch vụ từ Feedback
+                // Convert to list to work with
+                var services = servicesList.ToList();
+                
+                // Sort services by rating in descending order
+                var sortedServices = services
+                    .OrderByDescending(s => s.Rating ?? 0) // Use null-coalescing to handle null ratings
+                    .ToList();
+                
+                // Map to DTOs
+                var serviceDTOs = mapper.Map<List<ServiceDTO>>(sortedServices);
+                
+                // Make sure the rating data is present
                 foreach (var serviceDTO in serviceDTOs)
                 {
                     var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(serviceDTO.ServiceId);
@@ -269,8 +278,7 @@ namespace AppointmentSchedulingApp.Application.Services
                     serviceDTO.RatingCount = ratingInfo.Count;
                 }
                 
-                // Sắp xếp theo rating giảm dần
-                return serviceDTOs.OrderByDescending(s => s.Rating ?? 0).ToList();
+                return serviceDTOs;
             }
             catch (Exception ex)
             {

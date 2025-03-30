@@ -55,6 +55,8 @@ public partial class AppointmentSchedulingDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UserRole> UserRoles { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=AppointmentSchedulingDB; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
@@ -353,34 +355,35 @@ public partial class AppointmentSchedulingDbContext : DbContext
 
         modelBuilder.Entity<Service>(entity =>
         {
-            entity.HasKey(e => e.ServiceId).HasName("PK__Services__C51BB00A0B623271");
+            entity.HasKey(e => e.ServiceId).HasName("PK__Services__C51BB00A2694A2ED");
 
-            entity.Property(e => e.IsPrepayment).HasDefaultValue(false);
-            entity.Property(e => e.Overview).HasMaxLength(500);
+            entity.Property(e => e.EstimatedTime).HasColumnType("time");
+            entity.Property(e => e.IsPrepayment).HasDefaultValueSql("((0))");
             entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.ServiceName).HasMaxLength(100);
             
-            // Thêm định nghĩa kiểu dữ liệu cho Rating và RatingCount
-            entity.Property(e => e.Rating).HasColumnType("decimal(3, 2)");
-            entity.Property(e => e.RatingCount).HasColumnType("int");
+            // Add configuration for the new Rating and RatingCount columns
+            entity.Property(e => e.Rating).HasColumnType("decimal(18, 2)").HasDefaultValue(null);
+            entity.Property(e => e.RatingCount).HasDefaultValue(null);
 
             entity.HasOne(d => d.Specialty).WithMany(p => p.Services)
                 .HasForeignKey(d => d.SpecialtyId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Services__Specia__628FA481");
+                .HasConstraintName("FK__Services__Special__5CD6CB2B");
 
             entity.HasMany(d => d.Devices).WithMany(p => p.Services)
                 .UsingEntity<Dictionary<string, object>>(
                     "DeviceService",
                     r => r.HasOne<Device>().WithMany()
                         .HasForeignKey("DeviceId")
-                        .HasConstraintName("FK__DeviceSer__Devic__72C60C4A"),
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK__DeviceSer__Devic__70DDC3D8"),
                     l => l.HasOne<Service>().WithMany()
                         .HasForeignKey("ServiceId")
-                        .HasConstraintName("FK__DeviceSer__Servi__71D1E811"),
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("FK__DeviceSer__Servi__6FE99F9F"),
                     j =>
                     {
-                        j.HasKey("ServiceId", "DeviceId").HasName("PK__DeviceSe__C185A23BEEEB907C");
+                        j.HasKey("ServiceId", "DeviceId").HasName("PK__DeviceSe__F48B92B8CA79423D");
                         j.ToTable("DeviceServices");
                     });
         });
@@ -427,19 +430,20 @@ public partial class AppointmentSchedulingDbContext : DbContext
             entity.Property(e => e.UserName).HasMaxLength(50);
 
             entity.HasMany(d => d.Roles).WithMany(p => p.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                    "UserRole",
-                    r => r.HasOne<Role>().WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                .UsingEntity<UserRole>(
+                    j => j
+                        .HasOne(ur => ur.Role)
+                        .WithMany()
+                        .HasForeignKey(ur => ur.RoleId)
                         .HasConstraintName("Role_FK"),
-                    l => l.HasOne<User>().WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                    j => j
+                        .HasOne(ur => ur.User)
+                        .WithMany()
+                        .HasForeignKey(ur => ur.UserId)
                         .HasConstraintName("User_FK"),
                     j =>
                     {
-                        j.HasKey("UserId", "RoleId").HasName("PK__UserRole__AF2760AD0E8BF207");
+                        j.HasKey(ur => new { ur.UserId, ur.RoleId }).HasName("PK__UserRole__AF2760AD0E8BF207");
                         j.ToTable("UserRoles");
                     });
         });

@@ -1,6 +1,10 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
-namespace AppointmentSchedulingApp.Domain.Repositories
+namespace AppointmentSchedulingApp.Domain.IRepositories
 {
     public interface IGenericRepository<T> where T : class
     {
@@ -10,7 +14,5 @@ namespace AppointmentSchedulingApp.Domain.Repositories
         void Add(T entity); 
         void Update(T entity); 
         void Remove(T entity);
-
-
     }
 }

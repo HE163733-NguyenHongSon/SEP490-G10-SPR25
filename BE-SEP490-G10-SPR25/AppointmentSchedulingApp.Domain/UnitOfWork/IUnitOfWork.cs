@@ -1,4 +1,4 @@
-﻿using AppointmentSchedulingApp.Domain.Repositories;
+﻿using AppointmentSchedulingApp.Domain.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;

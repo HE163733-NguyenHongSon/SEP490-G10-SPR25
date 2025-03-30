@@ -54,7 +54,7 @@ const navItems: NavItem[] = [
   {
     icon: <DashboardIcon />,
     name: "Dashboard",
-    path: "/admin/dashboard",
+    path: "/admin",
     // subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
   {

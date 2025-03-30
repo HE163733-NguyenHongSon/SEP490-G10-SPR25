@@ -201,7 +201,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); // Tạm thời vô hiệu hóa để tránh lỗi HTTPS port
 app.UseAuthentication();
 app.UseAuthorization();
 

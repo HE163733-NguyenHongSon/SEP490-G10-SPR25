@@ -5,8 +5,8 @@
     servicePrice: string;
     doctorName: string;
     appointmentDate: string;
-    slotStartTime: string;
-    slotEndTime: string;
+    startTime: string;
+    endTime: string;
     roomName: string;
     reason: string;
     updatedDate: string;

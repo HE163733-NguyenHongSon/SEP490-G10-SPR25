@@ -15,7 +15,7 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         private IServiceRepository _serviceRepository;
         private ISpecialtyRepository _specialtyRepository;
         private IFeedbackRepository _feedbackRepository;
-
+        private IUserRepository _userRepository;
         public UnitOfWork(AppointmentSchedulingDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -47,6 +47,8 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
                 return _feedbackRepository;
             }
         }
+
+        public IUserRepository UserRepository => _userRepository ??= new UserRepository(_dbContext);
 
         public void Commit() => _dbContext.SaveChanges();
 

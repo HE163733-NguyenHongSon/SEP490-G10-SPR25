@@ -15,7 +15,7 @@ namespace AppointmentSchedulingApp.Domain.UnitOfWork
         IServiceRepository ServiceRepository { get; }
         ISpecialtyRepository SpecialtyRepository { get; }
         IFeedbackRepository FeedbackRepository { get; }
-
+        IUserRepository UserRepository { get; }
         void Commit();
 
         void Rollback();

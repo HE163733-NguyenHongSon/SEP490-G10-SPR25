@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Application.IServices
 {
-    public interface IEmailService
+    public interface IMedicalReportService
     {
-        void SendEmail(Message message);
+        public Task<MedicalReportDTO> GetMedicalReportByPatientId(int patientId);
     }
 }

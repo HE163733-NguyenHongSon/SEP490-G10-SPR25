@@ -42,7 +42,10 @@ const ReservationList = ({ items }: ReservationListProps) => {
                         className="border border-gray-300 rounded-md"
                         width={200}
                         height={100}
-                        src={reservation.serviceImage}
+                        src={
+                          // reservation.serviceImage
+                           "https://th.bing.com/th/id/OIP.Km2gGBfVnlIr5JhRhgiuQgHaD4?w=305&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7"
+                          }
                         alt=""
                       />
                     </div>
@@ -71,11 +74,11 @@ const ReservationList = ({ items }: ReservationListProps) => {
                       </span>{" "}
                       từ{" "}
                       <span className="font-semibold">
-                        {reservation.slotStartTime}
+                        {reservation.startTime}
                       </span>{" "}
                       đến{" "}
                       <span className="font-semibold">
-                        {reservation.slotEndTime}
+                        {reservation.endTime}
                       </span>{" "}
                       tại{" "}
                       <span className="font-semibold">
@@ -95,7 +98,7 @@ const ReservationList = ({ items }: ReservationListProps) => {
                 <button
                   className="px-3 text-#635F5F rounded-full hover:bg-cyan-600 hover:text-white flex items-center justify-start min-w-fit h-fit gap-4 border border-gray-300 bg-white shadow-md"
                 >
-                  Hủy đặt lịch
+                  Hủy
                 </button>
               </td>
             </tr>

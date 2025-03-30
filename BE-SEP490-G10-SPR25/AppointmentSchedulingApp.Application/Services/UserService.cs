@@ -1,4 +1,4 @@
-﻿﻿using AppointmentSchedulingApp.Domain.Entities;
+using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Infrastructure.Helper;
@@ -85,9 +85,9 @@ namespace AppointmentSchedulingApp.Application.Services
                 }
                 
                 // Add DOB if available
-                if (userDTO.Dob.HasValue)
+                if (!string.IsNullOrEmpty(userDTO.Dob))
                 {
-                    authClaims.Add(new Claim(ClaimTypes.DateOfBirth, userDTO.Dob.Value.ToString("yyyy-MM-dd")));
+                    authClaims.Add(new Claim(ClaimTypes.DateOfBirth, userDTO.Dob));
                 }
 
                 Console.WriteLine($"Adding {userDTO.RoleInformations?.Count ?? 0} roles to token");
@@ -241,8 +241,11 @@ namespace AppointmentSchedulingApp.Application.Services
                     Email = user.Email,
                     UserName = user.UserName,
                     PhoneNumber = user.Phone,
+                    Phone = user.Phone,
                     Gender = user.Gender,
-                    Dob = user.Dob,
+                    Dob = user.Dob.HasValue ? user.Dob.Value.ToString("yyyy-MM-dd") : null,
+                    Address = user.Address,
+                    AvatarUrl = user.AvatarUrl,
                     RoleInformations = roles
                 };
                 

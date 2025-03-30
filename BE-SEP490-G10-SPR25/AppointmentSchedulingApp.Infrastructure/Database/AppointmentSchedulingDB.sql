@@ -597,137 +597,134 @@ CREATE TABLE Services (
     Price DECIMAL(18,2) NOT NULL,
     EstimatedTime TIME,
     IsPrepayment BIT DEFAULT 0,
-    ParentServiceId INT NULL,
     SpecialtyId INT NOT NULL,
     Image NVARCHAR(MAX),
-    FOREIGN KEY (ParentServiceId) REFERENCES Services(ServiceId),
     FOREIGN KEY (SpecialtyId) REFERENCES Specialties(SpecialtyId)
 );
 
 
 
-INSERT INTO Services (ServiceName, Overview, Process, TreatmentTechniques, Price, EstimatedTime, IsPrepayment, ParentServiceId, SpecialtyId, Image)
+INSERT INTO Services (ServiceName, Overview, Process, TreatmentTechniques, Price, EstimatedTime, IsPrepayment, SpecialtyId, Image)
 VALUES
-(N'Khám tổng quát',
-  N'Khám tổng quát là quá trình kiểm tra sức khỏe toàn diện nhằm đánh giá tình trạng sức khỏe chung của bệnh nhân, phát hiện sớm các bệnh lý tiềm ẩn và tư vấn phòng ngừa bệnh tật. Khám tổng quát giúp kiểm tra các cơ quan và hệ thống trong cơ thể để phát hiện các dấu hiệu bất thường.',
-  N'1. Khai thác bệnh sử và thói quen sinh hoạt của bệnh nhân.\n2. Đo các chỉ số sinh tồn như huyết áp, nhịp tim, nhịp thở và nhiệt độ.\n3. Khám lâm sàng các hệ cơ quan (hô hấp, tuần hoàn, tiêu hóa, thần kinh...).\n4. Thực hiện các xét nghiệm cơ bản như xét nghiệm máu, nước tiểu, siêu âm bụng.\n5. Đánh giá tổng quát sức khỏe và tư vấn điều trị hoặc theo dõi.',
-  N'Sử dụng máy đo huyết áp tự động, nhiệt kế điện tử, máy đo nhịp tim, máy siêu âm bụng và các thiết bị xét nghiệm máu hiện đại.',
-  500000, '00:30:00', 0, NULL, 1, N'images/kham_tong_quat.jpg'),
+(N'Khám tim mạch',
+  N'Khám tim mạch giúp đánh giá tình trạng sức khỏe của tim và hệ tuần hoàn, phát hiện sớm các bệnh lý tim mạch như cao huyết áp, bệnh mạch vành, suy tim hoặc rối loạn nhịp tim. Việc kiểm tra định kỳ giúp phát hiện sớm và điều trị kịp thời các vấn đề về tim mạch.',
+  N'1. Khai thác tiền sử bệnh tim mạch của bệnh nhân và gia đình.\n2. Đo các chỉ số sinh tồn: huyết áp, nhịp tim, SpO2.\n3. Khám lâm sàng hệ tim mạch, nghe tim bằng ống nghe.\n4. Thực hiện các xét nghiệm như điện tâm đồ (ECG), siêu âm tim, xét nghiệm mỡ máu.\n5. Đánh giá tình trạng tim mạch và tư vấn điều trị hoặc phòng ngừa bệnh lý.',
+  N'Sử dụng máy đo huyết áp, máy điện tim (ECG), máy siêu âm tim Doppler, thiết bị đo cholesterol và các xét nghiệm sinh hóa máu.',
+  600000, '00:20:00', 0, 2, N'images/kham_tim_mach.jpg'),
+
 
 (N'Khám răng',
   N'Khám răng là quá trình kiểm tra tình trạng sức khỏe răng miệng, phát hiện các vấn đề như sâu răng, viêm nướu hoặc các bệnh lý liên quan khác. Khám răng định kỳ giúp duy trì sức khỏe răng miệng tốt.',
   N'1. Kiểm tra răng miệng tổng quát.\n2. Đánh giá tình trạng nướu, men răng và các tổn thương khác.\n3. Chụp X-quang răng nếu cần thiết.\n4. Tư vấn về chăm sóc răng miệng và điều trị nếu có vấn đề.',
   N'Sử dụng máy khoan răng, máy cạo vôi răng, dụng cụ vệ sinh răng miệng và máy chụp X-quang.',
-  700000, '00:45:00', 1, 1, 2, N'images/kham_rang.jpg'),
+  700000, '00:05:00', 1, 12, N'images/kham_rang.jpg'),
 
 (N'Khám mắt',
  N'Khám mắt là quy trình kiểm tra chức năng thị lực và các bệnh lý về mắt như cận thị, loạn thị, viễn thị và các vấn đề khác về võng mạc.',
  N'1. Đo thị lực bằng bảng kiểm tra.\n2. Đo nhãn áp để kiểm tra nguy cơ tăng nhãn áp.\n3. Soi đáy mắt để phát hiện bệnh lý võng mạc.\n4. Đánh giá tổng quan sức khỏe mắt.',
  N'Sử dụng máy đo thị lực tự động, máy đo nhãn áp, đèn soi đáy mắt và thiết bị laser nếu cần.',
- 800000, '01:00:00', 1, 1, 3, N'images/kham_mat.jpg'),
+ 800000, '01:05:00', 1, 11, N'images/kham_mat.jpg'),
 
 (N'Xét nghiệm',
  N'Xét nghiệm y tế giúp chẩn đoán và theo dõi tình trạng sức khỏe của bệnh nhân thông qua việc phân tích mẫu máu, nước tiểu hoặc các mẫu sinh học khác.',
  N'1. Thu thập mẫu máu hoặc nước tiểu.\n2. Xét nghiệm sinh hóa, huyết học hoặc vi sinh.\n3. Đánh giá kết quả và lập báo cáo.\n4. Tư vấn về các chỉ số bất thường nếu có.',
  N'Sử dụng máy xét nghiệm tự động, máy phân tích sinh hóa và dụng cụ lấy mẫu vô trùng.',
- 300000, '00:20:00', 1, 1, 5, N'images/xet_nghiem.jpg'),
+ 300000, '00:05:00', 1, 15, N'images/xet_nghiem.jpg'),
 
 (N'Vật lý trị liệu',
  N'Vật lý trị liệu là quá trình phục hồi chức năng vận động, giảm đau và cải thiện chất lượng cuộc sống cho bệnh nhân bị chấn thương hoặc các bệnh lý cơ xương khớp.',
  N'1. Đánh giá tình trạng cơ bắp và khớp.\n2. Xây dựng kế hoạch phục hồi chức năng.\n3. Thực hiện các bài tập phục hồi và massage trị liệu.\n4. Theo dõi và điều chỉnh phương pháp điều trị.',
  N'Sử dụng máy siêu âm trị liệu, máy điện xung, máy kéo giãn cột sống và dụng cụ tập luyện.',
- 600000, '01:30:00', 0, NULL, 4, N'images/vat_ly_tri_lieu.jpg'),
+ 600000, '01:30:00', 0,  7, N'images/vat_ly_tri_lieu.jpg'),
 
 (N'Tư vấn tâm lý',
  N'Tư vấn tâm lý giúp bệnh nhân giải tỏa căng thẳng, lo âu và các vấn đề tinh thần thông qua liệu pháp trò chuyện và tư vấn cá nhân.',
  N'1. Khai thác tình trạng tâm lý của bệnh nhân.\n2. Thực hiện các bài kiểm tra tâm lý nếu cần.\n3. Áp dụng liệu pháp nhận thức hành vi (CBT).\n4. Đưa ra các phương pháp quản lý căng thẳng.',
  N'Kỹ thuật CBT, liệu pháp thư giãn, và trị liệu cá nhân.',
- 400000, '01:00:00', 0, NULL, 6, N'images/tu_van_tam_ly.jpg'),
+ 400000, '01:00:00', 0,  14, N'images/tu_van_tam_ly.jpg'),
 
 (N'Khám nhi',
  N'Khám nhi là quá trình kiểm tra sức khỏe tổng quát cho trẻ em, nhằm phát hiện sớm các bệnh lý tiềm ẩn, theo dõi quá trình phát triển thể chất và tiêm chủng định kỳ.',
  N'1. Khai thác tiền sử sức khỏe và bệnh sử của trẻ.\n2. Đo các chỉ số sinh tồn như chiều cao, cân nặng, nhiệt độ, nhịp tim.\n3. Khám lâm sàng các hệ cơ quan (hô hấp, tiêu hóa, tim mạch, thần kinh...).\n4. Đánh giá tình trạng dinh dưỡng và phát triển của trẻ.\n5. Tư vấn tiêm chủng và chăm sóc sức khỏe định kỳ.',
  N'Máy đo huyết áp trẻ em, cân điện tử, máy đo nhiệt độ, thiết bị đo chiều cao.',
- 600000, '00:30:00', 1, NULL, 7, N'images/kham_nhi.jpg'),
+ 600000, '00:30:00', 1,  10, N'images/kham_nhi.jpg'),
 
 (N'Siêu âm',
  N'Siêu âm là kỹ thuật chẩn đoán hình ảnh không xâm lấn, giúp phát hiện các bất thường bên trong cơ thể qua sóng siêu âm.',
  N'1. Khai thác triệu chứng lâm sàng và bệnh sử.\n2. Chuẩn bị vùng siêu âm bằng gel dẫn sóng.\n3. Thực hiện siêu âm bằng đầu dò chuyên dụng.\n4. Phân tích kết quả hình ảnh trên màn hình.\n5. Tư vấn chẩn đoán và hướng điều trị.',
  N'Máy siêu âm 4D, đầu dò siêu âm, máy tính phân tích hình ảnh.',
- 1000000, '00:30:00', 1, NULL, 8, N'images/sieu_am.jpg'),
+ 1000000, '00:30:00', 1,  16, N'images/sieu_am.jpg'),
 
 (N'Khám da liễu',
  N'Khám da liễu giúp phát hiện và điều trị các bệnh lý về da như viêm da, mụn trứng cá, bệnh da liễu truyền nhiễm và các rối loạn về sắc tố.',
  N'1. Khai thác tiền sử bệnh lý về da.\n2. Khám da bằng kính lúp và ánh sáng chuyên dụng.\n3. Đánh giá tổn thương da và vùng bị ảnh hưởng.\n4. Đề xuất các liệu pháp như liệu pháp laser, liệu pháp lạnh.\n5. Tư vấn chăm sóc da và phòng ngừa.',
  N'Máy laser, máy soi da, thiết bị trị liệu bằng lạnh.',
- 700000, '00:45:00', 0, NULL, 9, N'images/kham_da_lieu.jpg'),
+ 700000, '00:45:00', 0, 13, N'images/kham_da_lieu.jpg'),
 
-(N'Tư vấn dinh dưỡng',
- N'Tư vấn dinh dưỡng là quá trình lập kế hoạch chế độ ăn uống hợp lý dựa trên tình trạng sức khỏe, nhằm duy trì và cải thiện sức khỏe tổng thể.',
- N'1. Đánh giá tình trạng dinh dưỡng và thói quen ăn uống.\n2. Thực hiện các xét nghiệm liên quan (nếu cần).\n3. Phân tích chế độ ăn hiện tại và đề xuất thay đổi.\n4. Tư vấn về thực phẩm và cách xây dựng bữa ăn cân đối.\n5. Theo dõi tiến độ và điều chỉnh kế hoạch.',
- N'Máy đo chỉ số cơ thể, bảng phân tích dinh dưỡng, phần mềm lập kế hoạch ăn uống.',
- 500000, '01:00:00', 0, NULL, 10, N'images/tu_van_dinh_duong.jpg'),
+(N'Tư vấn dinh dưỡng', 
+ N'Tư vấn dinh dưỡng là quá trình lập kế hoạch chế độ ăn uống hợp lý...', 
+ N'1. Đánh giá tình trạng dinh dưỡng...\n2. Thực hiện xét nghiệm...', 
+ N'Máy đo chỉ số cơ thể, bảng phân tích dinh dưỡng...', 
+ 500000, '01:00:00', 0, 1, N'images/tu_van_dinh_duong.jpg'), 
 
-(N'Tiêm chủng',
-N'Tiêm phòng định kỳ và du lịch nhằm bảo vệ sức khỏe khỏi các bệnh truyền nhiễm.',
-N'1. Tư vấn về các loại vắc-xin cần thiết.\n2. Tiêm vắc-xin theo lịch trình.\n3. Theo dõi tình trạng sau tiêm.\n4. Hướng dẫn chăm sóc sau tiêm.\n5. Cập nhật sổ tiêm chủng.',
-N'Vắc-xin các loại, bộ tiêm chủng, hồ sơ tiêm phòng.',
-200000, '00:15:00', 1, NULL, 11, N'images/tiem_chung.jpg'),
+(N'Tiêm chủng', 
+ N'Tiêm phòng định kỳ và du lịch nhằm bảo vệ sức khỏe...', 
+ N'1. Tư vấn về các loại vắc-xin...\n2. Tiêm vắc-xin...', 
+ N'Vắc-xin các loại, bộ tiêm chủng...', 
+ 200000, '00:15:00', 1, 10, N'images/tiem_chung.jpg'), 
 
-(N'Chiropractic',
-N'Kiểm tra và nắn chỉnh cột sống nhằm điều trị các vấn đề về cơ xương khớp.',
-N'1. Đánh giá tình trạng cột sống và tư thế.\n2. Thực hiện các kỹ thuật nắn chỉnh cột sống.\n3. Hướng dẫn bài tập hỗ trợ.\n4. Theo dõi sau điều trị.\n5. Tư vấn chăm sóc cột sống lâu dài.',
-N'Bàn nắn chỉnh cột sống, dụng cụ hỗ trợ chỉnh hình.',
-800000, '01:00:00', 0, NULL, 12, N'images/chiropractic.jpg'),
+(N'Chiropractic', 
+ N'Kiểm tra và nắn chỉnh cột sống...', 
+ N'1. Đánh giá tình trạng cột sống...\n2. Thực hiện các kỹ thuật...', 
+ N'Bàn nắn chỉnh cột sống, dụng cụ hỗ trợ...', 
+ 800000, '01:00:00', 0, 7, N'images/chiropractic.jpg'), 
 
-(N'Đo thính lực',
- N'Đánh giá khả năng nghe và xác định các rối loạn về thính giác.',
-N'1. Khai thác tiền sử và các triệu chứng thính giác.\n2. Kiểm tra thính lực bằng máy đo chuyên dụng.\n3. Đánh giá ngưỡng nghe và khả năng phân biệt âm thanh.\n4. Tư vấn về thiết bị hỗ trợ thính giác.\n5. Đề xuất liệu pháp điều trị (nếu cần).',
- N'Máy đo thính lực, máy trợ thính.',
- 600000, '00:30:00', 0, NULL, 13, N'images/do_thinh_luc.jpg'),
+(N'Đo thính lực', 
+ N'Đánh giá khả năng nghe và xác định...', 
+ N'1. Khai thác tiền sử thính giác...\n2. Kiểm tra thính lực...', 
+ N'Máy đo thính lực, máy trợ thính...', 
+ 600000, '00:30:00', 0, 12, N'images/do_thinh_luc.jpg'), 
 
+(N'Khám tim mạch', 
+ N'Kiểm tra sức khỏe tim mạch...', 
+ N'1. Khai thác bệnh sử tim mạch...\n2. Đo huyết áp...', 
+ N'Máy đo huyết áp, máy điện tâm đồ...', 
+ 900000, '00:45:00', 1, 2, N'images/kham_tim_mach.jpg'), 
 
-(N'Khám tim mạch',
-N'Kiểm tra sức khỏe tim mạch nhằm phát hiện sớm các bệnh lý về tim.',
-N'1. Khai thác tiền sử bệnh lý tim mạch và các triệu chứng.\n2. Đo huyết áp và nhịp tim.\n3. Điện tâm đồ (ECG) và siêu âm tim.\n4. Kiểm tra gắng sức (nếu cần).\n5. Đánh giá kết quả và tư vấn điều trị.',
-N'Máy đo huyết áp, máy điện tâm đồ, thiết bị siêu âm tim.',
-900000, '00:45:00', 1, NULL, 14, N'images/kham_tim_mach.jpg'),
+(N'Khám chỉnh hình', 
+ N'Kiểm tra và điều trị các bệnh lý về xương khớp...', 
+ N'1. Khai thác bệnh sử xương khớp...\n2. Chẩn đoán hình ảnh...', 
+ N'Bàn khám chỉnh hình, dụng cụ nẹp...', 
+ 850000, '01:00:00', 0, 7, N'images/kham_chinh_hinh.jpg'), 
+(N'Tư vấn hiếm muộn', 
+ N'Hỗ trợ tư vấn vô sinh hiếm muộn...', 
+ N'1. Khai thác bệnh sử sức khỏe sinh sản...\n2. Xét nghiệm hormone...', 
+ N'Thiết bị siêu âm, máy xét nghiệm sinh hóa...', 
+ 1200000, '01:30:00', 1, 8, N'images/tu_van_hiem_muon.jpg'), 
 
-(N'Khám chỉnh hình',
-N'Kiểm tra và điều trị các bệnh lý về xương khớp và cơ bắp.',
-N'1. Khai thác bệnh sử và các triệu chứng đau nhức.\n2. Khám lâm sàng các khớp và cơ xương.\n3. Chẩn đoán hình ảnh (X-quang, CT nếu cần).\n4. Đưa ra phác đồ điều trị.\n5. Theo dõi và tái khám định kỳ.',
-N'Bàn khám chỉnh hình, dụng cụ nẹp và bó bột.',
-850000, '01:00:00', 0, NULL, 15, N'images/kham_chinh_hinh.jpg'),
+(N'Tư vấn tiểu đường', 
+ N'Quản lý bệnh tiểu đường...', 
+ N'1. Đánh giá tiền sử bệnh lý...\n2. Đo đường huyết...', 
+ N'Máy đo đường huyết, bút tiêm insulin...', 
+ 450000, '00:30:00', 0, 3, N'images/tu_van_tieu_duong.jpg'), 
 
-(N'Tư vấn hiếm muộn',
-N'Hỗ trợ tư vấn và chẩn đoán các vấn đề liên quan đến vô sinh hiếm muộn.',
-N'1. Khai thác tiền sử sức khỏe sinh sản của cả hai vợ chồng.\n2. Thực hiện các xét nghiệm máu, hormone, và siêu âm.\n3. Tư vấn phương pháp hỗ trợ sinh sản (IVF, IUI).\n4. Theo dõi và hỗ trợ tâm lý.\n5. Đánh giá hiệu quả và lập kế hoạch tiếp theo.',
-N'Thiết bị siêu âm, máy xét nghiệm sinh hóa.',
-1200000, '01:30:00', 1, NULL, 16, N'images/tu_van_hiem_muon.jpg'),
+(N'Liệu pháp hô hấp', 
+ N'Điều trị và phục hồi chức năng hô hấp...', 
+ N'1. Đánh giá tình trạng hô hấp...\n2. Hướng dẫn bài tập thở...', 
+ N'Máy khí dung, thiết bị hỗ trợ thở...', 
+ 700000, '00:45:00', 0, 16, N'images/lieu_phap_ho_hap.jpg'), 
 
-(N'Tư vấn tiểu đường',
-N'Quản lý bệnh tiểu đường, theo dõi đường huyết và chế độ ăn uống.',
-N'1. Đánh giá tiền sử bệnh lý và thói quen ăn uống.\n2. Đo đường huyết và xét nghiệm HbA1c.\n3. Hướng dẫn sử dụng insulin và thuốc uống.\n4. Tư vấn chế độ dinh dưỡng phù hợp.\n5. Theo dõi và điều chỉnh kế hoạch điều trị.',
-N'Máy đo đường huyết, bút tiêm insulin.',
-450000, '00:30:00', 0, NULL, 1, N'images/tu_van_tieu_duong.jpg'),
-
-(N'Liệu pháp hô hấp',
-N'Điều trị và phục hồi chức năng hô hấp cho bệnh nhân mắc các bệnh lý về phổi.',
-N'1. Đánh giá tình trạng hô hấp và bệnh sử.\n2. Hướng dẫn các bài tập thở và vận động.\n3. Dùng thuốc khí dung hoặc oxy liệu pháp.\n4. Theo dõi và đánh giá tiến trình điều trị.\n5. Điều chỉnh phác đồ theo tình trạng bệnh nhân.',
-N'Máy khí dung, thiết bị hỗ trợ thở.',
-700000, '00:45:00', 0, NULL, 2, N'images/lieu_phap_ho_hap.jpg'),
-
-(N'Khám tiêu hóa',
-N'Kiểm tra sức khỏe hệ tiêu hóa, phát hiện sớm các bệnh lý về dạ dày và đại tràng.',
-N'1. Khai thác bệnh sử và các triệu chứng liên quan.\n2. Khám lâm sàng ổ bụng.\n3. Nội soi dạ dày và đại tràng.\n4. Xét nghiệm men gan và chức năng tiêu hóa.\n5. Đưa ra chẩn đoán và phác đồ điều trị.',
-N'Máy nội soi dạ dày, máy nội soi đại tràng.',
-1100000, '01:30:00', 1, NULL, 3, N'images/kham_tieu_hoa.jpg'),
+(N'Khám tiêu hóa', 
+ N'Kiểm tra sức khỏe hệ tiêu hóa...', 
+ N'1. Khai thác bệnh sử tiêu hóa...\n2. Nội soi dạ dày...', 
+ N'Máy nội soi dạ dày, máy nội soi đại tràng...', 
+ 1100000, '01:30:00', 1, 4, N'images/kham_tieu_hoa.jpg'),
 
 (N'Cấp cứu',
 N'Xử lý các tình huống khẩn cấp và chấn thương nghiêm trọng.',
 N'1. Tiếp nhận bệnh nhân trong tình trạng nguy kịch.\n2. Cấp cứu hồi sức và ổn định huyết động.\n3. Phẫu thuật cấp cứu (nếu cần).\n4. Theo dõi sát tình trạng bệnh nhân.\n5. Chuyển viện hoặc theo dõi tại phòng chăm sóc đặc biệt.',
 N'Trang thiết bị cấp cứu, máy thở, thuốc cấp cứu.',
-1500000, '00:00:00', 1, NULL, 4, N'images/cap_cuu.jpg');
+1500000, '00:00:00', 1, 16, N'images/cap_cuu.jpg');
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE DoctorSchedules (
@@ -745,11 +742,18 @@ CREATE TABLE DoctorSchedules (
 );
 INSERT INTO DoctorSchedules (DoctorId, ServiceId, DayOfWeek, SlotId, RoomId)
 VALUES
-(33, 1, N'Thứ Hai', 1, 1),
-(33, 2, N'Thứ Hai', 2, 1),
-(33, 3, N'Thứ Tư', 1, 2),
-(33, 4, N'Thứ Tư', 2, 2),
-(33, 5, N'Thứ Sáu', 1, 1),
+(33, 2, N'Thứ Hai', 1, 1),
+(34, 3, N'Thứ Hai', 1, 2),
+(35, 4, N'Thứ Hai', 1, 3),
+
+(33, 2, N'Thứ Tư', 1, 1),
+(34, 3, N'Thứ Tư', 1, 2),
+(35, 4, N'Thứ Tư', 1, 3),
+
+(33, 2, N'Thứ Sáu', 1, 1),
+(34, 3, N'Thứ Sáu', 1, 2),
+(35, 4, N'Thứ Sáu', 1, 3),
+
 
 (34, 6, N'Thứ Ba', 1, 1),
 (34, 7, N'Thứ Ba', 2, 1),
@@ -769,10 +773,10 @@ VALUES
 (37, 18, N'Thứ Sáu', 3, 3),
 
 (38, 19, N'Thứ Hai', 2, 4),
-(38, 20, N'Thứ Ba', 1, 4),
-(38, 1, N'Thứ Tư', 3, 4),
-(38, 2, N'Thứ Năm', 2, 4),
-(38, 3, N'Thứ Sáu', 1, 4),
+(38, 19, N'Thứ Ba', 2, 4),
+(38, 19, N'Thứ Tư', 2, 4),
+(38, 19, N'Thứ Năm', 2, 4),
+(38, 19, N'Thứ Sáu', 2, 4),
 
 (39, 4, N'Thứ Hai', 3, 5),
 (39, 5, N'Thứ Ba', 2, 5),
@@ -785,74 +789,49 @@ VALUES
 CREATE TABLE Reservations (
   ReservationId int NOT NULL IDENTITY(1,1),
   PatientId int NOT NULL,
+  DoctorScheduleId int NOT NULL,
   Reason nvarchar(max),
   PriorExaminationImg nvarchar(200) NULL,
-  AppointmentDate datetime,
+  AppointmentDate datetime NOT NULL,
+  StartTime datetime NOT NULL,
+  EndTime datetime NOT NULL,
   Status nvarchar(20) NOT NULL,
   CancellationReason nvarchar(255) NULL, 
   UpdatedDate datetime NOT NULL DEFAULT GETDATE(), 
   PRIMARY KEY (ReservationId),
-  CONSTRAINT PatientId_FK FOREIGN KEY (PatientId) REFERENCES Patients (PatientId)
+  CONSTRAINT PatientId_FK FOREIGN KEY (PatientId) REFERENCES Patients (PatientId),
+  CONSTRAINT DoctorScheduleId_FK FOREIGN KEY (DoctorScheduleId) REFERENCES DoctorSchedules (DoctorScheduleId)
 );
 
-INSERT INTO Reservations (PatientId, Reason, PriorExaminationImg, AppointmentDate, Status, CancellationReason, UpdatedDate)
+
+
+INSERT INTO Reservations (PatientId, DoctorScheduleId, Reason, PriorExaminationImg, AppointmentDate, StartTime, EndTime, Status, CancellationReason, UpdatedDate)
 VALUES
-(23, N'Tư vấn tiểu đường', N'http://example.com/prior_exam_17', '2025-01-10 09:15:00', N'Hoàn thành', NULL, '2025-01-10 09:15:00'),
-(23, N'Khám định kỳ', N'http://example.com/prior_exam_1', '2025-01-15 09:00:00', N'Hoàn thành', NULL, '2025-01-15 09:00:00'),
-(23, N'Khám định kỳ', N'http://example.com/prior_exam_2', '2025-01-20 10:00:00', N'Đang chờ', NULL, '2025-01-20 10:00:00'),
-(23, N'Khám mắt', N'http://example.com/prior_exam_5', '2025-01-19 11:00:00', N'Xác nhận', NULL, '2025-01-19 11:00:00'),
-(23, N'Kiểm tra thính giác', N'http://example.com/prior_exam_13', '2025-01-27 14:00:00', N'Xác nhận', NULL, '2025-01-27 14:00:00'),
-(23, N'Tư vấn da liễu', NULL, '2025-01-23 09:30:00', N'Xác nhận', NULL, '2025-01-23 09:30:00'),
-(25, N'Theo dõi quản lý tiểu đường', NULL, '2025-01-17 14:30:00', N'Xác nhận', NULL, '2025-01-17 14:30:00'),
-(26, N'Khám sức khỏe tổng quát', N'http://example.com/prior_exam_4', '2025-01-18 08:30:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-01-18 08:30:00'),
-(24, N'Tư vấn tâm lý', N'http://example.com/prior_exam_6', '2025-01-20 13:00:00', N'Không đến', NULL, '2025-01-20 13:00:00'),
-(25, N'Tư vấn nhi khoa', NULL, '2025-01-21 15:00:00', N'Xác nhận', NULL, '2025-01-21 15:00:00'),
-(26, N'Siêu âm', N'http://example.com/prior_exam_8', '2025-01-22 16:30:00', N'Đang chờ', NULL, '2025-01-22 16:30:00'),
-(24, N'Tư vấn dinh dưỡng', N'http://example.com/prior_exam_10', '2025-01-24 10:45:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-01-24 10:45:00'),
-(25, N'Tiêm chủng', NULL, '2025-01-25 12:00:00', N'Hoàn thành', NULL, '2025-01-25 12:00:00'),
-(26, N'Tư vấn chỉnh hình', N'http://example.com/prior_exam_12', '2025-01-26 11:00:00', N'Không đến', NULL, '2025-01-26 11:00:00'),
-(24, N'Khám tim mạch', NULL, '2025-01-28 08:00:00', N'Xác nhận', NULL, '2025-01-28 08:00:00'),
-(25, N'Tư vấn chỉnh hình', N'http://example.com/prior_exam_15', '2025-01-29 13:30:00', N'Hoàn thành', NULL, '2025-01-29 13:30:00'),
-(26, N'Tư vấn sinh sản', NULL, '2025-01-30 15:00:00', N'Xác nhận', NULL, '2025-01-30 15:00:00'),
-(24, N'Tư vấn hô hấp', N'http://example.com/prior_exam_18', '2025-02-02 11:30:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-02-02 11:30:00'),
-(25, N'Tư vấn tiêu hóa', NULL, '2025-02-03 14:45:00', N'Không đến', NULL, '2025-02-03 14:45:00'),
-(26, N'Sơ cứu', N'http://example.com/prior_exam_20', '2025-02-04 08:30:00', N'Xác nhận', NULL, '2025-02-04 08:30:00');
+(23, 1, N'Tư vấn tiểu đường', N'http://example.com/prior_exam_17', '2025-01-10', '09:15:00', '09:45:00', N'Hoàn thành', NULL, '2025-01-10 09:15:00'),
+(23, 2, N'Khám định kỳ', N'http://example.com/prior_exam_1', '2025-01-15', '09:00:00', '09:30:00', N'Hoàn thành', NULL, '2025-01-15 09:00:00'),
+(23, 3, N'Khám định kỳ', N'http://example.com/prior_exam_2', '2025-01-20', '10:00:00', '10:30:00', N'Đang chờ', NULL, '2025-01-20 10:00:00'),
+(23, 4, N'Khám mắt', N'http://example.com/prior_exam_5', '2025-01-19', '11:00:00', '11:45:00', N'Xác nhận', NULL, '2025-01-19 11:00:00'),
+(23, 5, N'Kiểm tra thính giác', N'http://example.com/prior_exam_13', '2025-01-27', '14:00:00', '14:45:00', N'Xác nhận', NULL, '2025-01-27 14:00:00'),
+(23, 6, N'Tư vấn da liễu', NULL, '2025-01-23', '09:30:00', '10:00:00', N'Xác nhận', NULL, '2025-01-23 09:30:00'),
+(25, 7, N'Theo dõi quản lý tiểu đường', NULL, '2025-01-17', '14:30:00', '15:00:00', N'Xác nhận', NULL, '2025-01-17 14:30:00'),
+(26, 8, N'Khám sức khỏe tổng quát', N'http://example.com/prior_exam_4', '2025-01-18', '08:30:00', '09:15:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-01-18 08:30:00'),
+(24, 9, N'Tư vấn tâm lý', N'http://example.com/prior_exam_6', '2025-01-20', '13:00:00', '13:45:00', N'Không đến', NULL, '2025-01-20 13:00:00'),
+(25, 10, N'Tư vấn nhi khoa', NULL, '2025-01-21', '15:00:00', '15:30:00', N'Xác nhận', NULL, '2025-01-21 15:00:00'),
+(26, 11, N'Siêu âm', N'http://example.com/prior_exam_8', '2025-01-22', '16:30:00', '17:00:00', N'Đang chờ', NULL, '2025-01-22 16:30:00'),
+(24, 12, N'Tư vấn dinh dưỡng', N'http://example.com/prior_exam_10', '2025-01-24', '10:45:00', '11:15:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-01-24 10:45:00'),
+(25, 13, N'Tiêm chủng', NULL, '2025-01-25', '12:00:00', '12:30:00', N'Hoàn thành', NULL, '2025-01-25 12:00:00'),
+(26, 14, N'Tư vấn chỉnh hình', N'http://example.com/prior_exam_12', '2025-01-26', '11:00:00', '11:45:00', N'Không đến', NULL, '2025-01-26 11:00:00'),
+(24, 15, N'Khám tim mạch', NULL, '2025-01-28', '08:00:00', '08:45:00', N'Xác nhận', NULL, '2025-01-28 08:00:00'),
+(25, 16, N'Tư vấn chỉnh hình', N'http://example.com/prior_exam_15', '2025-01-29', '13:30:00', '14:00:00', N'Hoàn thành', NULL, '2025-01-29 13:30:00'),
+(26, 17, N'Tư vấn sinh sản', NULL, '2025-01-30', '15:00:00', '15:30:00', N'Xác nhận', NULL, '2025-01-30 15:00:00'),
+(24, 18, N'Tư vấn hô hấp', N'http://example.com/prior_exam_18', '2025-02-02', '11:30:00', '12:00:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-02-02 11:30:00'),
+(25, 19, N'Tư vấn tiêu hóa', NULL, '2025-02-03', '14:45:00', '15:15:00', N'Không đến', NULL, '2025-02-03 14:45:00'),
+(26, 20, N'Sơ cứu', N'http://example.com/prior_exam_20', '2025-02-04', '08:30:00', '09:00:00', N'Xác nhận', NULL, '2025-02-04 08:30:00');
+
 
 
 
 -----------------------------------------------------------------------------------------------------------------------------------
-CREATE TABLE ReservationDoctorSchedules (
-    ReservationId INT NOT NULL,
-    DoctorScheduleId INT NOT NULL,
-    PRIMARY KEY (DoctorScheduleId, ReservationId),
-    CONSTRAINT FK_DoctorSchedule FOREIGN KEY (DoctorScheduleId) REFERENCES DoctorSchedules (DoctorScheduleId),
-    CONSTRAINT FK_Reservation FOREIGN KEY (ReservationId) REFERENCES Reservations (ReservationId)
-);
-INSERT INTO ReservationDoctorSchedules (ReservationId, DoctorScheduleId)
-VALUES
-(1, 1),
-(1, 3),
-(2, 1),
-(2, 2),
-(3, 5),
-(4, 7),
-(5, 8),
-(6, 10),
-(7, 12),
-(8, 14),
-(9, 16),
-(10, 18),
-(11, 20),
-(12, 1),
-(13, 2),
-(14, 3),
-(15, 4),
-(16, 5),
-(17, 6),
-(18, 7),
-(19, 8),
-(20, 9);
---------------------------------------------------------------------------------------------------------------
 CREATE TABLE DeviceServices (
     ServiceId INT NOT NULL,
     DeviceId INT NOT NULL,

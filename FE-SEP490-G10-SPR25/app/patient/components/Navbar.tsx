@@ -13,19 +13,19 @@ const Navbar: React.FC = () => {
   const [user, setUser] = useState<{ name?: string; avatar?: string }>({});
   const currentPath = usePathname();
   const routes = [
-    { path: "/patient", name: "Home" },
-    { path: "/patient/specialties", name: "Specialties " },
+    { path: "/patient", name: "Trang chủ" },
+    { path: "/patient/specialties", name: "Chuyên khoa " },
     {
       path: "/patient/doctors?sortBy=highest_rated&displayView=grid",
-      name: "Doctors",
+      name: "Bác sĩ",
     },
-    { path: "/patient/services", name: "Services" },
-    { path: "/patient/blogs", name: "Blogs" },
-    { path: "/patient/appointment-booking", name: "Appointment Booking" },
-    { path: "/auth/login", name: "Login" },
-    { path: "/auth/register", name: "Register" },
+    { path: "/patient/services", name: "Dịch vụ" },
+    { path: "/patient/appointment-booking", name: "Hẹn lịch" },
+    { path: "/patient/blogs", name: "Cẩm nang" },
+    { path: "/auth/login", name: "Đăng nhập" },
+    { path: "/auth/register", name: "Đăng kí" },
     { path: "/patient/person", name: "Person" },
-    { path: "/patient/logout", name: "Logout" },
+    { path: "/patient/logout", name: "Đăng xuất" },
   ];
   const handleLogout = () => {
     sessionStorage.removeItem("user");

@@ -35,7 +35,7 @@ const SelectSort: React.FC<SelectSortProps> = ({
       <div className="flex items-center gap-x-3">
         <label className="font-medium text-gray-700 flex items-center gap-1">
           <Image src={assets.sort} width={20} height={20} alt="Sort" />
-          Sort
+         Sắp xếp
         </label>
 
         <button

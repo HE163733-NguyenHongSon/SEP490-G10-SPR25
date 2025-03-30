@@ -3,7 +3,7 @@ import React, { useState, FunctionComponent, useEffect } from "react";
 import Select, { ClearIndicatorProps, StylesConfig } from "react-select";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const CustomClearText: FunctionComponent = () => <>Clear all</>;
+const CustomClearText: FunctionComponent = () => <>Bỏ tất cả</>;
 const ClearIndicator = (props: ClearIndicatorProps<ISearchOption, true>) => {
   const {
     children = <CustomClearText />,

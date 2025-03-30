@@ -127,10 +127,10 @@ namespace AppointmentSchedulingApp.Application.Services
                     UserName = user.UserName,
                     //Name = user.Name,
                     //Role = user.Role,
-                    PhoneNumber = user.PhoneNumber,
+                    PhoneNumber = user.Phone,
                     Gender = user.Gender,
                     Dob = user.Dob,
-                    RoleInformations = await _roleService.GetRoleInformationsByUserId(user.Id.ToString())
+                    RoleInformations = await _roleService.GetRoleInformationsByUserId(user.UserId.ToString())
 
                 };
 
@@ -149,13 +149,13 @@ namespace AppointmentSchedulingApp.Application.Services
                 UserName = registrationDTO.UserName,
                 Email = registrationDTO.Email,
                 //Password = registrationDTO.Password,
-                PhoneNumber = registrationDTO.PhoneNumber,
+                Phone = registrationDTO.PhoneNumber,
                 Gender = registrationDTO.Gender,
                 Dob = registrationDTO.Dob,
                 Address = registrationDTO.Address,
                 //Role = registrationDTO.Role,
                 CitizenId = registrationDTO.CitizenId,
-                TwoFactorEnabled = true,
+                //TwoFactorEnabled = true,
 
             };
             //return await _userManager.CreateAsync(user, registrationDTO.Password);
@@ -185,12 +185,12 @@ namespace AppointmentSchedulingApp.Application.Services
         public bool checkLockoutAccount(User user, StringBuilder message)
         {
             // Check if the account is locked out
-            if (user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTime.UtcNow)
-            {
-                // Account is locked out
-                message.Append("Account is locked out");
-                return true;
-            }
+            //if (user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTime.UtcNow)
+            //{
+            //    // Account is locked out
+            //    message.Append("Account is locked out");
+            //    return true;
+            //}
 
             return false;
         }
@@ -256,7 +256,7 @@ namespace AppointmentSchedulingApp.Application.Services
                     //Name = userInfo.GivenName ?? string.Empty,
                     Email = userInfo.Email,
                     UserName = userInfo.Email,
-                    TwoFactorEnabled = true,
+                    //TwoFactorEnabled = true,
                     Gender = userInfo.Gender,
 
 
@@ -289,10 +289,10 @@ namespace AppointmentSchedulingApp.Application.Services
             var user = await _userManager.FindByEmailAsync(userinfo.Email);
             var userDTO = new UserDTO
             {
-                UserId = user.Id,
+                UserId = user.UserId,
                 //Name = user.Name,
                 Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
+                PhoneNumber = user.Phone,
                 Gender = user.Gender,
                 //Role = user.Role,
                 RoleInformations = await _roleService.GetRoleInformationsByUserId(userinfo.Id)

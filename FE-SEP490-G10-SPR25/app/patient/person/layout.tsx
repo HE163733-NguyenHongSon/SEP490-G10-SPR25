@@ -13,18 +13,24 @@ const PersonLayout = ({
   const currentPath = usePathname();
 
   const routes = [
-    { path: "/patient/person", name: "Profile", Image: assets.profile },
+    { path: "/patient/person", name: "Hồ sơ", Image: assets.profile },
     {
       path: "/patient/person/reservations",
-      name: "Reservations",
+      name: "Lịch hẹn",
       Image: assets.reservation,
     },
     {
       path: "/patient/person/medical-report",
-      name: "Medical Report",
+      name: "Báo cáo y tế",
+      Image: assets.medical_report,
+    },
+    {
+      path: "/patient/person/invoice",
+      name: "Hóa đơn",
       Image: assets.medical_report,
     },
   ];
+
 
   return (
     <div
@@ -40,7 +46,7 @@ const PersonLayout = ({
             <h2 className="text-xl text-center">Nguyen Hong Son</h2>
           </div>
 
-          <div className="flex flex-row items-center justify-start gap-2 mx-7 border-b border-gray-300 pb-5">
+          {/* <div className="flex flex-row items-center justify-start gap-2 mx-7 border-b border-gray-300 pb-5">
             <Image
               className="w-7 h-7"
               width={20}
@@ -50,7 +56,7 @@ const PersonLayout = ({
             />
             Ranking:
             <span className="text-cyan-500 text-">Gold</span>
-          </div>
+          </div> */}
           <nav>
             <ul className="space-y-2">
               {routes.map((route, index) => (

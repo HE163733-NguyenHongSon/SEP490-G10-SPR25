@@ -17,11 +17,12 @@ const ReservationPage = () => {
   // );
 
   const sortOptions: ISortOption[] = [
-    { label: "Recent appointment", value: "recent_appointment" },
-    { label: "Past appointment", value: "past_appointment" },
-    { label: "Service price ascending", value: "price_asc" },
-    { label: "Service price descending", value: "price_desc" },
-  ];
+    { label: "Cuộc hẹn gần đây", value: "recent_appointment" },
+    { label: "Cuộc hẹn đã qua", value: "past_appointment" },
+    { label: "Giá dịch vụ tăng dần", value: "price_asc" },
+    { label: "Giá dịch vụ giảm dần", value: "price_desc" },
+];
+
 
   const {
     data: reservationList = [],
@@ -44,11 +45,11 @@ const ReservationPage = () => {
     queryKey: ["statusList"],
     queryFn: async () => {
       const statuses = await Promise.all([
-        reservationService.getReservationCountByStatus("Pending"),
-        reservationService.getReservationCountByStatus("Confirmed"),
-        reservationService.getReservationCountByStatus("Completed"),
-        reservationService.getReservationCountByStatus("No-show"),
-        reservationService.getReservationCountByStatus("Cancelled"),
+        reservationService.getReservationCountByStatus("Đang chờ"),
+        reservationService.getReservationCountByStatus("Xác nhận"),
+        reservationService.getReservationCountByStatus("Hoàn thành"),
+        reservationService.getReservationCountByStatus("Không đến"),
+        reservationService.getReservationCountByStatus("Đã hủy"),
       ]);
       return statuses;
     },

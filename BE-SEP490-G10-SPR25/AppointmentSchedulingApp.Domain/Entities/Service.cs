@@ -21,8 +21,6 @@ public partial class Service
 
     public bool? IsPrepayment { get; set; }
 
-    public int? ParentServiceId { get; set; }
-
     public int SpecialtyId { get; set; }
 
     public string? Image { get; set; }
@@ -32,10 +30,6 @@ public partial class Service
     public int? RatingCount { get; set; }
 
     public virtual ICollection<DoctorSchedule> DoctorSchedules { get; set; } = new List<DoctorSchedule>();
-
-    public virtual ICollection<Service> InverseParentService { get; set; } = new List<Service>();
-
-    public virtual Service? ParentService { get; set; }
 
     public virtual Specialty Specialty { get; set; } = null!;
 

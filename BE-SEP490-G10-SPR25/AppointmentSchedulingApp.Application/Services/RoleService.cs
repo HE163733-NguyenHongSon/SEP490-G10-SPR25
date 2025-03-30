@@ -22,7 +22,7 @@ namespace AppointmentSchedulingApp.Application.Services
         }
         public async Task<Role> GetRoleByNameAsync(string roleName)
         {
-            var role = _roleManager.Roles.FirstOrDefault(r => r.Name.Equals(roleName, StringComparison.OrdinalIgnoreCase));
+            var role = _roleManager.Roles.FirstOrDefault(r => r.RoleName.Equals(roleName, StringComparison.OrdinalIgnoreCase));
             return role;
         }
 
@@ -42,8 +42,8 @@ namespace AppointmentSchedulingApp.Application.Services
                     Role identityRole = await _roleManager.FindByNameAsync(role);
                     data.Add(new RoleInformation
                     {
-                        RoleId = identityRole.Id.ToString(),
-                        RoleName = identityRole.Name
+                        RoleId = identityRole.RoleId.ToString(),
+                        RoleName = identityRole.RoleName
                     });
                 }
             }

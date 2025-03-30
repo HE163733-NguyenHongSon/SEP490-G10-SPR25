@@ -44,5 +44,10 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
                 await _dbContext.SaveChangesAsync();
             }
         }
+
+        public async Task<IQueryable<Service>> GetServicesBySpecialty(int specialtyId)
+        {
+            return _dbContext.Services.Where(s => s.SpecialtyId == specialtyId).AsQueryable();
+        }
     }
 }

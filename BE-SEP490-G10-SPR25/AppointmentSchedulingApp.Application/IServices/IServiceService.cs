@@ -11,8 +11,13 @@ namespace AppointmentSchedulingApp.Application.IServices
     {
         Task<List<ServiceDTO>> GetListService();
         Task<ServiceDTO> GetServiceById(int id);
+        Task<ServiceDetailDTO> GetServiceDetailById(int id);
         Task AddService(ServiceDTO serviceDto);
         Task UpdateService(ServiceDTO serviceDto);
         Task DeleteService(int id);
+        Task<List<ServiceDTO>> GetServicesBySpecialty(int specialtyId);
+        Task<List<ServiceDTO>> GetServicesByCategory(int categoryId);
+        Task<List<ServiceDTO>> GetServicesSortedByRating();
+        Task<List<ServiceDTO>> GetServicesSortedByPrice(bool ascending = true);
     }
 }

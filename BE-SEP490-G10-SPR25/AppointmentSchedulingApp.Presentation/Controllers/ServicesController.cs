@@ -33,6 +33,45 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             return Ok(service);
         }
 
+        [HttpGet("details/{id}")]
+        public async Task<IActionResult> GetServiceDetailById(int id)
+        {
+            var serviceDetail = await _serviceService.GetServiceDetailById(id);
+            if (serviceDetail == null)
+            {
+                return NotFound();
+            }
+            return Ok(serviceDetail);
+        }
+
+        [HttpGet("specialty/{specialtyId}")]
+        public async Task<IActionResult> GetServicesBySpecialty(int specialtyId)
+        {
+            var services = await _serviceService.GetServicesBySpecialty(specialtyId);
+            return Ok(services);
+        }
+
+        [HttpGet("category/{categoryId}")]
+        public async Task<IActionResult> GetServicesByCategory(int categoryId)
+        {
+            var services = await _serviceService.GetServicesByCategory(categoryId);
+            return Ok(services);
+        }
+
+        [HttpGet("sort/rating")]
+        public async Task<IActionResult> GetServicesSortedByRating()
+        {
+            var services = await _serviceService.GetServicesSortedByRating();
+            return Ok(services);
+        }
+
+        [HttpGet("sort/price")]
+        public async Task<IActionResult> GetServicesSortedByPrice([FromQuery] bool ascending = true)
+        {
+            var services = await _serviceService.GetServicesSortedByPrice(ascending);
+            return Ok(services);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddService(ServiceDTO serviceDto)
         {

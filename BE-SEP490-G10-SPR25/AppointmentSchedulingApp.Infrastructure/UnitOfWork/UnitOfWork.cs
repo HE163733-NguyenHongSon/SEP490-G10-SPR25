@@ -14,6 +14,7 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         private IReservationRepository _reservationRepository;
         private IServiceRepository _serviceRepository;
         private ISpecialtyRepository _specialtyRepository;
+        private IFeedbackRepository _feedbackRepository;
 
         public UnitOfWork(AppointmentSchedulingDbContext dbContext)
         {
@@ -35,7 +36,17 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         public ISpecialtyRepository SpecialtyRepository =>
             _specialtyRepository ??= new SpecialtyRepository(_dbContext);
 
-        
+        public IFeedbackRepository FeedbackRepository
+        {
+            get
+            {
+                if (_feedbackRepository == null)
+                {
+                    _feedbackRepository = new FeedbackRepository(_dbContext);
+                }
+                return _feedbackRepository;
+            }
+        }
 
         public void Commit() => _dbContext.SaveChanges();
 

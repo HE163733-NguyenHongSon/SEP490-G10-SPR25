@@ -14,5 +14,6 @@ namespace AppointmentSchedulingApp.Domain.Repositories
         Task Add(Service service);
         Task Update(Service service);
         Task Delete(int id);
+        Task<IQueryable<Service>> GetServicesBySpecialty(int specialtyId);
     }
 }

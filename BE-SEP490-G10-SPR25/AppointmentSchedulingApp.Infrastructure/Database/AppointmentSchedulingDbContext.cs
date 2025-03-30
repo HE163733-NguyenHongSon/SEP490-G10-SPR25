@@ -184,6 +184,10 @@ public partial class AppointmentSchedulingDbContext : DbContext
                 .HasForeignKey<Feedback>(d => d.ReservationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("ReservationId_FK");
+                
+            entity.HasOne(d => d.Service).WithMany()
+                .HasForeignKey(d => d.ServiceId)
+                .HasConstraintName("FK_Feedbacks_Service");
         });
 
         modelBuilder.Entity<MedicalRecord>(entity =>
@@ -355,6 +359,10 @@ public partial class AppointmentSchedulingDbContext : DbContext
             entity.Property(e => e.Overview).HasMaxLength(500);
             entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.ServiceName).HasMaxLength(100);
+            
+            // Thêm định nghĩa kiểu dữ liệu cho Rating và RatingCount
+            entity.Property(e => e.Rating).HasColumnType("decimal(3, 2)");
+            entity.Property(e => e.RatingCount).HasColumnType("int");
 
             entity.HasOne(d => d.Specialty).WithMany(p => p.Services)
                 .HasForeignKey(d => d.SpecialtyId)

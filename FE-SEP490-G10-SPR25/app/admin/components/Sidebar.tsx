@@ -1,9 +1,9 @@
 "use client";
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { useSidebar } from "@/contexts/SidebarContext";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import SidebarWidget from "./SidebarWidget";
 const DashboardIcon = () => (
@@ -66,6 +66,11 @@ const navItems: NavItem[] = [
     icon: <ServiceIcon />,
     name: "Services",
     path: "/admin/services",
+  },
+  {
+    icon: <ServiceIcon />,
+    name: "Chuyên Khoa",
+    path: "/admin/specialties",
   },
 ];
 

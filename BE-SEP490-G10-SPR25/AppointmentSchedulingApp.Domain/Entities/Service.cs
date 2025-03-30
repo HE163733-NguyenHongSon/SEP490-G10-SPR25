@@ -26,6 +26,10 @@ public partial class Service
     public int SpecialtyId { get; set; }
 
     public string? Image { get; set; }
+    
+    public decimal? Rating { get; set; }
+    
+    public int? RatingCount { get; set; }
 
     public virtual ICollection<DoctorSchedule> DoctorSchedules { get; set; } = new List<DoctorSchedule>();
 

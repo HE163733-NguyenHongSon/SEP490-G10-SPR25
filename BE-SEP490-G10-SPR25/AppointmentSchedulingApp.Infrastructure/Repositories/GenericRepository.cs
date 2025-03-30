@@ -1,4 +1,10 @@
+<<<<<<< Updated upstream
 ﻿using AppointmentSchedulingApp.Domain.Entities;
+=======
+
+﻿using AppointmentSchedulingApp.Domain.Entities;
+
+>>>>>>> Stashed changes
 using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;

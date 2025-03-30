@@ -1,5 +1,13 @@
+<<<<<<< Updated upstream
 ﻿using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Domain.UnitOfWork;
+=======
+
+
+using AppointmentSchedulingApp.Domain.IRepositories;
+using AppointmentSchedulingApp.Domain.IUnitOfWork;
+
+>>>>>>> Stashed changes
 using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.Repositories;
 

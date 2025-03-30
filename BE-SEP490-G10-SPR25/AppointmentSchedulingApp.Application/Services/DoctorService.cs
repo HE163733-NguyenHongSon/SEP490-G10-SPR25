@@ -1,4 +1,4 @@
-﻿using AppointmentSchedulingApp.Domain.IUnitOfWork;
+﻿using AppointmentSchedulingApp.Domain.UnitOfWork;
 using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
 using AutoMapper;

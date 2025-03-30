@@ -102,7 +102,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 {
                     Success = false,
                     Message = "Internal server error during login",
-                    Data = null
+                    Data = string.Empty
                 });
             }
         }
@@ -209,7 +209,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         
         [HttpGet("reset-password")]
         [AllowAnonymous]
-        public async Task<IActionResult> ResetPassword(string token, string email)
+        public IActionResult ResetPassword(string token, string email)
         {
             var model = new ResetPassword { Token = token, Email = email };
 
@@ -314,7 +314,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         // Example of admin-only endpoint using policy instead of direct role attribute
         [HttpGet("all")]
         [Authorize(Policy = "RequireAdminRole")]
-        public async Task<IActionResult> GetAllUsers()
+        public IActionResult GetAllUsers()
         {
             // This would be implemented in an actual admin controller
             return Ok(new ApiResponse
@@ -327,7 +327,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         // Example for doctor-only endpoint using policy
         [HttpGet("doctor-only")]
         [Authorize(Policy = "RequireDoctorRole")]
-        public async Task<IActionResult> DoctorOnly()
+        public IActionResult DoctorOnly()
         {
             return Ok(new ApiResponse
             {
@@ -339,7 +339,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         // Example for receptionist-only endpoint using policy
         [HttpGet("receptionist-only")]
         [Authorize(Policy = "RequireReceptionistRole")]
-        public async Task<IActionResult> ReceptionistOnly()
+        public IActionResult ReceptionistOnly()
         {
             return Ok(new ApiResponse
             {
@@ -351,7 +351,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         // Example for patient-only endpoint using policy
         [HttpGet("patient-only")]
         [Authorize(Policy = "RequirePatientRole")]
-        public async Task<IActionResult> PatientOnly()
+        public IActionResult PatientOnly()
         {
             return Ok(new ApiResponse
             {
@@ -363,7 +363,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         // Example for guardian-only endpoint using policy
         [HttpGet("guardian-only")]
         [Authorize(Policy = "RequireGuardianRole")]
-        public async Task<IActionResult> GuardianOnly()
+        public IActionResult GuardianOnly()
         {
             return Ok(new ApiResponse
             {

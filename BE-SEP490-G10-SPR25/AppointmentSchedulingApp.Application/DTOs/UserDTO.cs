@@ -21,12 +21,17 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string UserName { get; set; } = null!;
 
         public string Phone { get; set; } = null!;
+        
+        public string? PhoneNumber { get; set; }
 
         public string? Gender { get; set; }
 
         public string? Dob { get; set; }
 
         public string? Address { get; set; }
-
+        
+        public string? AvatarUrl { get; set; }
+        
+        public List<RoleInformation> RoleInformations { get; set; } = new List<RoleInformation>();
     }
 }

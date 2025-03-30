@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-﻿
-
-=======
-﻿using AppointmentSchedulingApp.Domain.Entities;
->>>>>>> HE161511-DinhQuangTung
+using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;

@@ -15,5 +15,5 @@ public partial class Patient
 
     public virtual User PatientNavigation { get; set; } = null!;
 
-    public virtual ICollection<Reservation>? Reservations { get; set; } = new List<Reservation>();
+    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 }

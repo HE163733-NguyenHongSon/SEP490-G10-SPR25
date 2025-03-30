@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-﻿
 using AppointmentSchedulingApp.Domain.Entities;
-=======
-﻿using AppointmentSchedulingApp.Domain.Entities;
->>>>>>> HE161511-DinhQuangTung
 using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Infrastructure.Helper;
@@ -61,27 +56,6 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             try
             {
-<<<<<<< HEAD
-                //new Claim(ClaimTypes.Name, userDTO.Name),
-                //new Claim(ClaimTypes.DateOfBirth,userDTO.Dob?.ToString("yyyy-MM-dd") ?? ""),
-                new Claim(JwtRegisteredClaimNames.Email, userDTO.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.NameId, userDTO.UserId.ToString()),
-                //new Claim("PhoneNumber", userDTO.PhoneNumber),
-                new Claim("UserName", userDTO.UserName),
-                //new Claim(ClaimTypes.Role, userDTO.Role),
-                //new Claim("UserName", user.UserName ),
-                //new Claim("Id", user.UserId.ToString()),
-                //new Claim("TokenId", Guid.NewGuid().ToString()),
-            };
-            //foreach (var roleName in userDTO.RoleInformations)
-            //{
-            //    authClaims.Add(new Claim(ClaimTypes.Role, roleName.RoleName));
-            //    authClaims.Add(new Claim("RoleId", roleName.RoleId));
-            //}
-
-            var tokenDescription = new SecurityTokenDescriptor
-=======
                 Console.WriteLine($"GenerateToken called for user: {userDTO.UserName}, UserId: {userDTO.UserId}");
                 
                 if (userDTO == null)
@@ -111,9 +85,9 @@ namespace AppointmentSchedulingApp.Application.Services
                 }
                 
                 // Add DOB if available
-                if (userDTO.Dob.HasValue)
+                if (!string.IsNullOrEmpty(userDTO.Dob))
                 {
-                    authClaims.Add(new Claim(ClaimTypes.DateOfBirth, userDTO.Dob.Value.ToString("yyyy-MM-dd")));
+                    authClaims.Add(new Claim(ClaimTypes.DateOfBirth, userDTO.Dob));
                 }
 
                 Console.WriteLine($"Adding {userDTO.RoleInformations?.Count ?? 0} roles to token");
@@ -163,7 +137,6 @@ namespace AppointmentSchedulingApp.Application.Services
                 return accessToken;
             }
             catch (Exception ex)
->>>>>>> HE161511-DinhQuangTung
             {
                 Console.WriteLine($"Error generating token: {ex.Message}");
                 throw;
@@ -267,20 +240,13 @@ namespace AppointmentSchedulingApp.Application.Services
                     UserId = user.UserId,
                     Email = user.Email,
                     UserName = user.UserName,
-<<<<<<< HEAD
-                    //Name = user.Name,
-                    //Role = user.Role,
-                    //PhoneNumber = user.Phone,
-                    Gender = user.Gender,
-                    //Dob = user.Dob,
-                    //RoleInformations = await _roleService.GetRoleInformationsByUserId(user.UserId.ToString())
-
-=======
                     PhoneNumber = user.Phone,
+                    Phone = user.Phone,
                     Gender = user.Gender,
-                    Dob = user.Dob,
+                    Dob = user.Dob.HasValue ? user.Dob.Value.ToString("yyyy-MM-dd") : null,
+                    Address = user.Address,
+                    AvatarUrl = user.AvatarUrl,
                     RoleInformations = roles
->>>>>>> HE161511-DinhQuangTung
                 };
                 
                 Console.WriteLine($"UserDTO created with {userDTO.RoleInformations?.Count ?? 0} roles");
@@ -493,18 +459,10 @@ namespace AppointmentSchedulingApp.Application.Services
             {
                 UserId = user.UserId,
                 Email = user.Email,
-<<<<<<< HEAD
-                //PhoneNumber = user.Phone,
-                Gender = user.Gender,
-                //Role = user.Role,
-                //RoleInformations = await _roleService.GetRoleInformationsByUserId(userinfo.Id)
-
-=======
                 UserName = user.UserName,
                 PhoneNumber = user.Phone,
                 Gender = user.Gender,
                 RoleInformations = await _roleService.GetRoleInformationsByUserId(user.UserId.ToString())
->>>>>>> HE161511-DinhQuangTung
             };
             return userDTO;
         }

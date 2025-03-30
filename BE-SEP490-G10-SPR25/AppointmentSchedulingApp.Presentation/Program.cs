@@ -1,10 +1,6 @@
 using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.IRepositories;
-<<<<<<< HEAD
-using AppointmentSchedulingApp.Domain.IUnitOfWork;
-=======
 using AppointmentSchedulingApp.Domain.UnitOfWork;
->>>>>>> HE161511-DinhQuangTung
 using AppointmentSchedulingApp.Infrastructure;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.Repositories;
@@ -183,8 +179,7 @@ builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
-
-builder.Services.AddScoped<IMedicalReportService,MedicalReportService>();
+builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 
 // Đăng ký các dịch vụ liên quan đến người dùng
 builder.Services.AddScoped<IUserService, UserService>();
@@ -206,7 +201,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection(); // Tạm thời vô hiệu hóa để tránh lỗi HTTPS port
 app.UseAuthentication();
 app.UseAuthorization();
 

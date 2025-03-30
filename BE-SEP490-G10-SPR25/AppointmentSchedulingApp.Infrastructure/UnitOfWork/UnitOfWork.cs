@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-﻿
 using AppointmentSchedulingApp.Domain.IRepositories;
-using AppointmentSchedulingApp.Domain.IUnitOfWork;
-=======
-﻿using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Domain.UnitOfWork;
->>>>>>> HE161511-DinhQuangTung
 using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.Repositories;
 
@@ -20,6 +14,7 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         private IReservationRepository _reservationRepository;
         private IServiceRepository _serviceRepository;
         private ISpecialtyRepository _specialtyRepository;
+        private IFeedbackRepository _feedbackRepository;
         private IUserRepository _userRepository;
         public UnitOfWork(AppointmentSchedulingDbContext dbContext)
         {
@@ -39,12 +34,21 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
             _serviceRepository ??= new ServiceRepository(_dbContext);
 
         public ISpecialtyRepository SpecialtyRepository =>
-            _specialtyRepository ??= new SpecialtyRepository(_dbContext); 
-        
-        public IUserRepository UserRepository =>
-            _userRepository ??= new UserRepository (_dbContext);
+            _specialtyRepository ??= new SpecialtyRepository(_dbContext);
 
-        
+        public IFeedbackRepository FeedbackRepository
+        {
+            get
+            {
+                if (_feedbackRepository == null)
+                {
+                    _feedbackRepository = new FeedbackRepository(_dbContext);
+                }
+                return _feedbackRepository;
+            }
+        }
+
+        public IUserRepository UserRepository => _userRepository ??= new UserRepository(_dbContext);
 
         public void Commit() => _dbContext.SaveChanges();
 

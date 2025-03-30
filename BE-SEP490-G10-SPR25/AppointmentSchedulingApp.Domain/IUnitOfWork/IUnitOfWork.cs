@@ -1,6 +1,6 @@
-﻿using AppointmentSchedulingApp.Domain.Repositories;
+﻿using AppointmentSchedulingApp.Domain.IRepositories;
 
-namespace AppointmentSchedulingApp.Domain.UnitOfWork
+namespace AppointmentSchedulingApp.Domain.IUnitOfWork
 {
     public interface IUnitOfWork
     {
@@ -10,6 +10,7 @@ namespace AppointmentSchedulingApp.Domain.UnitOfWork
         IServiceRepository ServiceRepository { get; }
         ISpecialtyRepository SpecialtyRepository { get; }
 
+        IUserRepository  UserRepository { get; }
         void Commit();
 
         void Rollback();

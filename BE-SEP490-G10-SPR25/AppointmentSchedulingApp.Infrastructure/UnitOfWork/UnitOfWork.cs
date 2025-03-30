@@ -1,5 +1,6 @@
-﻿using AppointmentSchedulingApp.Domain.Repositories;
-using AppointmentSchedulingApp.Domain.UnitOfWork;
+﻿
+using AppointmentSchedulingApp.Domain.IRepositories;
+using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.Repositories;
 
@@ -14,7 +15,7 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         private IReservationRepository _reservationRepository;
         private IServiceRepository _serviceRepository;
         private ISpecialtyRepository _specialtyRepository;
-
+        private IUserRepository _userRepository;
         public UnitOfWork(AppointmentSchedulingDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -33,7 +34,10 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
             _serviceRepository ??= new ServiceRepository(_dbContext);
 
         public ISpecialtyRepository SpecialtyRepository =>
-            _specialtyRepository ??= new SpecialtyRepository(_dbContext);
+            _specialtyRepository ??= new SpecialtyRepository(_dbContext); 
+        
+        public IUserRepository UserRepository =>
+            _userRepository ??= new UserRepository (_dbContext);
 
         
 

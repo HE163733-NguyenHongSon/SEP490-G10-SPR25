@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AppointmentSchedulingApp.Domain.Entities;
 
-namespace AppointmentSchedulingApp.Domain.Repositories
+namespace AppointmentSchedulingApp.Domain.IRepositories
 {
     public interface IServiceRepository 
     {

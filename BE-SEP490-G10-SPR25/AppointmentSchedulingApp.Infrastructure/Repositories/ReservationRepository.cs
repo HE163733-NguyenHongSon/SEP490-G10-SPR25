@@ -1,4 +1,4 @@
-﻿using AppointmentSchedulingApp.Domain.Repositories;
+﻿using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Infrastructure.Database;
 

@@ -28,13 +28,13 @@ namespace AppointmentSchedulingApp.Application.Services
                 var services = await unitOfWork.ServiceRepository.GetAll();
                 var serviceDTOs = mapper.Map<List<ServiceDTO>>(services);
 
-                // Add ratings from feedback
-                foreach (var serviceDTO in serviceDTOs)
-                {
-                    var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(serviceDTO.ServiceId);
-                    serviceDTO.Rating = ratingInfo.AverageRating;
-                    serviceDTO.RatingCount = ratingInfo.Count;
-                }
+                // Add ratings from feedback  ---Bỏ GetServiceRatingInfo vì có sãn trong mapper 
+                //foreach (var serviceDTO in serviceDTOs)
+                //{
+                //    var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(serviceDTO.ServiceId);
+                //    serviceDTO.Rating = ratingInfo.AverageRating;
+                //    serviceDTO.RatingCount = ratingInfo.Count;
+                //}
 
                 return serviceDTOs;
             }
@@ -48,7 +48,7 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             try
             {
-                var service = await unitOfWork.ServiceRepository.GetById(id);
+                var service = await unitOfWork.ServiceRepository.Get(s=>s.ServiceId.Equals(id));
                 if (service == null)
                 {
                     throw new NotFoundException($"Service with ID {id} not found");
@@ -73,7 +73,7 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             try
             {
-                var service = await unitOfWork.ServiceRepository.GetById(id);
+                var service = await unitOfWork.ServiceRepository.Get(s => s.ServiceId.Equals(id));
                 if (service == null)
                 {
                     throw new NotFoundException($"Service with ID {id} not found");
@@ -82,44 +82,44 @@ namespace AppointmentSchedulingApp.Application.Services
                 var serviceDetail = mapper.Map<ServiceDetailDTO>(service);
                 
                 // Safely populate related data with null checks
-                serviceDetail.SpecialtyName = service.Specialty?.SpecialtyName ?? string.Empty;
+                //serviceDetail.SpecialtyName = service.Specialty?.SpecialtyName ?? string.Empty;
                 
                 // Initialize empty collections to prevent null reference exceptions
-                serviceDetail.RelatedDoctors = new List<string>();
-                serviceDetail.RequiredDevices = new List<string>();
+                //serviceDetail.RelatedDoctors = new List<string>();
+                //serviceDetail.RequiredDevices = new List<string>();
                 
-                // Safely add doctor information without accessing DoctorNavigation
-                if (service.Doctors != null && service.Doctors.Any())
-                {
-                    // Just use the DoctorId instead of DoctorNavigation to avoid User entity
-                    serviceDetail.RelatedDoctors = service.Doctors
-                        .Select(d => $"Doctor {d.DoctorId}")
-                        .ToList();
-                }
+                //// Safely add doctor information without accessing DoctorNavigation
+                //if (service.Doctors != null && service.Doctors.Any())
+                //{
+                //    // Just use the DoctorId instead of DoctorNavigation to avoid User entity
+                //    serviceDetail.RelatedDoctors = service.Doctors
+                //        .Select(d => $"Doctor {d.DoctorId}")
+                //        .ToList();
+                //}
                 
                 // Safely add devices if available
-                if (service.Devices != null && service.Devices.Any())
-                {
-                    serviceDetail.RequiredDevices = service.Devices
-                        .Where(d => d.Name != null)
-                        .Select(d => d.Name)
-                        .ToList();
-                }
+                //if (service.Devices != null && service.Devices.Any())
+                //{
+                //    serviceDetail.RequiredDevices = service.Devices
+                //        .Where(d => d.Name != null)
+                //        .Select(d => d.Name)
+                //        .ToList();
+                //}
                     
-                try
-                {
-                    // Add rating from feedback
-                    var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(id);
-                    serviceDetail.Rating = ratingInfo.AverageRating;
-                    serviceDetail.RatingCount = ratingInfo.Count;
-                }
-                catch (Exception ratingEx)
-                {
-                    // If rating fetching fails, set default values but don't fail the whole request
-                    Console.WriteLine($"Error fetching rating info: {ratingEx.Message}");
-                    serviceDetail.Rating = null;
-                    serviceDetail.RatingCount = 0;
-                }
+                //try
+                //{
+                //    // Add rating from feedback
+                //    var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(id);
+                //    serviceDetail.Rating = ratingInfo.AverageRating;
+                //    serviceDetail.RatingCount = ratingInfo.Count;
+                //}
+                //catch (Exception ratingEx)
+                //{
+                //    // If rating fetching fails, set default values but don't fail the whole request
+                //    Console.WriteLine($"Error fetching rating info: {ratingEx.Message}");
+                //    serviceDetail.Rating = null;
+                //    serviceDetail.RatingCount = 0;
+                //}
 
                 return serviceDetail;
             }
@@ -149,32 +149,33 @@ namespace AppointmentSchedulingApp.Application.Services
                 }
 
                 var service = mapper.Map<Service>(serviceDto);
-                await unitOfWork.ServiceRepository.Add(service);
+                 unitOfWork.ServiceRepository.Add(service);
                 await unitOfWork.CommitAsync();
             }
             catch (Exception ex)
             {
                 throw new ServiceException("Error adding new service", ex);
+                unitOfWork.Rollback();
             }
         }
 
-        public async Task UpdateService(ServiceDTO serviceDto)
+        public async Task UpdateService(ServiceDTO serviceDto)                        
         {
             try
-            {
+            {                                                             
                 if (serviceDto == null)
                 {
                     throw new ValidationException("Service data cannot be null");
                 }
 
-                var existingService = await unitOfWork.ServiceRepository.GetById(serviceDto.ServiceId);
+                var existingService = await unitOfWork.ServiceRepository.Get(s => s.ServiceId.Equals(serviceDto.ServiceId));
                 if (existingService == null)
                 {
                     throw new NotFoundException($"Service with ID {serviceDto.ServiceId} not found");
                 }
 
                 var service = mapper.Map<Service>(serviceDto);
-                await unitOfWork.ServiceRepository.Update(service);
+                 unitOfWork.ServiceRepository.Update(service);
                 await unitOfWork.CommitAsync();
             }
             catch (Exception ex)
@@ -182,18 +183,18 @@ namespace AppointmentSchedulingApp.Application.Services
                 throw new ServiceException($"Error updating service with ID {serviceDto?.ServiceId}", ex);
             }
         }
-
-        public async Task DeleteService(int id)
-        {
+                                 
+        public async Task DeleteService(int id)     
+        { 
             try
             {
-                var service = await unitOfWork.ServiceRepository.GetById(id);
+                var service = await unitOfWork.ServiceRepository.Get(s => s.ServiceId.Equals(id));
                 if (service == null)
                 {
                     throw new NotFoundException($"Service with ID {id} not found");
                 }
 
-                await unitOfWork.ServiceRepository.Delete(id);
+                 unitOfWork.ServiceRepository.Remove(service);
                 await unitOfWork.CommitAsync();
             }
             catch (Exception ex)

@@ -1,5 +1,5 @@
 ﻿using AppointmentSchedulingApp.Domain.Entities;
-using AppointmentSchedulingApp.Domain.UnitOfWork;
+using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
 using AutoMapper;
@@ -57,9 +57,9 @@ namespace AppointmentSchedulingApp.Application.Services
                 var serviceDTO = mapper.Map<ServiceDTO>(service);
                 
                 // Add rating from feedback
-                var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(id);
-                serviceDTO.Rating = ratingInfo.AverageRating;
-                serviceDTO.RatingCount = ratingInfo.Count;
+                //var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(id);
+                //serviceDTO.Rating = ratingInfo.AverageRating;
+                //serviceDTO.RatingCount = ratingInfo.Count;
                 
                 return serviceDTO;
             }
@@ -211,12 +211,12 @@ namespace AppointmentSchedulingApp.Application.Services
                 var serviceDTOs = mapper.Map<List<ServiceDTO>>(services);
                 
                 // Add ratings from feedback
-                foreach (var serviceDTO in serviceDTOs)
-                {
-                    var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(serviceDTO.ServiceId);
-                    serviceDTO.Rating = ratingInfo.AverageRating;
-                    serviceDTO.RatingCount = ratingInfo.Count;
-                }
+                //foreach (var serviceDTO in serviceDTOs)
+                //{
+                //    var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(serviceDTO.ServiceId);
+                //    serviceDTO.Rating = ratingInfo.AverageRating;
+                //    serviceDTO.RatingCount = ratingInfo.Count;
+                //}
                 
                 return serviceDTOs;
             }
@@ -239,12 +239,12 @@ namespace AppointmentSchedulingApp.Application.Services
                 var serviceDTOs = mapper.Map<List<ServiceDTO>>(allServices);
                 
                 // Add ratings from feedback
-                foreach (var serviceDTO in serviceDTOs)
-                {
-                    var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(serviceDTO.ServiceId);
-                    serviceDTO.Rating = ratingInfo.AverageRating;
-                    serviceDTO.RatingCount = ratingInfo.Count;
-                }
+                //foreach (var serviceDTO in serviceDTOs)
+                //{
+                //    var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(serviceDTO.ServiceId);
+                //    serviceDTO.Rating = ratingInfo.AverageRating;
+                //    serviceDTO.RatingCount = ratingInfo.Count;
+                //}   
                 
                 return serviceDTOs;
             }
@@ -264,20 +264,20 @@ namespace AppointmentSchedulingApp.Application.Services
                 var services = servicesList.ToList();
                 
                 // Sort services by rating in descending order
-                var sortedServices = services
-                    .OrderByDescending(s => s.Rating ?? 0) // Use null-coalescing to handle null ratings
-                    .ToList();
+                //var sortedServices = services
+                //    .OrderByDescending(s => s.Rating ?? 0) // Use null-coalescing to handle null ratings
+                //    .ToList();
                 
                 // Map to DTOs
-                var serviceDTOs = mapper.Map<List<ServiceDTO>>(sortedServices);
+                var serviceDTOs = mapper.Map<List<ServiceDTO>>(servicesList);
                 
                 // Make sure the rating data is present
-                foreach (var serviceDTO in serviceDTOs)
-                {
-                    var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(serviceDTO.ServiceId);
-                    serviceDTO.Rating = ratingInfo.AverageRating;
-                    serviceDTO.RatingCount = ratingInfo.Count;
-                }
+                //foreach (var serviceDTO in serviceDTOs)
+                //{
+                //    var ratingInfo = await unitOfWork.FeedbackRepository.GetServiceRatingInfo(serviceDTO.ServiceId);
+                //    serviceDTO.Rating = ratingInfo.AverageRating;
+                //    serviceDTO.RatingCount = ratingInfo.Count;
+                //}
                 
                 return serviceDTOs;
             }

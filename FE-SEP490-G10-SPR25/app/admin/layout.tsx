@@ -1,12 +1,12 @@
-// app/admin/layout.tsx
-
 "use client";
 
+import React, { ReactNode, useEffect } from 'react';
+import ProtectedRoute from '../components/ProtectedRoute';
+import { AppRole } from '../types/roles';
 import { useSidebar } from "@/contexts/SidebarContext";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Backdrop from "./components/Backdrop";
-import React from "react";
 
 import { Outfit } from "next/font/google";
 import "@/globals.css";
@@ -19,21 +19,26 @@ const outfit = Outfit({
   subsets: ["latin"],
 });
 
-export default function AdminLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+interface AdminLayoutProps {
+  children: ReactNode;
+}
+
+export default function AdminLayout({ children }: AdminLayoutProps) {
+  useEffect(() => {
+    console.log('AdminLayout mounted - Admin page is loading');
+    console.log('AdminLayout - Current pathname:', window.location.pathname);
+  }, []);
+
   return (
-    <html lang="en">
-      <body>
+    <ProtectedRoute allowedRoles={[AppRole.Admin]}>
+      <div>
         <ThemeProvider>
           <SidebarProvider>
             <LayoutContent>{children}</LayoutContent>
           </SidebarProvider>
         </ThemeProvider>
-      </body>
-    </html>
+      </div>
+    </ProtectedRoute>
   );
 }
 

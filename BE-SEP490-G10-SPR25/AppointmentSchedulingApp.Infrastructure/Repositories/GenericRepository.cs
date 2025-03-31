@@ -1,59 +1,56 @@
-﻿
-
+using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace AppointmentSchedulingApp.Infrastructure
+namespace AppointmentSchedulingApp.Infrastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected readonly AppointmentSchedulingDbContext _dbContext;
-        protected readonly DbSet<T> _entitySet;
+        private readonly AppointmentSchedulingDbContext _dbContext;
+        internal DbSet<T> _dbSet;
+
         public GenericRepository(AppointmentSchedulingDbContext dbContext)
         {
             _dbContext = dbContext;
-            _entitySet = _dbContext.Set<T>();
-
+            this._dbSet = dbContext.Set<T>();
         }
+
         public void Add(T entity)
         {
-            _dbContext.Add(entity);
-            _dbContext.SaveChanges();
-
+            _dbSet.Add(entity);
         }
 
         public async Task<T> Get(Expression<Func<T, bool>> expression)
         {
-            return await _entitySet.FirstOrDefaultAsync(expression);
-        } 
-       
+            IQueryable<T> query = _dbSet;
+            return await query.AsNoTracking().FirstOrDefaultAsync(expression);
+        }
 
         public async Task<IEnumerable<T>> GetAll()
         {
-            return await _entitySet.ToListAsync();
-
+            return await _dbSet.ToListAsync();
         }
 
         public async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> expression)
         {
-            return await _entitySet.Where(expression).ToListAsync();
+            return await _dbSet.Where(expression).ToListAsync();
         }
 
         public void Remove(T entity)
         {
-            _dbContext.Remove(entity);
-
+            _dbSet.Remove(entity);
         }
-
 
         public void Update(T entity)
         {
-            _dbContext.Update(entity);
+            _dbSet.Update(entity);
         }
-
-
     }
 }

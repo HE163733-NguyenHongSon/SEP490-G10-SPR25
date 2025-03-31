@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Domain.IRepositories
 {
-    public interface IMedicalRecordRepository:IGenericRepository<MedicalRecord>
+    public interface IMedicalRecordRepository : IGenericRepository<MedicalRecord>
     {
     }
 }

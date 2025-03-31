@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Infrastructure.Repositories
 {
-    public class DoctorRepository : GenericRepository<Doctor>,IDoctorRepository
+    public class DoctorRepository : GenericRepository<Doctor>, IDoctorRepository
     {
         public DoctorRepository(AppointmentSchedulingDbContext dbContext) : base(dbContext)
         {

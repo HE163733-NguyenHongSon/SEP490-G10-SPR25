@@ -22,7 +22,9 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public DateTime? LastVisit { get; set; }
         public string LastVisitFormatted { get; set; }
 
+        public string? MainCondition { get; set; } 
 
+        public List<MedicalRecordDTO> MedicalRecords { get; set; } 
 
     }
 }

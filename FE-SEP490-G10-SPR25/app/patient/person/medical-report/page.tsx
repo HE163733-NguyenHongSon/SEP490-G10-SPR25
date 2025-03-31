@@ -37,7 +37,7 @@ const MedicalReportPage = () => {
       {/* Thông tin bệnh nhân */}
       <div className="grid grid-cols-2 p-5 border-b-2 border-gray-300">
         <div className="col-span-1 flex flex-col">
-          <h1 className="text-lg">Thông tin bệnh nhân</h1>
+          <h1 className="text-lg ">Thông tin bệnh nhân</h1>
           <p className="gap-x-2">
             Số CMND/CCCD:
             <span className="font-light text-base text-gray-500">035002005151</span>
@@ -57,6 +57,10 @@ const MedicalReportPage = () => {
           <p className="gap-x-2">
             Email:
             <span className="font-light text-base text-gray-500">035002005151</span>
+          </p>
+          <p className="gap-x-2">
+            Address:
+            <span className="font-light text-base text-gray-500">035002005151</span> 
           </p>
         </div>
 

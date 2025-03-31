@@ -10,7 +10,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
     public  class MedicalRecordDTO
     {
         [Key]
-        public string MedicalRecordId { get; set; }
+        public string ReservationId { get; set; }
 
         public string AppointmentDate { get; set; }
 

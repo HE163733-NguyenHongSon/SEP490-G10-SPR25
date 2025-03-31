@@ -1,5 +1,5 @@
 using AppointmentSchedulingApp.Domain.Entities;
-using AppointmentSchedulingApp.Domain.Repositories;
+using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,58 +10,28 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Infrastructure.Repositories
 {
-    public class FeedbackRepository : IFeedbackRepository
+    public class FeedbackRepository :GenericRepository<Feedback>, IFeedbackRepository
     {
-        private readonly AppointmentSchedulingDbContext _context;
 
-        public FeedbackRepository(AppointmentSchedulingDbContext context)
+        public FeedbackRepository(AppointmentSchedulingDbContext dbContext) : base(dbContext)
         {
-            _context = context;
         }
 
-        public async Task<IQueryable<Feedback>> GetAll()
-        {
-            return _context.Feedbacks.AsQueryable();
-        }
-
-        public async Task<Feedback> GetById(int id)
-        {
-            return await _context.Feedbacks.FindAsync(id);
-        }
-
-        public async Task Add(Feedback feedback)
-        {
-            await _context.Feedbacks.AddAsync(feedback);
-        }
-
-        public async Task Update(Feedback feedback)
-        {
-            _context.Feedbacks.Update(feedback);
-        }
-
-        public async Task Delete(int id)
-        {
-            var feedback = await GetById(id);
-            if (feedback != null)
-            {
-                _context.Feedbacks.Remove(feedback);
-            }
-        }
-
+        
         public async Task<IEnumerable<Feedback>> GetFeedbacksByServiceId(int serviceId)
         {
             // Direct approach using the ServiceId field
-            var feedbacks = await _context.Feedbacks
-                .Where(f => f.ServiceId == serviceId)
+            var feedbacks = await _entitySet
+                .Where(f => f.Reservation.DoctorSchedule.ServiceId == serviceId)
                 .ToListAsync();
 
             // If no direct connections found, fallback to the relationship path
             if (!feedbacks.Any())
             {
-                feedbacks = await _context.Feedbacks
+                feedbacks = await _entitySet
                     .Include(f => f.Reservation)
-                    .ThenInclude(r => r.DoctorSchedules)
-                    .Where(f => f.Reservation.DoctorSchedules.Any(ds => ds.ServiceId == serviceId))
+                    .ThenInclude(r => r.DoctorSchedule)
+                    .Where(f => f.Reservation.DoctorSchedule.Service.ServiceId == serviceId) 
                     .ToListAsync();
             }
 

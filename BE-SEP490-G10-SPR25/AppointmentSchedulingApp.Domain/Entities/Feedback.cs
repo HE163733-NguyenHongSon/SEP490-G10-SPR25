@@ -18,10 +18,6 @@ public partial class Feedback
     public int? DoctorFeedbackGrade { get; set; }
 
     public DateTime FeedbackDate { get; set; }
-    
-    public int? ServiceId { get; set; }
 
     public virtual Reservation Reservation { get; set; } = null!;
-    
-    public virtual Service? Service { get; set; }
 }

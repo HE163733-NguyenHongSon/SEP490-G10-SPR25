@@ -43,9 +43,15 @@ namespace AppointmentSchedulingApp.Application.Profiles
                          dest.LastVisitFormatted = dest.LastVisit.Value.ToString("dd/MM/yyyy");
                      }
                  })
+                 .ForMember(dest => dest.MainCondition, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.PatientNavigation.MainCondition)
+                                          ? src.PatientNavigation.MainCondition
+                                          : "Không có bệnh lý chính"))
+                 .ForMember(dest => dest.MedicalRecords, opt => opt.MapFrom(src => src.PatientNavigation.Reservations.
+                    Where(r=>r.Status.Equals("Hoàn thành")).Select(r=>r.MedicalRecord)))
 
-                .ReverseMap();
+                .ReverseMap();   
         }
-    }
+    }      
 
 }
+    

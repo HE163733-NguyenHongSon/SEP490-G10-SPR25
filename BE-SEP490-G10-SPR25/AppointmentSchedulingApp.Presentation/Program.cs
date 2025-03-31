@@ -1,6 +1,6 @@
 using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.IRepositories;
-using AppointmentSchedulingApp.Domain.UnitOfWork;
+using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AppointmentSchedulingApp.Infrastructure;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.Repositories;

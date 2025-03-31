@@ -13,7 +13,7 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
 
         public async Task<IQueryable<Reservation>> GetListReservationByStatus(string status)
         {
-            return _dbSet.Where(r => r.Status.Equals(status));
+            return _entitySet.Where(r => r.Status.Equals(status));
         }
     }
 }

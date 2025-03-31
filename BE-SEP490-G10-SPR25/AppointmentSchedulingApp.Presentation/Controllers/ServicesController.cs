@@ -1,6 +1,7 @@
 ﻿using AppointmentSchedulingApp.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using AppointmentSchedulingApp.Application.IServices;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -16,7 +17,8 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetServices()
+        [EnableQuery]
+        public async Task<IActionResult> Get()
         {
             var services = await _serviceService.GetListService();
             return Ok(services);
@@ -57,7 +59,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             var services = await _serviceService.GetServicesByCategory(categoryId);
             return Ok(services);
         }
-
+        //GET http://localhost:5220/api/Services?$orderby=Rating desc dung odata ko can viet ham 
         [HttpGet("sort/rating")]
         public async Task<IActionResult> GetServicesSortedByRating()
         {

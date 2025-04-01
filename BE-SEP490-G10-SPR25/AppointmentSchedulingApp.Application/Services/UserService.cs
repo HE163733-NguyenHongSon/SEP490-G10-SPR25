@@ -66,9 +66,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 
                 var jwtTokenHandler = new JwtSecurityTokenHandler();
                 var secretKeyBytes = Encoding.UTF8.GetBytes(_appSettings.SecretKey);
-                
-                // Prepare claims
-                var authClaims = new List<Claim>
+                 new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, userDTO.UserName ?? ""),
                     new Claim(ClaimTypes.NameIdentifier, userDTO.UserId.ToString()),

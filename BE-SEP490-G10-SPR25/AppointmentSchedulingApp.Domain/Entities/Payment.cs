@@ -7,7 +7,7 @@ public partial class Payment
 {
     public int PaymentId { get; set; }
 
-    public int UserId { get; set; }
+    public int PayerId { get; set; }
 
     public int ReservationId { get; set; }
 
@@ -23,9 +23,9 @@ public partial class Payment
 
     public decimal Amount { get; set; }
 
+    public virtual User Payer { get; set; } = null!;
+
     public virtual Receptionist? Receptionist { get; set; }
 
     public virtual Reservation Reservation { get; set; } = null!;
-
-    public virtual User User { get; set; } = null!;
 }

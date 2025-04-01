@@ -1,4 +1,4 @@
-﻿using AppointmentSchedulingApp.Domain.Repositories;
+﻿using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using System;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Infrastructure.Repositories
 {
-    public class DoctorRepository : GenericRepository<Doctor>,IDoctorRepository
+    public class DoctorRepository : GenericRepository<Doctor>, IDoctorRepository
     {
         public DoctorRepository(AppointmentSchedulingDbContext dbContext) : base(dbContext)
         {

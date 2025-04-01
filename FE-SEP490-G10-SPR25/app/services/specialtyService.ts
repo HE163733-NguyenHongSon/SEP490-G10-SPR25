@@ -1,3 +1,4 @@
+import type { ISpecialty } from '../types/specialty';
 
 export const specialtyService = {
   async getSpecialtyList(): Promise<ISpecialty[]> {

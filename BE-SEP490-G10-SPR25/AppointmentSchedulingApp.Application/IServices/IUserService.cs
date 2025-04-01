@@ -2,7 +2,6 @@
 using AppointmentSchedulingApp.Application.DTOs;
 using Google.Apis.Oauth2.v2.Data;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,23 +15,18 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<UserDTO?> LoginUser(SignInDTO userLogin, StringBuilder message);
 
         string GenerateToken(UserDTO user);
-        Task<IdentityResult?> RegisterPatient(RegistrationDTO registrationDTO);
-
-
+        Task<ResultDTO> RegisterPatient(RegistrationDTO registrationDTO);
 
         Task<bool> CheckValidExternalRegister(string roleName, StringBuilder message);
         Task<Userinfo> GetUserInfoAsync(string accessToken);
         Task<bool> CheckGoogleExistAccount(string email);
-        Task<IdentityResult?> ExternalRegisterUser(Userinfo userInfo, string roleName);
+        Task<ResultDTO> ExternalRegisterUser(Userinfo userInfo, string roleName);
         Task<UserDTO> GetUserDto(Userinfo userinfo);
         Task<User> GetUserById(int userId);
         bool checkLockoutAccount(User user, StringBuilder message);
 
-
-
-
         Task<string?> ForgotPassword(string email, HttpContext httpContext);
         Task<bool> ValidateResetPasswordAsync(ResetPassword resetPassword, StringBuilder message);
-        Task<IdentityResult> ResetPassword(ResetPassword resetPassword);
+        Task<ResultDTO> ResetPassword(ResetPassword resetPassword);
     }
 }

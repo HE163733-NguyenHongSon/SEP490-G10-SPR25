@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppointmentSchedulingApp.Domain.Repositories
+namespace AppointmentSchedulingApp.Domain.IRepositories
 {
     public interface IReservationRepository : IGenericRepository<Reservation>
     {
-        public  Task<IQueryable<Reservation>> GetListReservationByStatus(string status);
+        public Task<IQueryable<Reservation>> GetListReservationByStatus(string status);
     }
 }

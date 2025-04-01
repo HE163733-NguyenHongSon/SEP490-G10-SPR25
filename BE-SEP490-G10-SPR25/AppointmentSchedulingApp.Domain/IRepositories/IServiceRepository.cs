@@ -5,14 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using AppointmentSchedulingApp.Domain.Entities;
 
-namespace AppointmentSchedulingApp.Domain.Repositories
+namespace AppointmentSchedulingApp.Domain.IRepositories
 {
-    public interface IServiceRepository 
+    public interface IServiceRepository :IGenericRepository<Service>    
     {
-        Task<IQueryable<Service>> GetAll();
-        Task<Service> GetById(int id);
-        Task Add(Service service);
-        Task Update(Service service);
-        Task Delete(int id);
+
+        Task<IQueryable<Service>> GetServicesBySpecialty(int specialtyId);
     }
 }

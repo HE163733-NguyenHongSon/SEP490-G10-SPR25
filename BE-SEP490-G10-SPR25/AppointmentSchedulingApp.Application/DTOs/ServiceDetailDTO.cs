@@ -2,23 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Application.DTOs
 {
-    public  class ServiceDetailDTO:ServiceDTO
+    public class ServiceDetailDTO : ServiceDTO
     {
-        public string? Overview { get; set; }
+        [JsonPropertyOrder(12)]
+        public string SpecialtyName { get; set; }
 
-        public string? Devices { get; set; }
+        [JsonPropertyOrder(13)]
+        public bool? IsPrepayment { get; set; }
 
-        public string? Process { get; set; }
+        [JsonPropertyOrder(14)]
+        public List<DoctorDTO> RelatedDoctors { get; set; }
 
-        public string? TreatmentTechniques { get; set; }
-
-
-        public int CategoryId { get; set; }
-
-        public string CategoryName { get; set; }
+        [JsonPropertyOrder(15)]
+        public List<string> RequiredDevices { get; set; } = new List<string>();
     }
 }

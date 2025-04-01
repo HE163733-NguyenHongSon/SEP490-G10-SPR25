@@ -133,6 +133,7 @@ VALUES
 CREATE TABLE Patients (
   PatientId INT NOT NULL,
   GuardianId INT NULL,
+  MainCondition NVARCHAR(300),
   Rank NVARCHAR(10) DEFAULT NULL,
   PRIMARY KEY (PatientId),
   CONSTRAINT Patient_FK FOREIGN KEY (PatientId) REFERENCES Users (UserId),
@@ -140,15 +141,32 @@ CREATE TABLE Patients (
 
 
 ) ;
-INSERT INTO Patients (PatientId, GuardianId, Rank)
+INSERT INTO Patients (PatientId, GuardianId, MainCondition, Rank)
 VALUES
-    -- Bệnh nhân từ ID 11-20 có giám hộ từ ID 1-10
-    (11, 1, N'Thường'), (12, 2, N'Thường'), (13, 3, N'Thường'), (14, 4, N'Thường'), (15, 5, N'Thường'),
-    (16, 6, N'Thường'), (17, 7, N'Thường'), (18, 8, N'Thường'), (19, 9, N'Thường'), (20, 10, N'Thường'),
+    -- Bệnh nhân từ ID 11-20 có giám hộ từ ID 1-10 (một số có bệnh lý chính, một số NULL)
+    (11, 1, N'Cao huyết áp', N'Thường'), 
+    (12, 2, N'Tiểu đường', N'Thường'), 
+    (13, 3, NULL, N'Thường'), 
+    (14, 4, N'Suyễn', N'Thường'), 
+    (15, 5, NULL, N'Thường'),
+    (16, 6, N'Viêm khớp', N'Thường'), 
+    (17, 7, NULL, N'Thường'), 
+    (18, 8, N'Suy thận', N'Thường'), 
+    (19, 9, NULL, N'Thường'), 
+    (20, 10, N'Đột quỵ', N'Thường'),
 
-    -- Bệnh nhân từ ID 21-30 để NULL giá trị giám hộ
-    (21, NULL, N'Thường'), (22, NULL, N'Thường'), (23, NULL, N'Thường'), (24, NULL, N'Thường'), (25, NULL, N'Thường'),
-    (26, NULL, N'Thường'), (27, NULL, N'Thường'), (28, NULL, N'Thường'), (29, NULL, N'Thường'), (30, NULL, N'Thường');
+    -- Bệnh nhân từ ID 21-30 không có giám hộ or người giám hộ là bệnh nhân (một số có bệnh lý chính, một số NULL)
+    (21, NULL, NULL, N'Thường'), 
+    (22, NULL, N'Tiểu đường', N'Thường'), 
+    (23, NULL, NULL, N'Thường'), 
+    (24, NULL, N'Suyễn', N'Thường'), 
+    (25, NULL, NULL, N'Thường'),
+    (6, NULL, N'Viêm khớp', N'Thường'), 
+    (7, NULL, NULL, N'Thường'), 
+    (8, NULL, N'Suy thận', N'Thường'), 
+    (9, NULL, NULL, N'Thường'), 
+    (10, NULL, N'Đột quỵ', N'Thường');
+
 --------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE Receptionists (
     ReceptionistId INT NOT NULL,
@@ -669,7 +687,7 @@ VALUES
 
 (N'Tiêm chủng', 
  N'Tiêm phòng định kỳ và du lịch nhằm bảo vệ sức khỏe...', 
- N'1. Tư vấn về các loại vắc-xin...\n2. Tiêm vắc-xin...', 
+ N'1. Tư vấn về các loại vắc-xin...\n2. Tiêm vắc-xin...',      
  N'Vắc-xin các loại, bộ tiêm chủng...', 
  200000, '00:15:00', 1, 10, N'images/tiem_chung.jpg'), 
 
@@ -814,19 +832,19 @@ VALUES
 (23, 5, N'Kiểm tra thính giác', N'http://example.com/prior_exam_13', '2025-01-27', '14:00:00', '14:45:00', N'Xác nhận', NULL, '2025-01-27 14:00:00'),
 (23, 6, N'Tư vấn da liễu', NULL, '2025-01-23', '09:30:00', '10:00:00', N'Xác nhận', NULL, '2025-01-23 09:30:00'),
 (25, 7, N'Theo dõi quản lý tiểu đường', NULL, '2025-01-17', '14:30:00', '15:00:00', N'Xác nhận', NULL, '2025-01-17 14:30:00'),
-(26, 8, N'Khám sức khỏe tổng quát', N'http://example.com/prior_exam_4', '2025-01-18', '08:30:00', '09:15:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-01-18 08:30:00'),
-(24, 9, N'Tư vấn tâm lý', N'http://example.com/prior_exam_6', '2025-01-20', '13:00:00', '13:45:00', N'Không đến', NULL, '2025-01-20 13:00:00'),
-(25, 10, N'Tư vấn nhi khoa', NULL, '2025-01-21', '15:00:00', '15:30:00', N'Xác nhận', NULL, '2025-01-21 15:00:00'),
-(26, 11, N'Siêu âm', N'http://example.com/prior_exam_8', '2025-01-22', '16:30:00', '17:00:00', N'Đang chờ', NULL, '2025-01-22 16:30:00'),
-(24, 12, N'Tư vấn dinh dưỡng', N'http://example.com/prior_exam_10', '2025-01-24', '10:45:00', '11:15:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-01-24 10:45:00'),
-(25, 13, N'Tiêm chủng', NULL, '2025-01-25', '12:00:00', '12:30:00', N'Hoàn thành', NULL, '2025-01-25 12:00:00'),
-(26, 14, N'Tư vấn chỉnh hình', N'http://example.com/prior_exam_12', '2025-01-26', '11:00:00', '11:45:00', N'Không đến', NULL, '2025-01-26 11:00:00'),
-(24, 15, N'Khám tim mạch', NULL, '2025-01-28', '08:00:00', '08:45:00', N'Xác nhận', NULL, '2025-01-28 08:00:00'),
-(25, 16, N'Tư vấn chỉnh hình', N'http://example.com/prior_exam_15', '2025-01-29', '13:30:00', '14:00:00', N'Hoàn thành', NULL, '2025-01-29 13:30:00'),
-(26, 17, N'Tư vấn sinh sản', NULL, '2025-01-30', '15:00:00', '15:30:00', N'Xác nhận', NULL, '2025-01-30 15:00:00'),
-(24, 18, N'Tư vấn hô hấp', N'http://example.com/prior_exam_18', '2025-02-02', '11:30:00', '12:00:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-02-02 11:30:00'),
-(25, 19, N'Tư vấn tiêu hóa', NULL, '2025-02-03', '14:45:00', '15:15:00', N'Không đến', NULL, '2025-02-03 14:45:00'),
-(26, 20, N'Sơ cứu', N'http://example.com/prior_exam_20', '2025-02-04', '08:30:00', '09:00:00', N'Xác nhận', NULL, '2025-02-04 08:30:00');
+(6, 8, N'Khám sức khỏe tổng quát', N'http://example.com/prior_exam_4', '2025-01-18', '08:30:00', '09:15:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-01-18 08:30:00'),
+(7, 9, N'Tư vấn tâm lý', N'http://example.com/prior_exam_6', '2025-01-20', '13:00:00', '13:45:00', N'Không đến', NULL, '2025-01-20 13:00:00'),
+(8, 10, N'Tư vấn nhi khoa', NULL, '2025-01-21', '15:00:00', '15:30:00', N'Xác nhận', NULL, '2025-01-21 15:00:00'),
+(9, 11, N'Siêu âm', N'http://example.com/prior_exam_8', '2025-01-22', '16:30:00', '17:00:00', N'Đang chờ', NULL, '2025-01-22 16:30:00'),
+(10, 12, N'Tư vấn dinh dưỡng', N'http://example.com/prior_exam_10', '2025-01-24', '10:45:00', '11:15:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-01-24 10:45:00'),
+(23, 13, N'Tiêm chủng', NULL, '2025-01-25', '12:00:00', '12:30:00', N'Hoàn thành', NULL, '2025-01-25 12:00:00'),
+(23, 14, N'Tư vấn chỉnh hình', N'http://example.com/prior_exam_12', '2025-01-26', '11:00:00', '11:45:00', N'Không đến', NULL, '2025-01-26 11:00:00'),
+(23, 15, N'Khám tim mạch', NULL, '2025-01-28', '08:00:00', '08:45:00', N'Xác nhận', NULL, '2025-01-28 08:00:00'),
+(23, 16, N'Tư vấn chỉnh hình', N'http://example.com/prior_exam_15', '2025-01-29', '13:30:00', '14:00:00', N'Không đến', NULL, '2025-01-29 13:30:00'),
+(23, 17, N'Tư vấn sinh sản', NULL, '2025-01-30', '15:00:00', '15:30:00', N'Xác nhận', NULL, '2025-01-30 15:00:00'),
+(23, 18, N'Tư vấn hô hấp', N'http://example.com/prior_exam_18', '2025-02-02', '11:30:00', '12:00:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-02-02 11:30:00'),
+(23, 19, N'Tư vấn tiêu hóa', NULL, '2025-02-03', '14:45:00', '15:15:00', N'Không đến', NULL, '2025-02-03 14:45:00'),
+(23, 20, N'Sơ cứu', N'http://example.com/prior_exam_20', '2025-02-04', '08:30:00', '09:00:00', N'Xác nhận', NULL, '2025-02-04 08:30:00');
 
 
 
@@ -906,35 +924,28 @@ VALUES
 
 
 CREATE TABLE MedicalRecords (
-  MedicalRecordId INT NOT NULL IDENTITY(1,1),
-  ReservationId INT NOT NULL,
+  ReservationId INT NOT NULL,  
   Symptoms NVARCHAR(MAX), 
   Diagnosis NVARCHAR(MAX), 
   TreatmentPlan NVARCHAR(MAX), 
   FollowUpDate DATETIME NULL, 
   Notes NVARCHAR(MAX) NULL, 
   CreatedAt DATETIME NOT NULL DEFAULT GETDATE(), 
-  PRIMARY KEY (MedicalRecordId),
-  CONSTRAINT FK_ReservationId FOREIGN KEY (ReservationId) REFERENCES Reservations(ReservationId)
+  PRIMARY KEY (ReservationId), 
+  CONSTRAINT FK_ReservationId FOREIGN KEY (ReservationId) REFERENCES Reservations(ReservationId) ON DELETE CASCADE
 );
+
 
 INSERT INTO MedicalRecords (ReservationId, Symptoms, Diagnosis, TreatmentPlan, FollowUpDate, Notes)
 VALUES
--- Bệnh nhân 23
 (1, N'Khát nước tăng và tiểu nhiều', N'Đái tháo đường type 2', N'Điều chỉnh thuốc và tư vấn dinh dưỡng', '2025-01-20', N'Theo dõi đường huyết hàng ngày'),
 (2, N'Không có triệu chứng', N'Khám sức khỏe định kỳ: Bình thường', N'Duy trì tập thể dục thường xuyên và chế độ ăn cân bằng', NULL, N'Duy trì khám sức khỏe hàng năm'),
 (4, N'Nhìn mờ và khó chịu nhẹ', N'Mỏi mắt', N'Kê toa kính điều chỉnh', '2025-01-30', N'Tái khám nếu triệu chứng tiếp tục'),
 (5, N'Giảm thính lực tai trái', N'Suy giảm thính lực một phần', N'Tư vấn sử dụng máy trợ thính', '2025-02-10', N'Tránh tiếp xúc với tiếng ồn lớn'),
-
--- Bệnh nhân 25
 (7, N'Mệt mỏi và đường huyết không đều', N'Quản lý đái tháo đường', N'Điều chỉnh liều insulin', '2025-02-05', N'Trao đổi thêm về điều chỉnh trong lần tái khám tiếp theo'),
 (13, N'Đau khớp dai dẳng', N'Viêm khớp', N'Vật lý trị liệu và thuốc chống viêm', '2025-02-15', N'Cân nhắc chụp X-quang nếu không cải thiện'),
-
--- Bệnh nhân 26
 (17, N'Đau quặn bụng nghiêm trọng', N'Biểu hiện loét dạ dày', N'Kê thuốc kháng acid và hạn chế ăn uống', '2025-02-20', N'Lên lịch nội soi nếu đau tăng'),
 (20, N'Cấp cứu: Sốt cao và chóng mặt', N'Nhiễm virus', N'Truyền dịch và nghỉ ngơi', '2025-02-10', N'Theo dõi nhiệt độ hàng ngày và báo cáo nếu có biến chứng'),
-
--- Bệnh nhân 24
 (14, N'Đau ngực khi gắng sức', N'Dấu hiệu sớm của bệnh động mạch vành', N'Thay đổi lối sống và liệu pháp aspirin', '2025-02-12', N'Lên lịch kiểm tra gắng sức trong lần khám sau');
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1062,7 +1073,7 @@ VALUES
 --------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE Payments (
     PaymentId INT NOT NULL IDENTITY(1,1),
-    UserId INT NOT NULL,  -- Bệnh nhân hoặc người giám hộ thanh toán
+    PayerId INT NOT NULL,  -- Bệnh nhân hoặc người giám hộ thanh toán
     ReservationId INT NOT NULL,
     PaymentDate DATETIME DEFAULT GETDATE(),
     ReceptionistId INT DEFAULT NULL,
@@ -1071,12 +1082,12 @@ CREATE TABLE Payments (
     TransactionId NVARCHAR(100) DEFAULT NULL,
     Amount DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY (PaymentId),
-    CONSTRAINT FK_Payments_User FOREIGN KEY (UserId) REFERENCES Users(UserId),
+    CONSTRAINT FK_Payments_User FOREIGN KEY (PayerId) REFERENCES Users(UserId),
     CONSTRAINT FK_Payments_Reservation FOREIGN KEY (ReservationId) REFERENCES Reservations(ReservationId),
     CONSTRAINT FK_Payments_Receptionist FOREIGN KEY (ReceptionistId) REFERENCES Receptionists(ReceptionistId)
 );
 
-INSERT INTO Payments (UserId, ReservationId, PaymentDate, ReceptionistId, PaymentMethod, PaymentStatus, TransactionId, Amount)
+INSERT INTO Payments (PayerId, ReservationId, PaymentDate, ReceptionistId, PaymentMethod, PaymentStatus, TransactionId, Amount)
 VALUES 
 (1, 1, '2025-03-01 08:30:00', 31, N'Tiền mặt', N'Đã thanh toán', N'TXN12345', 500000),
 (2, 2, '2025-03-02 09:00:00', 31, N'Thẻ tín dụng', N'Đã thanh toán', N'TXN12346', 750000),

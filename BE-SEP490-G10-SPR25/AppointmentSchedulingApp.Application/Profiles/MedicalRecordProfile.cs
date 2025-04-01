@@ -11,11 +11,11 @@ namespace AppointmentSchedulingApp.Application.Profiles
 {
     public class MedicalRecordProfile :Profile
     {
-        public MedicalRecordProfile()
+        public MedicalRecordProfile()    
         {
             CreateMap<MedicalRecord, MedicalRecordDTO>()
-         .ForMember(dest => dest.MedicalRecordId, opt => opt.MapFrom(src => src.MedicalRecordId))
-         .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.Reservation.AppointmentDate.HasValue ? src.Reservation.AppointmentDate.Value.ToString("dd/MM/yyyy  hh:mm:ss") : null))
+         .ForMember(dest => dest.ReservationId, opt => opt.MapFrom(src => src.ReservationId))         
+         .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.Reservation.AppointmentDate.ToString("dd/MM/yyyy  hh:mm:ss")))
          .ForMember(dest => dest.Symptoms, opt => opt.MapFrom(src => src.Symptoms))
          .ForMember(dest => dest.Diagnosis, opt => opt.MapFrom(src => src.Diagnosis))
          .ForMember(dest => dest.TreatmentPlan, opt => opt.MapFrom(src => src.TreatmentPlan))

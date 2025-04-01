@@ -5,8 +5,6 @@ namespace AppointmentSchedulingApp.Domain.Entities;
 
 public partial class MedicalRecord
 {
-    public int MedicalRecordId { get; set; }
-
     public int ReservationId { get; set; }
 
     public string? Symptoms { get; set; }

@@ -1,6 +1,6 @@
-﻿
 
-using AppointmentSchedulingApp.Domain.Repositories;
+
+using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -28,8 +28,8 @@ namespace AppointmentSchedulingApp.Infrastructure
         public async Task<T> Get(Expression<Func<T, bool>> expression)
         {
             return await _entitySet.FirstOrDefaultAsync(expression);
-        } 
-       
+        }
+
 
         public async Task<IEnumerable<T>> GetAll()
         {

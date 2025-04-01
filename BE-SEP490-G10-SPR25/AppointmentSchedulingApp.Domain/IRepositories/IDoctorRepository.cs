@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppointmentSchedulingApp.Domain.Repositories
+namespace AppointmentSchedulingApp.Domain.IRepositories
 {
     public interface IDoctorRepository:IGenericRepository<Doctor>
     {

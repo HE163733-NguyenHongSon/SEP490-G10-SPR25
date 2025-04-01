@@ -11,6 +11,9 @@ namespace AppointmentSchedulingApp.Application.IServices
     public interface IPatientService
     {
         Task<List<PatientDTO>> GetPatientList();
-        //Task<DoctorDetailDTO> GetDoctorDetailById(int doctorId);
+        Task<PatientDTO> GetPatientDetailById(int patientId);
+
+        Task<bool> UpdatePatient(PatientDTO patientDTO, StringBuilder message);
+
     }
 }

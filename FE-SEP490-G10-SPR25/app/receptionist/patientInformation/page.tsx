@@ -1,127 +1,89 @@
-"use client";
-
-import React, { useState } from "react";
+import React from "react";
 import PaginatedItems from "@/components/PaginatedItems";
 import Search from "@/components/Search";
 import DisplayToggle from "@/components/DisplayToggle";
 import SelectSort from "@/components/SelectSort";
+import { receptionistService } from "@/services/receptionistService";
+import { PatientList } from "../components/PatientList";
 
-interface Patient {
-  patientId: string;
-  userName: string;
-  citizenId: string;
-  gender: string;
-  dob: string;
-  phone: string;
-  email: string;
-  address: string;
-  guardian: string;
-  rank: string;
-}
+const PatientsPage = async ({
+  searchParams,
+}: {
+  searchParams: {
+    specialties?: string;
+    academicTitles?: string;
+    degrees?: string;
+    sortBy: string;
+    searchBy?: string;
+    displayView: string;
+  };
+}) => {
+  // console.log(`specialties:${searchParams.specialties}---academicTitles:${searchParams.academicTitles}`);
 
-const mockPatients: Patient[] = [
-  {
-    patientId: "P001",
-    userName: "John Doe",
-    citizenId: "123456789",
-    gender: "Male",
-    dob: "1990-01-01",
-    phone: "1234567890",
-    email: "john.doe@example.com",
-    address: "123 Main St",
-    guardian: "Jane Doe",
-    rank: "Gold",
-  },
-  {
-    patientId: "P002",
-    userName: "Jane Smith",
-    citizenId: "987654321",
-    gender: "Female",
-    dob: "1995-05-15",
-    phone: "0987654321",
-    email: "jane.smith@example.com",
-    address: "456 Elm St",
-    guardian: "John Smith",
-    rank: "Silver",
-  },
-];
+  let patients: IPatient[] = [];
+  // // const sortOptions: ISortOption[] = [
+  // //   // { label: "Đánh giá cao nhất", value: "highest_rated" },
+  // //   // { label: "Nhiều lần khám nhất", value: "most_exam" },
+  // //   // { label: "Kinh nghiệm nhất", value: "most_exp" },
+  // //   // { label: "Nhiều dịch vụ nhất", value: "most_service" },
+  // //   { label: "xep mac dinh", value: "most_patientId" }
+  // // ];
+  
+  // if (
+  //   !searchParams.searchBy &&
+  //   (searchParams.specialties ||
+  //     searchParams.academicTitles ||
+  //     searchParams.degrees ||
+  //     searchParams.sortBy)
+  // ) {
+  //   patients = await receptionistService.getDoctorListByFilterAndSort(
+  //     searchParams.specialties ? searchParams.specialties.split(",") : [],
+  //     searchParams.academicTitles ? searchParams.academicTitles.split(",") : [],
+  //     searchParams.degrees ? searchParams.degrees.split(",") : [],
+  //     searchParams.sortBy
+  //   );
+  // } else if (searchParams.searchBy) {
+  //   doctors = await doctorService.getDoctorListByIdListAndSort(
+  //     searchParams.searchBy,
+  //     searchParams.sortBy
+  //   );
+  // } else {
+  //   doctors = await doctorService.getDoctorList();
+  // }
+  // const searchOptions: ISearchOption[] = (
+  //   await doctorService.getDoctorList()
+  // ).map((d) => ({
+  //   label: d.doctorName,
+  //   value: d.doctorId.toString(),
+  // }));
 
-const PatientList = ({ item }: { item: Patient }) => (
-  <div className="p-4 border rounded-lg shadow-md bg-white">
-    <h2 className="font-bold text-lg">{item.userName}</h2>
-    <p>
-      <strong>Citizen ID:</strong> {item.citizenId}
-    </p>
-    <p>
-      <strong>Gender:</strong> {item.gender}
-    </p>
-    <p>
-      <strong>DOB:</strong> {item.dob}
-    </p>
-    <p>
-      <strong>Phone:</strong> {item.phone}
-    </p>
-    <p>
-      <strong>Email:</strong> {item.email}
-    </p>
-    <p>
-      <strong>Address:</strong> {item.address}
-    </p>
-    <p>
-      <strong>Guardian:</strong> {item.guardian}
-    </p>
-    <p>
-      <strong>Rank:</strong> {item.rank}
-    </p>
-  </div>
-);
 
-const PatientInformation = () => {
-  const [patients, setPatients] = useState<Patient[]>(mockPatients);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [genderFilter, setGenderFilter] = useState("");
-
-  const filteredPatients = patients.filter((patient) => {
-    const matchesSearch =
-      patient.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.citizenId.includes(searchTerm) ||
-      patient.phone.includes(searchTerm);
-    const matchesGender =
-      genderFilter === "" || patient.gender === genderFilter;
-    return matchesSearch && matchesGender;
-  });
-
+  patients = await receptionistService.getPatientList();
   return (
-    <div className="flex flex-col h-screen mt-10 gap-5">
-      <div className="flex flex-row flex-wrap items-center justify-center gap-5">
+    <div className="flex flex-col h-screen mt-10 gap-5 ">
+      {/* <div className="flex flex-row flex-wrap items-center justify-center gap-5">
         <SelectSort
-          options={[
-            { label: "Tên A-Z", value: "name_asc" },
-            { label: "Tên Z-A", value: "name_desc" },
-          ]}
-          initialSelectedValue="name_asc"
-          path="/receptionist/patientInformation"
+          options={sortOptions}
+          initialSelectedValue="highest_rated"
+          path="/patient/doctors"
         />
         <DisplayToggle />
         <Search
-          suggestedData={patients.map((p) => ({
-            label: p.userName,
-            value: p.patientId,
-          }))}
-          placeholder="Tìm kiếm bệnh nhân theo tên"
-          path="/receptionist/patientInformation"
+          suggestedData={searchOptions}
+          placeholder="Chọn hoặc tìm kiếm nhiều bác sĩ theo tên"
+          path="/patient/doctors"
         />
-      </div>
-      <div className="overflow-y-auto">
+      </div> */}
+      <div className=" overflow-y-auto  ">
         <PaginatedItems
-          items={filteredPatients}
+          items={patients}
           itemsPerPage={6}
           RenderComponent={PatientList}
-          displayView="grid"
+          displayView={searchParams.displayView || "grid"}
         />
       </div>
     </div>
   );
 };
 
-export default PatientInformation;
+export default PatientsPage;

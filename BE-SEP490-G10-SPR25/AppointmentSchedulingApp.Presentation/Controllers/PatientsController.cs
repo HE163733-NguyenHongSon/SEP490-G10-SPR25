@@ -25,5 +25,27 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         }
 
 
+        [HttpGet("{patientId}")]
+        [EnableQuery]
+        public async Task<IActionResult> GetPatientDetailById(int patientId)
+        {
+            try
+            {
+                var patientDetail = await _patientService.GetPatientDetailById(patientId);
+
+                if (patientDetail == null)
+                {
+                    return NotFound($"Bệnh nhân với ID={patientId} không tồn tại!");
+
+                }
+
+                return Ok(patientDetail);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
+        }
+
     }
 }

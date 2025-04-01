@@ -15,14 +15,14 @@ namespace AppointmentSchedulingApp.Application.Profiles
         {
             CreateMap<Patient, PatientDTO>()
                 .ForMember(dest => dest.PatientId, opt => opt.MapFrom(src => src.PatientId))
-                .ForMember(dest => dest.CitizenId, opt => opt.MapFrom(src => src.PatientNavigation.CitizenId))
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.PatientNavigation.Email))
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.PatientNavigation.UserName))
-                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.PatientNavigation.Phone))
-                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.PatientNavigation.Gender))
-                .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.PatientNavigation.Dob))
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.PatientNavigation.Address))
-                .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => src.PatientNavigation.AvatarUrl))
+                .ForMember(dest => dest.CitizenId, opt => opt.MapFrom(src => src.UserNavigation.CitizenId))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.UserNavigation.Email))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserNavigation.UserName))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.UserNavigation.Phone))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.UserNavigation.Gender))
+                .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.UserNavigation.Dob))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.UserNavigation.Address))
+                .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => src.UserNavigation.AvatarUrl))
                 .ReverseMap();
 
         }

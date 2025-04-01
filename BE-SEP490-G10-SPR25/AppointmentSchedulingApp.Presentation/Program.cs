@@ -1,6 +1,4 @@
 using AppointmentSchedulingApp.Domain.Entities;
-using AppointmentSchedulingApp.Domain.Repositories;
-using AppointmentSchedulingApp.Domain.UnitOfWork;
 using AppointmentSchedulingApp.Infrastructure;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.Repositories;
@@ -17,6 +15,8 @@ using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using AppointmentSchedulingApp.Application.IServices;
+using AppointmentSchedulingApp.Domain.IUnitOfWork;
+using AppointmentSchedulingApp.Domain.IRepositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;

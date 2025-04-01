@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
-using AppointmentSchedulingApp.Domain.UnitOfWork;
+using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.UnitOfWork;
 using AutoMapper;
@@ -34,21 +34,21 @@ namespace AppointmentSchedulingApp.Application.Services
         public async Task<List<PatientDTO>> GetPatientList()
         {
             var patients = await _dbcontext.Patients
-                .Include(p => p.PatientNavigation)
+                .Include(p => p.UserNavigation)
                 .Select(p => new PatientDTO()
                 {
                     PatientId = p.PatientId,
                     GuardianId = p.GuardianId,
                     Rank = p.Rank,
-                    UserId = p.PatientNavigation.UserId,    
-                    CitizenId = p.PatientNavigation.CitizenId,
-                    Email = p.PatientNavigation.Email,
-                    UserName = p.PatientNavigation.UserName,
-                    Phone = p.PatientNavigation.Phone,
-                    Gender = p.PatientNavigation.Gender,
-                    Dob = p.PatientNavigation.Dob,
-                    Address = p.PatientNavigation.Address,
-                    AvatarUrl = p.PatientNavigation.AvatarUrl,
+                    UserId = p.UserNavigation.UserId,    
+                    CitizenId = p.UserNavigation.CitizenId,
+                    Email = p.UserNavigation.Email,
+                    UserName = p.UserNavigation.UserName,
+                    Phone = p.UserNavigation.Phone,
+                    Gender = p.UserNavigation.Gender,
+                    Dob = p.UserNavigation.Dob,
+                    Address = p.UserNavigation.Address,
+                    AvatarUrl = p.UserNavigation.AvatarUrl,
                 })
                 .ToListAsync();
             return patients;
@@ -57,22 +57,22 @@ namespace AppointmentSchedulingApp.Application.Services
         public async Task<PatientDTO> GetPatientDetailById(int patientId)
         {
             var patient = await _dbcontext.Patients
-                .Include(p => p.PatientNavigation)
+                .Include(p => p.UserNavigation)
                 .Where(p => p.PatientId == patientId)
                 .Select(p => new PatientDTO()
                 {
                     PatientId = p.PatientId,
                     GuardianId = p.GuardianId,
                     Rank = p.Rank,
-                    UserId = p.PatientNavigation.UserId,
-                    CitizenId = p.PatientNavigation.CitizenId,
-                    Email = p.PatientNavigation.Email,
-                    UserName = p.PatientNavigation.UserName,
-                    Phone = p.PatientNavigation.Phone,
-                    Gender = p.PatientNavigation.Gender,
-                    Dob = p.PatientNavigation.Dob,
-                    Address = p.PatientNavigation.Address,
-                    AvatarUrl = p.PatientNavigation.AvatarUrl,
+                    UserId = p.UserNavigation.UserId,
+                    CitizenId = p.UserNavigation.CitizenId,
+                    Email = p.UserNavigation.Email,
+                    UserName = p.UserNavigation.UserName,
+                    Phone = p.UserNavigation.Phone,
+                    Gender = p.UserNavigation.Gender,
+                    Dob = p.UserNavigation.Dob,
+                    Address = p.UserNavigation.Address,
+                    AvatarUrl = p.UserNavigation.AvatarUrl,
                 })
                 .FirstOrDefaultAsync();
             return patient;
@@ -83,7 +83,7 @@ namespace AppointmentSchedulingApp.Application.Services
             try
             {
                 var patient = await _dbcontext.Patients
-                    .Include(p => p.PatientNavigation)
+                    .Include(p => p.UserNavigation)
                     .Where(p => p.PatientId == patientDTO.PatientId)
                     .FirstOrDefaultAsync();
 

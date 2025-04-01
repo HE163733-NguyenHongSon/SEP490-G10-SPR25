@@ -1,0 +1,241 @@
+#include<bits/stdc++.h>
+#define el cout<<"\n"
+#define f0(i,n) for(int i=0;i<n;++i)
+#define f1(i,n) for(int i=1;i<=n;++i)
+#define maxn 1024
+using namespace std;
+int t;
+vector <pair<int, int>> adj[maxn];
+void solve()
+{
+    int n, m;
+    cin >> n >> m;
+    vector <int> dp(1 << n, 1e9);
+    string smask; cin >> smask;
+    int s = bitset <10>(smask).to_ulong();
+    dp[s] = 0;
+    vector <int> symp(m), side(m), d(m);
+    f0 (i, m) {
+        cin >> d[i];
+        string s; cin >> s;
+        symp[i] = bitset <10> (s).to_ulong();
+        cin >> s;
+        side[i] = bitset <10> (s).to_ulong();
+    }
+    f0 (mask, 1 << n) adj[mask].clear();
+    for (int mask = 0; mask < 1 << n; mask++) {
+        f0 (i, m)
+        {
+            int nxt = mask & (~symp[i]) | side[i];
+            adj[mask].push_back({nxt, d[i]});
+        }
+    }
+    #define pii pair<int,int>
+    priority_queue <pii, vector<pii>, greater<pii>> q;
+    q.push({0, s});
+    while (q.size()) {
+        auto [du, u] = q.top();
+        q.pop();
+        if (du != dp[u]) continue;
+        for (auto [v, w] : adj[u]) {
+            if (dp[u] + w < dp[v]) {
+                dp[v] = dp[u] + w;
+                q.push({dp[v], v});
+            }
+        }
+    }
+    if (dp[0] != 1e9) cout << dp[0];
+    else cout << -1;
+    el;
+}
+main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+}
+/*
+	www.youtube.com/YugiHackerChannel
+	linktr.ee/YugiHacker
+*/
+#include<bits/stdc++.h>
+#define el cout<<"\n"
+#define f0(i,n) for(int i=0;i<n;++i)
+#define f1(i,n) for(int i=1;i<=n;++i)
+#define maxn 202
+using namespace std;
+int n, k;
+mt19937_64 rd(chrono::steady_clock::now().time_since_epoch().count());
+long long Rand(long long l, long long r) {
+    return l + rd() % (r - l + 1);
+}
+namespace k_equal_2 {
+    int cnt = 0;
+    vector <vector<pair<int, int>>> ans;
+    void ask(int x, int y) {
+        cout << "ASK " << x << ' ' << y << endl;
+        vector <pair<int, int>> cur;
+        cur.push_back({x, y});
+        for (int i=1; i<k; i++) {
+            int u, v; cin >> u >> v;
+            cur.push_back({u, v});
+        }
+        sort(cur.begin(), cur.end());
+        if (cur[0].first == cur[k-1].first) {
+            for (int i=0; i<k; i++) {
+                ans.push_back(cur);
+                for (auto &p:cur) p.first--;
+            }
+        }
+        else {
+            for (int i=0; i<k; i++) {
+                ans.push_back(cur);
+                for (auto &p:cur) p.second--;
+            }
+        }
+    }
+    int d[maxn][maxn];
+    void answer() {
+        cout << "ANSWER" << endl;
+        for (auto v:ans) {
+            for (auto p:v) {
+                cout << p.first << ' ' << p.second << ' ';
+                d[p.first][p.second] = 1;
+            }
+            cout << endl;
+        }
+        for (int i=1; i<=n*k; i++)
+            for (int j=1; j<=n*k; j++) {
+                if (d[i][j] == 0) cout << i << ' ' << j << ' ';
+            }
+    }
+    void solve() {
+        for (int i=k; i<=n*k; i+=k)
+            for (int j=k; j<=n*k; j+=k)
+                ask(i, j);
+        answer();
+    }
+}
+namespace greedy {
+    int deg[maxn * maxn];
+    int colored[maxn * maxn];
+    int used[maxn * maxn * 2];
+    vector <int> adj_cell[maxn * maxn];
+    vector <int> adj_tile[maxn * maxn * 2];
+    int N;
+    int id_cell(int x, int y) {
+        return (x - 1) * N + y;
+    }
+    pair <int, int> id_cell_reverse(int id) {
+        return {(id - 1) / N + 1, (id - 1) % N + 1};
+    }
+    void solve() {
+        N = n * k;
+        int base = N * N;
+        /// vertical tile
+        for (int i=1; i+k-1<=N; i++) {
+            for (int j=1; j<=N; j++) {
+                int tid = id_cell(i, j);
+                for (int x=0; x<k; x++) {
+                    int cid = id_cell(i+x, j);
+                    adj_cell[cid].push_back(tid);
+                    adj_tile[tid].push_back(cid);
+                    deg[cid]++;
+                }
+            }
+        }
+        ///horizontal tile
+        for (int i=1; i<=N; i++) {
+            for (int j=1; j+k-1<=N; j++) {
+                int tid = id_cell(i, j) + base;
+                for (int x=0; x<k; x++) {
+                    int cid = id_cell(i, j+x);
+                    adj_cell[cid].push_back(tid);
+                    adj_tile[tid].push_back(cid);
+                    deg[cid]++;
+                }
+            }
+        }
+        vector <vector<pair<int, int>>> ans;
+        auto update = [&] (vector <pair<int, int>> cur) {
+            ans.push_back(cur);
+            set <int> tiles;
+            for (auto p:cur) {
+                int cid = id_cell(p.first, p.second);
+                colored[cid] = 1;
+                for (int tid:adj_cell[cid]) {
+                    if (!used[tid]) {
+                        used[tid] = 1;
+                        tiles.insert(tid);
+                    }
+                }
+            }
+            set <int> cells;
+            for (int tid:tiles)
+                for (int cid:adj_tile[tid])
+                    deg[cid]--;
+        };
+        auto process1 = [&] (int x, int y) {
+            vector<pair<int, int>> cur;
+            int cid = id_cell(x, y);
+            for (int tid:adj_cell[cid]) {
+                if(!used[tid]) {
+                    if (tid <= base) {
+                        auto [i, j] = id_cell_reverse(tid);
+                        for (int x=0; x<k; x++) cur.push_back({i+x, j});
+                    }
+                    else {
+                        auto [i, j] = id_cell_reverse(tid - base);
+                        for (int x=0; x<k; x++) cur.push_back({i, j+x});
+                    }
+                    break;
+                }
+            }
+            update(cur);
+        };
+        auto ask = [&] (int x, int y) {
+            cout << "ASK " << x << ' ' << y << endl;
+            vector<pair<int, int>> cur;
+            cur.push_back({x, y});
+            for (int i=1; i<k; i++) {
+                cin >> x >> y;
+                cur.push_back({x, y});
+            }
+            update(cur);
+        };
+        bool stop = 0;
+        function <void()> Try = [&] () {
+            int ma = 0, x = 0, y = 0;
+            for (int i=1; i<=N; i++)
+                for (int j=1; j<=N; j++) {
+                    if (deg[id_cell(i, j)] == 1)
+                    {
+                        process1(i, j);
+                        return;
+                    }
+                    if (deg[id_cell(i, j)] >= ma) {
+                        ma = deg[id_cell(i, j)];
+                        x = i, y = j;
+                    }
+                }
+            if (ma == 0) stop = 1;
+            else ask(x, y);
+        };
+        while (!stop) Try();
+        cout << "ANSWER" << endl;
+        for (auto v:ans) {
+            for (auto p:v) cout << p.first << ' ' << p.second << ' ';
+            el;
+        }
+    }
+}
+main()
+{
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin >> n >> k;
+    int x = Rand(0, 2);
+    if (k == 2 && n == 20 && x) k_equal_2::solve();
+    else greedy::solve();
+}

@@ -1,6 +1,8 @@
 ﻿using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
+using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.IRepositories;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +14,11 @@ namespace AppointmentSchedulingApp.Application.Services
     public class PostService:IPostService
     {
         private readonly IPostRepository _postRepository;
-        public PostService(IPostRepository postRepository)
+        private readonly IMapper _mapper;
+        public PostService(IPostRepository postRepository, IMapper mapper)
         {
             _postRepository = postRepository;
+            _mapper = mapper;
         }
         public async Task<List<PostDTO>> GetAllPostsAsync()
         {
@@ -40,6 +44,12 @@ namespace AppointmentSchedulingApp.Application.Services
                 PostCreatedDate = p.PostCreatedDate,
                 PostSourceUrl = p.PostSourceUrl,
             };
+        }
+        public async Task AddPostAsync(PostDetailDTO postDTO)
+        {
+            var post = _mapper.Map<Post>(postDTO);
+            post.PostCreatedDate = DateTime.Now;
+            await _postRepository.AddAsync(post);
         }
     }
 }

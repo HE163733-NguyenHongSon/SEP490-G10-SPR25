@@ -27,5 +27,15 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             if (post == null) return NotFound();
             return Ok(post);
         }
+        [HttpPost]
+        public async Task<IActionResult> CreatePost([FromBody] PostDetailDTO postDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            await _postService.AddPostAsync(postDTO);
+            return Ok();
+        }
     }
 }

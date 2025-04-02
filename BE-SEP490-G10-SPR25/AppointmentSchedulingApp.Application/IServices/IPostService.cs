@@ -11,5 +11,6 @@ namespace AppointmentSchedulingApp.Application.IServices
     {
         Task<List<PostDTO>> GetAllPostsAsync();
         Task<PostDTO?> GetPostByIdAsync(int id);
+        Task AddPostAsync(PostDetailDTO postDetailDTO);
     }
 }

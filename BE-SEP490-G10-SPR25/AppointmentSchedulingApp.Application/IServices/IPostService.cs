@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Application.IServices
 {
-    internal interface IPostService
+    public interface IPostService
     {
         Task<List<PostDTO>> GetAllPostsAsync();
         Task<PostDTO?> GetPostByIdAsync(int id);

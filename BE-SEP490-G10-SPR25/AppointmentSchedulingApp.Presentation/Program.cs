@@ -180,6 +180,8 @@ builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IPostService, PostService>();
 
 // Đăng ký các dịch vụ liên quan đến người dùng
 builder.Services.AddScoped<IUserService, UserService>();

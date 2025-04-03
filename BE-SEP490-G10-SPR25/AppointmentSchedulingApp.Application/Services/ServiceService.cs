@@ -121,12 +121,16 @@ namespace AppointmentSchedulingApp.Application.Services
                     throw new NotFoundException($"Service with ID {serviceDto.ServiceId} not found");
                 }
 
-                var service = mapper.Map<Service>(serviceDto);
-                unitOfWork.ServiceRepository.Update(service);
+                // Map DTO values to existing entity
+                mapper.Map(serviceDto, existingService);
+                
+                // Update the existing entity
+                unitOfWork.ServiceRepository.Update(existingService);
                 await unitOfWork.CommitAsync();
             }
             catch (Exception ex)
             {
+                unitOfWork.Rollback();
                 throw new ServiceException($"Error updating service with ID {serviceDto?.ServiceId}", ex);
             }
         }
@@ -135,17 +139,47 @@ namespace AppointmentSchedulingApp.Application.Services
         { 
             try
             {
+                // Get service
                 var service = await unitOfWork.ServiceRepository.Get(s => s.ServiceId.Equals(id));
                 if (service == null)
                 {
                     throw new NotFoundException($"Service with ID {id} not found");
                 }
 
+                // Get all reservations for this service
+                var reservations = await unitOfWork.ReservationRepository.GetAll(
+                    r => r.DoctorSchedule != null && 
+                         r.DoctorSchedule.ServiceId == id
+                );
+
+                // Check for active reservations
+                var hasActiveReservations = reservations.Any(r => 
+                    r.Status != "Cancelled" && 
+                    r.Status != "Completed"
+                );
+
+                if (hasActiveReservations)
+                {
+                    throw new ValidationException("Cannot delete service with active reservations");
+                }
+
+                // Delete all related reservations
+                foreach (var reservation in reservations)
+                {
+                    unitOfWork.ReservationRepository.Remove(reservation);
+                }
+
+                // Delete the service
                 unitOfWork.ServiceRepository.Remove(service);
                 await unitOfWork.CommitAsync();
             }
+            catch (ValidationException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
+                await unitOfWork.RollbackAsync();
                 throw new ServiceException($"Error deleting service with ID {id}", ex);
             }
         }

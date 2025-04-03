@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsFilter, BsCalendar } from "react-icons/bs";
 import { FaChevronRight, FaSearch, FaFilter, FaTimes } from "react-icons/fa";
-import { Service, serviceService } from "../../services/serviceSerivce";
+import { Service, serviceService } from "../../services/serviceService";
 import RatingStars from "../../components/RatingStars";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -99,16 +99,11 @@ export function ServiceList({ services }: ServiceListProps) {
         // Apply category filter
         if (selectedCategory) {
           try {
-            // If both specialty and category are selected, we need to filter the already filtered data
-            if (selectedSpecialty) {
-              filteredData = filteredData.filter(service => service.categoryId === selectedCategory);
-            } else {
-              // If only category is selected, we get all services for that category
-              const categoryServices = await serviceService.getServicesByCategory(selectedCategory);
-              filteredData = categoryServices.filter(service => 
-                !search || service.serviceName.toLowerCase().includes(search.toLowerCase())
-              );
-            }
+            const categoryServices = await serviceService.getServicesByCategory(selectedCategory);
+            filteredData = categoryServices.filter(service => 
+              (!search || service.serviceName.toLowerCase().includes(search.toLowerCase())) &&
+              (!selectedSpecialty || service.specialtyId === selectedSpecialty)
+            );
           } catch (error) {
             console.error(`Error filtering services for category ${selectedCategory}:`, error);
           }
@@ -116,13 +111,10 @@ export function ServiceList({ services }: ServiceListProps) {
         
         // Apply sorting
         if (sortBy === 'rating') {
-          // Sort by rating (descending)
           filteredData.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         } else if (sortBy === 'price_asc') {
-          // Sort by price (ascending)
           filteredData.sort((a, b) => a.price - b.price);
         } else if (sortBy === 'price_desc') {
-          // Sort by price (descending)
           filteredData.sort((a, b) => b.price - a.price);
         }
         

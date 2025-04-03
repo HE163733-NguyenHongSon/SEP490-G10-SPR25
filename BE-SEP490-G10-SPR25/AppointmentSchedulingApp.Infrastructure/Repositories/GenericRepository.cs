@@ -24,6 +24,11 @@ namespace AppointmentSchedulingApp.Infrastructure
             _dbContext.SaveChanges();
 
         }
+        public async Task AddAsync(T entity)
+        {
+            await _entitySet.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
+        }
 
         public async Task<T> Get(Expression<Func<T, bool>> expression)
         {

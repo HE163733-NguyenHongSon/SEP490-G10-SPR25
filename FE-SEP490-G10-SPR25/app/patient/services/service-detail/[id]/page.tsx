@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from "react";
 import { Star } from "lucide-react";
-import { serviceService, ServiceDetail } from "../../../../services/serviceSerivce";
+import { serviceService, ServiceDetail } from "../../../../services/serviceService";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -165,7 +165,7 @@ const ServiceDetailPage = ({ params }: ServiceDetailPageProps) => {
                             <div className="mt-6">
                                 <h2 className="font-semibold text-lg">Required Devices</h2>
                                 <ul className="text-gray-600 mt-2 text-sm list-disc pl-6">
-                                    {service.requiredDevices.map((device, index) => (
+                                    {service.requiredDevices.map((device: string, index: number) => (
                                         <li key={index}><b>{device}</b></li>
                                     ))}
                                 </ul>
@@ -179,7 +179,7 @@ const ServiceDetailPage = ({ params }: ServiceDetailPageProps) => {
                         <h2 className="font-semibold text-lg">Doctors Providing This Service</h2>
                         {service.relatedDoctors && service.relatedDoctors.length > 0 ? (
                             <ul className="text-gray-600 mt-2 text-sm list-disc pl-6">
-                                {service.relatedDoctors.map((doctor, index) => (
+                                {service.relatedDoctors.map((doctor: string, index: number) => (
                                     <li key={index}>{doctor}</li>
                                 ))}
                             </ul>

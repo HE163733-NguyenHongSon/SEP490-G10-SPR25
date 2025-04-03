@@ -86,6 +86,11 @@ const ServicesManagement = () => {
 
   const handleSubmit = async (values: any) => {
     try {
+      // Format estimatedTime correctly for the backend
+      if (values.estimatedTime && !values.estimatedTime.includes("minutes")) {
+        values.estimatedTime = `${values.estimatedTime} minutes`;
+      }
+
       if (editingService) {
         const payload = {
           ...values,

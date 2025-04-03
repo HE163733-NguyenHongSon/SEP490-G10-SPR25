@@ -147,4 +147,4 @@ export const serviceService = {
             throw error;
         }
     }
-};
+}; 

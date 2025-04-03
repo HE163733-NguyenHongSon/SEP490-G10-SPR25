@@ -163,13 +163,37 @@ namespace AppointmentSchedulingApp.Application.Services
                     throw new ValidationException("Cannot delete service with active reservations");
                 }
 
+                // Get all doctors that provide this service
+                var doctors = await unitOfWork.DoctorRepository.GetAll();
+                foreach (var doctor in doctors)
+                {
+                    // Remove service from doctor's services
+                    if (doctor.Services.Any(s => s.ServiceId == id))
+                    {
+                        var serviceToRemove = doctor.Services.First(s => s.ServiceId == id);
+                        doctor.Services.Remove(serviceToRemove);
+                        unitOfWork.DoctorRepository.Update(doctor);
+                    }
+
+                    // Remove service from doctor's schedules
+                    var schedulesToRemove = doctor.DoctorSchedules.Where(ds => ds.ServiceId == id).ToList();
+                    foreach (var schedule in schedulesToRemove)
+                    {
+                        doctor.DoctorSchedules.Remove(schedule);
+                    }
+                    if (schedulesToRemove.Any())
+                    {
+                        unitOfWork.DoctorRepository.Update(doctor);
+                    }
+                }
+
                 // Delete all related reservations
                 foreach (var reservation in reservations)
                 {
                     unitOfWork.ReservationRepository.Remove(reservation);
                 }
 
-                // Delete the service
+                // Finally delete the service
                 unitOfWork.ServiceRepository.Remove(service);
                 await unitOfWork.CommitAsync();
             }

@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import PageBreadCrumb from "../components/PageBreadCrumb";
 import { Service, serviceService } from "../../services/serviceService";
+import { specialtyService } from "../../services/specialtyService";
+import type { ISpecialty } from "../../types/specialty";
 import { Button, Modal, Form, Input, InputNumber, Select, message, Space, Popconfirm, Table } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 
@@ -9,7 +11,7 @@ const { Option } = Select;
 
 const ServicesManagement = () => {
   const [services, setServices] = useState<Service[]>([]);
-  const [specialties, setSpecialties] = useState<any[]>([]);
+  const [specialties, setSpecialties] = useState<ISpecialty[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -35,13 +37,8 @@ const ServicesManagement = () => {
 
   const fetchSpecialties = async () => {
     try {
-      const response = await fetch("/api/Specialties");
-      if (response.ok) {
-        const data = await response.json();
-        setSpecialties(data);
-      } else {
-        message.error("Failed to fetch specialties");
-      }
+      const data = await specialtyService.getSpecialtyList();
+      setSpecialties(data);
     } catch (error) {
       console.error("Error fetching specialties:", error);
       message.error("Failed to fetch specialties");
@@ -128,7 +125,7 @@ const ServicesManagement = () => {
       key: "specialtyId",
       width: "15%",
       render: (specialtyId: number) => {
-        const specialty = specialties.find(s => s.specialtyId === specialtyId);
+        const specialty = specialties.find(s => Number(s.specialtyId) === specialtyId);
         return specialty ? specialty.specialtyName : specialtyId;
       }
     },

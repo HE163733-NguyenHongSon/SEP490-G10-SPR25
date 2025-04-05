@@ -2,21 +2,15 @@
 import React from "react";
 import Link from "next/link";
 
-interface IPatient {
-  patientId: string;
-  userName: string;
-  gender: string;
-  phone: string;
-  email: string;
-  dob: string;
-  rank: string;
-}
+
 
 interface IPatients {
   items: IPatient[];
 }
 
 export const PatientList = ({ items }: IPatients) => {
+  console.log(items); // Kiểm tra dữ liệu được truyền vào
+
   return (
     <div className="w-full overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-200">
@@ -29,6 +23,9 @@ export const PatientList = ({ items }: IPatients) => {
               Tên
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Tình trạng chính
+            </th>
+            {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Giới tính
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -39,7 +36,7 @@ export const PatientList = ({ items }: IPatients) => {
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Ngày sinh
-            </th>
+            </th> */}
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Rank
             </th>
@@ -55,9 +52,12 @@ export const PatientList = ({ items }: IPatients) => {
                 {patient.patientId}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {patient.userName}
+                {patient.patientName}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                {patient.mainCondition}
+              </td>
+              {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {patient.gender}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -68,7 +68,7 @@ export const PatientList = ({ items }: IPatients) => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {new Date(patient.dob).toLocaleDateString()}
-              </td>
+              </td> */}
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
                   className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 

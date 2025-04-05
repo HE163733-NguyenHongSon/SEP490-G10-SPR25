@@ -1,8 +1,9 @@
 ﻿using AppointmentSchedulingApp.Application;
+using AppointmentSchedulingApp.Application.IServices;
+using AppointmentSchedulingApp.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using AppointmentSchedulingApp.Application.IServices;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -21,6 +22,28 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         public async Task<IActionResult> Get()
         {
             return Ok(await medicalRecordService.GetMedicalRecordList());
+        }
+
+
+        [HttpGet("GetAllMedicalRecordByPatientId/{patientId}")]
+        [EnableQuery]
+        public async Task<IActionResult> GetAllMedicalRecordByPatientId(int patientId)
+        {
+            try
+            {
+                var medicalRecords = await medicalRecordService.GetAllMedicalRecordByPatientId(patientId);
+
+                if (medicalRecords == null)
+                {
+                    return NotFound($"Bệnh nhân với ID={patientId} không có hồ sơ bệnh án nào cả!");
+                }
+
+                return Ok(medicalRecords);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
         }
     }
 }

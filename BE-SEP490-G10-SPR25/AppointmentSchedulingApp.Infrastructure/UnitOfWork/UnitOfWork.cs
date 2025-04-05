@@ -11,6 +11,7 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         private readonly AppointmentSchedulingDbContext _dbContext;
 
         private IDoctorRepository _doctorRepository;
+        private IPatientRepository _patientRepository;
         private IMedicalRecordRepository _medicalRecordRepository;
         private IReservationRepository _reservationRepository;
         private IServiceRepository _serviceRepository;
@@ -24,6 +25,9 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
 
         public IDoctorRepository DoctorRepository =>
             _doctorRepository ??= new DoctorRepository(_dbContext);
+
+        public IPatientRepository PatientRepository =>
+            _patientRepository ??= new PatientRepository(_dbContext);
 
         public IMedicalRecordRepository MedicalRecordRepository =>
             _medicalRecordRepository ??= new MedicalRecordRepository(_dbContext);

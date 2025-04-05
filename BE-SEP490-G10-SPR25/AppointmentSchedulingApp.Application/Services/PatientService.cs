@@ -10,99 +10,75 @@ using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.UnitOfWork;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace AppointmentSchedulingApp.Application.Services
 {
     public class PatientService : IPatientService
     {
-        private readonly IMapper _mapper;
-        public IUnitOfWork _unitOfWork { get; set; }
-        private readonly AppointmentSchedulingDbContext _dbcontext;
+        private readonly IMapper mapper;
+        public IUnitOfWork unitOfWork { get; set; }
+        private readonly ILogger<PatientService> logger;
 
-        public PatientService(IMapper mapper, IUnitOfWork unitOfWork, AppointmentSchedulingDbContext dbcontext)
+        public PatientService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<PatientService> logger)
         {
-            this._mapper = mapper;
-            this._unitOfWork = unitOfWork;
-            this._dbcontext = dbcontext;
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.logger = logger;
+            this.logger = logger;
         }
 
         //public async Task<List<PatientDTO>> GetPatientList()
         //{
-        //    var patients = await _unitOfWork.PatientRepository.GetAll();
-        //    return _mapper.Map<List<PatientDTO>>(patients);
+        //    var patients = await unitOfWork.PatientRepository.GetAll();
+        //    return mapper.Map<List<PatientDTO>>(patients);
         //}
+
+        //public async Task<PatientDetailDTO> GetPatientDetailById(int patientId)
+        //{
+        //    var patient = await unitOfWork.PatientRepository.Get(p => p.PatientId.Equals(patientId));
+
+        //    if (patient == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    return mapper.Map<PatientDetailDTO>(patient);
+        //}
+
+
         public async Task<List<PatientDTO>> GetPatientList()
-        {
-            var patients = await _dbcontext.Patients
-                .Include(p => p.UserNavigation)
-                .Select(p => new PatientDTO()
-                {
-                    PatientId = p.PatientId,
-                    GuardianId = p.GuardianId,
-                    Rank = p.Rank,
-                    UserId = p.UserNavigation.UserId,    
-                    CitizenId = p.UserNavigation.CitizenId,
-                    Email = p.UserNavigation.Email,
-                    UserName = p.UserNavigation.UserName,
-                    Phone = p.UserNavigation.Phone,
-                    Gender = p.UserNavigation.Gender,
-                    Dob = p.UserNavigation.Dob,
-                    Address = p.UserNavigation.Address,
-                    AvatarUrl = p.UserNavigation.AvatarUrl,
-                })
-                .ToListAsync();
-            return patients;
-        }
-
-        public async Task<PatientDTO> GetPatientDetailById(int patientId)
-        {
-            var patient = await _dbcontext.Patients
-                .Include(p => p.UserNavigation)
-                .Where(p => p.PatientId == patientId)
-                .Select(p => new PatientDTO()
-                {
-                    PatientId = p.PatientId,
-                    GuardianId = p.GuardianId,
-                    Rank = p.Rank,
-                    UserId = p.UserNavigation.UserId,
-                    CitizenId = p.UserNavigation.CitizenId,
-                    Email = p.UserNavigation.Email,
-                    UserName = p.UserNavigation.UserName,
-                    Phone = p.UserNavigation.Phone,
-                    Gender = p.UserNavigation.Gender,
-                    Dob = p.UserNavigation.Dob,
-                    Address = p.UserNavigation.Address,
-                    AvatarUrl = p.UserNavigation.AvatarUrl,
-                })
-                .FirstOrDefaultAsync();
-            return patient;
-        }
-
-        public async Task<bool> UpdatePatient(PatientDTO patientDTO, StringBuilder message)
         {
             try
             {
-                var patient = await _dbcontext.Patients
-                    .Include(p => p.UserNavigation)
-                    .Where(p => p.PatientId == patientDTO.PatientId)
-                    .FirstOrDefaultAsync();
-
-                if (patient == null)
-                {
-                    message.Append("Bệnh nhân không tồn tại!");
-                    return false;
-                }
-
-                patient.GuardianId = patientDTO.GuardianId;
-                //message.Append("Cập nhật thông tin bệnh nhân thành công!");
-                return true;
+                var patients = await unitOfWork.PatientRepository.GetAll();
+                return mapper.Map<List<PatientDTO>>(patients);
             }
-            catch
+            catch (Exception ex)
             {
-                message.Append("Đã xảy ra lỗi trong quá trình xử lý!");
-                return true;
+                logger.LogError(ex, "Error occurred while fetching patient list.");
+                throw;
             }
         }
 
+        public async Task<PatientDetailDTO> GetPatientDetailById(int patientId)
+        {
+            try
+            {
+                var patient = await unitOfWork.PatientRepository.Get(p => p.PatientId.Equals(patientId));
+
+                if (patient == null)
+                {
+                    return null;
+                }
+
+                return mapper.Map<PatientDetailDTO>(patient);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error occurred while fetching patient details for ID={patientId}", patientId);
+                throw;
+            }
+        }
     }
 }

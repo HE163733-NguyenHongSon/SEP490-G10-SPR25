@@ -3,6 +3,7 @@ using AppointmentSchedulingApp.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.Extensions.Logging;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -10,20 +11,38 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
     [ApiController]
     public class PatientsController : ControllerBase
     {
-        private IPatientService _patientService;
+        private readonly IPatientService _patientService;
+        private readonly ILogger<PatientsController> _logger;
 
-        public PatientsController(IPatientService patientService)
+
+        public PatientsController(IPatientService patientService, ILogger<PatientsController> logger)
         {
-            this._patientService = patientService;
+            _patientService = patientService;
+            _logger = logger;
+          _logger = logger;
+
         }
 
         [HttpGet]
         [EnableQuery]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _patientService.GetPatientList());
-        }
+            try
+            {
+                var patients = await _patientService.GetPatientList();
 
+                if (patients == null || !patients.Any())
+                {
+                    return NoContent();
+                }
+
+                return Ok(patients);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi nội bộ máy chủ!");
+            }
+        }
 
         [HttpGet("{patientId}")]
         [EnableQuery]
@@ -36,13 +55,13 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 if (patientDetail == null)
                 {
                     return NotFound($"Bệnh nhân với ID={patientId} không tồn tại!");
-
                 }
 
                 return Ok(patientDetail);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching patient details for ID={patientId}", patientId);
                 return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
             }
         }

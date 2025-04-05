@@ -9,7 +9,6 @@ interface IPatients {
 }
 
 export const PatientList = ({ items }: IPatients) => {
-  console.log(items); // Kiểm tra dữ liệu được truyền vào
 
   return (
     <div className="w-full overflow-x-auto">
@@ -25,7 +24,7 @@ export const PatientList = ({ items }: IPatients) => {
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
             Tình trạng chính
             </th>
-            {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Giới tính
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -36,7 +35,7 @@ export const PatientList = ({ items }: IPatients) => {
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Ngày sinh
-            </th> */}
+            </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Rank
             </th>
@@ -47,17 +46,17 @@ export const PatientList = ({ items }: IPatients) => {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {items?.map((patient) => (
-            <tr key={patient.patientId}>
+            <tr key={patient.userId}>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {patient.patientId}
+                {patient.userId}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {patient.patientName}
+                {patient.userName}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                 {patient.mainCondition}
               </td>
-              {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {patient.gender}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -68,7 +67,7 @@ export const PatientList = ({ items }: IPatients) => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {new Date(patient.dob).toLocaleDateString()}
-              </td> */}
+              </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
                   className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
@@ -81,7 +80,7 @@ export const PatientList = ({ items }: IPatients) => {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <Link
-                  href={`/receptionist/patient-detail/${patient.patientId}`}
+                  href={`/receptionist/patient-detail/${patient.userId}`}
                   className="inline-block bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700 transition-colors duration-200"
                 >
                   Chi tiết

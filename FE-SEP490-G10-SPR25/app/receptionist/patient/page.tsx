@@ -3,7 +3,7 @@ import PaginatedItems from "@/components/PaginatedItems";
 import Search from "@/components/Search";
 import DisplayToggle from "@/components/DisplayToggle";
 import SelectSort from "@/components/SelectSort";
-import { receptionistService } from "@/services/receptionistService";
+import { patientService } from "@/services/patientService";
 import { PatientList } from "../components/PatientList";
 
 const PatientsPage = async ({
@@ -21,7 +21,7 @@ const PatientsPage = async ({
   
  
 
-  patients = await receptionistService.getPatientList();
+  patients = await patientService.getPatientList();
   return (
     <div className="flex flex-col h-screen mt-10 gap-5 ">
       

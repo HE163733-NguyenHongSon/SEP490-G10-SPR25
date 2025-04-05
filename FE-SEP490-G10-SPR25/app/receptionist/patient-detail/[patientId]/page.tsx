@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { receptionistService } from "@/services/receptionistService";
+import { patientService } from "@/services/patientService";
 import { medicalRecordService } from "@/services/medicalRecordService";
 
 
@@ -12,7 +12,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        const patientData = await receptionistService.getPatientDetailById(params.patientId);
+        const patientData = await patientService.getPatientDetailById(params.patientId);
         setPatient(patientData);
 
         // const medicalRecordsData = await medicalRecordService.getAllMedicalRecordByPatientId(params.patientId);
@@ -60,7 +60,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold">Hồ sơ bệnh nhân</h1>
-              <p className="mt-1 text-cyan-100">Mã BN: #{patient.patientId}</p>
+              <p className="mt-1 text-cyan-100">Mã BN: #{patient.userId}</p>
             </div>
             <span className="bg-white/10 px-4 py-2 rounded-full text-sm">
               {new Date().toLocaleDateString()}
@@ -78,7 +78,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
                 {patient.avatarUrl ? (
                   <img
                     src={patient.avatarUrl}
-                    alt={`Avatar of ${patient.patientName}`}
+                    alt={`Avatar of ${patient.userName}`}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -91,7 +91,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
             
             <div className="text-center">
               <h2 className="text-xl font-semibold text-gray-800 mb-1">
-                {patient.patientName}
+                {patient.userName}
               </h2>
               <div className={`inline-flex items-center px-4 py-1 rounded-full text-sm font-medium ${
             

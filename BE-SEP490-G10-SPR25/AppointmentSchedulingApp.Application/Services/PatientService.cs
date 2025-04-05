@@ -18,14 +18,11 @@ namespace AppointmentSchedulingApp.Application.Services
     {
         private readonly IMapper mapper;
         public IUnitOfWork unitOfWork { get; set; }
-        private readonly ILogger<PatientService> logger;
 
-        public PatientService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<PatientService> logger)
+        public PatientService(IMapper mapper, IUnitOfWork unitOfWork)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
-            this.logger = logger;
-            this.logger = logger;
         }
 
         //public async Task<List<PatientDTO>> GetPatientList()
@@ -51,12 +48,11 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             try
             {
-                var patients = await unitOfWork.PatientRepository.GetAll();
+                var patients = await unitOfWork.UserRepository.GetAll();
                 return mapper.Map<List<PatientDTO>>(patients);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error occurred while fetching patient list.");
                 throw;
             }
         }
@@ -65,7 +61,7 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             try
             {
-                var patient = await unitOfWork.PatientRepository.Get(p => p.PatientId.Equals(patientId));
+                var patient = await unitOfWork.UserRepository.Get(p => p.UserId.Equals(patientId));
 
                 if (patient == null)
                 {
@@ -76,7 +72,6 @@ namespace AppointmentSchedulingApp.Application.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error occurred while fetching patient details for ID={patientId}", patientId);
                 throw;
             }
         }

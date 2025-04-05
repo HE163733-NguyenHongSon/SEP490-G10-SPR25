@@ -40,7 +40,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Đã xảy ra lỗi nội bộ máy chủ!");
+                return StatusCode(500, ex.Message );
             }
         }
 

@@ -8,21 +8,13 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Application.DTOs
 {
-    public class PatientDTO 
+    public class PatientDTO : UserDTO
     {
-        [Key]
-        [JsonPropertyOrder(1)]
-        public int PatientId { get; set; }
-
-        [JsonPropertyOrder(2)]
-        [JsonPropertyName("patientName")]
-        public string PatientName { get; set; }
-
-        [JsonPropertyOrder(3)]
         public string MainCondition { get; set; }
 
-        [JsonPropertyOrder(4)]
         public string Rank { get; set; }
+
+        public int? GuardianId { get; set; }
 
     }
 }

@@ -111,58 +111,53 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> LoginGoogle(string accessToken, string roleName)
         {
-            // accessToken = accessToken.Replace("AccessToken ", "");
-            // StringBuilder message = new StringBuilder();
-            // var checkValid = await _userService.CheckValidExternalRegister(roleName, message);
-            // if (!checkValid)
-            // {
-            //     return Ok(new ApiResponse()
-            //     {
-            //         Success = checkValid,
-            //         Message = message.ToString()
-            //     });
-            // }
-            // Userinfo userInfo = await _userService.GetUserInfoAsync(accessToken);
-            // if (userInfo == null)
-            // {
-            //     return Ok(new ApiResponse()
-            //     {
-            //         Success = false,
-            //         Message = "Login with Google Fails, No access to account!"
-            //     });
-            // }
-            // var checkAccountExist = await _userService.CheckGoogleExistAccount(userInfo.Email);
-            // if (!checkAccountExist)
-            // {
-            //     var result = await _userService.ExternalRegisterUser(userInfo, roleName);
-            //     if (result == null || !result.Succeeded)
-            //     {
-            //         return Ok(new ApiResponse()
-            //         {
-            //             Success = false,
-            //             Message = "Login with Google Fails, No access to account!"
-            //         });
-            //     }
-            // }
-            // UserDTO userDTO = await _userService.GetUserDto(userInfo);
-            // var user = await _userService.GetUserById(userDTO.UserId);
-            // var checkIsLockout = _userService.checkLockoutAccount(user, message);
-            // if (!checkIsLockout)
-            // {
-            //     message.Append("Google Authentication Success!");
-            // }
+            accessToken = accessToken.Replace("AccessToken ", "");
+            StringBuilder message = new StringBuilder();
+            var checkValid = await _userService.CheckValidExternalRegister(roleName, message);
+            if (!checkValid)
+            {
+                return Ok(new ApiResponse()
+                {
+                    Success = checkValid,
+                    Message = message.ToString()
+                });
+            }
+            Userinfo userInfo = await _userService.GetUserInfoAsync(accessToken);
+            if (userInfo == null)
+            {
+                return Ok(new ApiResponse()
+                {
+                    Success = false,
+                    Message = "Login with Google Fails, No access to account!"
+                });
+            }
+            var checkAccountExist = await _userService.CheckGoogleExistAccount(userInfo.Email);
+            if (!checkAccountExist)
+            {
+                var result = await _userService.ExternalRegisterUser(userInfo, roleName);
+                if (result == null || !result.Succeeded)
+                {
+                    return Ok(new ApiResponse()
+                    {
+                        Success = false,
+                        Message = "Login with Google Fails, No access to account!"
+                    });
+                }
+            }
+            UserDTO userDTO = await _userService.GetUserDto(userInfo);
+            var user = await _userService.GetUserById(userDTO.UserId);
+            var checkIsLockout = _userService.checkLockoutAccount(user, message);
+            if (!checkIsLockout)
+            {
+                message.Append("Google Authentication Success!");
+            }
 
-            // return Ok(new ApiResponse
-            // {
-            //     Success = !checkIsLockout,
-            //     Message = message.ToString(),
-            //     Data = !checkIsLockout ? _userService.GenerateToken(userDTO) : null
-            // });
             return Ok(new ApiResponse
             {
-                Success = true,
-                Message = "Login with Google Fails, No access to account!"
-            }); 
+                Success = !checkIsLockout,
+                Message = message.ToString(),
+                Data = !checkIsLockout ? _userService.GenerateToken(userDTO) : null
+            });
         }
 
         [HttpPost("Register-Patient")]

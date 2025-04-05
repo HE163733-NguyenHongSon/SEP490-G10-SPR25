@@ -11,6 +11,7 @@ namespace AppointmentSchedulingApp.Domain.IRepositories
         Task<T> Get(Expression<Func<T, bool>> expression);
         Task<IEnumerable<T>> GetAll();
         Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> expression);
+        Task AddAsync(T entity);
         void Add(T entity); 
         void Update(T entity); 
         void Remove(T entity);

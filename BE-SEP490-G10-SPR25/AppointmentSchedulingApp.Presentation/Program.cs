@@ -24,17 +24,10 @@ var configuration = builder.Configuration;
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddLogging(config =>
-{
-    config.AddConsole();
-    config.AddDebug();
-    // Add other logging providers as needed
-});
 ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<ReservationDTO>("Reservations");
 modelBuilder.EntitySet<MedicalRecordDTO>("MedicalRecords");
 modelBuilder.EntitySet<DoctorDTO>("Doctors");
-modelBuilder.EntitySet<PatientDTO>("Patients");
 modelBuilder.EntitySet<SpecialtyDTO>("Specialties");
 modelBuilder.EntitySet<ServiceDTO>("Services");
 var provider = builder.Services.BuildServiceProvider();
@@ -49,7 +42,7 @@ builder.Services.AddCors(options =>
         policy.AllowAnyOrigin()
                .AllowAnyMethod()
                .AllowAnyHeader();
-    });
+    });   
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -98,7 +91,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
-
+    
     // Configure event handlers for JWT authentication
     options.Events = new JwtBearerEvents
     {
@@ -107,7 +100,7 @@ builder.Services.AddAuthentication(options =>
             // Log successful token validation
             var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
             logger.LogInformation("Token validated successfully");
-
+            
             // Ensure roles are properly handled from the token
             var userIdClaim = context.Principal.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim != null)
@@ -137,7 +130,7 @@ builder.Services.AddAuthentication(options =>
             return Task.CompletedTask;
         }
     };
-
+    
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidAudience = builder.Configuration["JwtAppsettings:Audience"],
@@ -184,12 +177,11 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 // Đăng ký các dịch vụ khác
 builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
-builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-//builder.Services.AddScoped<IPostRepository, PostRepository>();
-//builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IPostService, PostService>();
 
 // Đăng ký các dịch vụ liên quan đến người dùng
 builder.Services.AddScoped<IUserService, UserService>();

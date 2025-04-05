@@ -9,7 +9,12 @@ export default function SpecialtyDetails() {
   const router = useRouter();
   const { id } = useParams()
   
-  const [specialty, setSpecialty] = useState([])
+  interface Specialty {
+    specialtyName: string;
+    specialtyDescription: string;
+  }
+
+  const [specialty, setSpecialty] = useState<Specialty | null>(null);
   useEffect(() => {
     fetch(`http://localhost:5220/api/Specialties/${id}`)
     .then((res) => res.json())
@@ -39,11 +44,12 @@ export default function SpecialtyDetails() {
           </svg>
           Back
         </button>
+        <h1 className="text-2xl font-bold text-black">{specialty?.specialtyName || "Loading..."}</h1>
 
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-black">{specialty.specialtyName}</h1>
+            <h1 className="text-2xl font-bold text-black">{specialty?.specialtyName || "Loading..."}</h1>
             <div className="text-gray-600 mt-2 space-y-2">
               <Link href="#introduce" className="block text-blue-500 hover:underline">
                 · Introduce
@@ -82,7 +88,7 @@ export default function SpecialtyDetails() {
           <div className="mb-6">
             <h2 className="text-lg font-semibold mb-2 text-black">Description</h2>
             <p className="text-gray-700">
-              {specialty.specialtyDescription}
+              {specialty?.specialtyDescription || "Loading description..."}
             </p>
           </div>
 

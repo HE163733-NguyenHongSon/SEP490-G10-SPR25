@@ -5,12 +5,11 @@ import { doctorService } from "@/services/doctorService";
 import { requireAuth } from "@/services/authService";
 import Link from "next/link";
 import Image from "next/image";
-import { FaChevronRight, FaSearch, FaStar } from "react-icons/fa";
+import { FaChevronRight, FaSearch } from "react-icons/fa";
 import RatingStars from "@/components/RatingStars";
 
 // Sử dụng interface từ doctorService thay vì tạo mới
 type Doctor = Awaited<ReturnType<typeof doctorService.getDoctorList>>[number];
-type SearchOption = { label: string; value: string };
 
 const GuestDoctorsPage = () => {
   const [doctors, setDoctors] = useState<Doctor[]>([]);

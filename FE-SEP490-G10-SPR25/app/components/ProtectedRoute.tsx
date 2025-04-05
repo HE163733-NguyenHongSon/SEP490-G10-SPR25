@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { hasRole, getCurrentUser, isAuthenticated } from '../services/authService';
+import {  getCurrentUser, isAuthenticated } from '../services/authService';
 import { AppRole, normalizeRole } from '../types/roles';
 
 // Tạo component Loading tạm thời nếu không có sẵn

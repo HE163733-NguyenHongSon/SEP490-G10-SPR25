@@ -1,4 +1,4 @@
    interface IMedicalReport{
-    
+   medicalReportId: string
 
    }      

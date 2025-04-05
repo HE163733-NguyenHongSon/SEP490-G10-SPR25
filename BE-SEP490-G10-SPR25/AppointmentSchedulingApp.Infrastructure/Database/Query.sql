@@ -18,3 +18,6 @@ GROUP BY r.PatientId;
 select mr.ReservationId,mr.Symptoms,mr.Diagnosis,mr.TreatmentPlan,mr.FollowUpDate,mr.Notes,mr.CreatedAt
 from  MedicalRecords mr inner join  Reservations r on mr.ReservationId=r.ReservationId where  mr.ReservationId in
  (select r.ReservationId from Reservations r where r.PatientId=23 and r.Status='Hoàn thành' );
+
+
+ select * from DoctorServices ds where ds.ServiceId=1

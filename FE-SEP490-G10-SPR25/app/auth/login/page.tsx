@@ -1,15 +1,13 @@
 "use client";
-import React, { useState, useEffect, FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { login, LoginCredentials, getRedirectUrl } from "../../services/authService";
+import React, { useState, useEffect, FormEvent } from "react";
+import { login, LoginCredentials } from "../../services/authService";
 import { AppRole, normalizeRole } from "../../types/roles";
 
 const LoginPage = () => {
-  const router = useRouter();
   const [credentials, setCredentials] = useState<LoginCredentials>({
     userName: "",
-    password: ""
+    password: "",
   });
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -23,12 +21,12 @@ const LoginPage = () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         console.log("Checking API connection:", apiUrl);
-        
-        const response = await fetch(`${apiUrl}/api/User/Test`, { 
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
+
+        const response = await fetch(`${apiUrl}/api/User/Test`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
         });
-        
+
         if (response.ok) {
           console.log("API connection successful!");
           setApiStatus("API connection successful");
@@ -41,15 +39,15 @@ const LoginPage = () => {
         setApiStatus("Cannot connect to API - check configuration and backend");
       }
     };
-    
+
     checkApiConnection();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setCredentials(prev => ({
+    setCredentials((prev) => ({
       ...prev,
-      [id]: value
+      [id]: value,
     }));
   };
 
@@ -57,55 +55,65 @@ const LoginPage = () => {
     event.preventDefault();
     setLoading(true);
     setError("");
-    
+
     try {
-      console.log('Login attempt with username:', credentials.userName);
+      console.log("Login attempt with username:", credentials.userName);
       const user = await login({
         userName: credentials.userName,
         password: credentials.password,
       });
-      
+
       // Log user information after login
-      console.log('Login successful, user:', JSON.stringify({
-        ...user,
-        token: user.token ? `${user.token.substring(0, 10)}...` : undefined
-      }));
-      console.log('User role:', user.role);
-      
+      console.log(
+        "Login successful, user:",
+        JSON.stringify({
+          ...user,
+          token: user.token ? `${user.token.substring(0, 10)}...` : undefined,
+        })
+      );
+      console.log("User role:", user.role);
+
       // Use normalized role for redirection
       const normalizedRole = normalizeRole(user.role);
-      console.log('Normalized role:', normalizedRole);
-      
+      console.log("Normalized role:", normalizedRole);
+
       // Set redirect path based on normalized role
-      let redirectPath = '/patient'; // Default fallback
-      
+      let redirectPath = "/patient"; // Default fallback
+
       if (normalizedRole === AppRole.Admin) {
-        redirectPath = '/admin';
-        console.log('Redirecting to admin dashboard');
+        redirectPath = "/admin";
+        console.log("Redirecting to admin dashboard");
       } else if (normalizedRole === AppRole.Doctor) {
-        redirectPath = '/doctor';
-        console.log('Redirecting to doctor dashboard');
+        redirectPath = "/doctor";
+        console.log("Redirecting to doctor dashboard");
       } else if (normalizedRole === AppRole.Receptionist) {
-        redirectPath = '/receptionist';
-        console.log('Redirecting to receptionist dashboard');
+        redirectPath = "/receptionist";
+        console.log("Redirecting to receptionist dashboard");
       } else if (normalizedRole === AppRole.Patient) {
-        redirectPath = '/patient';
-        console.log('Redirecting to patient dashboard');
+        redirectPath = "/patient";
+        console.log("Redirecting to patient dashboard");
       } else if (normalizedRole === AppRole.Guardian) {
-        redirectPath = '/guardian';
-        console.log('Redirecting to guardian dashboard');
+        redirectPath = "/guardian";
+        console.log("Redirecting to guardian dashboard");
       } else {
-        console.log('Unknown role, using default redirection to patient dashboard');
+        console.log(
+          "Unknown role, using default redirection to patient dashboard"
+        );
       }
-      
+
       console.log(`Final redirect path: ${redirectPath}`);
-      
+
       // Redirect user
       window.location.href = redirectPath;
-      
-    } catch (err: any) {
-      console.error('Login error:', err);
-      setError(err.message || 'Đăng nhập không thành công. Vui lòng thử lại.');
+    } catch (err: unknown) {
+      console.error("Login error:", err);
+      if (err instanceof Error) {
+        setError(
+          err.message || "Đăng nhập không thành công. Vui lòng thử lại."
+        );
+      } else {
+        setError("Đăng nhập không thành công. Vui lòng thử lại.");
+      }
       setLoading(false);
     }
   };
@@ -115,9 +123,9 @@ const LoginPage = () => {
       className="flex min-h-screen items-center justify-center"
       style={{
         backgroundImage: 'url("/images/background_home.jpeg")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
@@ -133,7 +141,10 @@ const LoginPage = () => {
 
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="userName">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="userName"
+            >
               Username or Email
             </label>
             <input
@@ -147,7 +158,10 @@ const LoginPage = () => {
             />
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="password"
+            >
               Password
             </label>
             <input
@@ -192,10 +206,12 @@ const LoginPage = () => {
                 // Handle Google login here
               }}
             >
-              <img 
-                src="/images/google.png" 
-                alt="Google" 
-                className="w-5 h-5" 
+              <Image
+                src="/images/google.png"
+                alt="Google"
+                width={20}
+                height={20}
+                className="w-5 h-5"
               />
               Login via Google
             </button>
@@ -203,13 +219,16 @@ const LoginPage = () => {
         </form>
         <div className="text-center mt-6">
           <p className="text-gray-600">
-            Don't have an account?{" "}
-            <a href="/auth/register" className="text-blue-500 hover:text-blue-700">
+            Bạn chưa có tài khoản?{" "}
+            <a
+              href="/auth/register"
+              className="text-blue-500 hover:text-blue-700"
+            >
               Register
             </a>
           </p>
         </div>
-        
+
         {apiStatus && (
           <div className="mt-4 text-xs text-gray-500 text-center">
             <p>System Status: {apiStatus}</p>

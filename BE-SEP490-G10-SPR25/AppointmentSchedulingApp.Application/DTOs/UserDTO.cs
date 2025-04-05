@@ -31,7 +31,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string? Address { get; set; }
         
         public string? AvatarUrl { get; set; }
-        
+
         public List<RoleInformation> RoleInformations { get; set; } = new List<RoleInformation>();
     }
 }

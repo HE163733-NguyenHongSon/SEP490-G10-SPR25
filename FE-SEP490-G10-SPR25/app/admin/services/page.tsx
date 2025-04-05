@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import PageBreadCrumb from "../components/PageBreadCrumb";
 import { Service, serviceService } from "../../services/serviceService";
 import { specialtyService } from "../../services/specialtyService";
-import type { ISpecialty } from "../../types/specialty";
 import { Button, Modal, Form, Input, InputNumber, Select, message, Space, Popconfirm, Table } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 
@@ -81,7 +80,16 @@ const ServicesManagement = () => {
     setIsModalVisible(false);
   };
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: {
+    serviceName: string;
+    specialtyId: number;
+    overview?: string;
+    process?: string;
+    treatmentTechniques?: string;
+    price: number;
+    estimatedTime?: string;
+    image?: string;
+  }) => {
     try {
       if (values.estimatedTime && !values.estimatedTime.includes("minutes")) {
         values.estimatedTime = `${values.estimatedTime} minutes`;
@@ -91,10 +99,23 @@ const ServicesManagement = () => {
         const payload = {
           ...values,
           serviceId: editingService.serviceId,
+          overview: values.overview || "",
+          process: values.process || "",
+          treatmentTechniques: values.treatmentTechniques || "",
+          estimatedTime: values.estimatedTime || "",
+          image: values.image || "",
         };
         await serviceService.updateService(payload);
       } else {
-        await serviceService.createService(values);
+        const payload = {
+          ...values,
+          overview: values.overview || "",
+          process: values.process || "",
+          treatmentTechniques: values.treatmentTechniques || "",
+          estimatedTime: values.estimatedTime || "",
+          image: values.image || "",
+        };
+        await serviceService.createService(payload);
       }
 
       message.success(`Service ${editingService ? "updated" : "created"} successfully`);
@@ -145,7 +166,7 @@ const ServicesManagement = () => {
       title: "Actions",
       key: "actions",
       width: "25%",
-      render: (_: any, record: Service) => (
+      render: (_: unknown, record: Service) => (
         <Space size="middle">
           <Button
             icon={<EditOutlined />}

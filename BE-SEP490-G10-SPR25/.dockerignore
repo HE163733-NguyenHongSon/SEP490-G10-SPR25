@@ -1,0 +1,10 @@
+bin
+obj
+.git
+.gitignore
+.vscode
+*.dbmdl
+*.user
+*.log
+Dockerfile
+docker-compose.yml

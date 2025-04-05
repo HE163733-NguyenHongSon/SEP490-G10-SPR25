@@ -5,12 +5,13 @@ import { DoctorList } from "@/patient/components/DoctorList";
 import Search from "@/components/Search";
 import DisplayToggle from "@/components/DisplayToggle";
 import SelectSort from "@/components/SelectSort";
+export const dynamic = "force-dynamic"; // Enable SSR
 
 const DoctorsPage = async ({
   searchParams,
 }: {
   searchParams: {
-    specialties?: string;
+    specialties?: string;   
     academicTitles?: string;
     degrees?: string;
     sortBy: string;

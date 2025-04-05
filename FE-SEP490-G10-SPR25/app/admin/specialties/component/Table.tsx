@@ -1,85 +1,88 @@
-'use client';
-
-import { useState } from 'react';
-import AddSpecialtyForm, { Specialty } from './AddSpecialty';
+"use client";
+import Image from "next/image";
+import { useState } from "react";
+import AddSpecialtyForm, { Specialty } from "./AddSpecialty";
 
 const ITEMS_PER_PAGE = 3;
 
 export default function CustomerTable() {
   const [specialties, setSpecialties] = useState<Specialty[]>([
     {
-      name: 'Mark Voldov',
-      email: 'mvoges@email.com',
-      country: 'https://source.unsplash.com/80x80/?doctor',
-      date: '21 Sep, 2021',
+      name: "Mark Voldov",
+      email: "mvoges@email.com",
+      country: "https://source.unsplash.com/80x80/?doctor",
+      date: "21 Sep, 2021",
     },
     {
-      name: 'Topias Kantola',
-      email: 'topiaskantola@email.com',
-      country: 'https://source.unsplash.com/80x80/?medicine',
-      date: '21 Sep, 2021',
+      name: "Topias Kantola",
+      email: "topiaskantola@email.com",
+      country: "https://source.unsplash.com/80x80/?medicine",
+      date: "21 Sep, 2021",
     },
     {
-      name: 'Anaiah Whitten',
-      email: 'anaiahwhitten@email.com',
-      country: 'https://source.unsplash.com/80x80/?clinic',
-      date: '12 June, 2021',
+      name: "Anaiah Whitten",
+      email: "anaiahwhitten@email.com",
+      country: "https://source.unsplash.com/80x80/?clinic",
+      date: "12 June, 2021",
     },
     {
-      name: 'Wyatt Morris',
-      email: 'wyattmorris@email.com',
-      country: 'https://source.unsplash.com/80x80/?hospital',
-      date: '04 June, 2021',
+      name: "Wyatt Morris",
+      email: "wyattmorris@email.com",
+      country: "https://source.unsplash.com/80x80/?hospital",
+      date: "04 June, 2021",
     },
     {
-      name: 'Eliana Stout',
-      email: 'elianastout@email.com',
-      country: 'https://source.unsplash.com/80x80/?surgery',
-      date: '01 June, 2021',
+      name: "Eliana Stout",
+      email: "elianastout@email.com",
+      country: "https://source.unsplash.com/80x80/?surgery",
+      date: "01 June, 2021",
     },
   ]);
 
   const [page, setPage] = useState(1);
   const [showForm, setShowForm] = useState(false);
-  const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
+  const [formMode, setFormMode] = useState<"add" | "edit">("add");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
   const [showDetail, setShowDetail] = useState<Specialty | null>(null);
   const [formData, setFormData] = useState<Specialty>({
-    name: '',
-    email: '',
-    country: '',
-    date: '',
+    name: "",
+    email: "",
+    country: "",
+    date: "",
   });
 
   const totalPages = Math.ceil(specialties.length / ITEMS_PER_PAGE);
   const startIndex = (page - 1) * ITEMS_PER_PAGE;
-  const visibleSpecialties = specialties.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const visibleSpecialties = specialties.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   const handleAddOrUpdate = () => {
-    if (formMode === 'add') {
+    if (formMode === "add") {
       setSpecialties((prev) => [formData, ...prev]);
-    } else if (formMode === 'edit' && editingIndex !== null) {
+    } else if (formMode === "edit" && editingIndex !== null) {
       const updated = [...specialties];
       updated[editingIndex] = formData;
       setSpecialties(updated);
     }
 
-    setFormData({ name: '', email: '', country: '', date: '' });
+    setFormData({ name: "", email: "", country: "", date: "" });
     setEditingIndex(null);
     setShowForm(false);
-    setFormMode('add');
+    setFormMode("add");
   };
 
   const handleEdit = (index: number) => {
     setFormData(specialties[index]);
     setEditingIndex(index);
-    setFormMode('edit');
+    setFormMode("edit");
     setShowForm(true);
   };
 
   const handleDelete = (index: number) => {
-    const confirm = window.confirm('Bạn có chắc chắn muốn xoá?');
+    const confirm = window.confirm("Bạn có chắc chắn muốn xoá?");
     if (confirm) {
       const updated = [...specialties];
       updated.splice(index, 1);
@@ -91,12 +94,14 @@ export default function CustomerTable() {
     <div className="bg-white shadow rounded-lg p-6 w-full h-full flex flex-col justify-between">
       <div>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl text-gray-800 font-semibold">Danh sách chuyên khoa</h2>
+          <h2 className="text-xl text-gray-800 font-semibold">
+            Danh sách chuyên khoa
+          </h2>
           <button
             onClick={() => {
               setShowForm(true);
-              setFormMode('add');
-              setFormData({ name: '', email: '', country: '', date: '' });
+              setFormMode("add");
+              setFormData({ name: "", email: "", country: "", date: "" });
             }}
             className="text-sm text-blue-500 hover:underline"
           >
@@ -130,7 +135,13 @@ export default function CustomerTable() {
                 <td className="p-2">{c.name}</td>
                 <td>{c.email}</td>
                 <td>
-                  <img src={c.country} alt="Specialty" className="w-12 h-12 object-cover rounded" />
+                  <Image
+                    src={c.country}
+                    alt="Specialty"
+                    width={48}
+                    height={48}
+                    className="object-cover rounded"
+                  />{" "}
                 </td>
                 <td>{c.date}</td>
                 <td className="flex flex-wrap justify-center gap-2 py-2">
@@ -171,7 +182,9 @@ export default function CustomerTable() {
             >
               ✕
             </button>
-            <h3 className="text-xl font-semibold text-gray-700">Chi tiết chuyên khoa</h3>
+            <h3 className="text-xl font-semibold text-gray-700">
+              Chi tiết chuyên khoa
+            </h3>
             <div className="space-y-5 text-base text-gray-800">
               <div>
                 <strong>Tên:</strong> {showDetail.name}
@@ -184,10 +197,12 @@ export default function CustomerTable() {
               </div>
               <div>
                 <strong>Ảnh:</strong>
-                <img
+                <Image
                   src={showDetail.country}
                   alt="Specialty"
-                  className="w-32 h-32 mt-2 object-cover rounded"
+                  width={128}
+                  height={128}
+                  className="mt-2 object-cover rounded"
                 />
               </div>
             </div>
@@ -209,7 +224,7 @@ export default function CustomerTable() {
             key={idx}
             onClick={() => setPage(idx + 1)}
             className={`px-3 py-1 text-gray-800 border rounded ${
-              page === idx + 1 ? 'bg-blue-500 text-white' : ''
+              page === idx + 1 ? "bg-blue-500 text-white" : ""
             }`}
           >
             {idx + 1}

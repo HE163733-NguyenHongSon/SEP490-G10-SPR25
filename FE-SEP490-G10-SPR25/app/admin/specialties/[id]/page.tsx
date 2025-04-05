@@ -9,7 +9,7 @@ export default function SpecialtyDetails() {
   const router = useRouter();
   const { id } = useParams()
   
-  const [specialty, setSpecialty] = useState([])
+  const [specialty, setSpecialty] = useState<{ specialtyName?: string; specialtyDescription?: string }>({})
   useEffect(() => {
     fetch(`http://localhost:5220/api/Specialties/${id}`)
     .then((res) => res.json())

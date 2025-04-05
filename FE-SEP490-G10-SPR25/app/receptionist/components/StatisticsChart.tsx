@@ -11,8 +11,9 @@ import {
   Tooltip,
   Legend,
   Filler,
+  ChartData,
+  ChartOptions,
 } from "chart.js";
-import ChartTab from "../components/ChartTab";
 
 ChartJS.register(
   CategoryScale,
@@ -25,21 +26,11 @@ ChartJS.register(
   Filler
 );
 
-export default function StatisticsChart() {
-  const data = {
+const StatisticsChart: React.FC = () => {
+  const data: ChartData<"line"> = {
     labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
     ],
     datasets: [
       {
@@ -63,7 +54,7 @@ export default function StatisticsChart() {
     ],
   };
 
-  const options = {
+  const options: ChartOptions<"line"> = {
     responsive: true,
     plugins: {
       legend: {
@@ -97,7 +88,7 @@ export default function StatisticsChart() {
   };
 
   return (
-    <div className="rounded-2xl max-h-fit border border-gray-300  p-5  dark:border-gray-700 sm:px-6 sm:pt-6 shadow-md">
+    <div className="rounded-2xl max-h-fit border border-gray-300 p-5 dark:border-gray-700 sm:px-6 sm:pt-6 shadow-md">
       <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
         <div className="w-full">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
@@ -107,8 +98,9 @@ export default function StatisticsChart() {
             Target you’ve set for each month
           </p>
         </div>
+        {/* Nếu có ChartTab thì giữ lại, nếu không thì có thể xoá */}
         <div className="flex items-start w-full gap-3 sm:justify-end">
-          <ChartTab />
+          {/* <ChartTab /> */}
         </div>
       </div>
 
@@ -119,4 +111,6 @@ export default function StatisticsChart() {
       </div>
     </div>
   );
-}
+};
+
+export default StatisticsChart;

@@ -4,7 +4,12 @@ import { useEffect, useState } from 'react';
 import { getCurrentUser } from '../../services/authService';
 
 export default function PatientDashboard() {
-  const [user, setUser] = useState<any>(null);
+  interface User {
+    userName: string;
+    // Add other properties of the user object here if needed
+  }
+
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const currentUser = getCurrentUser();

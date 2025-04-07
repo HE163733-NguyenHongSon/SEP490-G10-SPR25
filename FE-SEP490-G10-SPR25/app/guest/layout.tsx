@@ -4,7 +4,6 @@ import React, { ReactNode, useEffect } from 'react';
 import Navbar from "../patient/components/Navbar";
 import { Footer } from "../patient/components/Footer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { getCurrentUser } from '../services/authService';
 
 interface GuestLayoutProps {
   children: ReactNode;

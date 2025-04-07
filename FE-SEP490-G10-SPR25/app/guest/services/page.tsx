@@ -4,7 +4,7 @@ import { serviceService, Service } from "../../services/serviceService";
 import { requireAuth } from "@/services/authService";
 import Link from "next/link";
 import Image from "next/image";
-import { FaChevronRight, FaSearch, FaFilter } from "react-icons/fa";
+import { FaChevronRight, FaSearch } from "react-icons/fa";
 
 // Mở rộng interface Service để thêm specialtyName
 interface ServiceWithExtras extends Service {

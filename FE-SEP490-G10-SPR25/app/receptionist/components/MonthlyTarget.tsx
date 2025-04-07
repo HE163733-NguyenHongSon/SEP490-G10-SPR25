@@ -3,7 +3,7 @@
 import { Dropdown } from "../components/Dropdown";
 import { useState } from "react";
 import { DropdownItem } from "../components/DropdownItem";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, TooltipItem } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 
 // Đăng ký các thành phần cần thiết của Chart.js
@@ -36,7 +36,7 @@ export default function MonthlyTarget() {
       },
       tooltip: {
         callbacks: {
-          label: function (tooltipItem: any) {
+          label: function (tooltipItem: TooltipItem<'doughnut'>) {
             return tooltipItem.raw + "%";
           },
         },

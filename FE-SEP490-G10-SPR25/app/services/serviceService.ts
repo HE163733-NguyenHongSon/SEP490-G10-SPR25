@@ -67,11 +67,11 @@ export const serviceService = {
                 timeout: 10000
             });
             return response.data;
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(`Error fetching service detail with ID ${id}:`, error);
             
             // Provide more detailed error messages
-            if (error.response) {
+            if (axios.isAxiosError(error) && error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
                 if (error.response.status === 404) {
@@ -79,12 +79,12 @@ export const serviceService = {
                 } else {
                     throw new Error(`Server error: ${error.response.status} ${error.response.statusText}`);
                 }
-            } else if (error.request) {
+            } else if (axios.isAxiosError(error) && error.request) {
                 // The request was made but no response was received
                 throw new Error('No response from server. Please check your connection and try again.');
             } else {
                 // Something else caused the error
-                throw new Error(`Error: ${error.message}`);
+                throw new Error(`Error: ${error instanceof Error ? error.message : 'An unknown error occurred'}`);
             }
         }
     },

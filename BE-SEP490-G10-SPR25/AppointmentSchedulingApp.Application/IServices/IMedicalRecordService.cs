@@ -10,5 +10,7 @@ namespace AppointmentSchedulingApp.Application.IServices
     public interface IMedicalRecordService
     {
         Task<List<MedicalRecordDTO>> GetMedicalRecordList();
+
+        Task<List<MedicalRecordDTO>> GetAllMedicalRecordByPatientId(int patientId);
     }
 }

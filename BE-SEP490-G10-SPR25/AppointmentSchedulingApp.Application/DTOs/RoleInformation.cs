@@ -8,7 +8,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
 {
     public class RoleInformation
     {
-        public string RoleId { get; set; }
-        public string RoleName { get; set; }
+        public string RoleId { get; internal set; }
+        public string RoleName { get; internal set; }
     }
 }

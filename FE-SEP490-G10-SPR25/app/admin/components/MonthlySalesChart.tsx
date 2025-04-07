@@ -8,7 +8,7 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
+TooltipItem } from "chart.js";
 import { useState } from "react";
 
 ChartJS.register(
@@ -50,7 +50,7 @@ export default function MonthlySalesChart() {
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem: { raw: number }) => ` ${tooltipItem.raw}`,
+          label: (tooltipItem: TooltipItem<"bar">) => ` ${tooltipItem.raw as number}`,
         },
       },
     },

@@ -24,5 +24,19 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             return mapper.Map<List<MedicalRecordDTO>>(await unitOfWork.MedicalRecordRepository.GetAll());
         }
+
+        public async Task<List<MedicalRecordDTO>> GetAllMedicalRecordByPatientId(int patientId)
+        {
+            var reservations = await unitOfWork.ReservationRepository
+                .GetAll(r => r.PatientId == patientId);
+                
+
+            var reservationIds = reservations.Select(r => r.ReservationId).ToList();
+
+            var medicalRecords = await unitOfWork.MedicalRecordRepository
+                .GetAll(mr => reservationIds.Contains(mr.ReservationId));
+
+            return mapper.Map<List<MedicalRecordDTO>>(medicalRecords);
+        }
     }
 }

@@ -28,6 +28,7 @@ ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<ReservationDTO>("Reservations");
 modelBuilder.EntitySet<MedicalRecordDTO>("MedicalRecords");
 modelBuilder.EntitySet<DoctorDTO>("Doctors");
+modelBuilder.EntitySet<PatientDTO>("Patients");
 modelBuilder.EntitySet<SpecialtyDTO>("Specialties");
 modelBuilder.EntitySet<ServiceDTO>("Services");
 var provider = builder.Services.BuildServiceProvider();
@@ -177,6 +178,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 // Đăng ký các dịch vụ khác
 builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
+builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
@@ -188,7 +190,11 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//Tự tìm mapper trong phạm vi  solution với các project đã tham chiếu với nhau
+
+//builder.WebHost.UseUrls("http://0.0.0.0:8080"); // Lắng nghe tất cả các địa chỉ IP 
+
+
 // Add Email Configs
 var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);

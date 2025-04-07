@@ -3,3 +3,4 @@ https://nextjs.org/docs/14/app/building-your-application/routing/dynamic-routes-
 https://tailwindcss.com/ ---taildwind doc
 xóa forder next để chạy lại nếu catche 
 kiểm tra version node js trên 18 cho next.js 14 
+          

@@ -124,7 +124,7 @@ const Navbar: React.FC = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Link 
-                  href="/patient/profile" 
+                  href="/patient/person" 
                   className="text-white hover:text-cyan-400 transition-colors duration-200 text-sm font-medium"
                 >
                   Thông tin cá nhân

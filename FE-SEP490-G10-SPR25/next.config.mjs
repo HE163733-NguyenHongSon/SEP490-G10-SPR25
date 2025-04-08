@@ -1,6 +1,7 @@
 // next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    output: 'standalone',
     images: {
       remotePatterns: [
         {
@@ -25,9 +26,19 @@ const nextConfig = {
         return [
           {
             source: '/',
-            destination: '/guest',
+            destination: '/patient',
             permanent: true,
           },
+          {
+            source: '/guest',
+            destination: '/patient',
+            permanent: true,
+          },
+          {
+            source: '/guest/:path*',
+            destination: '/patient/:path*',
+            permanent: true,
+          }
         ]
       },
   };

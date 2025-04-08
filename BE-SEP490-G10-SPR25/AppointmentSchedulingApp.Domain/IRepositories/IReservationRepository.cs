@@ -9,6 +9,6 @@ namespace AppointmentSchedulingApp.Domain.IRepositories
 {
     public interface IReservationRepository : IGenericRepository<Reservation>
     {
-        public Task<IQueryable<Reservation>> GetListReservationByStatus(string status);
+        public Task<IQueryable<Reservation>> GetListReservationByPatientIdAndStatus(int patientId, string status);
     }
 }

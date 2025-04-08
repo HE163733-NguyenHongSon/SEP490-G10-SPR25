@@ -18,21 +18,23 @@ INSERT INTO Roles (RoleName) VALUES
 
 
 CREATE TABLE Users (
-   UserId INT NOT NULL IDENTITY(1,1),
-   CitizenId BIGINT   NULL,
-   Email VARCHAR(50)  NULL,
-   Password VARCHAR(300) NOT NULL,
-   UserName NVARCHAR(50) NOT NULL ,
-   Phone VARCHAR(12) NOT NULL,
-   Gender NVARCHAR(6)  NULL,
-   Dob DATE  NULL,
-   Address NVARCHAR(100)  NULL,
-   AvatarUrl NVARCHAR(200) NULL,
-   IsVerify BIT  NULL DEFAULT 0,   
-   PRIMARY KEY (UserId),
-   CONSTRAINT Phone_Unique UNIQUE (Phone),
-   CONSTRAINT User_CheckGender CHECK (Gender IN (N'Nam', N'Nữ'))
+   UserId INT NOT NULL IDENTITY(1,1),
+   CitizenId BIGINT NULL,
+   Email VARCHAR(50) NULL,
+   Password VARCHAR(300) NOT NULL,
+   UserName NVARCHAR(50) NOT NULL,
+   Phone VARCHAR(12) NOT NULL,
+   Gender NVARCHAR(6) NULL,
+   Dob DATE NULL,
+   Address NVARCHAR(100) NULL,
+   AvatarUrl NVARCHAR(200) NULL,
+   IsVerify BIT NOT NULL ,
+   IsActive BIT NOT NULL DEFAULT 1, 
+   PRIMARY KEY (UserId),
+   CONSTRAINT Phone_Unique UNIQUE (Phone),
+   CONSTRAINT User_CheckGender CHECK (Gender IN (N'Nam', N'Nữ'))
 );
+
 
 INSERT INTO Users (CitizenId, Email, Password, UserName, Phone, Gender, Dob, Address, AvatarUrl, IsVerify)
 VALUES

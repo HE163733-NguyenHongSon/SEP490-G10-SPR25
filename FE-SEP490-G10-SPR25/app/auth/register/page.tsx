@@ -99,9 +99,14 @@ export default function RegisterPage() {
           console.error('Registration errors:', result.errors);
         }
       }
-    } catch (err: any) {
-      console.error('Error during registration:', err);
-      setError(err.message || 'Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại sau.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('Error during registration:', err);
+        setError(err.message || 'Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại sau.');
+      } else {
+        console.error('Unexpected error during registration:', err);
+        setError('Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại sau.');
+      }
     } finally {
       setLoading(false);
     }

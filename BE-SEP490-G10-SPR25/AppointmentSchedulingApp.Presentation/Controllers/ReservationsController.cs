@@ -24,11 +24,29 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             return Ok(await reservationService.GetListReservation());
         }
 
-        [HttpGet("{status}/{sortBy}")]
-        public async Task<IActionResult> GetListReservationByStatusAndSort( string? status = "pending", string? sortBy = "price_asc")
+        [HttpGet("{patientId}/{status}/{sortBy}")]
+        public async Task<IActionResult> GetListReservationByFilter(int patientId, string? status = "Đang chờ", string? sortBy = "Giá dịch vụ tăng dần")
         {
-            var reservations = await reservationService.GetListReservationByStatusAndSort(status, sortBy);
-            return Ok(reservations);
+            try
+            {
+
+                var reservations = await reservationService.GetListReservationByFilter(patientId, status, sortBy);
+                if (reservations == null)
+                {
+                    return NotFound($"Bệnh nhân với Id={patientId} không tồn tại!");
+                }
+                if ( !reservations.Any()  )
+                {
+                    return Ok($"Lịch hẹn với trạng thái '{status}' của bệnh nhân Id={patientId} chưa có!");
+                }
+                return Ok(reservations);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, ex.Message);
+
+            }
         }
 
 

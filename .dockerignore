@@ -1,0 +1,16 @@
+# Common folders
+node_modules
+bin
+obj
+.next
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# IDE & logs
+.vscode
+*.log
+
+# Environment files
+.env

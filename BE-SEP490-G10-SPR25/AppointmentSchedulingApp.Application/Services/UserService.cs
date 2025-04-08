@@ -51,23 +51,25 @@ namespace AppointmentSchedulingApp.Application.Services
             _emailService = emailService;
             _dbContext = dbContext;
         }
-
+        /// <summary>
+        /// Generate a JWT token for the user
+        /// </summary>
+        /// Author : Dinh Quang Tung -HE161511 
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <param name="userDTO"></param>
+        /// <returns></returns>
         public string GenerateToken(UserDTO userDTO)
         {
             try
-            {
-                Console.WriteLine($"GenerateToken called for user: {userDTO.UserName}, UserId: {userDTO.UserId}");
-                
+            {                
                 if (userDTO == null)
                 {
-                    Console.WriteLine("GenerateToken failed: userDTO is null");
                     throw new ArgumentNullException(nameof(userDTO));
                 }
                 
                 var jwtTokenHandler = new JwtSecurityTokenHandler();
                 var secretKeyBytes = Encoding.UTF8.GetBytes(_appSettings.SecretKey);
-                
-                // Prepare claims
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, userDTO.UserName ?? ""),

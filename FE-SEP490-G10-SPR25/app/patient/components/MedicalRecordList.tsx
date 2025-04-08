@@ -1,7 +1,7 @@
 import React from "react";
 
 interface MedicalRecordListProps {
-  medicalRecordList: IMedicalRecord[];
+  medicalRecordList: IMedicalRecord[] | undefined;
 }
 
 const MedicalRecordList = ({ medicalRecordList }: MedicalRecordListProps) => {
@@ -36,7 +36,7 @@ const MedicalRecordList = ({ medicalRecordList }: MedicalRecordListProps) => {
           </tr>
         </thead>
         <tbody>
-          {medicalRecordList.map((medicalRecord) => (
+          {medicalRecordList?.map((medicalRecord) => (
             <tr key={medicalRecord.medicalRecordId}>
               <td className="border border-gray-300 rounded-md px-10">
                 {medicalRecord.medicalRecordId}

@@ -2,15 +2,14 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { hasRole, getCurrentUser, isAuthenticated } from '../services/authService';
+import {  getCurrentUser, isAuthenticated } from '../services/authService';
 import { AppRole, normalizeRole } from '../types/roles';
 
-// Tạo component Loading tạm thời nếu không có sẵn
 const Loading = () => {
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      <div className="ml-3 text-blue-500">Đang kiểm tra quyền truy cập...</div>
+      <div className="ml-3 text-blue-500">Loading...</div>
     </div>
   );
 };
@@ -38,6 +37,15 @@ export const ProtectedRoute = ({
       console.log('Allowed roles:', Array.isArray(allowedRoles) 
         ? allowedRoles.map(r => r.toString()).join(', ') 
         : allowedRoles.toString());
+      
+      if (window.location.pathname.startsWith('/patient') && 
+          !window.location.pathname.includes('/appointment-booking') &&
+          !window.location.pathname.includes('/person')) {
+        console.log('✓ Allowing access to public patient routes');
+        setIsAllowed(true);
+        setIsLoading(false);
+        return;
+      }
       
       // Check if user is authenticated
       const isUserAuthenticated = isAuthenticated();

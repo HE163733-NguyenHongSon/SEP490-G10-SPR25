@@ -8,16 +8,11 @@ import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Backdrop from "./components/Backdrop";
 
-import { Outfit } from "next/font/google";
 import "@/globals.css";
 
 import { SidebarProvider } from "@/contexts/SidebarContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
-const outfit = Outfit({
-  variable: "--font-outfit-sans",
-  subsets: ["latin"],
-});
 
 interface AdminLayoutProps {
   children: ReactNode;

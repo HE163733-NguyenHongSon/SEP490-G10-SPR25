@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { patientService } from "@/services/patientService";
-import { medicalRecordService } from "@/services/medicalRecordService";
-
+import Image from "next/image";
 
 export default function PatientDetailPage({ params }: { params: { patientId: string } }) {
   const [patient, setPatient] = useState<IPatient | null>(null);
@@ -80,8 +79,10 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
               <div className="absolute inset-0 rounded-2xl shadow-lg" />
               <div className="relative w-full h-full rounded-2xl overflow-hidden border-4 border-white">
                 {patient.avatarUrl ? (
-                  <img
+                  <Image
                     src={patient.avatarUrl}
+                    width={1920}
+                    height={1080}
                     alt={`Avatar of ${patient.userName}`}
                     className="w-full h-full object-cover"
                   />
@@ -137,7 +138,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
                   Thông tin liên hệ
                 </h3>
                 <dl className="space-y-3">
-                  <InfoItem label="Điện thoại" value={patient.phone} />
+                  <InfoItem label="Điện thoại" value={patient.phoneNumber} />
                   <InfoItem label="Email" value={patient.email} />
                 </dl>
               </div>

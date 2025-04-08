@@ -3,7 +3,7 @@ interface IUser {
     citizenId: number;
     email: string;
     userName: string;
-    phone: string;
+    phoneNumber: string;
     gender: string;
     dob: string;
     address: string;

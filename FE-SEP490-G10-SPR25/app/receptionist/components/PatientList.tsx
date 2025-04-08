@@ -60,7 +60,7 @@ export const PatientList = ({ items }: IPatients) => {
                 {patient.gender}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {patient.phone}
+                {patient.phoneNumber}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {patient.email}

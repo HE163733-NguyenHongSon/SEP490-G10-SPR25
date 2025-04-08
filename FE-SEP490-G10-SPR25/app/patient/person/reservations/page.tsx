@@ -4,23 +4,29 @@ import reservationService from "@/services/reservationService";
 import PaginatedItems from "@/components/PaginatedItems";
 import ReservationList from "../../components/ReservationList";
 import SelectSort from "@/components/SelectSort";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingTable } from "@/components/LoadingTable";
 import { useSearchParams } from "next/navigation";
 const ReservationPage = () => {
   const searchParams = useSearchParams();
-  const [status, setStatus] = useState("Pending");
-  const sortBy = searchParams.get("sortBy") || "recent_appointment";
-  // const [sortBy, setSortBy] = useState(
-  //   searchParams.get("sortBy") || "recent_appointment"
-  // );
+  const [status, setStatus] = useState("Đang chờ");
+  const sortBy = searchParams.get("sortBy") || "Cuộc hẹn gần đây";
+    const [patientId, setPatientId] = useState<number>(23);
+  
+  useEffect(() => {
+      const storedUser = localStorage.getItem("currentUser");
+      if (storedUser) {
+        const user = JSON.parse(storedUser) as IUser;
+        setPatientId(user?.userId);
+      }
+    }, []);
 
   const sortOptions: ISortOption[] = [
-    { label: "Cuộc hẹn gần đây", value: "recent_appointment" },
-    { label: "Cuộc hẹn đã qua", value: "past_appointment" },
-    { label: "Giá dịch vụ tăng dần", value: "price_asc" },
-    { label: "Giá dịch vụ giảm dần", value: "price_desc" },
+    { label: "Cuộc hẹn gần đây", value: "Cuộc hẹn gần đây" },
+    { label: "Cuộc hẹn đã qua", value: "Cuộc hẹn đã qua" },
+    { label: "Giá dịch vụ tăng dần", value: "Giá dịch vụ tăng dần" },
+    { label: "Giá dịch vụ giảm dần", value: "Giá dịch vụ giảm dần" },
 ];
 
 
@@ -30,9 +36,9 @@ const ReservationPage = () => {
     error: reservationError,
     fetchStatus,
   } = useQuery({
-    queryKey: ["reservations", status, sortBy],
+    queryKey: ["reservations",patientId, status, sortBy],
     queryFn: () =>
-      reservationService.getListReservationByStatusAndSort(status, sortBy),
+      reservationService.getListReservationByFilter(patientId, status, sortBy),
     staleTime: 30000,
   });
   console.log(fetchStatus);
@@ -45,19 +51,18 @@ const ReservationPage = () => {
     queryKey: ["statusList"],
     queryFn: async () => {
       const statuses = await Promise.all([
-        reservationService.getReservationCountByStatus("Đang chờ"),
-        reservationService.getReservationCountByStatus("Xác nhận"),
-        reservationService.getReservationCountByStatus("Hoàn thành"),
-        reservationService.getReservationCountByStatus("Không đến"),
-        reservationService.getReservationCountByStatus("Đã hủy"),
+        reservationService.getNumberOfReservationsByPatientIdAndStatus(patientId,"Đang chờ"),
+        reservationService.getNumberOfReservationsByPatientIdAndStatus(patientId,"Xác nhận"),
+        reservationService.getNumberOfReservationsByPatientIdAndStatus(patientId,"Hoàn thành"),
+        reservationService.getNumberOfReservationsByPatientIdAndStatus(patientId,"Không đến"),
+        reservationService.getNumberOfReservationsByPatientIdAndStatus(patientId,"Đã hủy"),
       ]);
       return statuses;
     },
     staleTime: 30000,
   });
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Reservations</h1>
+    <div className="p-4 my-5">
       <div className="flex flex-row items-center justify-center gap-3  ">
         {isLoadingReservations || isLoadingStatus ? (
           <p>Loading...</p>
@@ -66,7 +71,7 @@ const ReservationPage = () => {
             <SelectSort
               options={sortOptions}
               path="/patient/person/reservations"
-              initialSelectedValue="recent_appointment"
+              initialSelectedValue="Cuộc hẹn gần đây"
             />
             <FilterButtonList
               itemList={statusList}

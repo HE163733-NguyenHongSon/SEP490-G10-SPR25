@@ -1,8 +1,14 @@
 "use client";
 
-import GuestHomePage from "./guest/page";
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function HomePage() {
-  // Hiển thị trực tiếp trang chủ khách mà không chuyển hướng
-  return <GuestHomePage />;
+export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/patient');
+  }, [router]);
+
+  return null;
 } 

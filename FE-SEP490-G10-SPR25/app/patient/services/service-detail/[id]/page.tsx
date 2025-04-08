@@ -4,6 +4,7 @@ import { serviceService, ServiceDetail } from "../../../../services/serviceServi
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { isAuthenticated } from "../../../../services/authService";
 
 interface ServiceDetailPageProps {
     params: {
@@ -52,8 +53,17 @@ const ServiceDetailPage = ({ params }: ServiceDetailPageProps) => {
     };
 
     const handleBookService = () => {
+        if (!isAuthenticated()) {
+            if (typeof window !== "undefined") {
+                const currentPath = window.location.pathname;
+                sessionStorage.setItem("redirectAfterLogin", currentPath);
+                router.push('/auth/login');
+            }
+            return;
+        }
+        
         if (service) {
-            router.push(`/patient/booking?serviceId=${service.serviceId}`);
+            router.push(`/patient/appointment-booking?serviceId=${service.serviceId}`);
         }
     };
 

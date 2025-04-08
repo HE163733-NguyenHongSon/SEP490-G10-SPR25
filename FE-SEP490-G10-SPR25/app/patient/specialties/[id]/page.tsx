@@ -125,6 +125,8 @@ export default function SpecialtyDetails() {
                     src="https://via.placeholder.com/150"
                     alt="General Consultation"
                     className="w-full h-40 object-cover rounded-t-lg text-black"
+                    width={150}
+                    height={150}
                   />
                 </div>
               ))}

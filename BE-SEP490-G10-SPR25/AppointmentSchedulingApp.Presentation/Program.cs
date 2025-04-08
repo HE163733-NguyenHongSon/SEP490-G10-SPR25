@@ -209,6 +209,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseCors();
+app.MapGet("/healthz", () => "Healthy");
 
 // app.UseHttpsRedirection(); // Tạm thời vô hiệu hóa để tránh lỗi HTTPS port
 app.UseAuthentication();

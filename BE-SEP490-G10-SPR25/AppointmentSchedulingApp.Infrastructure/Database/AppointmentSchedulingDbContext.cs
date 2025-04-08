@@ -55,8 +55,8 @@ public partial class AppointmentSchedulingDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=AppointmentSchedulingDB; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //    => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=AppointmentSchedulingDB; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

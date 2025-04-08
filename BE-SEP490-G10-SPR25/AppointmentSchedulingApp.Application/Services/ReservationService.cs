@@ -25,9 +25,12 @@ namespace AppointmentSchedulingApp.Application.Services
 
         public async Task<List<ReservationDTO>> GetListReservationByFilter(int patientId, string status, string sortBy)
         {
-           
+            var patient = await unitOfWork.PatientRepository.Get(p => p.PatientId.Equals(patientId));
+            if (patient == null)
+            {
+                return null;
+            }
             var queryable = await unitOfWork.ReservationRepository.GetListReservationByPatientIdAndStatus(patientId, status);
-
             queryable = sortBy switch
             {
                 "Cuộc hẹn gần đây" => queryable.OrderByDescending(r => r.AppointmentDate),

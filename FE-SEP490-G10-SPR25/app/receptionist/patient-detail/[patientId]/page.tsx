@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { patientService } from "@/services/patientService";
 import Image from "next/image";
+import { medicalRecordService } from '@/services/medicalRecordService';
 
 export default function PatientDetailPage({ params }: { params: { patientId: string } }) {
   const [patient, setPatient] = useState<IPatient | null>(null);

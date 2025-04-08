@@ -6,6 +6,7 @@ import { medicalRecordService } from "@/services/medicalRecordService";
 
 export default function PatientDetailPage({ params }: { params: { patientId: string } }) {
   const [patient, setPatient] = useState<IPatient | null>(null);
+  const [medicalRecords, setMedicalRecords] = useState<IMedicalRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -13,7 +14,10 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
     const fetchPatientData = async () => {
       try {
         const patientData = await patientService.getPatientDetailById(params.patientId);
+        const medicalRecordsData = await medicalRecordService.getAllMedicalRecordByPatientId(params.patientId);
+
         setPatient(patientData);
+        setMedicalRecords(medicalRecordsData);
 
         // const medicalRecordsData = await medicalRecordService.getAllMedicalRecordByPatientId(params.patientId);
         // setPatient(medicalRecordsData);
@@ -157,32 +161,62 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
             {/* Medical History */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-50">
               <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
-                <svg className="w-5 h-5 mr-2 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                <svg
+                  className="w-5 h-5 mr-2 text-cyan-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  />
                 </svg>
-                Lịch sử khám bệnh - đang fake
+                Lịch sử khám bệnh
               </h3>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="bg-gray-50 text-gray-600 text-sm">
+                      <th className="py-3 px-4 text-left">STT</th>
                       <th className="py-3 px-4 text-left">Ngày khám</th>
+                      <th className="py-3 px-4 text-left">Triệu chứng</th>
                       <th className="py-3 px-4 text-left">Chẩn đoán</th>
-                      <th className="py-3 px-4 text-left">Bác sĩ</th>
-                      <th className="py-3 px-4 text-left">Trạng thái</th>
+                      <th className="py-3 px-4 text-left">Thao tác</th>
+                      <th className="hidden">reservationId</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    <tr>
-                      <td className="py-3 px-4">15/04/2024</td>
-                      <td className="py-3 px-4">Viêm phế quản cấp</td>
-                      <td className="py-3 px-4">BS. Nguyễn Văn A</td>
-                      <td className="py-3 px-4">
-                        <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                          Hoàn thành
-                        </span>
-                      </td>
-                    </tr>
+                    {medicalRecords.length > 0 ? (
+                      medicalRecords.map((record, index) => (
+                        <tr key={index}>
+                            <td className="py-3 px-4">{index + 1}</td>
+                            <td className="py-3 px-4">{record.appointmentDate}</td>
+                            <td className="py-3 px-4">{record.symptoms}</td>
+                            <td className="py-3 px-4">{record.diagnosis}</td>
+                            <td className="py-3 px-4">
+                            <button 
+                            onClick={() => window.location.href = `/medical-records/${record.medicalRecordId}`}
+                            className="px-3 py-1 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors"
+                          >
+                            Chi tiết
+                          </button>
+                          </td>
+                          <td className="hidden">{record.medicalRecordId}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          className="py-3 px-4 text-center text-gray-500"
+                        >
+                          Không có dữ liệu
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>

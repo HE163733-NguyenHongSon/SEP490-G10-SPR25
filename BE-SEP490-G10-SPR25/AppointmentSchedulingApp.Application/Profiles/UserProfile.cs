@@ -22,10 +22,12 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
                 .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob.HasValue
-                    ? src.Dob.Value.ToString("yyyy-MM-dd")
+                    ? src.Dob.Value.ToString("dd/MM/yyyy")
                     : null))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
                 .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => src.AvatarUrl))
+                .ForMember(dest => dest.IsVerify, opt => opt.MapFrom(src => src.IsVerify))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
                 // RoleInformations được lấy riêng từ RoleService không thông qua AutoMapper
                 .ReverseMap();
         }

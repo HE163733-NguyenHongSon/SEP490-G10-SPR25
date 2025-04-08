@@ -6,7 +6,7 @@ export default async function PatientsLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
 
-  const ranks: ICheckboxOption[] = ["Thường", "Víp", "Víp si líp"].map(
+  const ranks: ICheckboxOption[] = ["Nam", "Nữ", "Khác"].map(
     (title) => {
       return {
         label: title,

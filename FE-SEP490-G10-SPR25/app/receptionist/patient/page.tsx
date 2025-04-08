@@ -1,11 +1,8 @@
 import React from "react";
 import PaginatedItems from "@/components/PaginatedItems";
-import Search from "@/components/Search";
-import DisplayToggle from "@/components/DisplayToggle";
-import SelectSort from "@/components/SelectSort";
 import { patientService } from "@/services/patientService";
 import { PatientList } from "../components/PatientList";
-
+export const dynamic = 'force-dynamic'; 
 const PatientsPage = async ({
   searchParams,
 }: {

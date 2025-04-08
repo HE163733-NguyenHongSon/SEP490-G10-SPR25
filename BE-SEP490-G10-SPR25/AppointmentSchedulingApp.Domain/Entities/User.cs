@@ -26,6 +26,7 @@ public partial class User
     public string? AvatarUrl { get; set; }
 
     public bool? IsVerify { get; set; }
+    public bool? IsActive { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 

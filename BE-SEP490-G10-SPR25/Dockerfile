@@ -2,11 +2,11 @@
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+USER app
 WORKDIR /app
-EXPOSE 5220
+EXPOSE 8080
+EXPOSE 8081
 
-ENV ASPNETCORE_URLS=http://+:5220
 
 
 # This stage is used to build the service project
@@ -32,5 +32,5 @@ RUN dotnet publish "AppointmentSchedulingApp.Presentation.csproj" -c $BUILD_CONF
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "AppointmentSchedulingApp.Presentation.dll"]
+COPY --from=publish /app/publish .    
+ENTRYPOINT ["dotnet", "AppointmentSchedulingApp.Presentation.dll"]             

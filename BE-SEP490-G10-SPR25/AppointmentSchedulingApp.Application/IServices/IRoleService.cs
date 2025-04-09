@@ -13,6 +13,6 @@ namespace AppointmentSchedulingApp.Application.IServices
     {
         Task<Role> GetRoleByNameAsync(string roleName);
 
-        Task<List<RoleInformation>> GetRoleInformationsByUserId(string userId);
+        Task<List<RoleDTO>> GetRoleDTOsByUserId(string userId);
     }
 }

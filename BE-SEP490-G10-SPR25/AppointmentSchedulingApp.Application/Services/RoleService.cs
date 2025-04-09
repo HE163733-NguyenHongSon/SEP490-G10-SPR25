@@ -30,23 +30,23 @@ namespace AppointmentSchedulingApp.Application.Services
             return role;
         }
 
-        public async Task<List<RoleInformation>> GetRoleInformationsByUserId(string userId)
+        public async Task<List<RoleDTO>> GetRoleDTOsByUserId(string userId)
         {
-            Console.WriteLine($"GetRoleInformationsByUserId called for userId: {userId}");
-            List<RoleInformation> data = new List<RoleInformation>();
+            Console.WriteLine($"GetRoleDTOsByUserId called for userId: {userId}");
+            List<RoleDTO> data = new List<RoleDTO>();
             
             try
             {
                 if (string.IsNullOrEmpty(userId))
                 {
-                    Console.WriteLine("GetRoleInformationsByUserId: userId is null or empty");
+                    Console.WriteLine("GetRoleDTOsByUserId: userId is null or empty");
                     return data;
                 }
                 
                 int userIdInt;
                 if (!int.TryParse(userId, out userIdInt))
                 {
-                    Console.WriteLine($"GetRoleInformationsByUserId: Invalid userId format: {userId}");
+                    Console.WriteLine($"GetRoleDTOsByUserId: Invalid userId format: {userId}");
                     return data;
                 }
 
@@ -56,12 +56,12 @@ namespace AppointmentSchedulingApp.Application.Services
                     .SelectMany(u => u.Roles)
                     .ToListAsync();
                 
-                Console.WriteLine($"GetRoleInformationsByUserId: Found {userRoles.Count} roles for user");
+                Console.WriteLine($"GetRoleDTOsByUserId: Found {userRoles.Count} roles for user");
                 
                 foreach (var role in userRoles)
                 {
-                    Console.WriteLine($"GetRoleInformationsByUserId: Adding role: {role.RoleName}, id: {role.RoleId}");
-                    data.Add(new RoleInformation
+                    Console.WriteLine($"GetRoleDTOsByUserId: Adding role: {role.RoleName}, id: {role.RoleId}");
+                    data.Add(new RoleDTO
                     {
                         RoleId = role.RoleId.ToString(),
                         RoleName = role.RoleName
@@ -70,11 +70,11 @@ namespace AppointmentSchedulingApp.Application.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"GetRoleInformationsByUserId Error: {ex.Message}");
+                Console.WriteLine($"GetRoleDTOsByUserId Error: {ex.Message}");
                 Console.WriteLine(ex.StackTrace);
             }
             
-            Console.WriteLine($"GetRoleInformationsByUserId returning {data.Count} roles");
+            Console.WriteLine($"GetRoleDTOsByUserId returning {data.Count} roles");
             return data;
         }
     }

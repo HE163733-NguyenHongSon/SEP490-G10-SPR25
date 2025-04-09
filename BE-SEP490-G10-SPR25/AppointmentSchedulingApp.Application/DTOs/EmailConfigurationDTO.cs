@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Application.DTOs
 {
-    public class EmailConfiguration
+    public class EmailConfigurationDTO
     {
         public string From { get; set; } = null!;
         public string SmtpServer { get; set; } = null!;

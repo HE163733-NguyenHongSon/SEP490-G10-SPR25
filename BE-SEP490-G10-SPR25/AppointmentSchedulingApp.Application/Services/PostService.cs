@@ -20,6 +20,21 @@ namespace AppointmentSchedulingApp.Application.Services
             _postRepository = postRepository;
             _mapper = mapper;
         }
+        public async Task<List<PostDetailDTO>> GetAllPostDetailAsync()
+        {
+            var posts = await _postRepository.GetAllPostsWithDetails();
+            return posts.Select(p => new PostDetailDTO
+            {
+                PostId = p.PostId,
+                PostTitle = p.PostTitle,
+                PostDescription = p.PostDescription,
+                PostCategory = "",
+                PostCreatedDate = p.PostCreatedDate,
+                PostSourceUrl = p.PostSourceUrl,
+                AuthorName = "",
+                PostImageUrl = p.PostSections.OrderBy(s => s.SectionIndex).Select(s => s.PostImageUrl).FirstOrDefault(),
+            }).ToList();
+        }
         public async Task<List<PostDTO>> GetAllPostsAsync()
         {
             var posts = await _postRepository.GetAllPosts();
@@ -44,6 +59,12 @@ namespace AppointmentSchedulingApp.Application.Services
                 PostCreatedDate = p.PostCreatedDate,
                 PostSourceUrl = p.PostSourceUrl,
             };
+        }
+        public async Task<PostDetailDTO> GetPostDetailAsync(int id)
+        {
+            var p = await _postRepository.GetPostById(id);
+            if (p == null) return null;
+            return _mapper.Map<PostDetailDTO>(p);
         }
         public async Task AddPostAsync(PostDetailDTO postDTO)
         {

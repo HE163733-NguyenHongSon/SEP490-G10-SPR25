@@ -26,6 +26,18 @@ namespace AppointmentSchedulingApp.Application.Profiles
                         SectionContent = "Nội dung mặc định"
                     }
                 }));
+            CreateMap<Post, PostDetailDTO>()
+                .ForMember(dest => dest.AuthorBio,
+                            opt => opt.MapFrom(src => src.PostAuthor!.DoctorDescription))
+                .ForMember(dest => dest.PostImageUrl,
+                    opt => opt.MapFrom(src => src.PostSections
+                        .OrderBy(s=>s.SectionIndex)
+                        .Select(s => s.PostImageUrl)
+                        .FirstOrDefault()))
+                .ForMember(dest => dest.PostSections,
+                    opt => opt.MapFrom(src => src.PostSections));
+            CreateMap<PostSection, PostSectionDTO>();
+            CreateMap<PostSectionDTO, PostSection>();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AppointmentSchedulingApp.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +18,6 @@ namespace AppointmentSchedulingApp.Application.DTOs
 
         [JsonPropertyOrder(9)]
         public string? AuthorBio { get; set; }
+        public List<PostSectionDTO> PostSections { get; set; } = new();
     }
 }

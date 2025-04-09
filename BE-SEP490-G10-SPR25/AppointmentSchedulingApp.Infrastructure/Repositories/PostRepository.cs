@@ -18,6 +18,12 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
         {
             _context = context;
         }
+        public async Task<List<Post>> GetAllPostsWithDetails()
+        {
+            return await _context.Posts
+                .Include(p => p.PostSections)
+                .ToListAsync();
+        }
         public async Task<IQueryable<Post>> GetAllPosts()
         {
             return _context.Posts.AsQueryable();
@@ -25,6 +31,13 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
         public async Task<Post?> GetPostById(int id)
         {
             return await _context.Posts.FirstOrDefaultAsync(p => p.PostId == id);
+        }
+        public async Task<Post?> GetPostDetailById(int id)
+        {
+            return await _context.Posts
+                .Include(p => p.PostSections)
+                .Include(p => p.PostAuthor)
+                .FirstOrDefaultAsync(p => p.PostId == id);
         }
     }
 }

@@ -17,13 +17,13 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         [HttpGet]
         public async Task<ActionResult<List<PostDTO>>> GetAllPosts()
         {
-            var posts = await _postService.GetAllPostsAsync();
+            var posts = await _postService.GetAllPostDetailAsync();
             return Ok(posts);
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<PostDTO>> GetPostById(int id)
         {
-            var post = await _postService.GetPostByIdAsync(id);
+            var post = await _postService.GetPostDetailAsync(id);
             if (post == null) return NotFound();
             return Ok(post);
         }

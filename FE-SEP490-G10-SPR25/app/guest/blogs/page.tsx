@@ -15,7 +15,15 @@ interface IBlog {
   imageUrl: string;
   category: string;
 }
-
+interface IApiPost {
+  postId: number;
+  postTitle: string;
+  postDescription: string;
+  postCreatedDate: string;
+  postSourceUrl: string;
+  authorName: string | null;
+  postImageUrl : string;
+}
 const GuestBlogsPage = () => {
   const [blogs, setBlogs] = useState<IBlog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,83 +32,118 @@ const GuestBlogsPage = () => {
   const [filteredBlogs, setFilteredBlogs] = useState<IBlog[]>([]);
 
   // Dữ liệu mẫu cho cẩm nang
-  useEffect(() => {
-    // Giả lập gọi API
-    setTimeout(() => {
-      try {
-        // Dữ liệu mẫu
-        const sampleBlogs: IBlog[] = [
-          {
-            id: 1,
-            title: "Phòng ngừa bệnh tim mạch hiệu quả",
-            summary: "Các biện pháp phòng ngừa bệnh tim mạch hiệu quả cho mọi lứa tuổi",
-            content: "Nội dung chi tiết...",
-            author: "Bs. Nguyễn Văn A",
-            date: "12/05/2023",
-            imageUrl: "/images/blog/heart-health.jpg",
-            category: "Tim mạch"
-          },
-          {
-            id: 2,
-            title: "Dinh dưỡng cho người cao tuổi",
-            summary: "Hướng dẫn chế độ dinh dưỡng cân đối cho người cao tuổi",
-            content: "Nội dung chi tiết...",
-            author: "Bs. Trần Thị B",
-            date: "05/06/2023",
-            imageUrl: "/images/blog/elderly-nutrition.jpg",
-            category: "Dinh dưỡng"
-          },
-          {
-            id: 3,
-            title: "Tập luyện thể thao đúng cách",
-            summary: "Hướng dẫn tập luyện thể thao đúng cách để tránh chấn thương",
-            content: "Nội dung chi tiết...",
-            author: "Bs. Lê Văn C",
-            date: "20/07/2023",
-            imageUrl: "/images/blog/exercise.jpg",
-            category: "Thể thao"
-          },
-          {
-            id: 4,
-            title: "Chăm sóc sức khỏe tinh thần",
-            summary: "Các phương pháp giảm stress và chăm sóc sức khỏe tinh thần",
-            content: "Nội dung chi tiết...",
-            author: "Bs. Phạm Thị D",
-            date: "15/08/2023",
-            imageUrl: "/images/blog/mental-health.jpg",
-            category: "Sức khỏe tinh thần"
-          },
-          {
-            id: 5,
-            title: "Phòng ngừa các bệnh lý về xương khớp",
-            summary: "Hướng dẫn chăm sóc xương khớp để phòng ngừa các bệnh lý",
-            content: "Nội dung chi tiết...",
-            author: "Bs. Hoàng Văn E",
-            date: "10/09/2023",
-            imageUrl: "/images/blog/bone-health.jpg",
-            category: "Xương khớp"
-          },
-          {
-            id: 6,
-            title: "Chăm sóc da mùa hanh khô",
-            summary: "Các biện pháp chăm sóc da hiệu quả trong mùa hanh khô",
-            content: "Nội dung chi tiết...",
-            author: "Bs. Mai Thị F",
-            date: "25/10/2023",
-            imageUrl: "/images/blog/skin-care.jpg",
-            category: "Da liễu"
-          }
-        ];
+  // useEffect(() => {
+  //   // Giả lập gọi API
+  //   setTimeout(() => {
+  //     try {
+  //       // Dữ liệu mẫu
+  //       const sampleBlogs: IBlog[] = [
+  //         {
+  //           id: 1,
+  //           title: "Phòng ngừa bệnh tim mạch hiệu quả",
+  //           summary: "Các biện pháp phòng ngừa bệnh tim mạch hiệu quả cho mọi lứa tuổi",
+  //           content: "Nội dung chi tiết...",
+  //           author: "Bs. Nguyễn Văn A",
+  //           date: "12/05/2023",
+  //           imageUrl: "/images/blog/heart-health.jpg",
+  //           category: "Tim mạch"
+  //         },
+  //         {
+  //           id: 2,
+  //           title: "Dinh dưỡng cho người cao tuổi",
+  //           summary: "Hướng dẫn chế độ dinh dưỡng cân đối cho người cao tuổi",
+  //           content: "Nội dung chi tiết...",
+  //           author: "Bs. Trần Thị B",
+  //           date: "05/06/2023",
+  //           imageUrl: "/images/blog/elderly-nutrition.jpg",
+  //           category: "Dinh dưỡng"
+  //         },
+  //         {
+  //           id: 3,
+  //           title: "Tập luyện thể thao đúng cách",
+  //           summary: "Hướng dẫn tập luyện thể thao đúng cách để tránh chấn thương",
+  //           content: "Nội dung chi tiết...",
+  //           author: "Bs. Lê Văn C",
+  //           date: "20/07/2023",
+  //           imageUrl: "/images/blog/exercise.jpg",
+  //           category: "Thể thao"
+  //         },
+  //         {
+  //           id: 4,
+  //           title: "Chăm sóc sức khỏe tinh thần",
+  //           summary: "Các phương pháp giảm stress và chăm sóc sức khỏe tinh thần",
+  //           content: "Nội dung chi tiết...",
+  //           author: "Bs. Phạm Thị D",
+  //           date: "15/08/2023",
+  //           imageUrl: "/images/blog/mental-health.jpg",
+  //           category: "Sức khỏe tinh thần"
+  //         },
+  //         {
+  //           id: 5,
+  //           title: "Phòng ngừa các bệnh lý về xương khớp",
+  //           summary: "Hướng dẫn chăm sóc xương khớp để phòng ngừa các bệnh lý",
+  //           content: "Nội dung chi tiết...",
+  //           author: "Bs. Hoàng Văn E",
+  //           date: "10/09/2023",
+  //           imageUrl: "/images/blog/bone-health.jpg",
+  //           category: "Xương khớp"
+  //         },
+  //         {
+  //           id: 6,
+  //           title: "Chăm sóc da mùa hanh khô",
+  //           summary: "Các biện pháp chăm sóc da hiệu quả trong mùa hanh khô",
+  //           content: "Nội dung chi tiết...",
+  //           author: "Bs. Mai Thị F",
+  //           date: "25/10/2023",
+  //           imageUrl: "/images/blog/skin-care.jpg",
+  //           category: "Da liễu"
+  //         }
+  //       ];
         
-        setBlogs(sampleBlogs);
-        setFilteredBlogs(sampleBlogs);
-        setLoading(false);
+  //       setBlogs(sampleBlogs);
+  //       setFilteredBlogs(sampleBlogs);
+  //       setLoading(false);
+  //     } catch (err) {
+  //       setError('Không thể tải cẩm nang');
+  //       console.error('Lỗi khi tải cẩm nang:', err);
+  //       setLoading(false);
+  //     }
+  //   }, 1000); // giả lập delay mạng
+  // }, []);
+
+  // useEffect(() => {
+  //   const fetchBlogs = async () => {
+  //     try {
+  //       const response = await fetch("")
+  //     }
+  //   }
+  // })
+  useEffect(() => {
+    const fetchBlogs = async() => {
+      try{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post`);
+        if (!res.ok) throw new Error("API lỗi");
+        const rawData: IApiPost[] = await res.json();
+        const data: IBlog[] = rawData.map((p) => ({
+          id: p.postId,
+          title: p.postTitle,
+          summary: p.postDescription,
+          content: "",
+          author: p.authorName || "Ẩn danh",
+          date: new Date(p.postCreatedDate).toLocaleDateString("vi-VN"),
+          imageUrl: p.postImageUrl,
+          category: "",
+        }));
+        setBlogs(data);
+        setFilteredBlogs(data);
       } catch (err) {
-        setError('Không thể tải cẩm nang');
-        console.error('Lỗi khi tải cẩm nang:', err);
+        console.error("Lỗi khi gọi API:", err);
+        setError("Không thể tải bài viết");
+      } finally {
         setLoading(false);
       }
-    }, 1000); // giả lập delay mạng
+    };
+    fetchBlogs();
   }, []);
 
   useEffect(() => {
@@ -165,11 +208,19 @@ const GuestBlogsPage = () => {
               <div key={blog.id} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 h-full flex flex-col">
                 <div className="relative h-48">
                   <Image 
-                    src={blog.imageUrl || "/images/blog-placeholder.jpg"}
+                    width={150}
+                    height={150}
+                    //src={blog.imageUrl || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTABbXr4i-QODqhy7tofHYmTYh05rYPktzacw&s"}
+                    src="https://suckhoedoisong.qltns.mediacdn.vn/zoom/720_450/324455921873985536/2024/7/3/kangnam-1-171996663742344604362-15-0-515-800-crop-17199668288971037345661.jpeg"
                     alt={blog.title}
-                    fill
                     className="object-cover"
+
                   />
+                  {/* <img
+                    src={blog.imageUrl}
+                    alt={blog.title}
+                    className="w-full h-48 object-cover"
+                  /> */}
                   <div className="absolute top-0 right-0 bg-cyan-500 text-white px-2 py-1 text-xs">
                     {blog.category}
                   </div>

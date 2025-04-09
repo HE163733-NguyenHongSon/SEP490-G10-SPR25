@@ -10,7 +10,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
     public class PatientDetailDTO : PatientDTO
     {
         [JsonPropertyOrder(18)]
-        public GuardianDTO? Guardian { get; set; }
+        public UserDTO? Guardian { get; set; }
 
         [JsonPropertyOrder(19)]
         public List<PatientDTO>? Dependents { get; set; }

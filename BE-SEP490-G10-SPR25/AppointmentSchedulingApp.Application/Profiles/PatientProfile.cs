@@ -15,15 +15,15 @@ namespace AppointmentSchedulingApp.Application.Profiles
         {
             CreateMap<User, PatientDTO>()
                 .IncludeBase<User, UserDTO>()
+                .ForMember(dest => dest.Relationship, opt => opt.MapFrom(src => src.Patient.Relationship))
                 .ForMember(dest => dest.MainCondition, opt => opt.MapFrom(src => src.Patient.MainCondition))
                 .ForMember(dest => dest.Rank, opt => opt.MapFrom(src => src.Patient.Rank))
-                .ForMember(dest => dest.GuardianId, opt => opt.MapFrom(src => src.Patient.GuardianId))
                 .ReverseMap();
 
             CreateMap<User, PatientDetailDTO>()
                 .IncludeBase<User, PatientDTO>()                
-                .ForMember(dest => dest.Guardian, opt => opt.MapFrom(src => src.Patient.Guardian.GuardianNavigation))
-                .ForMember(dest => dest.Dependents, opt => opt.MapFrom(src => src.Guardian.Patients.Select(p=>p.PatientNavigation)))             
+                .ForMember(dest => dest.Guardian, opt => opt.MapFrom(src => src.Patient.Guardian))
+                .ForMember(dest => dest.Dependents, opt => opt.MapFrom(src => src.PatientGuardians.Select(pg=>pg.PatientNavigation)) )            
                 .ForMember(dest => dest.MedicalRecords, opt => opt.MapFrom(src => src.Patient.Reservations.Where(r=>r.Status.Equals("Hoàn thành")).Select(r => r.MedicalRecord)))
                 .ReverseMap();
 

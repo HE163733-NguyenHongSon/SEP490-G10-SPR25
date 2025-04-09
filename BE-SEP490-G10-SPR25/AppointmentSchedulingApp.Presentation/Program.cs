@@ -197,7 +197,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//Tự t
 
 
 // Add Email Configs
-var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfigurationDTO>();
 builder.Services.AddSingleton(emailConfig);
 
 // Đăng ký các service

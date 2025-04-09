@@ -1,5 +1,5 @@
 interface IPatientDetail extends IPatient {
-  guardian: IGuardian;
-  dependents: IPatient[];
-  medicalRecords: IMedicalRecord[];
+  guardian?: IUser;
+  dependents?: IPatient[];
+  medicalRecords?: IMedicalRecord[];
 }

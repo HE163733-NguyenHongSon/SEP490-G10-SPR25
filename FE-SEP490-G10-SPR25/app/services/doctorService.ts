@@ -8,7 +8,14 @@ export const doctorService = {
 
     return res.json();   
   },
+  async getNumberOfDoctors(): Promise<number[]> {
+    const res = await fetch(`${apiUrl}/odata/Doctors/$count`);
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
 
+    return res.json();   
+  },
   async getDoctorListByIdListAndSort(
     idList: string,
     sortBy: string

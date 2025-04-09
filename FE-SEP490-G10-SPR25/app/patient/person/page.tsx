@@ -19,8 +19,8 @@ const ProfilePage = () => {
   }, []);
   const {
     data: patientDetail,
-    isLoading: isLoadingPatientDetail,
-    error: patientDetailError,
+    // isLoading: isLoadingPatientDetail,
+    // error: patientDetailError,
   } = useQuery({
     queryKey: ["patientDetail", patientId],
     queryFn: () => patientService.getPatientDetailById(patientId),
@@ -228,8 +228,8 @@ const ProfilePage = () => {
         </Tabs.Content>
 
         <Tabs.Content value="dependents">
-          {patientDetail?.dependents.length !== 0 ? (
-            patientDetail?.dependents.map(
+          {patientDetail?.dependents?.length !== 0 ? (
+            patientDetail?.dependents?.map(
               (dependent: IPatient, index: number) => (
                 <form key={dependent.userId}>
                   <div className="row-span-1 flex flex-col py-10">

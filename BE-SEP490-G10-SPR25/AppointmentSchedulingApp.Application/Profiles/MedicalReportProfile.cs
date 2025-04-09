@@ -16,11 +16,11 @@ namespace AppointmentSchedulingApp.Application.Profiles
             CreateMap<User, MedicalReportDTO>()
                 .ForMember(dest => dest.Patient, opt => opt.MapFrom(src => src))
                 .ForMember(dest => dest.NumberOfVisits, opt => opt.MapFrom(src =>
-                    src.PatientNavigation != null
-                        ? src.PatientNavigation.Reservations.Count(r => r.Status.Equals("Hoàn thành"))
+                    src.Patient != null
+                        ? src.Patient.Reservations.Count(r => r.Status.Equals("Hoàn thành"))
                         : 0))
 
-                .ForMember(dest => dest.FirstVisit, opt => opt.MapFrom(src =>src.PatientNavigation.Reservations
+                .ForMember(dest => dest.FirstVisit, opt => opt.MapFrom(src =>src.Patient.Reservations
                             .Where(r => r.Status.Equals("Hoàn thành"))
                             .OrderBy(r => r.AppointmentDate)
                             .Select(r => r.AppointmentDate)
@@ -32,7 +32,7 @@ namespace AppointmentSchedulingApp.Application.Profiles
                     }
                 })
 
-                .ForMember(dest => dest.LastVisit, opt => opt.MapFrom(src => src.PatientNavigation.Reservations
+                .ForMember(dest => dest.LastVisit, opt => opt.MapFrom(src => src.Patient.Reservations
                             .Where(r => r.Status.Equals("Hoàn thành"))
                             .OrderByDescending(r => r.AppointmentDate)
                             .Select(r => r.AppointmentDate)
@@ -43,10 +43,10 @@ namespace AppointmentSchedulingApp.Application.Profiles
                          dest.LastVisitFormatted = dest.LastVisit.Value.ToString("dd/MM/yyyy");
                      }
                  })
-                 .ForMember(dest => dest.MainCondition, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.PatientNavigation.MainCondition)
-                                          ? src.PatientNavigation.MainCondition
+                 .ForMember(dest => dest.MainCondition, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Patient.MainCondition)
+                                          ? src.Patient.MainCondition
                                           : "Không có bệnh lý chính"))
-                 .ForMember(dest => dest.MedicalRecords, opt => opt.MapFrom(src => src.PatientNavigation.Reservations.
+                 .ForMember(dest => dest.MedicalRecords, opt => opt.MapFrom(src => src.Patient.Reservations.
                     Where(r=>r.Status.Equals("Hoàn thành")).Select(r=>r.MedicalRecord)))
 
                 .ReverseMap();   

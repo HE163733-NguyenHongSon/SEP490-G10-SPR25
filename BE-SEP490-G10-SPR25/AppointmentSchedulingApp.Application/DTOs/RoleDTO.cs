@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Application.DTOs
 {
-    public class RoleInformation
+    public class RoleDTO
     {
         public string RoleId { get; internal set; }
         public string RoleName { get; internal set; }

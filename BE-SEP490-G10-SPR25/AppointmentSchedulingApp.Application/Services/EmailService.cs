@@ -12,8 +12,8 @@ namespace AppointmentSchedulingApp.Application.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly EmailConfiguration _emailConfig;
-        public EmailService(EmailConfiguration emailConfig) => _emailConfig = emailConfig;
+        private readonly EmailConfigurationDTO _emailConfig;
+        public EmailService(EmailConfigurationDTO emailConfig) => _emailConfig = emailConfig;
         public void SendEmail(Message message)
         {
             var emailMessage = CreateEmailMessage(message);

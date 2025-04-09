@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { patientService } from "@/services/patientService";
 import Image from "next/image";
-import { medicalRecordService } from '@/services/medicalRecordService';
 
 export default function PatientDetailPage({ params }: { params: { patientId: string } }) {
   const [patient, setPatient] = useState<IPatientDetail | null>(null);
@@ -16,10 +15,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
         const patientData = await patientService.getPatientDetailById(params.patientId);
 
         setPatient(patientData);
-        setMedicalRecords(patientData.medicalRecords || []);
-
-        // const medicalRecordsData = await medicalRecordService.getAllMedicalRecordByPatientId(params.patientId);
-        // setPatient(medicalRecordsData);
+        setMedicalRecords(patientData.medicalRecords || []);      
 
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch patient data');

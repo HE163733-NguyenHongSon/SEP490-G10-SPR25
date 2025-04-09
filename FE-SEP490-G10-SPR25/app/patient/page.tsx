@@ -11,24 +11,23 @@ const HomePage = () => {
       <div className="max-w-fit container text-center p-6 md:px-5 lg:px-10 lg:mx-48 text-white z-30">
         <div className="mt-52">
           <h2 className="text-3xl sm:text-4xl md:text-[50px] inline-grid max-w-3xl font-semibold pt-20">
-            Schedule an appointment and view your results online
+            Đặt lịch khám và xem kết quả trực tuyến
           </h2>
           <h2 className="text-xl text-cyan-500 sm:text-xl md:text-xl md:inline-grid max-w-4xl pt-8">
-            Now you can make an appointment before coming for a check-up and
-            view your test results online quickly anytime, anywhere.
+            Giờ đây bạn có thể đặt lịch hẹn trước khi đến khám và nhanh chóng xem kết quả xét nghiệm trực tuyến mọi lúc, mọi nơi.
           </h2>
           <div className="space-x-6 mt-10">
             <a
               className="border border-white px-8 py-3 rounded hover:underline underline-offset-4"
               href="#"
             >
-              Booking appointment
+              Đặt lịch khám
             </a>
             <a
               className="bg-cyan-600 px-8 py-3 rounded hover:underline underline-offset-4"
               href="#"
             >
-              Contact us
+              Liên hệ với chúng tôi
             </a>
           </div>
         </div>
@@ -37,4 +36,5 @@ const HomePage = () => {
     </div>
   );
 };
+
 export default HomePage;

@@ -62,7 +62,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while fetching patient details for ID={patientId}", patientId);
-                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+                return StatusCode(500, ex.Message);
             }
         }
 

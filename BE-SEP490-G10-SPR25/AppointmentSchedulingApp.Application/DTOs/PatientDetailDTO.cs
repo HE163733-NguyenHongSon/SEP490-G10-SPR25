@@ -9,10 +9,13 @@ namespace AppointmentSchedulingApp.Application.DTOs
 {
     public class PatientDetailDTO : PatientDTO
     {
-        public string? GuardianName { get; set; }
-        public string? GuardianPhone { get; set; }
-        public string? GuardianEmail { get; set; }
+        [JsonPropertyOrder(18)]
+        public GuardianDTO? Guardian { get; set; }
 
+        [JsonPropertyOrder(19)]
+        public List<PatientDTO>? Dependents { get; set; }
+
+        [JsonPropertyOrder(20)]
         public List<MedicalRecordDTO> MedicalRecords { get; set; } = new List<MedicalRecordDTO>();
     }
 }

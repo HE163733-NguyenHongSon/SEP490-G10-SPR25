@@ -92,12 +92,12 @@ namespace AppointmentSchedulingApp.Application.Services
                     authClaims.Add(new Claim(ClaimTypes.DateOfBirth, userDTO.Dob));
                 }
 
-                Console.WriteLine($"Adding {userDTO.RoleInformations?.Count ?? 0} roles to token");
+                Console.WriteLine($"Adding {userDTO.Roles?.Count ?? 0} roles to token");
                 
                 // Add roles - standardize role claims to use ClaimTypes.Role to ensure proper role-based authorization
-                if (userDTO.RoleInformations != null && userDTO.RoleInformations.Any())
+                if (userDTO.Roles != null && userDTO.Roles.Any())
                 {
-                    foreach (var roleInfo in userDTO.RoleInformations)
+                    foreach (var roleInfo in userDTO.Roles)
                     {
                         if (!string.IsNullOrEmpty(roleInfo.RoleName))
                         {
@@ -221,7 +221,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 Console.WriteLine($"Login successful for username: {userLogin.UserName}");
                 
                 // Get role information
-                var roles = await _roleService.GetRoleInformationsByUserId(user.UserId.ToString());
+                var roles = await _roleService.GetRoleDTOsByUserId(user.UserId.ToString());
                 Console.WriteLine($"Found {roles?.Count ?? 0} roles for user");
                 
                 if (roles != null && roles.Any())
@@ -245,13 +245,13 @@ namespace AppointmentSchedulingApp.Application.Services
                     PhoneNumber = user.Phone,
                     Phone = user.Phone,
                     Gender = user.Gender,
-                    Dob = user.Dob.HasValue ? user.Dob.Value.ToString("yyyy-MM-dd") : null,
+                    Dob = user.Dob.ToString("yyyy-MM-dd") ,
                     Address = user.Address,
                     AvatarUrl = user.AvatarUrl,
-                    RoleInformations = roles
+                    Roles = roles
                 };
                 
-                Console.WriteLine($"UserDTO created with {userDTO.RoleInformations?.Count ?? 0} roles");
+                Console.WriteLine($"UserDTO created with {userDTO.Roles?.Count ?? 0} roles");
                 return userDTO;
             }
             catch (Exception ex) {
@@ -684,7 +684,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 UserName = user.UserName,
                 PhoneNumber = user.Phone,
                 Gender = user.Gender,
-                RoleInformations = await _roleService.GetRoleInformationsByUserId(user.UserId.ToString())
+                Roles = await _roleService.GetRoleDTOsByUserId(user.UserId.ToString())
             };
             return userDTO;
         }

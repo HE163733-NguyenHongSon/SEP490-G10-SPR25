@@ -66,7 +66,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                     Console.WriteLine($"Token generated, length: {token.Length}");
                     
                     // Retrieve role information
-                    var roles = user.RoleInformations?.Select(r => r.RoleName).ToList() ?? new List<string>();
+                    var roles = user.Roles?.Select(r => r.RoleName).ToList() ?? new List<string>();
                     var primaryRole = roles.FirstOrDefault() ?? "Unknown";
                     
                     Console.WriteLine($"User primary role: {primaryRole}");

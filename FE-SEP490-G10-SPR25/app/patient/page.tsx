@@ -1,4 +1,5 @@
 import { About } from "./components/About";
+import { ChatBot } from "../components/ChatBot";
 
 const HomePage = () => {
   return (
@@ -34,6 +35,7 @@ const HomePage = () => {
         </div>
         <About />
       </div>
+      <ChatBot />
     </div>
   );
 };

@@ -52,7 +52,7 @@ export const SpecialtyList = () => {
             >
               <div className="w-20 h-20 flex items-center justify-center rounded-full border-2 border-blue-500 p-4">
                 <Image
-                  src={specialty.image}
+                  src={specialty.image.startsWith('http') ? specialty.image : `/${specialty.image}`}
                   alt={specialty.specialtyName}
                   className="object-contain"
                   width={60} height={60}

@@ -93,7 +93,7 @@ const LoginPage = () => {
         redirectPath = "/patient";
         console.log("Redirecting to patient dashboard");
       } else if (normalizedRole === AppRole.Guardian) {
-        redirectPath = "/guardian";
+        redirectPath = "/patient";
         console.log("Redirecting to guardian dashboard");
       } else {
         console.log(

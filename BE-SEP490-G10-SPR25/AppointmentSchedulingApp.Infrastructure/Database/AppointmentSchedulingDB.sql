@@ -131,58 +131,43 @@ VALUES
     (53, 5);
 
 
----------------------------------------------------------------------------------------------------------
-CREATE TABLE Guardians (
-    GuardianId INT NOT NULL,
-    Relationship NVARCHAR(30) NOT NULL, 
-    PRIMARY KEY (GuardianId),
-    FOREIGN KEY (GuardianId) REFERENCES Users(UserId), 
-);
-INSERT INTO Guardians (GuardianId, Relationship) VALUES
-(1, N'Cha'),
-(2, N'Mẹ'),
-(3, N'Chồng'),
-(4, N'Vợ'),
-(5, N'Anh trai'),
-(6, N'Chị gái'),
-(7, N'Ông nội'),
-(8, N'Bà ngoại'),
-(9, N'Cô ruột'),
-(10, N'Chú họ');
 -------------------------------------------------------------------------------------------------------------------
+
 CREATE TABLE Patients (
   PatientId INT NOT NULL,
   GuardianId INT NULL,
+  Relationship NVARCHAR(30),
   MainCondition NVARCHAR(300),
   Rank NVARCHAR(10) DEFAULT NULL,
   PRIMARY KEY (PatientId),
   CONSTRAINT Patient_FK FOREIGN KEY (PatientId) REFERENCES Users (UserId),
-  CONSTRAINT Guardian_FK FOREIGN KEY (GuardianId) REFERENCES Guardians (GuardianId)
+  CONSTRAINT Guardian_FK FOREIGN KEY (GuardianId) REFERENCES Users (UserId)
 ) ;
-INSERT INTO Patients (PatientId, GuardianId, MainCondition, Rank)
+INSERT INTO Patients (PatientId, GuardianId, Relationship, MainCondition, Rank)
 VALUES
-    (1, NULL, NULL, N'Thường'), 
-    (2, NULL, N'Tiểu đường', N'Thường'), 
-    (11, 1, N'Cao huyết áp', N'Thường'), 
-    (12, 1, N'Tiểu đường', N'Thường'), 
-    (13, 1, NULL, N'Thường'), 
-    (14, 2, N'Suyễn', N'Thường'), 
-    (15, 2, NULL, N'Thường'),
-    (16, 2, N'Viêm khớp', N'Thường'), 
-    (17, 3, NULL, N'Thường'), 
-    (18, 4, N'Suy thận', N'Thường'), 
-    (19, 5, NULL, N'Thường'), 
-    (20, 6, N'Đột quỵ', N'Thường'),  
-    (21, 7, NULL, N'Thường'), 
-    (22, 8, N'Suyễn', N'Thường'), 
-    (23, 9, NULL, N'Thường'),
-	(24, 10, N'Viêm khớp', N'Thường'), 
-    (25, NULL, NULL, N'Thường'), 
-    (26, NULL, N'Suy thận', N'Thường'), 
-    (27, NULL, NULL, N'Thường'), 
-    (28, NULL, NULL, N'Thường'), 
-    (29, NULL, NULL, N'Thường'), 
-    (30, NULL, NULL, N'Thường');
+    (1, NULL, NULL, NULL, N'Thường'), 
+    (2, NULL, NULL, N'Tiểu đường', N'Thường'), 
+    (11, 1, N'Con', N'Cao huyết áp', N'Thường'), 
+    (12, 1, N'Con', N'Tiểu đường', N'Thường'), 
+    (13, 1, N'Con', NULL, N'Thường'), 
+    (14, 2, N'Mẹ', N'Suyễn', N'Thường'), 
+    (15, 2, N'Cháu', NULL, N'Thường'),
+    (16, 2, N'Dì', N'Viêm khớp', N'Thường'), 
+    (17, 3, N'Chồng', NULL, N'Thường'), 
+    (18, 4, N'Vợ', N'Suy thận', N'Thường'), 
+    (19, 5, N'Anh trai', NULL, N'Thường'), 
+    (20, 6, N'Chị gái', N'Đột quỵ', N'Thường'),  
+    (21, 7, N'Ông nội', NULL, N'Thường'), 
+    (22, 8, N'Bà ngoại', N'Suyễn', N'Thường'), 
+    (23, 9, N'Cô ruột', NULL, N'Thường'),
+    (24, 10, N'Chú họ', N'Viêm khớp', N'Thường'), 
+    (25, NULL, NULL, NULL, N'Thường'), 
+    (26, NULL, NULL, N'Suy thận', N'Thường'), 
+    (27, NULL, NULL, NULL, N'Thường'), 
+    (28, NULL, NULL, NULL, N'Thường'), 
+    (29, NULL, NULL, NULL, N'Thường'), 
+    (30, NULL, NULL, NULL, N'Thường');
+
     
 
 --------------------------------------------------------------------------------------------------------------------------------

@@ -51,23 +51,25 @@ namespace AppointmentSchedulingApp.Application.Services
             _emailService = emailService;
             _dbContext = dbContext;
         }
-
+        /// <summary>
+        /// Generate a JWT token for the user
+        /// </summary>
+        /// Author : Dinh Quang Tung -HE161511 
+        /// <param name="userId"></param>
+        /// <param name="userName"></param>
+        /// <param name="userDTO"></param>
+        /// <returns></returns>
         public string GenerateToken(UserDTO userDTO)
         {
             try
-            {
-                Console.WriteLine($"GenerateToken called for user: {userDTO.UserName}, UserId: {userDTO.UserId}");
-                
+            {                
                 if (userDTO == null)
                 {
-                    Console.WriteLine("GenerateToken failed: userDTO is null");
                     throw new ArgumentNullException(nameof(userDTO));
                 }
                 
                 var jwtTokenHandler = new JwtSecurityTokenHandler();
                 var secretKeyBytes = Encoding.UTF8.GetBytes(_appSettings.SecretKey);
-                
-                // Prepare claims
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, userDTO.UserName ?? ""),
@@ -90,12 +92,12 @@ namespace AppointmentSchedulingApp.Application.Services
                     authClaims.Add(new Claim(ClaimTypes.DateOfBirth, userDTO.Dob));
                 }
 
-                Console.WriteLine($"Adding {userDTO.RoleInformations?.Count ?? 0} roles to token");
+                Console.WriteLine($"Adding {userDTO.Roles?.Count ?? 0} roles to token");
                 
                 // Add roles - standardize role claims to use ClaimTypes.Role to ensure proper role-based authorization
-                if (userDTO.RoleInformations != null && userDTO.RoleInformations.Any())
+                if (userDTO.Roles != null && userDTO.Roles.Any())
                 {
-                    foreach (var roleInfo in userDTO.RoleInformations)
+                    foreach (var roleInfo in userDTO.Roles)
                     {
                         if (!string.IsNullOrEmpty(roleInfo.RoleName))
                         {
@@ -219,7 +221,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 Console.WriteLine($"Login successful for username: {userLogin.UserName}");
                 
                 // Get role information
-                var roles = await _roleService.GetRoleInformationsByUserId(user.UserId.ToString());
+                var roles = await _roleService.GetRoleDTOsByUserId(user.UserId.ToString());
                 Console.WriteLine($"Found {roles?.Count ?? 0} roles for user");
                 
                 if (roles != null && roles.Any())
@@ -243,13 +245,13 @@ namespace AppointmentSchedulingApp.Application.Services
                     PhoneNumber = user.Phone,
                     Phone = user.Phone,
                     Gender = user.Gender,
-                    Dob = user.Dob.HasValue ? user.Dob.Value.ToString("yyyy-MM-dd") : null,
+                    Dob = user.Dob.ToString("yyyy-MM-dd") ,
                     Address = user.Address,
                     AvatarUrl = user.AvatarUrl,
-                    RoleInformations = roles
+                    Roles = roles
                 };
                 
-                Console.WriteLine($"UserDTO created with {userDTO.RoleInformations?.Count ?? 0} roles");
+                Console.WriteLine($"UserDTO created with {userDTO.Roles?.Count ?? 0} roles");
                 return userDTO;
             }
             catch (Exception ex) {
@@ -267,11 +269,51 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             try
             {
-                // Check if username or email already exists
-                var existingUser = await _userRepository.Get(u => u.UserName == registrationDTO.UserName || u.Email == registrationDTO.Email);
-                if (existingUser != null)
+                // Validate input
+                var validationResult = ValidateRegistrationDTO(registrationDTO);
+                if (!validationResult.Succeeded)
                 {
-                    return ResultDTO.Failure("Username or email already exists");
+                    return validationResult;
+                }
+                
+                // Check if username already exists
+                var existingUserName = await _userRepository.Get(u => u.UserName == registrationDTO.UserName);
+                if (existingUserName != null)
+                {
+                    return ResultDTO.Failure("Tên đăng nhập đã tồn tại", new Dictionary<string, string[]>
+                    {
+                        { "UserName", new[] { "Tên đăng nhập đã được sử dụng" } }
+                    });
+                }
+                
+                // Check if email already exists
+                var existingEmail = await _userRepository.Get(u => u.Email == registrationDTO.Email);
+                if (existingEmail != null)
+                {
+                    return ResultDTO.Failure("Email đã tồn tại", new Dictionary<string, string[]>
+                    {
+                        { "Email", new[] { "Email đã được sử dụng bởi tài khoản khác" } }
+                    });
+                }
+                
+                // Check if phone number already exists
+                var existingPhone = await _userRepository.Get(u => u.Phone == registrationDTO.PhoneNumber);
+                if (existingPhone != null)
+                {
+                    return ResultDTO.Failure("Số điện thoại đã tồn tại", new Dictionary<string, string[]>
+                    {
+                        { "PhoneNumber", new[] { "Số điện thoại đã được sử dụng bởi tài khoản khác" } }
+                    });
+                }
+                
+                // Check if CitizenId already exists
+                var existingCitizenId = await _userRepository.Get(u => u.CitizenId == registrationDTO.CitizenId);
+                if (existingCitizenId != null)
+                {
+                    return ResultDTO.Failure("Số CCCD/CMND đã tồn tại", new Dictionary<string, string[]>
+                    {
+                        { "CitizenId", new[] { "Số CCCD/CMND đã được sử dụng bởi tài khoản khác" } }
+                    });
                 }
 
                 // Create new user
@@ -282,10 +324,13 @@ namespace AppointmentSchedulingApp.Application.Services
                     // Hash password with BCrypt
                     Password = PasswordHasher.HashPassword(registrationDTO.Password),
                     Phone = registrationDTO.PhoneNumber ?? "",
-                    Gender = registrationDTO.Gender ?? "",
+                    // Chuyển đổi giá trị gender từ tiếng Anh sang tiếng Việt
+                    Gender = ConvertGender(registrationDTO.Gender),
                     Dob = registrationDTO.Dob,
                     Address = registrationDTO.Address ?? "",
                     CitizenId = registrationDTO.CitizenId,
+                    IsVerify = true,
+                    IsActive = true,
                 };
 
                 // Save to database
@@ -303,7 +348,10 @@ namespace AppointmentSchedulingApp.Application.Services
                     {
                         Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
                     }
-                    return ResultDTO.Failure($"Failed to save user: {ex.Message}");
+                    return ResultDTO.Failure("Lỗi khi lưu người dùng vào cơ sở dữ liệu", new Dictionary<string, string[]>
+                    {
+                        { "Database", new[] { ex.Message } }
+                    });
                 }
 
                 // Add Patient role to the user
@@ -317,17 +365,21 @@ namespace AppointmentSchedulingApp.Application.Services
                 {
                     try 
                     {
-                        // Create a new UserRole entry instead of directly adding to Roles collection
-                        var userRole = new UserRole
-                        {
-                            UserId = user.UserId,
-                            RoleId = patientRole.RoleId
-                        };
-                        
-                        // Add to DbContext
-                        _dbContext.Add(userRole);
+                        // Thêm vai trò trực tiếp vào collection của User thay vì tạo UserRole
+                        user.Roles.Add(patientRole);
                         await _dbContext.SaveChangesAsync();
                         Console.WriteLine($"Added Patient role to user {user.UserName}");
+                        
+                        // Create patient record
+                        var patient = new Patient
+                        {
+                            PatientId = user.UserId,
+                            Rank = "Normal", // Default rank for new patients
+                        };
+                        
+                        _dbContext.Add(patient);
+                        await _dbContext.SaveChangesAsync();
+                        Console.WriteLine($"Created patient record for user {user.UserName}");
                     }
                     catch (Exception ex)
                     {
@@ -336,26 +388,153 @@ namespace AppointmentSchedulingApp.Application.Services
                         {
                             Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
                         }
-                        return ResultDTO.Failure($"User created but failed to add role: {ex.Message}");
+                        return ResultDTO.Failure("Tài khoản đã được tạo nhưng không thể gán vai trò bệnh nhân", new Dictionary<string, string[]>
+                        {
+                            { "Role", new[] { ex.Message } }
+                        });
                     }
                 }
                 else
                 {
                     Console.WriteLine("Patient role not found in database");
-                    return ResultDTO.Failure("Patient role not found in database. Please check if there's a 'Patient' or 'Bệnh nhân' role in your Roles table.");
+                    return ResultDTO.Failure("Vai trò bệnh nhân không được tìm thấy trong cơ sở dữ liệu");
                 }
 
                 return ResultDTO.Success();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error registering patient: {ex.Message}");
+                Console.WriteLine($"Unexpected error in RegisterPatient: {ex.Message}");
                 if (ex.InnerException != null)
                 {
                     Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
                 }
-                return ResultDTO.Failure(ex.Message);
+                return ResultDTO.Failure("Đã xảy ra lỗi không mong muốn trong quá trình đăng ký");
             }
+        }
+
+        private ResultDTO ValidateRegistrationDTO(RegistrationDTO registrationDTO)
+        {
+            var errors = new Dictionary<string, string[]>();
+            
+            // Kiểm tra tên người dùng
+            if (string.IsNullOrWhiteSpace(registrationDTO.UserName))
+            {
+                errors.Add("UserName", new[] { "Tên đăng nhập không được để trống" });
+            }
+            else if (registrationDTO.UserName.Length < 3 || registrationDTO.UserName.Length > 50)
+            {
+                errors.Add("UserName", new[] { "Tên đăng nhập phải có độ dài từ 3 đến 50 ký tự" });
+            }
+            else if (registrationDTO.UserName.Contains(" "))
+            {
+                errors.Add("UserName", new[] { "Tên đăng nhập không được chứa khoảng trắng" });
+            }
+            
+            // Kiểm tra email
+            if (string.IsNullOrWhiteSpace(registrationDTO.Email))
+            {
+                errors.Add("Email", new[] { "Email không được để trống" });
+            }
+            else if (!IsValidEmail(registrationDTO.Email))
+            {
+                errors.Add("Email", new[] { "Email không đúng định dạng" });
+            }
+            
+            // Kiểm tra mật khẩu
+            if (string.IsNullOrWhiteSpace(registrationDTO.Password))
+            {
+                errors.Add("Password", new[] { "Mật khẩu không được để trống" });
+            }
+            else if (registrationDTO.Password.Length < 6)
+            {
+                errors.Add("Password", new[] { "Mật khẩu phải có ít nhất 6 ký tự" });
+            }
+            
+            // Kiểm tra xác nhận mật khẩu
+            if (registrationDTO.Password != registrationDTO.ConfirmPassword)
+            {
+                errors.Add("ConfirmPassword", new[] { "Mật khẩu và xác nhận mật khẩu không khớp" });
+            }
+            
+            // Kiểm tra số điện thoại
+            if (string.IsNullOrWhiteSpace(registrationDTO.PhoneNumber))
+            {
+                errors.Add("PhoneNumber", new[] { "Số điện thoại không được để trống" });
+            }
+            else if (!IsValidPhoneNumber(registrationDTO.PhoneNumber))
+            {
+                errors.Add("PhoneNumber", new[] { "Số điện thoại không đúng định dạng" });
+            }
+            
+            // Kiểm tra CCCD/CMND
+            if (registrationDTO.CitizenId <= 0)
+            {
+                errors.Add("CitizenId", new[] { "Số CCCD/CMND không được để trống" });
+            }
+            else if (!IsValidCitizenId(registrationDTO.CitizenId))
+            {
+                errors.Add("CitizenId", new[] { "Số CCCD/CMND không hợp lệ (phải có 9 hoặc 12 chữ số)" });
+            }
+            
+            // Kiểm tra ngày sinh
+            var minAge = DateOnly.FromDateTime(DateTime.Now.AddYears(-120)); // 120 tuổi
+            var maxAge = DateOnly.FromDateTime(DateTime.Now); // Không được lớn hơn ngày hiện tại
+            
+            if (registrationDTO.Dob < minAge || registrationDTO.Dob > maxAge)
+            {
+                errors.Add("Dob", new[] { "Ngày sinh không hợp lệ" });
+            }
+            
+            // Kiểm tra địa chỉ
+            if (string.IsNullOrWhiteSpace(registrationDTO.Address))
+            {
+                errors.Add("Address", new[] { "Địa chỉ không được để trống" });
+            }
+            
+            // Kiểm tra giới tính
+            if (string.IsNullOrWhiteSpace(registrationDTO.Gender))
+            {
+                errors.Add("Gender", new[] { "Giới tính không được để trống" });
+            }
+            else if (registrationDTO.Gender.ToLower() != "male" && registrationDTO.Gender.ToLower() != "female")
+            {
+                errors.Add("Gender", new[] { "Giới tính không hợp lệ (phải là 'male' hoặc 'female')" });
+            }
+            
+            if (errors.Count > 0)
+            {
+                return ResultDTO.Failure("Thông tin đăng ký không hợp lệ", errors);
+            }
+            
+            return ResultDTO.Success();
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool IsValidPhoneNumber(string phone)
+        {
+            // Chấp nhận số điện thoại Việt Nam bắt đầu bằng 0 hoặc +84, tiếp theo là 9 chữ số
+            var regex = new System.Text.RegularExpressions.Regex(@"^(0|\+84)([0-9]{9})$");
+            return regex.IsMatch(phone.Replace(" ", ""));
+        }
+
+        private bool IsValidCitizenId(long citizenId)
+        {
+            // CMND cũ: 9 chữ số, CCCD mới: 12 chữ số
+            string citizenIdStr = citizenId.ToString();
+            return citizenIdStr.Length == 9 || citizenIdStr.Length == 12;
         }
 
         public bool checkLockoutAccount(User user, StringBuilder message)
@@ -419,13 +598,20 @@ namespace AppointmentSchedulingApp.Application.Services
                     return ResultDTO.Failure("Email already exists");
                 }
 
+                // Tạo số điện thoại tạm thời duy nhất cho tài khoản Google 
+                // Lưu ý: Người dùng sẽ cần cập nhật số điện thoại thật sau khi đăng nhập
+                string temporaryPhone = await GenerateUniquePhoneNumber();
+
                 var newUser = new User
                 {
                     Email = userInfo.Email,
                     UserName = userInfo.Email,
                     // Tạo mật khẩu ngẫu nhiên cho tài khoản Google
                     Password = PasswordHasher.HashPassword(Guid.NewGuid().ToString()),
-                    Gender = userInfo.Gender,
+                    Gender = ConvertGender(userInfo.Gender),
+                    Phone = temporaryPhone,
+                    IsVerify = true,
+                    IsActive = true,
                 };
 
                 // Lưu vào database
@@ -438,10 +624,20 @@ namespace AppointmentSchedulingApp.Application.Services
                 {
                     newUser.Roles.Add(role);
                     await _dbContext.SaveChangesAsync();
+                    
+                    // Nếu là bệnh nhân, tạo bản ghi Patient
+                    if (roleName.Equals("Patient") || roleName.Equals("Bệnh nhân"))
+                    {
+                        var patient = new Patient
+                        {
+                            PatientId = newUser.UserId,
+                            Rank = "Normal", // Default rank for new patients
+                        };
+                        
+                        _dbContext.Add(patient);
+                        await _dbContext.SaveChangesAsync();
+                    }
                 }
-
-                // Lưu thông tin đăng nhập Google
-                // Trong triển khai không dùng Identity, bạn có thể tạo bảng ExternalLogins riêng
 
                 return ResultDTO.Success();
             }
@@ -450,6 +646,32 @@ namespace AppointmentSchedulingApp.Application.Services
                 Console.WriteLine($"ExternalRegisterUser: {ex.Message}");
                 return ResultDTO.Failure(ex.Message);
             }
+        }
+
+        // Hàm tạo số điện thoại tạm thời duy nhất
+        private async Task<string> GenerateUniquePhoneNumber()
+        {
+            // Tiền tố cho số điện thoại tạm thời
+            string prefix = "099";
+            
+            // Tạo số ngẫu nhiên 7 chữ số
+            Random random = new Random();
+            string uniquePhone;
+            bool isUnique = false;
+            
+            // Vòng lặp cho đến khi tìm thấy số điện thoại duy nhất
+            do
+            {
+                string randomPart = random.Next(1000000, 9999999).ToString();
+                uniquePhone = prefix + randomPart;
+                
+                // Kiểm tra xem số điện thoại đã tồn tại chưa
+                var existingUser = await _userRepository.Get(u => u.Phone == uniquePhone);
+                isUnique = (existingUser == null);
+            } 
+            while (!isUnique);
+            
+            return uniquePhone;
         }
 
         public async Task<UserDTO> GetUserDto(Userinfo userinfo)
@@ -462,7 +684,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 UserName = user.UserName,
                 PhoneNumber = user.Phone,
                 Gender = user.Gender,
-                RoleInformations = await _roleService.GetRoleInformationsByUserId(user.UserId.ToString())
+                Roles = await _roleService.GetRoleDTOsByUserId(user.UserId.ToString())
             };
             return userDTO;
         }
@@ -578,6 +800,20 @@ Click vào link này để đặt lại mật khẩu: {resetPasswordLink}";
             {
                 return ResultDTO.Failure(ex.Message);
             }
+        }
+
+        // Thêm hàm chuyển đổi giới tính
+        private string ConvertGender(string gender)
+        {
+            if (string.IsNullOrEmpty(gender))
+                return "Nam"; // Giá trị mặc định
+
+            return gender.ToLower() switch
+            {
+                "male" => "Nam",
+                "female" => "Nữ",
+                _ => "Nam" // Giá trị mặc định nếu không rõ
+            };
         }
     }
 }

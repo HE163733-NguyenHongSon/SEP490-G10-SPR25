@@ -13,9 +13,9 @@ public partial class Patient
 
     public string? Rank { get; set; }
 
-    public virtual User? Guardian { get; set; }
+    public virtual Guardian? Guardian { get; set; }
 
-    public virtual User UserNavigation { get; set; } = null!;
+    public virtual User PatientNavigation { get; set; } = null!;
 
     public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 }

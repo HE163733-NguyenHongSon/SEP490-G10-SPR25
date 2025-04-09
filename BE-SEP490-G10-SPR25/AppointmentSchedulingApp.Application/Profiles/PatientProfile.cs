@@ -15,21 +15,16 @@ namespace AppointmentSchedulingApp.Application.Profiles
         {
             CreateMap<User, PatientDTO>()
                 .IncludeBase<User, UserDTO>()
-
-                //.ForMember(dest => dest.PatientId, opt => opt.MapFrom(src => src.PatientId))
-                //.ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.UserNavigation.UserName))
-                .ForMember(dest => dest.MainCondition, opt => opt.MapFrom(src => src.PatientNavigation.MainCondition))
-                .ForMember(dest => dest.Rank, opt => opt.MapFrom(src => src.PatientNavigation.Rank))
-                .ForMember(dest => dest.GuardianId, opt => opt.MapFrom(src => src.PatientNavigation.GuardianId))
+                .ForMember(dest => dest.MainCondition, opt => opt.MapFrom(src => src.Patient.MainCondition))
+                .ForMember(dest => dest.Rank, opt => opt.MapFrom(src => src.Patient.Rank))
+                .ForMember(dest => dest.GuardianId, opt => opt.MapFrom(src => src.Patient.GuardianId))
                 .ReverseMap();
 
             CreateMap<User, PatientDetailDTO>()
-                .IncludeBase<User, PatientDTO>()
-                
-                .ForMember(dest => dest.GuardianName, opt => opt.MapFrom(src => src.PatientNavigation.Guardian.UserName))
-                .ForMember(dest => dest.GuardianPhone, opt => opt.MapFrom(src => src.PatientNavigation.Guardian.Phone))
-                .ForMember(dest => dest.GuardianEmail, opt => opt.MapFrom(src => src.PatientNavigation.Guardian.Email))
-                .ForMember(dest => dest.MedicalRecords, opt => opt.MapFrom(src => src.PatientNavigation.Reservations.Select(r => r.MedicalRecord)))
+                .IncludeBase<User, PatientDTO>()                
+                .ForMember(dest => dest.Guardian, opt => opt.MapFrom(src => src.Patient.Guardian.GuardianNavigation))
+                .ForMember(dest => dest.Dependents, opt => opt.MapFrom(src => src.Guardian.Patients.Select(p=>p.PatientNavigation)))             
+                .ForMember(dest => dest.MedicalRecords, opt => opt.MapFrom(src => src.Patient.Reservations.Where(r=>r.Status.Equals("Hoàn thành")).Select(r => r.MedicalRecord)))
                 .ReverseMap();
 
         }

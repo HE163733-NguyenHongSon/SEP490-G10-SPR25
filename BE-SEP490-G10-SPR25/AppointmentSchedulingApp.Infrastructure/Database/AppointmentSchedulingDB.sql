@@ -18,36 +18,38 @@ INSERT INTO Roles (RoleName) VALUES
 
 
 CREATE TABLE Users (
-   UserId INT NOT NULL IDENTITY(1,1),
-   CitizenId BIGINT   NULL,
-   Email VARCHAR(50)  NULL,
-   Password VARCHAR(300) NOT NULL,
-   UserName NVARCHAR(50) NOT NULL ,
-   Phone VARCHAR(12) NOT NULL,
-   Gender NVARCHAR(6)  NULL,
-   Dob DATE  NULL,
-   Address NVARCHAR(100)  NULL,
-   AvatarUrl NVARCHAR(200) NULL,
-   IsVerify BIT  NULL DEFAULT 0,   
-   PRIMARY KEY (UserId),
-   CONSTRAINT Phone_Unique UNIQUE (Phone),
-   CONSTRAINT User_CheckGender CHECK (Gender IN (N'Nam', N'Nữ'))
+   UserId INT NOT NULL IDENTITY(1,1),
+   CitizenId BIGINT NOT NULL,
+   Email VARCHAR(50) NULL,
+   Password VARCHAR(300) NOT NULL,
+   UserName NVARCHAR(50) NOT NULL,
+   Phone VARCHAR(12) NOT NULL,
+   Gender NVARCHAR(6) NOT NULL,
+   Dob DATE NOT NULL,
+   Address NVARCHAR(100) NULL,
+   AvatarUrl NVARCHAR(200) NULL,
+   IsVerify BIT NOT NULL ,
+   IsActive BIT NOT NULL DEFAULT 1, 
+   PRIMARY KEY (UserId),
+   CONSTRAINT Phone_Unique UNIQUE (Phone),
+   CONSTRAINT User_CheckGender CHECK (Gender IN (N'Nam', N'Nữ'))
 );
+
 
 INSERT INTO Users (CitizenId, Email, Password, UserName, Phone, Gender, Dob, Address, AvatarUrl, IsVerify)
 VALUES
--- id 1-10 Giám hộ---
+-- id 1-10 Giám hộ ,1 số kiêm bệnh nhân---
 
-(NULL, 'user1@example.com', 'password123', N'Văn An', '0901234567', NULL, NULL, NULL, 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
-(NULL, 'user2@example.com', 'password456', N'Thị Bé', '0902345678', NULL, NULL, NULL, 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
-(NULL, 'user3@example.com', 'password789', N'Văn Ca', '0903456789', NULL, NULL, NULL, 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
-(NULL, 'user4@example.com', 'password000', N'Thị Duyên', '0904567890', NULL, NULL, NULL, 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
-(NULL, 'user5@example.com', 'password999', N'Văn Cường', '0905678901', NULL, NULL, NULL, 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
-(NULL, 'user6@example.com', 'pass2468', N'Thị Hạnh', '0906789012', NULL, NULL, NULL, 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
-(NULL, 'user7@example.com', 'pass3579', N'Văn Hòa', '0907890123', NULL, NULL, NULL, 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
-(NULL, 'user8@example.com', 'pass4680', N'Thị Mai', '0908901234', NULL, NULL, NULL, 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
-(NULL, 'user9@example.com', 'pass5791', N'Văn Khánh', '0909012345', NULL, NULL, NULL, 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
-(NULL, 'user10@example.com', 'pass6802', N'Văn Bình', '0910123456', NULL, NULL, NULL, 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
+(035002001001, 'giamho.benhnhan.user1@example.com', 'password123', N'Văn An', '0901234567', N'Nam', '1980-01-01', N'12 Trần Phú, Quận 5, TP.HCM', 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
+(035002001002, 'giamho.benhnhan.user2@example.com', 'password456', N'Thị Bé', '0902345678', N'Nữ', '1982-02-02', N'34 Nguyễn Trãi, Quận 1, TP.HCM', 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
+(035002001003, 'giamho.user3@example.com', 'password789', N'Văn Ca', '0903456789', N'Nam', '1975-03-03', N'56 Lý Tự Trọng, Quận 1, TP.HCM', 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
+(035002001004, 'giamho.user4@example.com', 'password000', N'Thị Duyên', '0904567890', N'Nữ', '1978-04-04', N'78 Cách Mạng Tháng 8, Quận 10, TP.HCM', 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
+(035002001005, 'giamho.user5@example.com', 'password999', N'Văn Cường', '0905678901', N'Nam', '1983-05-05', N'90 Pasteur, Quận 3, TP.HCM', 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
+(035002001006, 'giamho.user6@example.com', 'pass2468', N'Thị Hạnh', '0906789012', N'Nữ', '1979-06-06', N'102 Lê Văn Sỹ, Quận Phú Nhuận, TP.HCM', 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
+(035002001007, 'giamho.user7@example.com', 'pass3579', N'Văn Hòa', '0907890123', N'Nam', '1981-07-07', N'114 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM', 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
+(035002001008, 'giamho.user8@example.com', 'pass4680', N'Thị Mai', '0908901234', N'Nữ', '1976-08-08', N'126 Nguyễn Văn Cừ, Quận 5, TP.HCM', 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
+(035002001009, 'giamho.user9@example.com', 'pass5791', N'Văn Khánh', '0909012345', N'Nam', '1984-09-09', N'138 Hoàng Văn Thụ, Quận Tân Bình, TP.HCM', 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
+(035002001010, 'giamho.user10@example.com', 'pass6802', N'Văn Bình', '0910123456', N'Nam', '1977-10-10', N'150 Nguyễn Đình Chiểu, Quận 3, TP.HCM', 'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7', 1),
 
 
 -- id 11-30 Bệnh nhân---
@@ -99,7 +101,7 @@ VALUES
 (035002005120, 'bacsi.tranquoctuan@example.com', 'TuanPass123', N'Trần Quốc Tuấn', '0912345020', N'Nam', '1981-04-01', N'18 Lý Tự Trọng, Quận 1, TP.HCM', 'https://th.bing.com/th/id/OIP.srNFFzORAaERcWvhwgPzVAHaHa?w=183&h=183&c=7&r=0&o=5&dpr=1.3&pid=1.7', 0),
 
 --id 53-Admin
-(035002005177, 'sonnh@example.com', '123', N'Nguyễn Hồng Sơn', '0912345634', N'Nữ', '2002-06-27', N'20 Nguyễn Trãi, Thanh Xuân, Hà Nội',  'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',1);
+(035002005177, 'admin.sonnhhe@example.com', 'SonPass123', N'Nguyễn Hồng Sơn', '0912345634', N'Nữ', '2002-06-27', N'20 Nguyễn Trãi, Thanh Xuân, Hà Nội',  'https://th.bing.com/th/id/OIP.sgmOx_ZbnKNxZPXFnpi1ywHaHE?w=184&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7',1);
 
 
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -130,6 +132,24 @@ VALUES
 
 
 ---------------------------------------------------------------------------------------------------------
+CREATE TABLE Guardians (
+    GuardianId INT NOT NULL,
+    Relationship NVARCHAR(30) NOT NULL, 
+    PRIMARY KEY (GuardianId),
+    FOREIGN KEY (GuardianId) REFERENCES Users(UserId), 
+);
+INSERT INTO Guardians (GuardianId, Relationship) VALUES
+(1, N'Cha'),
+(2, N'Mẹ'),
+(3, N'Chồng'),
+(4, N'Vợ'),
+(5, N'Anh trai'),
+(6, N'Chị gái'),
+(7, N'Ông nội'),
+(8, N'Bà ngoại'),
+(9, N'Cô ruột'),
+(10, N'Chú họ');
+-------------------------------------------------------------------------------------------------------------------
 CREATE TABLE Patients (
   PatientId INT NOT NULL,
   GuardianId INT NULL,
@@ -137,35 +157,33 @@ CREATE TABLE Patients (
   Rank NVARCHAR(10) DEFAULT NULL,
   PRIMARY KEY (PatientId),
   CONSTRAINT Patient_FK FOREIGN KEY (PatientId) REFERENCES Users (UserId),
-  CONSTRAINT Guardian_FK FOREIGN KEY (GuardianId) REFERENCES Users (UserId)
-
-
+  CONSTRAINT Guardian_FK FOREIGN KEY (GuardianId) REFERENCES Guardians (GuardianId)
 ) ;
 INSERT INTO Patients (PatientId, GuardianId, MainCondition, Rank)
 VALUES
-    -- Bệnh nhân từ ID 11-20 có giám hộ từ ID 1-10 (một số có bệnh lý chính, một số NULL)
+    (1, NULL, NULL, N'Thường'), 
+    (2, NULL, N'Tiểu đường', N'Thường'), 
     (11, 1, N'Cao huyết áp', N'Thường'), 
-    (12, 2, N'Tiểu đường', N'Thường'), 
-    (13, 3, NULL, N'Thường'), 
-    (14, 4, N'Suyễn', N'Thường'), 
-    (15, 5, NULL, N'Thường'),
-    (16, 6, N'Viêm khớp', N'Thường'), 
-    (17, 7, NULL, N'Thường'), 
-    (18, 8, N'Suy thận', N'Thường'), 
-    (19, 9, NULL, N'Thường'), 
-    (20, 10, N'Đột quỵ', N'Thường'),
-
-    -- Bệnh nhân từ ID 21-30 không có giám hộ or người giám hộ là bệnh nhân (một số có bệnh lý chính, một số NULL)
-    (21, NULL, NULL, N'Thường'), 
-    (22, NULL, N'Tiểu đường', N'Thường'), 
-    (23, NULL, NULL, N'Thường'), 
-    (24, NULL, N'Suyễn', N'Thường'), 
-    (25, NULL, NULL, N'Thường'),
-    (6, NULL, N'Viêm khớp', N'Thường'), 
-    (7, NULL, NULL, N'Thường'), 
-    (8, NULL, N'Suy thận', N'Thường'), 
-    (9, NULL, NULL, N'Thường'), 
-    (10, NULL, N'Đột quỵ', N'Thường');
+    (12, 1, N'Tiểu đường', N'Thường'), 
+    (13, 1, NULL, N'Thường'), 
+    (14, 2, N'Suyễn', N'Thường'), 
+    (15, 2, NULL, N'Thường'),
+    (16, 2, N'Viêm khớp', N'Thường'), 
+    (17, 3, NULL, N'Thường'), 
+    (18, 4, N'Suy thận', N'Thường'), 
+    (19, 5, NULL, N'Thường'), 
+    (20, 6, N'Đột quỵ', N'Thường'),  
+    (21, 7, NULL, N'Thường'), 
+    (22, 8, N'Suyễn', N'Thường'), 
+    (23, 9, NULL, N'Thường'),
+	(24, 10, N'Viêm khớp', N'Thường'), 
+    (25, NULL, NULL, N'Thường'), 
+    (26, NULL, N'Suy thận', N'Thường'), 
+    (27, NULL, NULL, N'Thường'), 
+    (28, NULL, NULL, N'Thường'), 
+    (29, NULL, NULL, N'Thường'), 
+    (30, NULL, NULL, N'Thường');
+    
 
 --------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE Receptionists (
@@ -825,21 +843,21 @@ CREATE TABLE Reservations (
 
 INSERT INTO Reservations (PatientId, DoctorScheduleId, Reason, PriorExaminationImg, AppointmentDate, StartTime, EndTime, Status, CancellationReason, UpdatedDate)
 VALUES
-(23, 1, N'Tư vấn tiểu đường', N'http://example.com/prior_exam_17', '2025-01-10', '09:15:00', '09:45:00', N'Hoàn thành', NULL, '2025-01-10 09:15:00'),
-(23, 2, N'Khám định kỳ', N'http://example.com/prior_exam_1', '2025-01-15', '09:00:00', '09:30:00', N'Hoàn thành', NULL, '2025-01-15 09:00:00'),
-(23, 3, N'Khám định kỳ', N'http://example.com/prior_exam_2', '2025-01-20', '10:00:00', '10:30:00', N'Đang chờ', NULL, '2025-01-20 10:00:00'),
-(23, 4, N'Khám mắt', N'http://example.com/prior_exam_5', '2025-01-19', '11:00:00', '11:45:00', N'Xác nhận', NULL, '2025-01-19 11:00:00'),
-(23, 5, N'Kiểm tra thính giác', N'http://example.com/prior_exam_13', '2025-01-27', '14:00:00', '14:45:00', N'Xác nhận', NULL, '2025-01-27 14:00:00'),
-(23, 6, N'Tư vấn da liễu', NULL, '2025-01-23', '09:30:00', '10:00:00', N'Xác nhận', NULL, '2025-01-23 09:30:00'),
-(25, 7, N'Theo dõi quản lý tiểu đường', NULL, '2025-01-17', '14:30:00', '15:00:00', N'Xác nhận', NULL, '2025-01-17 14:30:00'),
-(6, 8, N'Khám sức khỏe tổng quát', N'http://example.com/prior_exam_4', '2025-01-18', '08:30:00', '09:15:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-01-18 08:30:00'),
-(7, 9, N'Tư vấn tâm lý', N'http://example.com/prior_exam_6', '2025-01-20', '13:00:00', '13:45:00', N'Không đến', NULL, '2025-01-20 13:00:00'),
-(8, 10, N'Tư vấn nhi khoa', NULL, '2025-01-21', '15:00:00', '15:30:00', N'Xác nhận', NULL, '2025-01-21 15:00:00'),
-(9, 11, N'Siêu âm', N'http://example.com/prior_exam_8', '2025-01-22', '16:30:00', '17:00:00', N'Đang chờ', NULL, '2025-01-22 16:30:00'),
-(10, 12, N'Tư vấn dinh dưỡng', N'http://example.com/prior_exam_10', '2025-01-24', '10:45:00', '11:15:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-01-24 10:45:00'),
-(23, 13, N'Tiêm chủng', NULL, '2025-01-25', '12:00:00', '12:30:00', N'Hoàn thành', NULL, '2025-01-25 12:00:00'),
-(23, 14, N'Tư vấn chỉnh hình', N'http://example.com/prior_exam_12', '2025-01-26', '11:00:00', '11:45:00', N'Không đến', NULL, '2025-01-26 11:00:00'),
-(23, 15, N'Khám tim mạch', NULL, '2025-01-28', '08:00:00', '08:45:00', N'Xác nhận', NULL, '2025-01-28 08:00:00'),
+(1, 1, N'Tư vấn tiểu đường', N'http://example.com/prior_exam_17', '2025-01-10', '09:15:00', '09:45:00', N'Hoàn thành', NULL, '2025-01-10 09:15:00'),
+(1, 2, N'Khám định kỳ', N'http://example.com/prior_exam_1', '2025-01-15', '09:00:00', '09:30:00', N'Hoàn thành', NULL, '2025-01-15 09:00:00'),
+(1, 3, N'Khám định kỳ', N'http://example.com/prior_exam_2', '2025-01-20', '10:00:00', '10:30:00', N'Đang chờ', NULL, '2025-01-20 10:00:00'),
+(1, 4, N'Khám mắt', N'http://example.com/prior_exam_5', '2025-01-19', '11:00:00', '11:45:00', N'Xác nhận', NULL, '2025-01-19 11:00:00'),
+(1, 5, N'Kiểm tra thính giác', N'http://example.com/prior_exam_13', '2025-01-27', '14:00:00', '14:45:00', N'Xác nhận', NULL, '2025-01-27 14:00:00'),
+(1, 6, N'Tư vấn da liễu', NULL, '2025-01-23', '09:30:00', '10:00:00', N'Xác nhận', NULL, '2025-01-23 09:30:00'),
+(1, 7, N'Theo dõi quản lý tiểu đường', NULL, '2025-01-17', '14:30:00', '15:00:00', N'Xác nhận', NULL, '2025-01-17 14:30:00'),
+(1, 8, N'Khám sức khỏe tổng quát', N'http://example.com/prior_exam_4', '2025-01-18', '08:30:00', '09:15:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-01-18 08:30:00'),
+(1, 9, N'Tư vấn tâm lý', N'http://example.com/prior_exam_6', '2025-01-20', '13:00:00', '13:45:00', N'Không đến', NULL, '2025-01-20 13:00:00'),
+(1, 10, N'Tư vấn nhi khoa', NULL, '2025-01-21', '15:00:00', '15:30:00', N'Xác nhận', NULL, '2025-01-21 15:00:00'),
+(1, 11, N'Siêu âm', N'http://example.com/prior_exam_8', '2025-01-22', '16:30:00', '17:00:00', N'Đang chờ', NULL, '2025-01-22 16:30:00'),
+(1, 12, N'Tư vấn dinh dưỡng', N'http://example.com/prior_exam_10', '2025-01-24', '10:45:00', '11:15:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-01-24 10:45:00'),
+(1, 13, N'Tiêm chủng', NULL, '2025-01-25', '12:00:00', '12:30:00', N'Hoàn thành', NULL, '2025-01-25 12:00:00'),
+(1, 14, N'Tư vấn chỉnh hình', N'http://example.com/prior_exam_12', '2025-01-26', '11:00:00', '11:45:00', N'Không đến', NULL, '2025-01-26 11:00:00'),
+(1, 15, N'Khám tim mạch', NULL, '2025-01-28', '08:00:00', '08:45:00', N'Xác nhận', NULL, '2025-01-28 08:00:00'),
 (23, 16, N'Tư vấn chỉnh hình', N'http://example.com/prior_exam_15', '2025-01-29', '13:30:00', '14:00:00', N'Không đến', NULL, '2025-01-29 13:30:00'),
 (23, 17, N'Tư vấn sinh sản', NULL, '2025-01-30', '15:00:00', '15:30:00', N'Xác nhận', NULL, '2025-01-30 15:00:00'),
 (23, 18, N'Tư vấn hô hấp', N'http://example.com/prior_exam_18', '2025-02-02', '11:30:00', '12:00:00', N'Đã hủy', N'Bệnh nhân hủy', '2025-02-02 11:30:00'),

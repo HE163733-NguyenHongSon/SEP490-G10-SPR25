@@ -21,3 +21,7 @@ from  MedicalRecords mr inner join  Reservations r on mr.ReservationId=r.Reserva
 
 
  select * from DoctorServices ds where ds.ServiceId=1
+
+
+ ---------------------------Reservation---------------------------------------------------------
+   select * from dbo.Reservations r where r.PatientId=23;

@@ -177,6 +177,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 
 // Đăng ký các dịch vụ khác
 builder.Services.AddScoped<IMedicalRecordService, MedicalRecordService>();
+builder.Services.AddScoped<IMedicalReportService, MedicalReportService>();
 builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
@@ -196,7 +197,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//Tự t
 
 
 // Add Email Configs
-var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfigurationDTO>();
 builder.Services.AddSingleton(emailConfig);
 
 var app = builder.Build();
@@ -208,6 +209,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseCors();
+app.MapGet("/healthz", () => "Healthy");
 
 // app.UseHttpsRedirection(); // Tạm thời vô hiệu hóa để tránh lỗi HTTPS port
 app.UseAuthentication();

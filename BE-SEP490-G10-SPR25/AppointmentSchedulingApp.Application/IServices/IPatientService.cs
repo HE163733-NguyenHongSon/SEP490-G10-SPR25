@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AppointmentSchedulingApp.Application.DTOs;
-using AppointmentSchedulingApp.Domain.Entities;
+﻿using AppointmentSchedulingApp.Application.DTOs;
 
 namespace AppointmentSchedulingApp.Application.IServices
 {
@@ -12,5 +6,9 @@ namespace AppointmentSchedulingApp.Application.IServices
     {
         Task<List<PatientDTO>> GetPatientList();
         Task<PatientDetailDTO> GetPatientDetailById(int patientId);
+        //Task<PatientDTO> UpdatePatientByReceptionist(PatientContactDTO dto);
+
+        Task<PatientDTO> UpdatePatientContact(PatientContactDTO patientContactDTO);
+        Task<PatientDTO> UpdateGuardianOfPatientContact(GuardianOfPatientDTO guardianOfPatientDTO);
     }
 }

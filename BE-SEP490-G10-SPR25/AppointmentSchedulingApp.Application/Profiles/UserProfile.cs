@@ -30,6 +30,12 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
                 // RoleInformations được lấy riêng từ RoleService không thông qua AutoMapper
                 .ReverseMap();
+
+            CreateMap<User, PatientContactDTO>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.UserName))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
+                .ReverseMap();
+
         }
     }
 }

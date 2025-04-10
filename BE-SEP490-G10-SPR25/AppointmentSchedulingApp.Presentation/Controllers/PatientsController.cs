@@ -90,17 +90,6 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         {
             try
             {
-                //var patient = await _patientService.GetPatientDetailById(guardianOfPatientDTO.PatientId);
-
-                //if (patient == null)
-                //{
-                //    return NotFound($"Bệnh nhân với ID={guardianOfPatientDTO.PatientId} không tồn tại!");
-                //}
-
-
-                //await _patientService.UpdateGuardianOfPatientContact(guardianOfPatientDTO);
-                //return Ok(patient);
-
                 var patientUpdate = await _patientService.UpdateGuardianOfPatientContact(guardianOfPatientDTO);
                 return Ok(patientUpdate);
             }

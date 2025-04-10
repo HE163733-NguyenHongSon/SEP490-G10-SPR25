@@ -1,6 +1,9 @@
 import { About } from "./components/About";
+import { SpecialtyList } from "@/patient/components/SpecialtyList";
+import { specialtyService } from "@/services/specialtyService";
 
-const HomePage = () => {
+const HomePage = async () => {
+  const specialties = await specialtyService.getSpecialtyList();
   return (
     <div
       className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center justify-center z-10"
@@ -8,13 +11,14 @@ const HomePage = () => {
       id="Body"
     >
       <div className="absolute inset-0 bg-black bg-opacity-50 z-20"></div>
-      <div className="max-w-fit container text-center p-6 md:px-5 lg:px-10 lg:mx-48 text-white z-30">
-        <div className="mt-52">
+      <div className="max-w-fit flex flex-col items-center justify-center container text-center p-6 md:px-5 lg:px-10 lg:mx-48 text-white z-30">
+        <div className="mt-52 flex flex-col items-center justify-center">
           <h2 className="text-3xl sm:text-4xl md:text-[50px] inline-grid max-w-3xl font-semibold pt-20">
             Đặt lịch khám và xem kết quả trực tuyến
           </h2>
           <h2 className="text-xl text-cyan-500 sm:text-xl md:text-xl md:inline-grid max-w-4xl pt-8">
-            Giờ đây bạn có thể đặt lịch hẹn trước khi đến khám và nhanh chóng xem kết quả xét nghiệm trực tuyến mọi lúc, mọi nơi.
+            Giờ đây bạn có thể đặt lịch hẹn trước khi đến khám và nhanh chóng
+            xem kết quả xét nghiệm trực tuyến mọi lúc, mọi nơi.
           </h2>
           <div className="space-x-6 mt-10">
             <a
@@ -32,6 +36,11 @@ const HomePage = () => {
           </div>
         </div>
         <About />
+        <h2 className="max-w-fit text-2xl sm:text-3xl md:text-4xl font-bold text-center mt-16 mb-8 bg-gradient-to-r from-cyan-500 to-white bg-clip-text text-transparent drop-shadow-sm">
+          Khám phá các chuyên khoa nổi bật
+        </h2>
+
+        <SpecialtyList items={specialties} displayView="slider" />
       </div>
     </div>
   );

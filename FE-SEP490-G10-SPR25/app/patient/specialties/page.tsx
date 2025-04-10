@@ -12,7 +12,7 @@ const SpecialtiesPage = async () => {
       id="Body"
     >
       <div className="absolute  inset-0 bg-black bg-opacity-50 z-20"></div>
-      <div className="relative z-30 bg-white rounded-xl shadow-2xl p-6 md:px-5 lg:px-10 lg:mx-48 text-gray-700">
+      <div className="relative z-30 container w-full bg-white rounded-xl shadow-2xl p-6 md:px-5 lg:px-10 lg:mx-48 text-gray-700">
         {/* Thanh tìm kiếm */}
         <div className="flex justify-center mb-3 mt-20 relative z-30">
           <div className="relative flex items-center w-[400px] bg-white rounded-full shadow-md border border-gray-300 overflow-hidden">

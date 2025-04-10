@@ -67,12 +67,12 @@ export const SpecialtyList = ({ items, displayView }: SpecialtyListProps) => {
 
   // Default grid view
   return (
-    <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-10">
+    <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-10 ">
       {items.map((specialty, index) => (
         <Link
           key={index}
           href={`specialties/${specialty.specialtyId}`}
-          className="p-6 flex flex-col items-center cursor-pointer text-center border border-gray-300 rounded-md shadow-md bg-white"
+          className="w-[250px] p-6 flex flex-col items-center cursor-pointer text-center border border-gray-300 rounded-md shadow-md bg-white"
         >
           <div className="w-20 h-20 flex items-center justify-center rounded-full border-2 border-blue-500 p-4">
             <Image

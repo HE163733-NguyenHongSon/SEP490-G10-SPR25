@@ -38,11 +38,14 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
             <div className="gap-3 col-span-1 flex flex-col items-center  justify-start p-2 border-r border-gray-300">
               <Image
                 className="rounded-lg "
-                src={doctor.avatarUrl || "https://www.bing.com/th?id=OIP.r-0yt7jCyKcesBQv51ZqHwHaHa&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"}
+                src={
+                  doctor.avatarUrl ||
+                  "https://th.bing.com/th?id=OIP.r-0yt7jCyKcesBQv51ZqHwHaHa&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
+                }
                 height={200}
                 width={100}
                 alt="avatar doctor"
-              /> 
+              />
               <p className="text-cyan-500 font-light text-center">
                 <span className="font-semibold text-lg mr-1">
                   {doctor.experienceYear}
@@ -56,9 +59,10 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
             <div className="col-span-2 flex flex-col items-start text-start justify-between font-sans pl-4 ">
               <h2 className="text-lg text-gray-700 ">{doctor.currentWork}</h2>
               <p>{doctor.basicDescription}...</p>
-              <p className="text-gray-400 ">
-                {doctor.specialtyNames.join(", ")}
+              <p className="text-gray-400">
+                {doctor.specialtyNames?.join(", ") || "Chưa có chuyên khoa"}
               </p>
+
               <p className="font-semibold ">
                 ({doctor.numberOfService} dịch vụ khám)
               </p>

@@ -3,18 +3,29 @@ import { SpecialtyList } from "@/patient/components/SpecialtyList";
 import { specialtyService } from "@/services/specialtyService";
 import { DoctorList } from "@/patient/components/DoctorList";
 import { TabsGroup } from "@/components/TabsGroup";
+import {ListService} from "@/patient/components/ListService";
+import { ServiceDTO } from "@/types/service";
+;
 const HomePage = async () => {
   const specialties = await specialtyService.getSpecialtyList();
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  const tabItems: ITabItem[] = specialties.map((s) => ({
+  const doctorTabs: ITabItem[] = specialties.map((s) => ({
     label: s.specialtyName,
     href: `${apiUrl}/api/Doctors?$filter=specialtyNames/any(s: s eq '${s.specialtyName}')&$orderby=rating desc&$top=6`,
   }));
-  tabItems.unshift({
+  doctorTabs.unshift({
     label: "Tất cả chuyên khoa",
     href: `${apiUrl}/api/Doctors?$orderby=rating desc&$top=6`,
   });
+  const serviceTabs: ITabItem[] = specialties.map((s) => ({      
+      label: s.specialtyName,
+      href: `${apiUrl}/api/Services?$filter=specialtyId eq ${s.specialtyId}&$orderby=rating desc&$top=6`,
+    }));
+    serviceTabs.unshift({
+      label: "Tất cả dịch vụ",
+      href: `${apiUrl}/api/Services?$orderby=rating desc&$top=6`,
+    });
   return (
     <div
       className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center justify-center z-10"
@@ -61,8 +72,21 @@ const HomePage = async () => {
             </span>
           </h1>
           <TabsGroup<IDoctor>
-            tabs={tabItems}
+            tabs={doctorTabs}
             RenderComponent={DoctorList}
+            displayView="grid"
+          />
+        </div>
+        <div className="bg-white rounded-3xl mt-10 mx-12 p-6 md:p-10 lg:p-14  shadow-2xl  ">
+          <h1 className="text-cyan-600 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 ">
+            Top dịch vụ hàng đầu
+            <span className="ml-3 underline underline-offset-4 decoration-1 font-light">
+              chuyên khoa
+            </span>
+          </h1>
+          <TabsGroup<ServiceDTO>
+            tabs={serviceTabs}   
+            RenderComponent={ListService}
             displayView="grid"
           />
         </div>

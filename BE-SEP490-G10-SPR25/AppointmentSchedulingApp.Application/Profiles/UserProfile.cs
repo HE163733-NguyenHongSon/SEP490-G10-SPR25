@@ -30,11 +30,14 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 // RoleDTOs được lấy riêng từ RoleService không thông qua AutoMapper
                 .ReverseMap();
 
-            CreateMap<User, PatientContactDTO>()
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.UserName))
+            CreateMap<User, PatientUpdateDTO>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
+                //.ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob.ToString("dd/MM/yyyy")))
+                //.ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
                 .ReverseMap();
-
         }
     }
 }

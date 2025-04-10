@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Application.DTOs
 {
-    public class PatientContactDTO
+    public class PatientUpdateDTO
     {
         public int UserId { get; set; }
-        public string? Email { get; set; }
+        public string UserName { get; set; } = null!;
         public string Phone { get; set; } = null!;
-        //public int? GuardianId { get; set; }
+        public string? Gender { get; set; }
+        //public string? Dob { get; set; }
+        public string? Address { get; set; }
 
     }
 

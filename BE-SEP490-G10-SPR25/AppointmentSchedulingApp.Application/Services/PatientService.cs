@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
+using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using AppointmentSchedulingApp.Infrastructure.UnitOfWork;
@@ -86,35 +87,36 @@ namespace AppointmentSchedulingApp.Application.Services
 
         //}
 
-        public async Task<PatientDTO> UpdatePatientContact(PatientContactDTO patientContactDTO)
+        public async Task<bool> UpdatePatientContact(PatientUpdateDTO patientUpdateDTO)
         {
             try
             {
-                var patient = await unitOfWork.UserRepository.Get(p => p.UserId.Equals(patientContactDTO.UserId));
+                var patient = await unitOfWork.UserRepository.Get(p => p.UserId.Equals(patientUpdateDTO.UserId));
 
                 if (patient == null)
                 {
-                    return null;
+                    return false;
                 }
 
-                mapper.Map(patientContactDTO, patient);
+                mapper.Map(patientUpdateDTO, patient);
                 unitOfWork.UserRepository.Update(patient);
                 unitOfWork.CommitAsync();
-                return mapper.Map<PatientDTO>(patient);
+                return true;
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
-        public async Task<PatientDTO> UpdateGuardianOfPatientContact(GuardianOfPatientDTO guardianOfPatientDTO)
+        public async Task<bool> UpdateGuardianOfPatientContact(GuardianOfPatientDTO guardianOfPatientDTO)
         {
             try
             {
                 var patient = await unitOfWork.PatientRepository.Get(p => p.PatientId.Equals(guardianOfPatientDTO.PatientId));
                 if (patient == null)
                 {
-                    return null;
+                    unitOfWork.PatientRepository.Add(mapper.Map<Patient>(guardianOfPatientDTO));
+                    return true;
                 }
 
                 mapper.Map(guardianOfPatientDTO, patient);
@@ -122,7 +124,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 unitOfWork.CommitAsync();
 
 
-                return mapper.Map<PatientDTO>(patient);
+                return true;
             }
             catch (Exception ex)
             {

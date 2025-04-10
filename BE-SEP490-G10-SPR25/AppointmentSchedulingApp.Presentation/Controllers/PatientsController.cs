@@ -65,17 +65,17 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
         [HttpPut("UpdatePatientContactByReceptionist")]
         [EnableQuery]
-        public async Task<IActionResult> UpdatePatientContactByReceptionist(PatientContactDTO patientContactDTO)
+        public async Task<IActionResult> UpdatePatientContactByReceptionist(PatientUpdateDTO patientUpdateDTO)
         {
             try
             {
-                var patient = await _patientService.GetPatientDetailById(patientContactDTO.UserId);
+                var patient = await _patientService.GetPatientDetailById(patientUpdateDTO.UserId);
 
                 if (patient == null)
                 {
-                    return NotFound($"Bệnh nhân với ID={patientContactDTO.UserId} không tồn tại!");
+                    return NotFound($"Bệnh nhân với ID={patientUpdateDTO.UserId} không tồn tại!");
                 }
-                var patietUpdate =  await _patientService.UpdatePatientContact(patientContactDTO);
+                var patietUpdate =  await _patientService.UpdatePatientContact(patientUpdateDTO);
                 return Ok(patietUpdate);
             }
             catch (Exception ex)
@@ -90,14 +90,19 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         {
             try
             {
-                var patient = await _patientService.GetPatientDetailById(guardianOfPatientDTO.PatientId);
+                //var patient = await _patientService.GetPatientDetailById(guardianOfPatientDTO.PatientId);
 
-                if (patient == null)
-                {
-                    return NotFound($"Bệnh nhân với ID={guardianOfPatientDTO.PatientId} không tồn tại!");
-                }
-                await _patientService.UpdateGuardianOfPatientContact(guardianOfPatientDTO);
-                return Ok(patient);
+                //if (patient == null)
+                //{
+                //    return NotFound($"Bệnh nhân với ID={guardianOfPatientDTO.PatientId} không tồn tại!");
+                //}
+
+
+                //await _patientService.UpdateGuardianOfPatientContact(guardianOfPatientDTO);
+                //return Ok(patient);
+
+                var patientUpdate = await _patientService.UpdateGuardianOfPatientContact(guardianOfPatientDTO);
+                return Ok(patientUpdate);
             }
             catch (Exception ex)
             {

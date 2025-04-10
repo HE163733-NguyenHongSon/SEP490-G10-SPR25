@@ -5,12 +5,12 @@ import Image from "next/image";
 import RatingStars from "@/components/RatingStars";
 import Link from "next/link";
 
-interface IDoctors {
+interface DoctorListProps {
   items: IDoctor[];
   displayView?: string;
 }
 
-export const DoctorList = ({ items, displayView }: IDoctors) => {
+export const DoctorList = ({ items, displayView }: DoctorListProps) => {
   // const router = useRouter();
 
   return (

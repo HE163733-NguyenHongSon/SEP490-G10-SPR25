@@ -19,7 +19,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string Phone { get; set; } = null!;
 
         [JsonPropertyOrder(5)]
-        public string Password { get; set; } = null!;
+        public string? Password { get; set; } = null!;
 
         [JsonPropertyOrder(6)]
         public long? CitizenId { get; set; }

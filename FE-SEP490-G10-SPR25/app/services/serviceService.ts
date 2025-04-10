@@ -40,6 +40,16 @@ export interface ServiceUpdateDTO extends ServiceCreateDTO {
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/Services`;
 
 export const serviceService = {
+
+    getNumberOfServices: async (): Promise<number> => {
+        try {
+            const response = await fetch(`http://localhost:5220/odata/Services/$count`);
+            return response.json();
+        } catch (error) {
+            console.error('Error fetching services:', error);
+            throw error;
+        }
+    },
     getAllServices: async (): Promise<Service[]> => {
         try {
             const response = await axios.get(apiUrl);

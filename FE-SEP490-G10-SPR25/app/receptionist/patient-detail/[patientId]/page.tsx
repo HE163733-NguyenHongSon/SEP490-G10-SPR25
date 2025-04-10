@@ -2,10 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { patientService } from "@/services/patientService";
 import Image from "next/image";
-import { medicalRecordService } from '@/services/medicalRecordService';
 
 export default function PatientDetailPage({ params }: { params: { patientId: string } }) {
-  const [patient, setPatient] = useState<IPatient | null>(null);
+  const [patient, setPatient] = useState<IPatientDetail | null>(null);
   const [medicalRecords, setMedicalRecords] = useState<IMedicalRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -14,13 +13,9 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
     const fetchPatientData = async () => {
       try {
         const patientData = await patientService.getPatientDetailById(params.patientId);
-        const medicalRecordsData = await medicalRecordService.getAllMedicalRecordByPatientId(params.patientId);
 
         setPatient(patientData);
-        setMedicalRecords(medicalRecordsData);
-
-        // const medicalRecordsData = await medicalRecordService.getAllMedicalRecordByPatientId(params.patientId);
-        // setPatient(medicalRecordsData);
+        setMedicalRecords(patientData.medicalRecords || []);      
 
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch patient data');
@@ -96,8 +91,11 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
             </div>
             
             <div className="text-center">
-              <h2 className="text-xl font-semibold text-gray-800 mb-1">
+            <h2 className="text-xl font-semibold text-gray-800 mb-1">
                 {patient.userName}
+              </h2>
+              <h2 className="text-lg font-semibold text-cyan-500 mb-1">
+                {patient.roleNames}
               </h2>
               <div className={`inline-flex items-center px-4 py-1 rounded-full text-sm font-medium ${
             
@@ -153,9 +151,9 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
                   Người giám hộ
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <InfoItem label="Họ tên" value={patient.guardianName} />
-                  <InfoItem label="Điện thoại" value={patient.guardianPhone} />
-                  <InfoItem label="Email" value={patient.guardianEmail} />
+                  <InfoItem label="Họ tên" value={patient.guardian?.userName || ''} />
+                  <InfoItem label="Điện thoại" value={patient.guardian?.phone || ''} />
+                  <InfoItem label="Email" value={patient.guardian?.email || ''} />
                 </div>
               </div>
             </div>

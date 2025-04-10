@@ -53,10 +53,10 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
                 Hẹn bác sĩ
               </button>
             </div>
-            <div className="col-span-2 flex flex-col justify-between font-sans px-3">
+            <div className="col-span-2 flex flex-col items-start text-start justify-between font-sans pl-4 ">
               <h2 className="text-lg text-gray-700 ">{doctor.currentWork}</h2>
               <p>{doctor.basicDescription}...</p>
-              <p className="text-gray-400">
+              <p className="text-gray-400 ">
                 {doctor.specialtyNames.join(", ")}
               </p>
               <p className="font-semibold ">

@@ -1,6 +1,5 @@
 import { SpecialtyList } from "@/patient/components/SpecialtyList";
 import { specialtyService } from "@/services/specialtyService";
-import { FaChevronRight, FaSearch } from "react-icons/fa";
 import PaginatedItems from "@/components/PaginatedItems";
 import Search from "@/components/Search";
 

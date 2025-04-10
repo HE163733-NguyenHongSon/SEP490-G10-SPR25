@@ -11,6 +11,7 @@ namespace AppointmentSchedulingApp.Domain.IUnitOfWork
         IServiceRepository ServiceRepository { get; }
         ISpecialtyRepository SpecialtyRepository { get; }
 
+        IPostRepository PostRepository { get; }
         IUserRepository  UserRepository { get; }
 
         IFeedbackRepository FeedbackRepository { get; }

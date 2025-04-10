@@ -34,7 +34,7 @@ export const SpecialtyList = ({ items, displayView }: SpecialtyListProps) => {
       <div className="w-full px-10 py-6">
         <Carousel
           responsive={responsive}
-          infinite         
+          infinite
           autoPlaySpeed={3000}
           containerClass="carousel-container"
           itemClass="px-4"
@@ -47,7 +47,7 @@ export const SpecialtyList = ({ items, displayView }: SpecialtyListProps) => {
             >
               <div className="w-20 h-20 flex items-center justify-center rounded-full border-2 border-cyan-500 p-4">
                 <Image
-                  src={specialty.image}
+                  src={specialty.image || "/fallback.png"}
                   alt={specialty.specialtyName}
                   className="object-contain"
                   width={60}

@@ -46,7 +46,7 @@ export const SpecialtyList = ({ items, displayView }: SpecialtyListProps) => {
               href={`specialties/${specialty.specialtyId}`}
               className="p-6 flex flex-col items-center cursor-pointer text-center border border-gray-300 rounded-md shadow-md bg-white"
             >
-              <div className="w-20 h-20 flex items-center justify-center rounded-full border-2 border-blue-500 p-4">
+              <div className="w-20 h-20 flex items-center justify-center rounded-full border-2 border-cyan-500 p-4">
                 <Image
                   src={specialty.image}
                   alt={specialty.specialtyName}

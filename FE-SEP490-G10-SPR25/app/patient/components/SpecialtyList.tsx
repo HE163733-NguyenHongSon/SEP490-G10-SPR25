@@ -34,8 +34,7 @@ export const SpecialtyList = ({ items, displayView }: SpecialtyListProps) => {
       <div className="w-full px-10 py-6">
         <Carousel
           responsive={responsive}
-          infinite
-          autoPlay
+          infinite         
           autoPlaySpeed={3000}
           containerClass="carousel-container"
           itemClass="px-4"

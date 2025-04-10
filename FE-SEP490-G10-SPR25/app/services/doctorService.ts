@@ -6,7 +6,7 @@ export const doctorService = {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
 
-    return res.json();   
+    return res.json();    
   },
   async getNumberOfDoctors(): Promise<number[]> {
     const res = await fetch(`${apiUrl}/odata/Doctors/$count`);

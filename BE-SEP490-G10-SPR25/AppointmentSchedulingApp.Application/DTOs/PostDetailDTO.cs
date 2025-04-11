@@ -18,6 +18,9 @@ namespace AppointmentSchedulingApp.Application.DTOs
 
         [JsonPropertyOrder(9)]
         public string? AuthorBio { get; set; }
+        [JsonPropertyOrder(10)]
         public List<PostSectionDTO> PostSections { get; set; } = new();
+        [JsonPropertyOrder(11)]
+        public List<CommentDTO> Comments { get; set; } = new();
     }
 }

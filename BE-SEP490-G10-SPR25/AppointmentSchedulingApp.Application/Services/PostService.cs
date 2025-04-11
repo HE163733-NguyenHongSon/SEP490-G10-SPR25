@@ -37,7 +37,9 @@ namespace AppointmentSchedulingApp.Application.Services
         }
         public async Task<List<PostDTO>> GetAllPostsAsync()
         {
-            var posts = await _postRepository.GetAllPosts();
+            var posts = await _postRepository.GetAllPostsWithDetails();
+            return _mapper.Map<List<PostDTO>>(posts);
+            /*var posts = await _postRepository.GetAllPosts();
             return posts.Select(p => new PostDTO
             {
                 PostId = p.PostId,
@@ -45,7 +47,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 PostDescription = p.PostDescription,
                 PostSourceUrl = p.PostSourceUrl,
                 PostCreatedDate = p.PostCreatedDate,
-            }).ToList();
+            }).ToList();*/
         }
         public async Task <PostDTO?> GetPostByIdAsync(int id)
         {

@@ -17,7 +17,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         [HttpGet]
         public async Task<ActionResult<List<PostDTO>>> GetAllPosts()
         {
-            var posts = await _postService.GetAllPostDetailAsync();
+            var posts = await _postService.GetAllPostsAsync();
             return Ok(posts);
         }
         [HttpGet("{id}")]

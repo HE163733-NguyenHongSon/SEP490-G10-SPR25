@@ -11,7 +11,7 @@ interface DoctorListProps {
 }
 
 export const DoctorList = ({ items, displayView }: DoctorListProps) => {
-  // const router = useRouter();
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   return (
     <div
@@ -29,7 +29,7 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
         >
           <h1 className=" text-center font-semibold  text-lg text-gray-700 mt-3 ">
             <span className=" mr-2">
-              {doctor.academicTitle}.{doctor.degree}
+              {doctor.academicTitle},{doctor.degree}
             </span>
             {doctor.doctorName}
           </h1>
@@ -38,11 +38,8 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
             <div className="gap-3 col-span-1 flex flex-col items-center  justify-start p-2 border-r border-gray-300">
               <Image
                 className="rounded-lg "
-                src={
-                  doctor.avatarUrl ||
-                  "https://th.bing.com/th?id=OIP.r-0yt7jCyKcesBQv51ZqHwHaHa&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
-                }
-                height={200}
+                src={`${imgUrl}/${doctor.avatarUrl}`}
+                height={100}
                 width={100}
                 alt="avatar doctor"
               />
@@ -64,7 +61,7 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
               </p>
 
               <p className="font-semibold ">
-                ({doctor.numberOfService} dịch vụ khám)
+                ({doctor.numberOfService} dịch vụ đảm nhận)
               </p>
               <div className="flex flex-row gap-2">
                 <RatingStars rating={doctor.rating} />

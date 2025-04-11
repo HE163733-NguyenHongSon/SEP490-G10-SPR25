@@ -11,4 +11,4 @@
    rating: number ;
    numberOfExamination: number;
    experienceYear:number;
- }
+ }  

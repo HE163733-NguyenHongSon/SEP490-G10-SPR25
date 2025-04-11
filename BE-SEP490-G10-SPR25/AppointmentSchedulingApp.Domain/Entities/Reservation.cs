@@ -29,7 +29,7 @@ public partial class Reservation
 
     public virtual DoctorSchedule DoctorSchedule { get; set; } = null!;
 
-    public virtual Feedback? Feedback { get; set; }
+    public virtual Feedback Feedback { get; set; }
 
     public virtual MedicalRecord? MedicalRecord { get; set; }
 

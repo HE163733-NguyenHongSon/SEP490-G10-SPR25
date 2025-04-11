@@ -34,6 +34,14 @@ namespace AppointmentSchedulingApp.Infrastructure
         {
             return await _entitySet.FirstOrDefaultAsync(expression);
         }
+        public IQueryable<T> GetQueryable()
+        {
+            return _entitySet.AsQueryable();
+        }
+        public IQueryable<T> GetQueryable(Expression<Func<T, bool>> expression)
+        {
+            return _entitySet.Where(expression);
+        }
 
 
         public async Task<IEnumerable<T>> GetAll()

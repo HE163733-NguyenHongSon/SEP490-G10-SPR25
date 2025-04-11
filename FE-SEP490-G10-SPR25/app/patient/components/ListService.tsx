@@ -6,13 +6,13 @@ import RatingStars from "@/components/RatingStars";
 
 import { ServiceDTO } from "@/types/service";
 
-
 interface ListServiceProps {
   items: ServiceDTO[];
   displayView?: string;
 }
 
 export const ListService = ({ items, displayView }: ListServiceProps) => {
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {items.map((service) => (
@@ -23,11 +23,7 @@ export const ListService = ({ items, displayView }: ListServiceProps) => {
         >
           <div className="relative h-32 w-full mb-2">
             <Image
-              src={
-                service.image?.startsWith("/") || service.image?.startsWith("http")
-                  ? service.image
-                  : `/${service.image || "images/service.png"}`
-              }
+              src={`${imgUrl}/${service.image}`}
               alt={service.serviceName}
               fill
               className="object-cover rounded-md"
@@ -61,4 +57,3 @@ export const ListService = ({ items, displayView }: ListServiceProps) => {
     </div>
   );
 };
-

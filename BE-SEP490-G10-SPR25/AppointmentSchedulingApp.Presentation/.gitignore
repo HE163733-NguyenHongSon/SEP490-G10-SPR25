@@ -1,4 +1,5 @@
 # Ignore bin and obj folders
 bin/
 obj/
+**/appsettings.Development.json
 

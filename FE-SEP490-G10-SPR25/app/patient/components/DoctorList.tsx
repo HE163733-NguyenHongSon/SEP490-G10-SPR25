@@ -5,13 +5,13 @@ import Image from "next/image";
 import RatingStars from "@/components/RatingStars";
 import Link from "next/link";
 
-interface IDoctors {
+interface DoctorListProps {
   items: IDoctor[];
   displayView?: string;
 }
 
-export const DoctorList = ({ items, displayView }: IDoctors) => {
-  // const router = useRouter();
+export const DoctorList = ({ items, displayView }: DoctorListProps) => {
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   return (
     <div
@@ -29,7 +29,7 @@ export const DoctorList = ({ items, displayView }: IDoctors) => {
         >
           <h1 className=" text-center font-semibold  text-lg text-gray-700 mt-3 ">
             <span className=" mr-2">
-              {doctor.academicTitle}.{doctor.degree}
+              {doctor.academicTitle},{doctor.degree}
             </span>
             {doctor.doctorName}
           </h1>
@@ -38,11 +38,11 @@ export const DoctorList = ({ items, displayView }: IDoctors) => {
             <div className="gap-3 col-span-1 flex flex-col items-center  justify-start p-2 border-r border-gray-300">
               <Image
                 className="rounded-lg "
-                src={doctor.avatarUrl || "https://www.bing.com/th?id=OIP.r-0yt7jCyKcesBQv51ZqHwHaHa&w=150&h=150&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"}
-                height={200}
+                src={`${imgUrl}/${doctor.avatarUrl}`}
+                height={100}
                 width={100}
                 alt="avatar doctor"
-              /> 
+              />
               <p className="text-cyan-500 font-light text-center">
                 <span className="font-semibold text-lg mr-1">
                   {doctor.experienceYear}
@@ -53,14 +53,15 @@ export const DoctorList = ({ items, displayView }: IDoctors) => {
                 Hẹn bác sĩ
               </button>
             </div>
-            <div className="col-span-2 flex flex-col justify-between font-sans px-3">
+            <div className="col-span-2 flex flex-col items-start text-start justify-between font-sans pl-4 ">
               <h2 className="text-lg text-gray-700 ">{doctor.currentWork}</h2>
               <p>{doctor.basicDescription}...</p>
               <p className="text-gray-400">
-                {doctor.specialtyNames.join(", ")}
+                {doctor.specialtyNames?.join(", ") || "Chưa có chuyên khoa"}
               </p>
+
               <p className="font-semibold ">
-                ({doctor.numberOfService} dịch vụ khám)
+                ({doctor.numberOfService} dịch vụ đảm nhận)
               </p>
               <div className="flex flex-row gap-2">
                 <RatingStars rating={doctor.rating} />

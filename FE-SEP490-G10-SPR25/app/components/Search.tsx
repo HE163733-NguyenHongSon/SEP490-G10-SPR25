@@ -99,7 +99,7 @@ const Search = ({
     setCurrentOptions(options);
     if (options.length > 0) {
       router.push(
-        `${path}?searchBy=${options
+        `${path}?searchValues=${options
           .map((op) => op.value)
           .join(",")}&sortBy=${searchParams.get(
           "sortBy"

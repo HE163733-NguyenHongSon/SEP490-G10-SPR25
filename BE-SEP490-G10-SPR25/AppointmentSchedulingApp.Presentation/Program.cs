@@ -31,6 +31,7 @@ modelBuilder.EntitySet<DoctorDTO>("Doctors");
 modelBuilder.EntitySet<PatientDTO>("Patients");
 modelBuilder.EntitySet<SpecialtyDTO>("Specialties");
 modelBuilder.EntitySet<ServiceDTO>("Services");
+modelBuilder.EntitySet<FeedbackDTO>("Feedbacks");
 var provider = builder.Services.BuildServiceProvider();
 var config = provider.GetService<IConfiguration>();
 
@@ -182,9 +183,9 @@ builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
-builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddScoped<IStorageService, StorageService >();
 
 // Đăng ký các dịch vụ liên quan đến người dùng
 builder.Services.AddScoped<IUserService, UserService>();
@@ -199,6 +200,10 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//Tự t
 // Add Email Configs
 var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfigurationDTO>();
 builder.Services.AddSingleton(emailConfig);
+
+// Đăng ký các service
+builder.Services.AddScoped<IAIAgentService, AIAgentService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 var app = builder.Build();
 

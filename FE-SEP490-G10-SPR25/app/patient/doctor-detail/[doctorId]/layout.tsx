@@ -13,6 +13,7 @@ const DoctorDetailLayout = async ({
   const doctorDetail: IDoctorDetail = await doctorService.getDoctorDetailById(
     doctorId
   );
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   const routes = [
     { path: `/patient/doctor-detail/${doctorId}`, name: "Tổng quan" },
@@ -43,7 +44,7 @@ const DoctorDetailLayout = async ({
             width={200}
             height={150}
             alt="image-doctor"
-            src={doctorDetail.avatarUrl}
+            src={`${imgUrl}/${doctorDetail.avatarUrl}`}
             className="rounded-2xl"
           />
           <div className=" flex flex-col justify-between font-sans px-5">

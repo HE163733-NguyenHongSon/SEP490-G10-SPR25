@@ -17,11 +17,11 @@ const HomePage = async () => {
 
   const doctorTabs: ITabItem[] = specialties.map((s) => ({
     label: s.specialtyName,
-    href: `${apiUrl}/api/Doctors?$filter=specialtyNames/any(s: s eq '${s.specialtyName}')&$orderby=rating desc&$top=6`,
+    href: `${apiUrl}/api/Doctors?$filter=specialtyNames/any(s: s eq '${s.specialtyName}')&$orderby=numberOfExamination desc&$top=6`,
   }));
   doctorTabs.unshift({
     label: "Tất cả chuyên khoa",
-    href: `${apiUrl}/api/Doctors?$orderby=rating desc&$top=6`,
+    href: `${apiUrl}/api/Doctors?$orderby=numberOfExamination desc&$top=6`,
   });
   const serviceTabs: ITabItem[] = specialties.map((s) => ({
     label: s.specialtyName,

@@ -2,7 +2,6 @@
 import React from "react";
 import Image from "next/image";
 // import { useRouter } from "next/navigation";
-import RatingStars from "@/components/RatingStars";
 import Link from "next/link";
 
 interface DoctorListProps {
@@ -43,13 +42,7 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
                 width={100}
                 alt="avatar doctor"
               />
-              <p className="text-cyan-500 font-light text-center">
-                <span className="font-semibold text-lg mr-1">
-                  {doctor.experienceYear}
-                </span>
-                năm kinh nghiệm
-              </p>
-              <button className=" bg-cyan-500 text-white px-3 rounded-full">
+              <button className=" bg-cyan-500 text-white px-3 rounded-full my-5">
                 Hẹn bác sĩ
               </button>
             </div>
@@ -60,12 +53,51 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
                 {doctor.specialtyNames?.join(", ") || "Chưa có chuyên khoa"}
               </p>
 
-              <p className="font-semibold ">
-                ({doctor.numberOfService} dịch vụ đảm nhận)
-              </p>
-              <div className="flex flex-row gap-2">
-                <RatingStars rating={doctor.rating} />
-                <p>({doctor.numberOfExamination} đã khám)</p>
+              <div className="flex flex-col gap-2 text-base text-gray-700 mt-2">
+                {/* Dịch vụ đảm nhận */}
+                <div className="flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5 text-cyan-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 21V13h8v8M3 21h18M12 3v6m3-3h-6M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"
+                    />
+                  </svg>
+                  <p className="font-medium">
+                    {doctor.numberOfService} dịch vụ đảm nhận
+                  </p>
+                </div>
+
+                {/* Số lượt đã khám */}
+                <div className="flex items-center gap-2 text-base">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5 text-green-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2l4-4M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12s4.477 10 10 10z"
+                    />
+                  </svg>
+                  <p className="font-sans ">
+                    <span className="text-gray-700 ">
+                      {doctor.numberOfExamination}
+                    </span>{" "}
+                    bệnh nhân đã khám
+                  </p>
+                </div>
               </div>
             </div>
           </div>

@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import { doctorService } from "@/services/doctorService";
-import RatingStars from "@/components/RatingStars";
 import Navigation from "@/components/Navigation";
 import BackButton from "@/components/BackButton";
 
@@ -37,12 +36,12 @@ const DoctorDetailLayout = async ({
     >
       <div className="absolute inset-0 bg-black bg-opacity-50 z-20"></div>
 
-      <div className=" container w-2/3 text-gray-600 p-3 mt-20 mb-5 z-30   bg-white rounded-xl shadow-2xl ">
-        <div className="flex flex-row  p-6 relative ">
-        <BackButton />
+      <div className="relative container w-2/3 text-gray-600 p-5  mt-20 mb-5 z-30   bg-white rounded-xl shadow-2xl ">
+        <div className="flex flex-row p-6     ">
+          <BackButton />
           <Image
-            width={200}
-            height={150}
+            width={150}
+            height={80}
             alt="image-doctor"
             src={`${imgUrl}/${doctorDetail.avatarUrl}`}
             className="rounded-2xl"
@@ -60,12 +59,49 @@ const DoctorDetailLayout = async ({
             <p className="text-gray-400">
               {doctorDetail.specialtyNames.join(", ")}
             </p>
-            <p className="font-semibold">
-              ({doctorDetail.numberOfService} dịch vụ đảm nhận)
-            </p>
-            <div className="flex flex-row gap-2">
-              <RatingStars rating={doctorDetail.rating} />
-              <p>({doctorDetail.numberOfExamination} đã khám)</p>
+            {/* Dịch vụ đảm nhận */}
+            <div className="flex items-center gap-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5 text-cyan-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 21V13h8v8M3 21h18M12 3v6m3-3h-6M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"
+                />
+              </svg>
+              <p className="font-medium">
+                {doctorDetail.numberOfService} dịch vụ đảm nhận
+              </p>
+            </div>
+
+            {/* Số lượt đã khám */}
+            <div className="flex items-center gap-2 text-base">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5 text-green-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2l4-4M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2S2 6.477 2 12s4.477 10 10 10z"
+                />
+              </svg>
+              <p className="font-sans ">
+                <span className="text-gray-700 ">
+                  {doctorDetail.numberOfExamination}
+                </span>{" "}
+                bệnh nhân đã khám
+              </p>
             </div>
             <button className="px-3 w-fit bg-cyan-500 text-white  rounded-full">
               Hẹn bác sĩ

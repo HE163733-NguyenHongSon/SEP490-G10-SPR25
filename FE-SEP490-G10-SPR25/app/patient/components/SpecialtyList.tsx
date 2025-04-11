@@ -29,8 +29,8 @@ const responsive = {
 };
 
 export const SpecialtyList = ({ items, displayView }: SpecialtyListProps) => {
-    const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
-  
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
+
   if (displayView === "slider") {
     return (
       <div className="w-full px-10 py-6">
@@ -77,7 +77,7 @@ export const SpecialtyList = ({ items, displayView }: SpecialtyListProps) => {
         >
           <div className="w-20 h-20 flex items-center justify-center rounded-full border-2 border-blue-500 p-4">
             <Image
-              src={specialty.image}
+              src={`${imgUrl}/${specialty.image}`}
               alt={specialty.specialtyName}
               className="object-contain"
               width={60}

@@ -6,7 +6,7 @@ export const Footer = () => {
       <div className="container mx-auto flex flex-col md:flex-row justify-between px-4">
         {/* Logo and Description */}
         <div className="mb-6 md:mb-0">
-          <Image src="hospital-logo.svg" width={10} height={10}  alt="Hospital Logo" className=" mb-4" />
+          <Image src="/hospital-logo.svg" width={10} height={10}  alt="Hospital Logo" className=" mb-4" />
           <p>
             Dedicated to providing compassionate and comprehensive care to our community. Your health is our priority.
           </p>

@@ -201,6 +201,10 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//Tự t
 var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfigurationDTO>();
 builder.Services.AddSingleton(emailConfig);
 
+// Đăng ký các service
+builder.Services.AddScoped<IAIAgentService, AIAgentService>();
+builder.Services.AddScoped<IChatService, ChatService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

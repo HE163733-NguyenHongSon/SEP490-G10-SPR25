@@ -31,6 +31,7 @@ modelBuilder.EntitySet<DoctorDTO>("Doctors");
 modelBuilder.EntitySet<PatientDTO>("Patients");
 modelBuilder.EntitySet<SpecialtyDTO>("Specialties");
 modelBuilder.EntitySet<ServiceDTO>("Services");
+modelBuilder.EntitySet<FeedbackDTO>("Feedbacks");
 var provider = builder.Services.BuildServiceProvider();
 var config = provider.GetService<IConfiguration>();
 
@@ -182,9 +183,8 @@ builder.Services.AddScoped<IDoctorService, DoctorService>();
 builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
-builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
-builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
 // Đăng ký các dịch vụ liên quan đến người dùng
 builder.Services.AddScoped<IUserService, UserService>();

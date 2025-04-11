@@ -18,6 +18,7 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         private ISpecialtyRepository _specialtyRepository;
         private IUserRepository _userRepository;
         private IFeedbackRepository _feedbackRepository;
+        private IPostRepository _postRepository;
         public UnitOfWork(AppointmentSchedulingDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -46,6 +47,9 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         
         public IFeedbackRepository  FeedbackRepository   =>
             _feedbackRepository ??= new FeedbackRepository (_dbContext);
+        
+        public IPostRepository  PostRepository   =>
+            _postRepository ??= new PostRepository (_dbContext);
 
         
                 

@@ -23,7 +23,7 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.SpecialtyId, opt => opt.MapFrom(src => src.SpecialtyId))
                 .ForMember(dest => dest.EstimatedTime, opt => opt.ConvertUsing<TimeOnlyToStringConverter, TimeOnly?>(src => src.EstimatedTime))
                 .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.DoctorSchedules.
-                 SelectMany(ds => ds.Reservations).Where(r => r.Feedback != null).Select(r => r.Feedback.ServiceFeedbackGrade ?? 0)
+                 SelectMany(ds => ds.Reservations).Where(r => r.Feedback != null).Select(r => r.Feedback.ServiceFeedbackGrade )
                       .DefaultIfEmpty(0) 
                       .Average()))
                 .ForMember(dest => dest.RatingCount, opt => opt.MapFrom(src => src.DoctorSchedules.

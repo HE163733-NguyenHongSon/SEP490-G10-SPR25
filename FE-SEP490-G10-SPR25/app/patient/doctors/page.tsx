@@ -15,7 +15,7 @@ const DoctorsPage = async ({
     academicTitles?: string;
     degrees?: string;
     sortBy: string;
-    searchBy?: string;
+    searchValues?: string;
     displayView: string;
   };
 }) => {
@@ -30,7 +30,7 @@ const DoctorsPage = async ({
   ];
   
   if (
-    !searchParams.searchBy &&
+    !searchParams.searchValues &&
     (searchParams.specialties ||
       searchParams.academicTitles ||
       searchParams.degrees ||
@@ -42,9 +42,9 @@ const DoctorsPage = async ({
       searchParams.degrees ? searchParams.degrees.split(",") : [],
       searchParams.sortBy
     );
-  } else if (searchParams.searchBy) {
+  } else if (searchParams.searchValues) {
     doctors = await doctorService.getDoctorListByIdListAndSort(
-      searchParams.searchBy,
+      searchParams.searchValues,
       searchParams.sortBy
     );
   } else {

@@ -9,11 +9,13 @@ public partial class Patient
 
     public int? GuardianId { get; set; }
 
+    public string? Relationship { get; set; }
+
     public string? MainCondition { get; set; }
 
     public string? Rank { get; set; }
 
-    public virtual Guardian? Guardian { get; set; }
+    public virtual User? Guardian { get; set; }
 
     public virtual User PatientNavigation { get; set; } = null!;
 

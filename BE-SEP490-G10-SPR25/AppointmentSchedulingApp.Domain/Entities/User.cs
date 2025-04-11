@@ -33,7 +33,7 @@ public partial class User
 
     public virtual Doctor? Doctor { get; set; }
 
-    public virtual Guardian? Guardian { get; set; }
+    public virtual ICollection<Patient> PatientGuardians { get; set; } = new List<Patient>();
 
     public virtual Patient? Patient { get; set; }
 

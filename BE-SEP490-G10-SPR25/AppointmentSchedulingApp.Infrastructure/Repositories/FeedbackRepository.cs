@@ -38,22 +38,6 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
             return feedbacks;
         }
 
-        public async Task<(decimal? AverageRating, int Count)> GetServiceRatingInfo(int serviceId)
-        {
-            var feedbacks = await GetFeedbacksByServiceId(serviceId);
-            
-            // Filter feedbacks that have a grade for the service
-            var validFeedbacks = feedbacks.Where(f => f.ServiceFeedbackGrade.HasValue);
-            var count = validFeedbacks.Count();
-            
-            if (count == 0)
-            {
-                return (null, 0);
-            }
-            
-            // Calculate the average rating
-            var averageRating = (decimal)validFeedbacks.Average(f => f.ServiceFeedbackGrade.Value);
-            return (averageRating, count);
-        }
+        
     }
 } 

@@ -6,7 +6,7 @@ export const doctorService = {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
 
-    return res.json();   
+    return res.json();    
   },
   async getNumberOfDoctors(): Promise<number[]> {
     const res = await fetch(`${apiUrl}/odata/Doctors/$count`);
@@ -21,7 +21,6 @@ export const doctorService = {
     sortBy: string
   ): Promise<IDoctor[]> {
     const sortOptions: Record<string, keyof IDoctor> = {
-      most_exp: "experienceYear",
       most_exam: "numberOfExamination",
       most_service: "numberOfService",
     };
@@ -58,12 +57,14 @@ export const doctorService = {
   ): Promise<IDoctor[]> {
     const query = [];
     const sortOptions: { [key: string]: string } = {
-      most_exp: "experienceYear",
+      hightest_rating: "rating",
       most_exam: "numberOfExamination",
       most_service: "numberOfService",
+      academic_title: "academicTitle", 
     };
+  
     const orderBy = sortOptions[sortBy] || "rating";
-
+  
     if (specialties.length > 0) {
       query.push(
         `specialtyNames/any(s: ${specialties
@@ -79,16 +80,35 @@ export const doctorService = {
     if (degrees.length > 0) {
       query.push(`degree in (${degrees.map((d) => `'${d}'`).join(",")})`);
     }
-
+  
     const res = await fetch(
       `${apiUrl}/api/Doctors?${
         query.length > 0 ? `$filter=${query.join(" or ")}&` : ""
-      }$orderby=${orderBy} desc`
+      }${sortBy !== "academic_title" ? `$orderby=${orderBy} desc` : ""}`
     );
+  
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
-
-    return res.json();
-  },
+  
+    const data = await res.json();
+  
+    if (sortBy === "academic_title") {
+      const rank = {
+        "GS.TS": 1,
+        "GS": 2,
+        "PGS.TS": 3,
+        "PGS": 4,
+        "TS": 5,
+      };
+  
+      return data.sort(
+        (a: IDoctor, b: IDoctor) =>
+          (rank[a.academicTitle as keyof typeof rank] || 99) - (rank[b.academicTitle as keyof typeof rank] || 99)
+      );
+    }
+  
+    return data;
+  }
+  
 };

@@ -36,10 +36,10 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public int SpecialtyId { get; set; }
 
         [JsonPropertyOrder(9)]
-        public decimal? Rating { get; set; } = 0;
+        public double Rating { get; set; } 
 
         [JsonPropertyOrder(10)]
-        public int? RatingCount { get; set; } = 0;
+        public int RatingCount { get; set; } 
 
         [JsonPropertyOrder(11)]
         public string? EstimatedTime { get; set; }

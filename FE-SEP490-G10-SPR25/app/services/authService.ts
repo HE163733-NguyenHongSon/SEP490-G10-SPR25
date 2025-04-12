@@ -360,7 +360,7 @@ export const getRedirectUrl = (): string => {
     } else if (normalizedRole === AppRole.Patient) {
       return "/patient/dashboard";
     } else if (normalizedRole === AppRole.Guardian) {
-      return "/guardian/dashboard";
+      return "/patient/dashboard";
     }
   }
   

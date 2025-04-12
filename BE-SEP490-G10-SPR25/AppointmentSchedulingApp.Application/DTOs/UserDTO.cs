@@ -25,25 +25,25 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public long? CitizenId { get; set; }
 
         [JsonPropertyOrder(7)]
-        public string? PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
         [JsonPropertyOrder(8)]
-        public string? Gender { get; set; }
+        public string Gender { get; set; }
 
         [JsonPropertyOrder(9)]
-        public string? Dob { get; set; }
+        public string Dob { get; set; }
 
         [JsonPropertyOrder(10)]
-        public string? Address { get; set; }
+        public string Address { get; set; }
 
         [JsonPropertyOrder(11)]
         public string? AvatarUrl { get; set; }
 
         [JsonPropertyOrder(12)]
-        public bool? IsVerify { get; set; }
+        public bool IsVerify { get; set; }
 
         [JsonPropertyOrder(13)]
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
 
         [JsonPropertyOrder(14)]
         public string RoleNames { get; set; }  

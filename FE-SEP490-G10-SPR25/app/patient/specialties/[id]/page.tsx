@@ -121,12 +121,14 @@ export default function SpecialtyDetails() {
                   key={index}
                   className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
                 >
+
                   <Image 
-                    src="https://via.placeholder.com/150"
-                    alt="General Consultation"
+                    src={`https://via.placeholder.com/150?text=Service+${index+1}`}
+                    alt={`Service ${index+1}`}
                     className="w-full h-40 object-cover rounded-t-lg text-black"
                     width={150}
                     height={150}
+                    unoptimized
                   />
                 </div>
               ))}

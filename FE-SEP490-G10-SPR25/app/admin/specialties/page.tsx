@@ -1,8 +1,9 @@
 "use client";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Popconfirm, Space, Table, message } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageBreadCrumb from "../components/PageBreadCrumb";
+import axios from "axios";
 
 interface ISpecialty {
   specialtyId: number;
@@ -13,71 +14,14 @@ interface ISpecialty {
 }
 
 const SpecialtiesManagement = () => {
-  const [specialties, setSpecialties] = useState<ISpecialty[]>([
-    {
-      specialtyId: 1,
-      specialtyName: "Cardiology",
-      description: "Heart-related treatments and diagnostics.",
-      image: "https://via.placeholder.com/100x60.png?text=Cardiology",
-      createdAt: "2024-04-01",
-    },
-    {
-      specialtyId: 2,
-      specialtyName: "Dermatology",
-      description: "Skin care, acne, eczema, and more.",
-      image: "https://via.placeholder.com/100x60.png?text=Dermatology",
-      createdAt: "2024-04-02",
-    },
-    {
-      specialtyId: 3,
-      specialtyName: "Neurology",
-      description: "Brain and nervous system disorders.",
-      image: "https://via.placeholder.com/100x60.png?text=Neurology",
-      createdAt: "2024-04-03",
-    },
-    {
-      specialtyId: 3,
-      specialtyName: "Neurology",
-      description: "Brain and nervous system disorders.",
-      image: "https://via.placeholder.com/100x60.png?text=Neurology",
-      createdAt: "2024-04-03",
-    },
-    {
-      specialtyId: 3,
-      specialtyName: "Neurology",
-      description: "Brain and nervous system disorders.",
-      image: "https://via.placeholder.com/100x60.png?text=Neurology",
-      createdAt: "2024-04-03",
-    },
-    {
-      specialtyId: 3,
-      specialtyName: "Neurology",
-      description: "Brain and nervous system disorders.",
-      image: "https://via.placeholder.com/100x60.png?text=Neurology",
-      createdAt: "2024-04-03",
-    },
-    {
-      specialtyId: 3,
-      specialtyName: "Neurology",
-      description: "Brain and nervous system disorders.",
-      image: "https://via.placeholder.com/100x60.png?text=Neurology",
-      createdAt: "2024-04-03",
-    },
-    {
-      specialtyId: 3,
-      specialtyName: "Neurology",
-      description: "Brain and nervous system disorders.",
-      image: "https://via.placeholder.com/100x60.png?text=Neurology",
-      createdAt: "2024-04-03",
-    },
-    {
-      specialtyId: 3,
-      specialtyName: "Neurology",
-      description: "Brain and nervous system disorders.",
-      image: "https://via.placeholder.com/100x60.png?text=Neurology",
-      createdAt: "2024-04-03",
-    },
-  ]);
+  const [specialties, setSpecialties] = useState<ISpecialty[]>([]);
+  useEffect(() => {
+    const fetchSpecialties = async() => {
+      const response =  await axios.get("http://localhost:5220/api/Specialties")
+      setSpecialties(response.data)
+    }
+    fetchSpecialties()
+  },[])
 
   const [form] = Form.useForm();
   const [editingSpecialty, setEditingSpecialty] = useState<ISpecialty | null>(null);
@@ -88,41 +32,60 @@ const SpecialtiesManagement = () => {
     form.resetFields();
     setIsModalVisible(true);
   };
-
   const handleEdit = (specialty: ISpecialty) => {
-    setEditingSpecialty(specialty);
-    form.setFieldsValue(specialty);
-    setIsModalVisible(true);
+    setEditingSpecialty(specialty);                
+    form.setFieldsValue(specialty);               
+    setIsModalVisible(true);                       
   };
 
-  const handleDelete = (id: number) => {
-    setSpecialties((prev) => prev.filter((s) => s.specialtyId !== id));
-    message.success("Deleted successfully");
-  };
-
-  const handleSubmit = (values: any) => {
-    if (editingSpecialty) {
-      setSpecialties((prev) =>
-        prev.map((s) =>
-          s.specialtyId === editingSpecialty.specialtyId
-            ? { ...editingSpecialty, ...values }
-            : s
-        )
-      );
-      message.success("Updated successfully");
-    } else {
-      const newSpecialty = {
-        ...values,
-        specialtyId: Date.now(),
-        createdAt: new Date().toISOString().slice(0, 10),
-      };
-      setSpecialties((prev) => [...prev, newSpecialty]);
-      message.success("Created successfully");
+  const handleDelete = async (id: number) => {
+    try {
+      await axios.delete(`http://localhost:5220/api/Specialties/${id}`);
+      setSpecialties((prev) => prev.filter((s) => s.specialtyId !== id));
+  
+      message.success("Deleted successfully");
+    } catch (error) {
+      message.error("Failed to delete");
     }
-
-    setIsModalVisible(false);
-    form.resetFields();
   };
+  
+
+  const handleSubmit = async (values: any) => {
+    try {
+      if (editingSpecialty) {
+        const response = await axios.put(
+          `http://localhost:5220/api/Specialties/${editingSpecialty.specialtyId}`,
+          { ...editingSpecialty, ...values }
+        );
+  
+        const updated = response.data;
+  
+        setSpecialties((prev) =>
+          prev.map((s) =>
+            s.specialtyId === updated.specialtyId ? updated : s
+          )
+        );
+  
+        message.success("Updated successfully");
+      } else {
+        const response = await axios.post("http://localhost:5220/api/Specialties", {
+          ...values,
+          createdAt: new Date().toISOString(),
+        });
+  
+        setSpecialties((prev) => [...prev, response.data]);
+        message.success("Created successfully");
+      }
+  
+      setIsModalVisible(false);
+      setEditingSpecialty(null);
+      form.resetFields();
+    } catch (err) {
+      console.error("Error submitting form", err);
+      message.error("Error submitting form");
+    }
+  };
+  
 
   const columns = [
     {
@@ -160,11 +123,11 @@ const SpecialtiesManagement = () => {
       title: "Actions",
       key: "actions",
       width: "10%",
-      render: (_: any, record: ISpecialty) => (
+      render: (_: any, specialty: ISpecialty) => (
         <Space size="middle">
           <Button
             icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
+            onClick={() => handleEdit(specialty)}
             type="primary"
             size="small"
           >
@@ -172,7 +135,7 @@ const SpecialtiesManagement = () => {
           </Button>
           <Popconfirm
             title="Are you sure you want to delete this service?"
-            onConfirm={() => handleDelete(record.specialtyId)}
+            onConfirm={() => handleDelete(specialty.specialtyId)}
             okText="Yes"
             cancelText="No"
           >

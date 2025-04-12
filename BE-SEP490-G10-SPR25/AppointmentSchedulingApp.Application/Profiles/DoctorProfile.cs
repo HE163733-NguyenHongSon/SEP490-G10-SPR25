@@ -22,20 +22,11 @@ namespace AppointmentSchedulingApp.Application.Profiles
             .ForMember(dest => dest.CurrentWork, opt => opt.MapFrom(src => src.CurrentWork))
             .ForMember(dest => dest.BasicDescription, opt => opt.MapFrom(src => new string(src.DoctorDescription.Take(50).ToArray())))
             .ForMember(dest => dest.SpecialtyNames, opt => opt.MapFrom(src => src.Specialties.Select(s => s.SpecialtyName).ToArray()))
-            .ForMember(dest => dest.NumberOfService, opt => opt.MapFrom(src => src.Services.Count))
-
-           .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.DoctorSchedules
-           .SelectMany(ds => ds.Reservations)
-                .Where(r => r != null && r.Status.Equals("Hoàn thành") && r.Feedback != null)
-                .Select(r => (double?)r.Feedback.DoctorFeedbackGrade) 
-                .DefaultIfEmpty(0)  
-                .Average()))
-
-               .ForMember(dest => dest.NumberOfExamination, opt => opt.MapFrom(src => src.DoctorSchedules.
-               SelectMany(ds => ds.Reservations.Where(r => r.Status.Equals("Hoàn thành"))).ToList().Count))
-
-            .ForMember(dest => dest.ExperienceYear, opt => opt.MapFrom(src =>
-               Convert.ToInt32(System.Text.RegularExpressions.Regex.Match(src.WorkExperience, @"\d+").Value)))
+            .ForMember(dest => dest.NumberOfService, opt => opt.MapFrom(src => src.Services.Count))         
+             .ForMember(dest => dest.NumberOfExamination, opt => opt.MapFrom(src => src.DoctorSchedules.
+             SelectMany(ds => ds.Reservations.Where(r => r.Status.Equals("Hoàn thành"))).ToList().Count))         
+            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))         
+            .ForMember(dest => dest.RatingCount, opt => opt.MapFrom(src => src.RatingCount))         
             .ReverseMap();
 
 
@@ -46,7 +37,12 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => src.Organization))
                 .ForMember(dest => dest.Prize, opt => opt.MapFrom(src => src.Prize))
                 .ForMember(dest => dest.ResearchProject, opt => opt.MapFrom(src => src.ResearchProject))
-                .ForMember(dest => dest.TrainingProcess, opt => opt.MapFrom(src => src.TrainingProcess)).ReverseMap();
+                .ForMember(dest => dest.TrainingProcess, opt => opt.MapFrom(src => src.TrainingProcess))
+                .ForMember(dest => dest.Schedules, opt => opt.MapFrom(src => src.DoctorSchedules))
+                .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.Services))
+                .ForMember(dest => dest.Feedbacks, opt => opt.MapFrom(src => src.DoctorSchedules.SelectMany(ds => ds.Reservations).Where(r => r.Status.Equals("Hoàn thành") && r.Feedback != null).Select(r => r.Feedback)))
+                .ReverseMap();
+                 
 
 
 

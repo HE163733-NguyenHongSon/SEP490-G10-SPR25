@@ -1,6 +1,6 @@
  interface IDoctor {
    doctorId: number ;
-   academicTitle?: string;
+   academicTitle: string;
    degree: string;
    doctorName: string;
    avatarUrl:string;
@@ -8,7 +8,7 @@
    basicDescription: string;
    specialtyNames: string[];
    numberOfService: number;
-   rating: number ;
    numberOfExamination: number;
-   experienceYear:number;
- }
+   rating: number;
+   ratingCount: number;
+ }  

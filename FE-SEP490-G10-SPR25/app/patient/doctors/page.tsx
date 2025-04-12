@@ -15,7 +15,7 @@ const DoctorsPage = async ({
     academicTitles?: string;
     degrees?: string;
     sortBy: string;
-    searchBy?: string;
+    searchValues?: string;
     displayView: string;
   };
 }) => {
@@ -25,12 +25,13 @@ const DoctorsPage = async ({
   const sortOptions: ISortOption[] = [
     { label: "Đánh giá cao nhất", value: "highest_rated" },
     { label: "Nhiều lần khám nhất", value: "most_exam" },
-    { label: "Kinh nghiệm nhất", value: "most_exp" },
     { label: "Nhiều dịch vụ nhất", value: "most_service" },
+    { label: "Học thuật cao nhất", value: "academic_title" },
+
   ];
   
   if (
-    !searchParams.searchBy &&
+    !searchParams.searchValues &&
     (searchParams.specialties ||
       searchParams.academicTitles ||
       searchParams.degrees ||
@@ -42,9 +43,9 @@ const DoctorsPage = async ({
       searchParams.degrees ? searchParams.degrees.split(",") : [],
       searchParams.sortBy
     );
-  } else if (searchParams.searchBy) {
+  } else if (searchParams.searchValues) {
     doctors = await doctorService.getDoctorListByIdListAndSort(
-      searchParams.searchBy,
+      searchParams.searchValues,
       searchParams.sortBy
     );
   } else {

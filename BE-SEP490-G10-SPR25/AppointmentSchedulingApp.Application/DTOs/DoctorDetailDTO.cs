@@ -29,7 +29,11 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public List<ServiceDTO> Services { get; set; }
 
         [JsonPropertyOrder(21)]
-
         public List<FeedbackDTO> Feedbacks { get; set; }
+
+        [JsonPropertyOrder(22)]
+         public List<DoctorDTO> RelevantDoctors { get; set; } 
+
+
     }
 }

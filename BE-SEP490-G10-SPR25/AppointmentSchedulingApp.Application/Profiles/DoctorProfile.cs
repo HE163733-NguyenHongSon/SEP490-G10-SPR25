@@ -41,11 +41,12 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.Schedules, opt => opt.MapFrom(src => src.DoctorSchedules))
                 .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.Services))
                 .ForMember(dest => dest.Feedbacks, opt => opt.MapFrom(src => src.DoctorSchedules.SelectMany(ds => ds.Reservations).Where(r => r.Status.Equals("Hoàn thành") && r.Feedback != null).Select(r => r.Feedback)))
+                .ForMember(dest => dest.RelevantDoctors, opt => opt.MapFrom(src => src.Specialties.SelectMany(sp=>sp.Doctors).Where(dr=>dr.DoctorId!=src.DoctorId)))
                 .ReverseMap();
                  
-
+               
 
 
         }
     }
-}
+}  

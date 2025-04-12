@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from 'next/link';
 
 export default function PatientDetailPage({ params }: { params: { patientId: string } }) {
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
   const [patient, setPatient] = useState<IPatientDetail | null>(null);
   const [medicalRecords, setMedicalRecords] = useState<IMedicalRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,7 +78,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
               <div className="relative w-full h-full rounded-2xl overflow-hidden border-4 border-white">
                 {patient.avatarUrl ? (
                   <Image
-                    src={patient.avatarUrl}
+                    src={`${imgUrl}/${patient.avatarUrl}`}
                     width={1920}
                     height={1080}
                     alt={`Avatar of ${patient.userName}`}

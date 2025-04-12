@@ -9,6 +9,7 @@ import Image from "next/image";
 
 
 export default function EditPatientPage({ params }: { params: { patientId: string } }) {
+    const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
     const router = useRouter();
     const [formData, setFormData] = useState<Partial<IUser>>({
         avatarUrl: '',
@@ -162,7 +163,7 @@ export default function EditPatientPage({ params }: { params: { patientId: strin
                             <div className="relative w-full h-full rounded-2xl overflow-hidden border-4 border-white">
                                 {formData.avatarUrl ? (
                                     <Image
-                                        src={formData.avatarUrl}
+                                        src={`${imgUrl}/${formData.avatarUrl}`}
                                         width={1920}
                                         height={1080}
                                         alt={`Avatar of ${formData.userName}`}

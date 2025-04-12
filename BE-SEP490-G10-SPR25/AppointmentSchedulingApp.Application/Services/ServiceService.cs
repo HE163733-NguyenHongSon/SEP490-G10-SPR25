@@ -21,12 +21,7 @@ namespace AppointmentSchedulingApp.Application.Services
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
         }
-        //public async Task<List<DoctorDTO>> GetDoctorList()
-        //{
-        //    var query = unitOfWork.DoctorRepository.GetQueryable();
-
-        //    return await query.ProjectTo<DoctorDTO>(mapper.ConfigurationProvider).ToListAsync();
-        //}
+       
         public async Task<List<ServiceDTO>> GetListService()
         {
             try

@@ -1,15 +1,20 @@
 import { About } from "./components/About";
-import { FaChevronRight, FaSearch } from "react-icons/fa";
 import { SpecialtyList } from "@/patient/components/SpecialtyList";
 import { specialtyService } from "@/services/specialtyService";
+import { doctorService } from "@/services/doctorService";
+import { serviceService } from "@/services/serviceService";
 import { feedbackService } from "@/services/feedbackService";
 import { DoctorList } from "@/patient/components/DoctorList";
 import { TabsGroup } from "@/components/TabsGroup";
 import { ListService } from "@/patient/components/ListService";
 import FeedbackList from "@/patient/components/FeedbackList";
 import { ServiceDTO } from "@/types/service";
+import HomeSearch from "@/patient/components/HomeSearch";
+
 const HomePage = async () => {
   const specialties = await specialtyService.getSpecialtyList();
+  const doctors = await doctorService.getDoctorList();
+  const services = await serviceService.getAllServices();
   const feedbacks = await feedbackService.getFeedbackList();
   const doctorFeedbacks = feedbackService.extractDoctorFeedback(feedbacks);
   const serviceFeedbacks = feedbackService.extractServiceFeedback(feedbacks);
@@ -32,6 +37,30 @@ const HomePage = async () => {
     label: "Tất cả dịch vụ",
     href: `${apiUrl}/api/Services?$orderby=rating desc&$top=6`,
   });
+  const suggestedData = [
+    ...specialties.map((s: ISpecialty) => ({
+      label: s.specialtyName,
+      value: s.specialtyId.toString(),
+      id: Number(s.specialtyId),
+      image: s.image ?? "",
+      type: "specialty",
+    })),
+    ...doctors.map((d: IDoctor) => ({
+      label: d.doctorName,
+      value: d.doctorId.toString(),
+      id: Number(d.doctorId),
+      image: d.avatarUrl ?? "",
+      type: "doctor",
+    })),
+    ...services.map((s: ServiceDTO) => ({
+      label: s.serviceName,
+      value: s.serviceId.toString(),
+      id: Number(s.serviceId),
+      image: s.image ?? "",
+      type: "service",
+    }))
+  ];
+
   return (
     <div
       className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center justify-center z-10"
@@ -40,23 +69,23 @@ const HomePage = async () => {
     >
       <div className="absolute inset-0 bg-black bg-opacity-50 z-20"></div>
       <div className="max-w-fit flex flex-col items-center justify-center container text-center p-6 md:px-5 lg:px-10 lg:mx-48 text-white z-30">
-        <div className="flex justify-center mb-3">
-          <div className="relative flex items-center w-[400px] bg-white rounded-full shadow-md border border-gray-300 overflow-hidden">
-            <button className="flex items-center bg-blue-500 text-white px-3 py-2">
-              Name <FaChevronRight className="ml-2" />
-            </button>
-            {/* <input
-              type="text"
-              placeholder="Enter the service's name to search"
-              className="w-full px-3 py-2 outline-none"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            /> */}
-            <button className="absolute right-3 text-gray-500">
-              <FaSearch />
-            </button>
-          </div>
-        </div>
+        <HomeSearch
+          fields={[
+            {
+              label: "Chuyên khoa",
+              value: "specialty",
+              placeholder: "Tìm chuyên khoa...",
+            },
+            { label: "Bác sĩ", value: "doctor", placeholder: "Tìm bác sĩ..." },
+            {
+              label: "Dịch vụ",
+              value: "service",
+              placeholder: "Tìm dịch vụ...",
+            },
+          ]}
+          suggestedData={suggestedData}
+        />
+
         <div className="mt-52 flex flex-col items-center justify-center">
           <h2 className="text-3xl sm:text-4xl md:text-[50px] inline-grid max-w-3xl font-semibold pt-20">
             Đặt lịch khám và xem kết quả trực tuyến

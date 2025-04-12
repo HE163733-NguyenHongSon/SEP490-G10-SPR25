@@ -3,12 +3,18 @@ import { Star } from "lucide-react";
 import Image from 'next/image';
 
 const ServiceDetailPage = () => {
+    // const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
+
     return (
         <div className="min-h-screen w-full bg-gray-100 flex flex-col items-center p-6 mt-16">
             <div className="w-full max-w-4xl bg-white shadow-lg rounded-2xl p-6">
                 {/* Header Section */}
                 <div className="flex items-center space-x-6 border-b pb-4">
-                    <Image src="/images/service_icon.png" alt="Service" className="w-24 h-24 rounded-lg" />
+                    {/* <Image                 
+                     src={`${imgUrl}/${doctor.avatarUrl}`} 
+                     height={100}
+                     width={100}
+                    alt="Service" className="rounded-lg" /> */}
                     <div>
                         <h1 className="text-3xl font-bold">General Consultation</h1>
                         <p className="text-gray-500">30-minute 1-to-1 doctor take on</p>

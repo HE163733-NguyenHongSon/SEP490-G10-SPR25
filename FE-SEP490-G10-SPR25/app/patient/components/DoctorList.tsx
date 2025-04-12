@@ -54,7 +54,7 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
                 {doctor.specialtyNames?.join(", ") || "Chưa có chuyên khoa"}
               </p>
 
-              <div className="flex flex-col gap-2 text-base text-gray-700 mt-2">
+              <div className="flex flex-col gap-2 text-base text-gray-700 mt-5">
                 {/* Dịch vụ đảm nhận */}
                 <div className="flex items-center gap-2">
                   <svg
@@ -75,10 +75,13 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
                     {doctor.numberOfService} dịch vụ đảm nhận
                   </p>
                 </div>
+                <div className="flex items-center gap-2 text-base">
+                  <RatingStars rating={doctor.rating} />
+                  {doctor.ratingCount} đánh giá
+                </div>
 
                 {/* Số lượt đã khám */}
                 <div className="flex items-center gap-2 text-base">
-                <RatingStars rating={doctor.rating} />{doctor.ratingCount} đánh giá
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-5 h-5 text-green-500"

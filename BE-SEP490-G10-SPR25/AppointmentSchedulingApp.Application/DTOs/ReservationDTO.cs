@@ -27,6 +27,8 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string Location { get; set; } = null!;
         public string? Reason { get; set; }
         public string Status { get; set; }
+        public string CancellationReason { get; set; }
+
     }
 
 }

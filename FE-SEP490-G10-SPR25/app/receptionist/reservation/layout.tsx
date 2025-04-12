@@ -1,7 +1,6 @@
-// app/receptionist/layout.tsx
 import React from 'react';
 
-export default function ReceptionistPatientDetailLayout({
+export default function ReceptionistReservationLayout({
   children,
 }: {
   children: React.ReactNode;

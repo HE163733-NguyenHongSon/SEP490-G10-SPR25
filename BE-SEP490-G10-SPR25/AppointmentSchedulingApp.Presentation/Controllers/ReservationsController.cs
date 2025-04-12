@@ -1,8 +1,10 @@
-﻿using AppointmentSchedulingApp.Domain.Entities;
+﻿using AppointmentSchedulingApp.Application.DTOs;
+using AppointmentSchedulingApp.Application.IServices;
+using AppointmentSchedulingApp.Application.Services;
+using AppointmentSchedulingApp.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using AppointmentSchedulingApp.Application.IServices;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -49,7 +51,68 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             }
         }
 
+        [HttpGet("{reservationId}")]
+        [EnableQuery]
+        public async Task<IActionResult> GetReservationById(int reservationId)
+        {
+            try
+            {
+                var reservation = await reservationService.GetReservationById(reservationId);
 
+                if (reservation == null)
+                {
+                    return NotFound($"Cuộc hẹn với ID={reservationId} không tồn tại!");
+                }
+
+                return Ok(reservation);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
+        }
+
+        [HttpPut("UpdateReservationStatus")]
+        [EnableQuery]
+        public async Task<IActionResult> UpdateReservationStatus(ReservationStatusDTO reservationStatusDTO)
+        {
+            try
+            {
+                var reservation = await reservationService.GetReservationById(reservationStatusDTO.ReservationId);
+
+                if (reservation == null)
+                {
+                    return NotFound($"Cuộc hẹn với ID={reservationStatusDTO.ReservationId} không tồn tại!");
+                }
+                var isTrue = await reservationService.UpdateReservationStatus(reservationStatusDTO);
+                return Ok(isTrue);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("ViewReason{reservationId}")]
+        [EnableQuery]
+        public async Task<IActionResult> ViewCancellationReason(int reservationId)
+        {
+            try
+            {
+                var reservation = await reservationService.ViewCancellationReason(reservationId);
+
+                if (reservation == null)
+                {
+                    return NotFound($"Cuộc hẹn với ID={reservationId} không tồn tại!");
+                }
+
+                return Ok(reservation);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
+        }
 
     }
 }

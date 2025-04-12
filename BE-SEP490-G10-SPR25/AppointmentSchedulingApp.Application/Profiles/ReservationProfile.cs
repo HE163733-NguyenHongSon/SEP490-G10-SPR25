@@ -33,11 +33,16 @@ namespace AppointmentSchedulingApp.Application.Profiles
              .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.DoctorSchedule.Room.Location))
              .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason))
              .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                 
-
+             .ForMember(dest => dest.CancellationReason, opt => opt.MapFrom(src => src.CancellationReason))
 
              .ReverseMap();   
-;
+
+
+             CreateMap<Reservation, ReservationStatusDTO>()
+             //.ForMember(dest => dest.ReservationId, opt => opt.MapFrom(src => src.ReservationId))
+             .ForMember(dest => dest.CancellationReason, opt => opt.MapFrom(src => src.CancellationReason))
+             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+             .ReverseMap();
         }
     }
 }

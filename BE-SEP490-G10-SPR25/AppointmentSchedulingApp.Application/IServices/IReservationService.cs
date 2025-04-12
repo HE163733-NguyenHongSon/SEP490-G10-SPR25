@@ -12,5 +12,10 @@ namespace AppointmentSchedulingApp.Application.IServices
     {
         Task<List<ReservationDTO>> GetListReservation();
         public Task<List<ReservationDTO>> GetListReservationByFilter(int patientId,string status, string sortBy);
+
+        Task<bool> UpdateReservationStatus(ReservationStatusDTO reservationStatusDTO);
+        Task<ReservationDTO> GetReservationById(int reservationId);
+        Task<ReservationStatusDTO> ViewCancellationReason(int reservationId);
+
     }
 }

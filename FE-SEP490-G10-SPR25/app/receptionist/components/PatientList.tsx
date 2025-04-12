@@ -66,7 +66,8 @@ export const PatientList = ({ items }: IPatients) => {
                 {patient.email}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {new Date(patient.dob).toLocaleDateString()}
+                {/* {new Date(patient.dob).toLocaleDateString()} */}
+                {patient.dob}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span

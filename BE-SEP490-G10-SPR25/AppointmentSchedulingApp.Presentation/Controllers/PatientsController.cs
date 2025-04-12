@@ -1,4 +1,5 @@
-﻿using AppointmentSchedulingApp.Application.IServices;
+﻿using AppointmentSchedulingApp.Application.DTOs;
+using AppointmentSchedulingApp.Application.IServices;
 using AppointmentSchedulingApp.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,14 +13,11 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
     public class PatientsController : ControllerBase
     {
         private readonly IPatientService _patientService;
-        private readonly ILogger<PatientsController> _logger;
 
 
-        public PatientsController(IPatientService patientService, ILogger<PatientsController> logger)
+        public PatientsController(IPatientService patientService)
         {
             _patientService = patientService;
-            _logger = logger;
-          _logger = logger;
 
         }
 
@@ -61,8 +59,64 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while fetching patient details for ID={patientId}", patientId);
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
+        }
+
+        [HttpPut("UpdatePatientInforByReceptionist")]
+        [EnableQuery]
+        public async Task<IActionResult> UpdatePatientInforByReceptionist(PatientUpdateDTO patientUpdateDTO)
+        {
+            try
+            {
+                var patient = await _patientService.GetPatientDetailById(patientUpdateDTO.UserId);
+
+                if (patient == null)
+                {
+                    return NotFound($"Bệnh nhân với ID={patientUpdateDTO.UserId} không tồn tại!");
+                }
+                var patietUpdate =  await _patientService.UpdatePatientInfor(patientUpdateDTO);
+                return Ok(patietUpdate);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
+        }
+
+        [HttpPut("UpdateGuardianOfPatientByReceptionist")]
+        [EnableQuery]
+        public async Task<IActionResult> UpdateGuardianOfPatientByReceptionist(GuardianOfPatientDTO guardianOfPatientDTO)
+        {
+            try
+            {
+                var patientUpdate = await _patientService.UpdateGuardianOfPatient(guardianOfPatientDTO);
+                return Ok(patientUpdate);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
+        }
+
+        [HttpPut("UpdatePatientInformationByReceptionist")]
+        [EnableQuery]
+        public async Task<IActionResult> UpdatePatientInformationByReceptionist(PatientUpdateDTO patientUpdateDTO)
+        {
+            try
+            {
+                var patient = await _patientService.GetPatientDetailById(patientUpdateDTO.UserId);
+
+                if (patient == null)
+                {
+                    return NotFound($"Bệnh nhân với ID={patientUpdateDTO.UserId} không tồn tại!");
+                }
+                var patietUpdate = await _patientService.UpdatePatientInFormation(patientUpdateDTO);
+                return Ok(patietUpdate);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
             }
         }
 

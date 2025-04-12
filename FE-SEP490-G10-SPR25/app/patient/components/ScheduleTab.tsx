@@ -11,7 +11,7 @@ const ScheduleTab = () => {
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 border-b border-gray-300 pb-4">
       <div className="flex items-center gap-2 text-lg font-semibold">
         <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}

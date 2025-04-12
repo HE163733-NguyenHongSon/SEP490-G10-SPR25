@@ -26,7 +26,7 @@ const extractServiceFeedback = (list: IFeedback[]) =>
     .map((fb) => ({
       id: fb.feedbackId,
       name: fb.patientName,
-      initials: getInitials(fb.patientName),
+      image:fb.patientImage,
       targetName: fb.serviceName,
       timeAgo: getRelativeTime(fb.feedbackDate),
       rating: fb.serviceFeedbackGrade ?? 0,
@@ -39,7 +39,7 @@ const extractDoctorFeedback = (list: IFeedback[]) =>
     .map((fb) => ({
       id: fb.feedbackId,
       name: fb.patientName,
-      initials: getInitials(fb.patientName),
+      image:fb.patientImage,
       targetName: fb.doctorName,
       timeAgo: getRelativeTime(fb.feedbackDate),
       rating: fb.doctorFeedbackGrade ?? 0,

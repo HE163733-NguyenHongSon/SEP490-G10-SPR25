@@ -6,9 +6,8 @@ import { serviceService } from "@/services/serviceService";
 import { feedbackService } from "@/services/feedbackService";
 import { DoctorList } from "@/patient/components/DoctorList";
 import { TabsGroup } from "@/components/TabsGroup";
-import { ListService } from "@/patient/components/ListService";
+import  ListService  from "@/patient/components/ListService";
 import FeedbackList from "@/patient/components/FeedbackList";
-import { ServiceDTO } from "@/types/service";
 import HomeSearch from "@/patient/components/HomeSearch";
 
 const HomePage = async () => {

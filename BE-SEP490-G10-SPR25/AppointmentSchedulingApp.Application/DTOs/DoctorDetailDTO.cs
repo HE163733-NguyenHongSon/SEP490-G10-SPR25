@@ -21,5 +21,15 @@ namespace AppointmentSchedulingApp.Application.DTOs
 
         [JsonPropertyOrder(18)]
         public string? TrainingProcess { get; set; }
+
+        [JsonPropertyOrder(19)]
+        public  List<DoctorScheduleDTO> Schedules { get; set; }
+
+        [JsonPropertyOrder(20)]
+        public List<ServiceDTO> Services { get; set; }
+
+        [JsonPropertyOrder(21)]
+
+        public List<FeedbackDTO> Feedbacks { get; set; }
     }
 }

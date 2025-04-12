@@ -1,17 +1,10 @@
 "use client";
 import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import Select, { SingleValue } from "react-select";
+import Select, { SingleValue, GroupBase, OptionProps } from "react-select";
 import Image from "next/image";
-import { OptionProps } from "react-select";
 
-interface ISearchOption {
-  label: string;
-  value: string;
-  id: number;
-  image: string;
-  type: string; // để mở rộng hơn ("doctor" | "service" | "clinic" | "specialty" | ...)
-}
+
 
 interface IFieldConfig {
   label: string;
@@ -25,6 +18,12 @@ interface HomeSearchProps {
   defaultField?: string;
 }
 
+const typeLabelMap: Record<string, string> = {
+  doctor: "Bác sĩ",
+  service: "Dịch vụ",
+  specialty: "Chuyên khoa",
+};
+
 const HomeSearch = ({
   suggestedData,
   fields,
@@ -33,10 +32,29 @@ const HomeSearch = ({
   const router = useRouter();
   const [searchField, setSearchField] = useState<string>(defaultField);
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
-  const filteredOptions = useMemo(
-    () => suggestedData.filter((item) => item.type === searchField),
-    [suggestedData, searchField]
-  );
+
+  const filteredOptions = useMemo(() => {
+    if (searchField === "all") return suggestedData;
+    return suggestedData.filter((item) => item.type === searchField);
+  }, [suggestedData, searchField]);
+
+  const groupedOptions = useMemo(() => {
+    if (searchField !== "all") return filteredOptions;
+
+    const grouped = suggestedData.reduce((acc, item) => {
+      if (item.type) {
+        const group = acc[item.type] || [];
+        group.push(item);
+        acc[item.type] = group;
+      }
+      return acc;
+    }, {} as Record<string, ISearchOption[]>);
+
+    return Object.entries(grouped).map(([type, options]) => ({
+      label: typeLabelMap[type] || type,
+      options,
+    }));
+  }, [searchField, suggestedData, filteredOptions]);
 
   const handleSelect = (selected: SingleValue<ISearchOption>) => {
     if (selected) {
@@ -45,9 +63,8 @@ const HomeSearch = ({
         service: "services/service-detail",
         specialty: "specialties",
       };
-
-      const path = typePathMap[selected.type] || selected.type;
-      router.push(`/patient/${path}/${selected.id}`);
+      const path = selected.type ? typePathMap[selected.type] || selected.type : "";
+      router.push(`/patient/${path}/${selected.value}`);
     }
   };
 
@@ -69,8 +86,6 @@ const HomeSearch = ({
       <span className="truncate">{data.label}</span>
     </div>
   );
-  
-
 
   const customOption = (props: OptionProps<ISearchOption, false>) => {
     const { data, innerRef, innerProps, isFocused } = props;
@@ -87,24 +102,30 @@ const HomeSearch = ({
           alt={data.label}
           height={50}
           width={50}
-          className="rounded-md "
+          className="rounded-md"
         />
         <span className="text-gray-800">{data.label}</span>
       </div>
     );
   };
 
+  const formatGroupLabel = (group: GroupBase<ISearchOption>) => (
+    <div className="py-1 border-b border-gray-300 text-sm font-semibold text-gray-600">
+      {group.label?.toUpperCase() || ""}
+    </div>
+  );
+
   return (
     <div className="w-[600px] mx-auto my-20">
-      <div className="flex  items-center">
+      <div className="flex items-center">
         {/* Select Field Type */}
         <select
           value={searchField}
           onChange={(e) => setSearchField(e.target.value)}
-          className="border h-[50px]  rounded-md px-3 py-2 text-sm text-gray-700 focus:outline-none font-semibold pr-2"
+          className="border h-[50px] rounded-md px-3 py-2 text-sm text-gray-700 focus:outline-none font-semibold pr-2"
         >
           {fields.map((field) => (
-            <option key={field.value} value={field.value} className="text-gray-700 py-5">
+            <option key={field.value} value={field.value}>
               {field.label}
             </option>
           ))}
@@ -113,19 +134,20 @@ const HomeSearch = ({
         {/* Search box */}
         <div className="flex-1">
           <Select
-            options={filteredOptions}
+            options={searchField === "all" ? groupedOptions : filteredOptions}
             placeholder={placeholder}
             onChange={handleSelect}
             components={{
               SingleValue: customSingleValue,
               Option: customOption,
             }}
+            formatGroupLabel={searchField === "all" ? formatGroupLabel : undefined}
             styles={{
               control: (base) => ({
                 ...base,
                 minHeight: "50px",
                 boxShadow: "none",
-                "&:hover": { borderColor: "#374151" }, 
+                "&:hover": { borderColor: "#374151" },
               }),
               valueContainer: (base) => ({
                 ...base,
@@ -149,8 +171,6 @@ const HomeSearch = ({
                 maxWidth: "100%",
               }),
             }}
-            
-            
           />
         </div>
       </div>

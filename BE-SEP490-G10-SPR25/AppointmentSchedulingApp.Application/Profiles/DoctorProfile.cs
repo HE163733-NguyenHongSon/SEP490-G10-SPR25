@@ -37,7 +37,12 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => src.Organization))
                 .ForMember(dest => dest.Prize, opt => opt.MapFrom(src => src.Prize))
                 .ForMember(dest => dest.ResearchProject, opt => opt.MapFrom(src => src.ResearchProject))
-                .ForMember(dest => dest.TrainingProcess, opt => opt.MapFrom(src => src.TrainingProcess)).ReverseMap();
+                .ForMember(dest => dest.TrainingProcess, opt => opt.MapFrom(src => src.TrainingProcess))
+                .ForMember(dest => dest.Schedules, opt => opt.MapFrom(src => src.DoctorSchedules))
+                .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.Services))
+                .ForMember(dest => dest.Feedbacks, opt => opt.MapFrom(src => src.DoctorSchedules.SelectMany(ds => ds.Reservations).Where(r => r.Status.Equals("Hoàn thành") && r.Feedback != null).Select(r => r.Feedback)))
+                .ReverseMap();
+                 
 
 
 

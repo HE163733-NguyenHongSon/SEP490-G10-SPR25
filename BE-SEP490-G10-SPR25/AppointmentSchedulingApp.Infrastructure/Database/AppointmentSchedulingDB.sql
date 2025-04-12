@@ -195,13 +195,15 @@ CREATE TABLE Doctors (
     WorkExperience NVARCHAR(MAX),
     AcademicTitle NVARCHAR(50),
     Degree NVARCHAR(50),
+    Rating FLOAT NOT NULL DEFAULT 0,
+    RatingCount INT NOT NULL DEFAULT 0,
     PRIMARY KEY (DoctorId),
     CONSTRAINT Doctor_FK FOREIGN KEY (DoctorId) REFERENCES Users (UserId)
 );
 
 INSERT INTO Doctors (
     DoctorId,
-    CurrentWork,
+    CurrentWork,
     DoctorDescription,
     Organization,
     Prize,
@@ -209,7 +211,9 @@ INSERT INTO Doctors (
     TrainingProcess,
     WorkExperience,
     AcademicTitle,
-    Degree
+    Degree,
+    Rating,
+	RatingCount
 )
 VALUES
 (
@@ -228,8 +232,10 @@ VALUES
      tham gia nhiều khóa đào tạo ngắn hạn về tim mạch tại Nhật Bản và Hoa Kỳ.',
     N'10 năm kinh nghiệm công tác tại các bệnh viện lớn,
      tham gia giảng dạy và hướng dẫn nghiên cứu sinh về các phương pháp điều trị bệnh tim hiện đại.',
-    N'PGS,TS',
-    N'BS.CK2'
+    N'PGS.TS',
+    N'BS.CK2',
+    4.5,
+	23
 ),
 (
     34,
@@ -247,7 +253,10 @@ VALUES
     N'8 năm kinh nghiệm làm việc tại các bệnh viện lớn,
      tham gia nhiều hội thảo quốc tế về nhi khoa và dinh dưỡng trẻ em.',
     N'PGS',
-    N'BS.CK1'
+    N'BS.CK1',
+     5,
+	 10
+
 ),
 (
     35,
@@ -263,8 +272,10 @@ VALUES
      tham gia khóa đào tạo chuyên sâu tại Hàn Quốc về công nghệ làm đẹp bằng laser và tế bào gốc.',
     N'5 năm kinh nghiệm điều trị bệnh lý da liễu tại các bệnh viện lớn và phòng khám tư nhân,
      giảng dạy tại các hội thảo về công nghệ điều trị da tiên tiến.',
-    N'GS,TS',
-    N'BS.CK2'
+    N'GS.TS',
+    N'BS.CK2',
+    4.3,
+	35
 ),
 (
      36,
@@ -277,7 +288,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Dược TP.HCM, đào tạo chuyên sâu tại Nhật Bản.',
     N'12 năm kinh nghiệm, từng công tác tại nhiều bệnh viện lớn.',
     N'TS',
-    N'BS.CK2'),
+    N'BS.CK2',
+    5,
+	43
+),
 (
     37,
 	N'Bác sĩ sản phụ khoa tại Bệnh viện Phụ sản Trung Ương',
@@ -289,7 +303,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Hà Nội, đào tạo tại Pháp.',
     N'15 năm kinh nghiệm tại các bệnh viện lớn.',
     N'PGS',
-    N'BS.CK2'),
+    N'BS.CK2',
+    4.5,
+	23
+),
 (
      38,
 	N'Chuyên gia y học cổ truyền tại Viện Y học Cổ truyền',
@@ -301,7 +318,10 @@ VALUES
     N'Tốt nghiệp Học viện Y dược học Cổ truyền.',
     N'Hơn 20 năm kinh nghiệm trong ngành.',
     N'GS',
-    N'BS.CK2'),
+    N'BS.CK2',
+    3.8,
+	12
+),
 (
      39,
 	N'Bác sĩ da liễu tại Phòng khám HealthCare',
@@ -317,8 +337,11 @@ VALUES
      tham gia khóa đào tạo chuyên sâu tại Hàn Quốc về công nghệ làm đẹp bằng laser và tế bào gốc.',
     N'5 năm kinh nghiệm điều trị bệnh lý da liễu tại các bệnh viện lớn và phòng khám tư nhân,
      giảng dạy tại các hội thảo về công nghệ điều trị da tiên tiến.',
-    N'GS,TS',
-    N'BS.CK2'),
+    N'GS.TS',
+    N'BS.CK2',
+    4.6,
+	12
+),
 
 (
     40,
@@ -330,7 +353,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Hà Nội, đào tạo chuyên sâu tại Đức.',
     N'18 năm kinh nghiệm.',
     N'GS',
-    N'BS.CK2'),
+    N'BS.CK2',
+     4.8,
+	 12
+),
 
 (
    41,
@@ -342,7 +368,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Dược TP.HCM.',
     N'16 năm kinh nghiệm.',
     N'PGS',
-    N'BS.CK2'),
+    N'BS.CK2',
+    4.8,
+	36
+),
 
 (
    42,
@@ -354,7 +383,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Hà Nội.',
     N'10 năm kinh nghiệm.',
     N'TS',
-    N'BS.CK2'),
+    N'BS.CK2',
+    3.8,
+	12
+),
 
 (
    43,
@@ -366,7 +398,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Dược TP.HCM.',
     N'12 năm kinh nghiệm.',
     N'PGS',
-    N'BS.CK2'),
+    N'BS.CK2',
+     5,
+	 23
+),
 
 (
    44,
@@ -378,7 +413,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Hà Nội.',
     N'15 năm kinh nghiệm.',
     N'GS',
-    N'BS.CK2'),
+    N'BS.CK2',
+     4.7,
+	 10
+),
 
 (
    45,
@@ -390,7 +428,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Dược TP.HCM.',
     N'14 năm kinh nghiệm.',
     N'PGS',
-    N'BS.CK2'),
+    N'BS.CK2',
+    4.5,
+	12
+),
 
 (
    46,
@@ -402,8 +443,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Hà Nội.',
     N'20 năm kinh nghiệm.',
     N'GS',
-    N'BS.CK1'),
-
+    N'BS.CK1',
+    3.4,
+	5
+),
 (
    47,
     N'Bác sĩ phẫu thuật chỉnh hình tại Bệnh viện Việt Đức',
@@ -414,7 +457,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Hà Nội.',
     N'22 năm kinh nghiệm.',
     N'PGS',
-    N'BS.CK2'),
+    N'BS.CK2',
+    4.7,
+	20
+),
 
 (
    48,
@@ -426,7 +472,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Dược TP.HCM.',
     N'18 năm kinh nghiệm.',
     N'GS',
-    N'BS.CK1'),
+    N'BS.CK1',
+     4.6,
+	 12
+),
 
 (
    49,
@@ -438,7 +487,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Hà Nội.',
     N'16 năm kinh nghiệm.',
     N'PGS',
-    N'BS.CK2'),
+    N'BS.CK2',
+    3.4,
+    4
+),
 
 (
    50,
@@ -450,7 +502,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Hà Nội.',
     N'14 năm kinh nghiệm.',
     N'TS',
-    N'BS.CK1'),
+    N'BS.CK1',
+    4.5,  
+	12
+),
 
 (
    51,
@@ -462,7 +517,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Hà Nội.',
     N'20 năm kinh nghiệm.',
     N'GS',
-    N'BS.CK1'),
+    N'BS.CK1',
+    4.5,
+	6
+),
 
 (
    52,
@@ -474,7 +532,10 @@ VALUES
     N'Tốt nghiệp Đại học Y Dược TP.HCM.',
     N'12 năm kinh nghiệm.',
     N'PGS',
-    N'BS.CK2');
+    N'BS.CK2',
+    4.8,
+	45
+);
 
 
 -------------------------------------------------------------------------------------------------------------------------------
@@ -616,138 +677,140 @@ CREATE TABLE Services (
     Process NVARCHAR(MAX),
     TreatmentTechniques NVARCHAR(MAX),
     Price DECIMAL(18,2) NOT NULL,
-    EstimatedTime TIME,
-    IsPrepayment BIT DEFAULT 0,
+    EstimatedTime TIME NOT NULL,
+    IsPrepayment BIT DEFAULT 0, 
     SpecialtyId INT NOT NULL,
-    Image NVARCHAR(MAX),
+    Image NVARCHAR(200),
+	Rating FLOAT NOT NULL DEFAULT 0,
+    RatingCount INT NOT NULL DEFAULT 0,
     FOREIGN KEY (SpecialtyId) REFERENCES Specialties(SpecialtyId)
 );
 
 
 
-INSERT INTO Services (ServiceName, Overview, Process, TreatmentTechniques, Price, EstimatedTime, IsPrepayment, SpecialtyId, Image)
+INSERT INTO Services (ServiceName, Overview, Process, TreatmentTechniques, Price, EstimatedTime, IsPrepayment, SpecialtyId, Image,Rating,RatingCount)
 VALUES
 (N'Khám tim mạch',
   N'Khám tim mạch giúp đánh giá tình trạng sức khỏe của tim và hệ tuần hoàn, phát hiện sớm các bệnh lý tim mạch như cao huyết áp, bệnh mạch vành, suy tim hoặc rối loạn nhịp tim. Việc kiểm tra định kỳ giúp phát hiện sớm và điều trị kịp thời các vấn đề về tim mạch.',
   N'1. Khai thác tiền sử bệnh tim mạch của bệnh nhân và gia đình.\n2. Đo các chỉ số sinh tồn: huyết áp, nhịp tim, SpO2.\n3. Khám lâm sàng hệ tim mạch, nghe tim bằng ống nghe.\n4. Thực hiện các xét nghiệm như điện tâm đồ (ECG), siêu âm tim, xét nghiệm mỡ máu.\n5. Đánh giá tình trạng tim mạch và tư vấn điều trị hoặc phòng ngừa bệnh lý.',
   N'Sử dụng máy đo huyết áp, máy điện tim (ECG), máy siêu âm tim Doppler, thiết bị đo cholesterol và các xét nghiệm sinh hóa máu.',
-  600000, '00:20:00', 0, 2, N'dichvu_1.jpg'),
+  600000, '00:20:00', 0, 2, N'dichvu_1.jpg',4.6,12),
 
 
 (N'Khám răng',
   N'Khám răng là quá trình kiểm tra tình trạng sức khỏe răng miệng, phát hiện các vấn đề như sâu răng, viêm nướu hoặc các bệnh lý liên quan khác. Khám răng định kỳ giúp duy trì sức khỏe răng miệng tốt.',
   N'1. Kiểm tra răng miệng tổng quát.\n2. Đánh giá tình trạng nướu, men răng và các tổn thương khác.\n3. Chụp X-quang răng nếu cần thiết.\n4. Tư vấn về chăm sóc răng miệng và điều trị nếu có vấn đề.',
   N'Sử dụng máy khoan răng, máy cạo vôi răng, dụng cụ vệ sinh răng miệng và máy chụp X-quang.',
-  700000, '00:05:00', 1, 12, N'dichvu_2.jpg'),
+  700000, '00:05:00', 1, 12, N'dichvu_2.jpg',4.5,10),
 
 (N'Khám mắt',
  N'Khám mắt là quy trình kiểm tra chức năng thị lực và các bệnh lý về mắt như cận thị, loạn thị, viễn thị và các vấn đề khác về võng mạc.',
  N'1. Đo thị lực bằng bảng kiểm tra.\n2. Đo nhãn áp để kiểm tra nguy cơ tăng nhãn áp.\n3. Soi đáy mắt để phát hiện bệnh lý võng mạc.\n4. Đánh giá tổng quan sức khỏe mắt.',
  N'Sử dụng máy đo thị lực tự động, máy đo nhãn áp, đèn soi đáy mắt và thiết bị laser nếu cần.',
- 800000, '01:05:00', 1, 11, N'dichvu_3.jpg'),
+ 800000, '01:05:00', 1, 11, N'dichvu_3.jpg',5,10),
 
 (N'Xét nghiệm',
  N'Xét nghiệm y tế giúp chẩn đoán và theo dõi tình trạng sức khỏe của bệnh nhân thông qua việc phân tích mẫu máu, nước tiểu hoặc các mẫu sinh học khác.',
  N'1. Thu thập mẫu máu hoặc nước tiểu.\n2. Xét nghiệm sinh hóa, huyết học hoặc vi sinh.\n3. Đánh giá kết quả và lập báo cáo.\n4. Tư vấn về các chỉ số bất thường nếu có.',
  N'Sử dụng máy xét nghiệm tự động, máy phân tích sinh hóa và dụng cụ lấy mẫu vô trùng.',
- 300000, '00:05:00', 1, 15, N'dichvu_4.jpg'),
+ 300000, '00:05:00', 1, 15, N'dichvu_4.jpg',4.5,3),
 
 (N'Vật lý trị liệu',
  N'Vật lý trị liệu là quá trình phục hồi chức năng vận động, giảm đau và cải thiện chất lượng cuộc sống cho bệnh nhân bị chấn thương hoặc các bệnh lý cơ xương khớp.',
  N'1. Đánh giá tình trạng cơ bắp và khớp.\n2. Xây dựng kế hoạch phục hồi chức năng.\n3. Thực hiện các bài tập phục hồi và massage trị liệu.\n4. Theo dõi và điều chỉnh phương pháp điều trị.',
  N'Sử dụng máy siêu âm trị liệu, máy điện xung, máy kéo giãn cột sống và dụng cụ tập luyện.',
- 600000, '01:30:00', 0,  7, N'dichvu_5.jpg'),
+ 600000, '01:30:00', 0,  7, N'dichvu_5.jpg',4.7,23),
 
 (N'Tư vấn tâm lý',
  N'Tư vấn tâm lý giúp bệnh nhân giải tỏa căng thẳng, lo âu và các vấn đề tinh thần thông qua liệu pháp trò chuyện và tư vấn cá nhân.',
  N'1. Khai thác tình trạng tâm lý của bệnh nhân.\n2. Thực hiện các bài kiểm tra tâm lý nếu cần.\n3. Áp dụng liệu pháp nhận thức hành vi (CBT).\n4. Đưa ra các phương pháp quản lý căng thẳng.',
  N'Kỹ thuật CBT, liệu pháp thư giãn, và trị liệu cá nhân.',
- 400000, '01:00:00', 0,  14, N'dichvu_6.jpg'),
+ 400000, '01:00:00', 0,  14, N'dichvu_6.jpg',4.8,23),
 
 (N'Khám nhi',
  N'Khám nhi là quá trình kiểm tra sức khỏe tổng quát cho trẻ em, nhằm phát hiện sớm các bệnh lý tiềm ẩn, theo dõi quá trình phát triển thể chất và tiêm chủng định kỳ.',
  N'1. Khai thác tiền sử sức khỏe và bệnh sử của trẻ.\n2. Đo các chỉ số sinh tồn như chiều cao, cân nặng, nhiệt độ, nhịp tim.\n3. Khám lâm sàng các hệ cơ quan (hô hấp, tiêu hóa, tim mạch, thần kinh...).\n4. Đánh giá tình trạng dinh dưỡng và phát triển của trẻ.\n5. Tư vấn tiêm chủng và chăm sóc sức khỏe định kỳ.',
  N'Máy đo huyết áp trẻ em, cân điện tử, máy đo nhiệt độ, thiết bị đo chiều cao.',
- 600000, '00:30:00', 1,  10, N'dichvu_7.jpg'),
+ 600000, '00:30:00', 1,  10, N'dichvu_7.jpg',4.9,34),
 
 (N'Siêu âm',
  N'Siêu âm là kỹ thuật chẩn đoán hình ảnh không xâm lấn, giúp phát hiện các bất thường bên trong cơ thể qua sóng siêu âm.',
  N'1. Khai thác triệu chứng lâm sàng và bệnh sử.\n2. Chuẩn bị vùng siêu âm bằng gel dẫn sóng.\n3. Thực hiện siêu âm bằng đầu dò chuyên dụng.\n4. Phân tích kết quả hình ảnh trên màn hình.\n5. Tư vấn chẩn đoán và hướng điều trị.',
  N'Máy siêu âm 4D, đầu dò siêu âm, máy tính phân tích hình ảnh.',
- 1000000, '00:30:00', 1,  16, N'dichvu_8.jpg'),
+ 1000000, '00:30:00', 1,  16, N'dichvu_8.jpg',3.5,3),
 
 (N'Khám da liễu',
  N'Khám da liễu giúp phát hiện và điều trị các bệnh lý về da như viêm da, mụn trứng cá, bệnh da liễu truyền nhiễm và các rối loạn về sắc tố.',
  N'1. Khai thác tiền sử bệnh lý về da.\n2. Khám da bằng kính lúp và ánh sáng chuyên dụng.\n3. Đánh giá tổn thương da và vùng bị ảnh hưởng.\n4. Đề xuất các liệu pháp như liệu pháp laser, liệu pháp lạnh.\n5. Tư vấn chăm sóc da và phòng ngừa.',
  N'Máy laser, máy soi da, thiết bị trị liệu bằng lạnh.',
- 700000, '00:45:00', 0, 13, N'dichvu_9.jpg'),
+ 700000, '00:45:00', 0, 13, N'dichvu_9.jpg',4,12),
 
 (N'Tư vấn dinh dưỡng', 
  N'Tư vấn dinh dưỡng là quá trình lập kế hoạch chế độ ăn uống hợp lý...', 
  N'1. Đánh giá tình trạng dinh dưỡng...\n2. Thực hiện xét nghiệm...', 
  N'Máy đo chỉ số cơ thể, bảng phân tích dinh dưỡng...', 
- 500000, '01:00:00', 0, 1, N'dichvu_10.jpg'), 
+ 500000, '01:00:00', 0, 1, N'dichvu_10.jpg',4.7,23), 
 
 (N'Tiêm chủng', 
  N'Tiêm phòng định kỳ và du lịch nhằm bảo vệ sức khỏe...', 
  N'1. Tư vấn về các loại vắc-xin...\n2. Tiêm vắc-xin...',      
  N'Vắc-xin các loại, bộ tiêm chủng...', 
- 200000, '00:15:00', 1, 10, N'dichvu_11.jpg'), 
+ 200000, '00:15:00', 1, 10, N'dichvu_11.jpg',4.3,12), 
 
 (N'Chiropractic', 
  N'Kiểm tra và nắn chỉnh cột sống...', 
  N'1. Đánh giá tình trạng cột sống...\n2. Thực hiện các kỹ thuật...', 
  N'Bàn nắn chỉnh cột sống, dụng cụ hỗ trợ...', 
- 800000, '01:00:00', 0, 7, N'dichvu_12.jpg'), 
+ 800000, '01:00:00', 0, 7, N'dichvu_12.jpg',4.6,34), 
 
 (N'Đo thính lực', 
  N'Đánh giá khả năng nghe và xác định...', 
  N'1. Khai thác tiền sử thính giác...\n2. Kiểm tra thính lực...', 
  N'Máy đo thính lực, máy trợ thính...', 
- 600000, '00:30:00', 0, 12, N'dichvu_13.jpg'), 
+ 600000, '00:30:00', 0, 12, N'dichvu_13.jpg',5,34), 
 
 (N'Khám gan', 
  N'Kiểm tra chức năng và sức khỏe của gan...', 
  N'1. Khai thác bệnh sử liên quan đến gan...\n2. Siêu âm gan, xét nghiệm chức năng gan...', 
  N'Máy siêu âm, thiết bị xét nghiệm men gan...', 
- 900000, '00:45:00', 1, 2, N'dichvu_14.jpg'),
+ 900000, '00:45:00', 1, 2, N'dichvu_14.jpg',4.7,12),
 
 
 (N'Khám chỉnh hình', 
  N'Kiểm tra và điều trị các bệnh lý về xương khớp...', 
  N'1. Khai thác bệnh sử xương khớp...\n2. Chẩn đoán hình ảnh...', 
  N'Bàn khám chỉnh hình, dụng cụ nẹp...', 
- 850000, '01:00:00', 0, 7, N'dichvu_15.jpg'), 
+ 850000, '01:00:00', 0, 7, N'dichvu_15.jpg',4.5,10), 
 
 (N'Tư vấn hiếm muộn', 
  N'Hỗ trợ tư vấn vô sinh hiếm muộn...', 
  N'1. Khai thác bệnh sử sức khỏe sinh sản...\n2. Xét nghiệm hormone...', 
  N'Thiết bị siêu âm, máy xét nghiệm sinh hóa...', 
- 1200000, '01:30:00', 1, 8, N'dichvu_16.jpg'), 
+ 1200000, '01:30:00', 1, 8, N'dichvu_16.jpg',4.3,2), 
 
 (N'Tư vấn tiểu đường', 
  N'Quản lý bệnh tiểu đường...', 
  N'1. Đánh giá tiền sử bệnh lý...\n2. Đo đường huyết...', 
  N'Máy đo đường huyết, bút tiêm insulin...', 
- 450000, '00:30:00', 0, 3, N'dichvu_17.jpg'), 
+ 450000, '00:30:00', 0, 3, N'dichvu_17.jpg',5,34), 
 
 (N'Liệu pháp hô hấp', 
  N'Điều trị và phục hồi chức năng hô hấp...', 
  N'1. Đánh giá tình trạng hô hấp...\n2. Hướng dẫn bài tập thở...', 
  N'Máy khí dung, thiết bị hỗ trợ thở...', 
- 700000, '00:45:00', 0, 16, N'dichvu_18.jpg'), 
+ 700000, '00:45:00', 0, 16, N'dichvu_18.jpg',2,2), 
 
 (N'Khám tiêu hóa', 
  N'Kiểm tra sức khỏe hệ tiêu hóa...', 
  N'1. Khai thác bệnh sử tiêu hóa...\n2. Nội soi dạ dày...', 
  N'Máy nội soi dạ dày, máy nội soi đại tràng...', 
- 1100000, '01:30:00', 1, 4, N'dichvu_19.jpg'),
+ 1100000, '01:30:00', 1, 4, N'dichvu_19.jpg',4.4,24),
 
 (N'Khám thận',
 N'Kiểm tra và đánh giá chức năng thận để phát hiện sớm các vấn đề về tiết niệu.',
 N'1. Khai thác tiền sử bệnh lý liên quan đến thận.\n2. Xét nghiệm nước tiểu, máu để kiểm tra chức năng thận.\n3. Siêu âm thận và đường tiết niệu.\n4. Tư vấn chế độ ăn uống và sinh hoạt.',
 N'Máy siêu âm, máy xét nghiệm, thiết bị đo huyết áp.',
-900000, '00:45:00', 1, 2, N'dichvu_20.jpg');
+900000, '00:45:00', 1, 2, N'dichvu_20.jpg',3.9,3);
 
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------

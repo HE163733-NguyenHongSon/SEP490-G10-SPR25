@@ -8,7 +8,8 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<PatientDetailDTO> GetPatientDetailById(int patientId);
         //Task<PatientDTO> UpdatePatientByReceptionist(PatientContactDTO dto);
 
-        Task<bool> UpdateGuardianOfPatientContact(GuardianOfPatientDTO guardianOfPatientDTO);
-        Task<bool> UpdatePatientContact(PatientUpdateDTO patientUpdateDTO);
+        Task<bool> UpdateGuardianOfPatient(GuardianOfPatientDTO guardianOfPatientDTO);
+        Task<bool> UpdatePatientInfor(PatientUpdateDTO patientUpdateDTO);
+        Task<bool> UpdatePatientInFormation(PatientUpdateDTO patientUpdateDTO);
     }
 }

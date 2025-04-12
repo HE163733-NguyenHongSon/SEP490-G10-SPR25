@@ -12,7 +12,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string UserName { get; set; } = null!;
         public string Phone { get; set; } = null!;
         public string? Gender { get; set; }
-        //public string? Dob { get; set; }
+        public DateOnly Dob { get; set; }
         public string? Address { get; set; }
 
     }

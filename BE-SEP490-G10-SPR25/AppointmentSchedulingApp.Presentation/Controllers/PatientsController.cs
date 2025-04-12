@@ -63,9 +63,9 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             }
         }
 
-        [HttpPut("UpdatePatientContactByReceptionist")]
+        [HttpPut("UpdatePatientInforByReceptionist")]
         [EnableQuery]
-        public async Task<IActionResult> UpdatePatientContactByReceptionist(PatientUpdateDTO patientUpdateDTO)
+        public async Task<IActionResult> UpdatePatientInforByReceptionist(PatientUpdateDTO patientUpdateDTO)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 {
                     return NotFound($"Bệnh nhân với ID={patientUpdateDTO.UserId} không tồn tại!");
                 }
-                var patietUpdate =  await _patientService.UpdatePatientContact(patientUpdateDTO);
+                var patietUpdate =  await _patientService.UpdatePatientInfor(patientUpdateDTO);
                 return Ok(patietUpdate);
             }
             catch (Exception ex)
@@ -90,7 +90,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         {
             try
             {
-                var patientUpdate = await _patientService.UpdateGuardianOfPatientContact(guardianOfPatientDTO);
+                var patientUpdate = await _patientService.UpdateGuardianOfPatient(guardianOfPatientDTO);
                 return Ok(patientUpdate);
             }
             catch (Exception ex)
@@ -98,5 +98,27 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
             }
         }
+
+        [HttpPut("UpdatePatientInformationByReceptionist")]
+        [EnableQuery]
+        public async Task<IActionResult> UpdatePatientInformationByReceptionist(PatientUpdateDTO patientUpdateDTO)
+        {
+            try
+            {
+                var patient = await _patientService.GetPatientDetailById(patientUpdateDTO.UserId);
+
+                if (patient == null)
+                {
+                    return NotFound($"Bệnh nhân với ID={patientUpdateDTO.UserId} không tồn tại!");
+                }
+                var patietUpdate = await _patientService.UpdatePatientInFormation(patientUpdateDTO);
+                return Ok(patietUpdate);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
+        }
+
     }
 }

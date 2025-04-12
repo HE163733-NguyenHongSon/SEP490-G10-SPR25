@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { patientService } from "@/services/patientService";
 import Image from "next/image";
+import Link from 'next/link';
 
 export default function PatientDetailPage({ params }: { params: { patientId: string } }) {
   const [patient, setPatient] = useState<IPatientDetail | null>(null);
@@ -122,7 +123,8 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
                 <dl className="space-y-3">
                   <InfoItem label="CCCD" value={patient.citizenId} />
                   <InfoItem label="Giới tính" value={patient.gender} />
-                  <InfoItem label="Ngày sinh" value={new Date(patient.dob).toLocaleDateString()} />
+                  {/* <InfoItem label="Ngày sinh" value={new Date(patient.dob).toLocaleDateString()} /> */}
+                  <InfoItem label="Ngày sinh" value={patient.dob} />
                   <InfoItem label="Địa chỉ" value={patient.address} />
                   <InfoItem label="Tình trạng" value={patient.mainCondition} highlight />
                 </dl>
@@ -151,6 +153,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
                   Người giám hộ
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InfoItem label="Id" value={patient.guardian?.userId || ''} />
                   <InfoItem label="Họ tên" value={patient.guardian?.userName || ''} />
                   <InfoItem label="Điện thoại" value={patient.guardian?.phone || ''} />
                   <InfoItem label="Email" value={patient.guardian?.email || ''} />
@@ -227,12 +230,14 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
         {/* Footer Actions */}
         <div className="bg-gray-50 px-8 py-4 border-t border-gray-100">
           <div className="flex items-center justify-end space-x-4">
-            <button className="flex items-center px-5 py-2.5 text-gray-600 hover:text-gray-800 transition-colors">
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
-              Chỉnh sửa
-            </button>
+            <Link href={`/receptionist/patient-edit/${patient.userId}`} passHref>
+              <button className="flex items-center px-5 py-2.5 text-gray-600 hover:text-gray-800 transition-colors">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+                Chỉnh sửa hồ sơ
+              </button>
+            </Link>
             <button className="flex items-center px-5 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition-colors">
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />

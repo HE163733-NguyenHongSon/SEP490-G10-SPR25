@@ -20,11 +20,13 @@ namespace AppointmentSchedulingApp.Application.Services
     {
         private readonly IMapper mapper;
         public IUnitOfWork unitOfWork { get; set; }
+        private readonly AppointmentSchedulingDbContext _dbcontext;
 
-        public PatientService(IMapper mapper, IUnitOfWork unitOfWork)
+        public PatientService(IMapper mapper, IUnitOfWork unitOfWork, AppointmentSchedulingDbContext dbcontext)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            _dbcontext = dbcontext;
         }
 
 
@@ -59,40 +61,12 @@ namespace AppointmentSchedulingApp.Application.Services
                 throw;
             }
         }
-
-        //public async Task<PatientDTO> UpdatePatientByReceptionist(PatientContactDTO dto)
-        //{
-        //    try
-        //    {
-        //        var patient = await unitOfWork.UserRepository.Get(p => p.UserId.Equals(dto.PatientId));
-        //        if (patient == null)
-        //        {
-        //            return null;
-        //        }
-
-        //        //mapper.Map(patientDTO, patient);
-        //        //unitOfWork.UserRepository.Update(patient);
-        //        //return mapper.Map<PatientDTO>(patient);
-
-
-        //        //patient.UserId = patient.UserId;
-        //        //patient.FullName = patient.FullName;
-        //        return null;
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
-
-        //}
-
-        public async Task<bool> UpdatePatientContact(PatientUpdateDTO patientUpdateDTO)
+        public async Task<bool> UpdatePatientInfor(PatientUpdateDTO patientUpdateDTO)
         {
             try
             {
                 var patient = await unitOfWork.UserRepository.Get(p => p.UserId.Equals(patientUpdateDTO.UserId));
-
+                
                 if (patient == null)
                 {
                     return false;
@@ -108,7 +82,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 throw;
             }
         }
-        public async Task<bool> UpdateGuardianOfPatientContact(GuardianOfPatientDTO guardianOfPatientDTO)
+        public async Task<bool> UpdateGuardianOfPatient(GuardianOfPatientDTO guardianOfPatientDTO)
         {
             try
             {
@@ -132,5 +106,34 @@ namespace AppointmentSchedulingApp.Application.Services
             }
         }
 
-    }
+        public async Task<bool> UpdatePatientInFormation(PatientUpdateDTO patientUpdateDTO)
+        {
+            try
+            {
+                var patient = await _dbcontext.Users
+                    .Where(p => p.UserId == patientUpdateDTO.UserId)
+                    .FirstOrDefaultAsync();
+                if (patient == null)
+                {
+                    return false;
+                }
+
+                patient.UserName = patientUpdateDTO.UserName;
+                patient.Phone = patientUpdateDTO.Phone;
+                patient.Gender = patientUpdateDTO.Gender;
+                patient.Dob = patientUpdateDTO.Dob;
+                patient.Address = patientUpdateDTO.Address;
+
+                _dbcontext.Users.Update(patient);
+                await _dbcontext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+        }
 }

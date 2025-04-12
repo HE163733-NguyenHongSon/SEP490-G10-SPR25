@@ -16,6 +16,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
 
         public int PatientId {  get; set; }
         public string PatientName {  get; set; }
+        public string PatientImage{  get; set; }
 
         public int  ServiceId  {  get; set; }
         public string ServiceName  {  get; set; }
@@ -31,8 +32,6 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string DoctorFeedbackContent { get; set; } = null!;
 
 
-
-
-        public DateTime FeedbackDate { get; set; }
+        public DateTime  FeedbackDate { get; set; }
     }
 }

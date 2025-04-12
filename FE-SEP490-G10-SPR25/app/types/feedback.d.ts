@@ -4,6 +4,7 @@
     reservationId: number;
     patientId: number;
     patientName: string;
+    patientImage: string;
     serviceId: number;
     serviceName: string;
     doctorId: number;

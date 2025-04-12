@@ -5,6 +5,10 @@ import { doctorService } from "@/services/doctorService";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import { assets } from "@/public/images/assets";
 import ScheduleTab from "@/patient/components/ScheduleTab";
+import { DoctorList } from "@/patient/components/DoctorList";
+import  ListService  from "@/patient/components/ListService";
+import { feedbackService } from "@/services/feedbackService";
+import FeedbackList from "@/patient/components/FeedbackList";
 
 export default async function DoctorDetails({
   params,
@@ -15,13 +19,13 @@ export default async function DoctorDetails({
     params.doctorId
   );
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
-
   const routes = [
     { value: "overview", name: "Tổng quan" },
     { value: "schedule", name: "Lịch bác sĩ" },
     { value: "services", name: "Dịch vụ đảm nhận" },
     { value: "reviews", name: "Bình luận đánh giá" },
   ];
+  const doctorFeedbacks = feedbackService.extractDoctorFeedback(doctorDetail.feedbacks);
 
   return (
     <div
@@ -30,16 +34,17 @@ export default async function DoctorDetails({
     >
       <div className="absolute inset-0 bg-black bg-opacity-50 z-20"></div>
 
-      <div className="relative container w-2/3 text-gray-600 p-5 mt-20 mb-5 z-30 bg-white rounded-xl shadow-2xl">
+      <div className="relative container w-90 text-gray-600 p-5 mt-20 mb-5 z-30 bg-white rounded-xl shadow-2xl">
         <div className="flex flex-row p-6">
           <BackButton />
-          <Image
-            width={150}
-            height={80}
-            alt="image-doctor"
-            src={`${imgUrl}/${doctorDetail.avatarUrl}`}
-            className="rounded-2xl"
-          />
+          <div className="relative h-[100px] w-[100px]">
+            <Image
+              className="rounded-lg object-cover"
+              src={`${imgUrl}/${doctorDetail.avatarUrl}`}
+              fill
+              alt="avatar doctor"
+            />
+          </div>
           <div className="flex flex-col justify-between font-sans px-5">
             <h1 className="font-semibold text-lg text-gray-700">
               <span className="mr-2">
@@ -145,16 +150,20 @@ export default async function DoctorDetails({
               <ScheduleTab />
             </Tabs.Content>
             <Tabs.Content value="services">
-              <p>Các dịch vụ mà bác sĩ đảm nhận</p>
+              <ListService items={doctorDetail.services} displayView="slider"/>
             </Tabs.Content>
             <Tabs.Content value="reviews">
-              <p>Đánh giá và bình luận từ bệnh nhân</p>
+            <FeedbackList feedbacks={doctorFeedbacks} displayView="list" />
             </Tabs.Content>
           </div>
-          <div className=" h-[60vh] overflow-y-auto">
+          <div className=" h-[60vh] overflow-y-auto flex flex-col  items-center justify-center">
             <h6 className="max-w-fit text-xl  font-bold text-center   text-gray-600   drop-shadow-sm">
               Các bác sĩ cùng chuyên khoa
             </h6>
+            <DoctorList
+              items={doctorDetail.relevantDoctors}
+              displayView="slider"
+            />
           </div>
         </Tabs.Root>
       </div>

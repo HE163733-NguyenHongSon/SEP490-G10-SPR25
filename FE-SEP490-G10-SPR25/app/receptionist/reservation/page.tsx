@@ -1,152 +1,100 @@
 "use client";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Popconfirm, Space, Table, message } from "antd";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import PageBreadCrumb from "../components/PageBreadCrumb";
+import { Button, Space, Table, message } from "antd";
+import { useState } from "react";
 
-interface ISpecialty {
-  specialtyId: number;
-  specialtyName: string;
-  description: string;
-  image: string;
-  createdAt: string;
+interface IReservation {
+  reservationId: number;
+  ServiceInformation: string;
+  DoctorScheduleInformation: string;
+  ReasonOfReservation: string;
+  updateDate: string;
 }
 
-const SpecialtiesManagement = () => {
-  const [specialties, setSpecialties] = useState<ISpecialty[]>([]);
-  useEffect(() => {
-    const fetchSpecialties = async() => {
-      const response =  await axios.get("http://localhost:5220/api/Specialties")
-      setSpecialties(response.data)
-    }
-    fetchSpecialties()
-  },[])
+const Reservation = () => {
+  const [reservations, setReservations] = useState<IReservation[]>([
+    {
+      reservationId: 1,
+      ServiceInformation: "General Consultation Service - 135.000vnd",
+      DoctorScheduleInformation: "Examination by PGS.TS.BS.CKII Trần Văn Hinh doctor\nExamination on 15/04/2025 from 9h15p to 10h15p in room A102",
+      ReasonOfReservation: "Routine health check",
+      updateDate: "2025-04-10",
+    },
+    {
+      reservationId: 2,
+      ServiceInformation: "General Consultation Service - 140.000vnd",
+      DoctorScheduleInformation: "Examination by PGS.TS.BS.CKII Trần Văn Hinh doctor\nExamination on 10/05/2025 - 9h15p - room A102",
+      ReasonOfReservation: "Annual dental maintenance",
+      updateDate: "2025-04-11",
+    },
+    {
+      reservationId: 3,
+      ServiceInformation: "General Consultation Service - 160.000vnd",
+      DoctorScheduleInformation: "Examination by PGS.TS.BS.CKII Trần Văn Hinh doctor\nExamination on 25/05/2025 - 9h15p - room A102",
+      ReasonOfReservation: "Vision issues",
+      updateDate: "2025-04-12",
+    },
+  ]);
 
-  const [form] = Form.useForm();
-  const [editingSpecialty, setEditingSpecialty] = useState<ISpecialty | null>(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const showModal = () => {
-    setEditingSpecialty(null);
-    form.resetFields();
-    setIsModalVisible(true);
-  };
-  const handleEdit = (specialty: ISpecialty) => {
-    setEditingSpecialty(specialty);                
-    form.setFieldsValue(specialty);               
-    setIsModalVisible(true);                       
+  const handleConfirm = (record: IReservation) => {
+    message.success(`Confirmed reservation ID: ${record.reservationId}`);
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      await axios.delete(`http://localhost:5220/api/Specialties/${id}`);
-      setSpecialties((prev) => prev.filter((s) => s.specialtyId !== id));
-  
-      message.success("Deleted successfully");
-    } catch (error) {
-      message.error("Failed to delete");
-    }
+  const handleCancel = (record: IReservation) => {
+    message.warning(`Cancelled reservation ID: ${record.reservationId}`);
   };
-  
-
-  const handleSubmit = async (values: any) => {
-    try {
-      if (editingSpecialty) {
-        const response = await axios.put(
-          `http://localhost:5220/api/Specialties/${editingSpecialty.specialtyId}`,
-          { ...editingSpecialty, ...values }
-        );
-  
-        const updated = response.data;
-  
-        setSpecialties((prev) =>
-          prev.map((s) =>
-            s.specialtyId === updated.specialtyId ? updated : s
-          )
-        );
-  
-        message.success("Updated successfully");
-      } else {
-        const response = await axios.post("http://localhost:5220/api/Specialties", {
-          ...values,
-          createdAt: new Date().toISOString(),
-        });
-  
-        setSpecialties((prev) => [...prev, response.data]);
-        message.success("Created successfully");
-      }
-  
-      setIsModalVisible(false);
-      setEditingSpecialty(null);
-      form.resetFields();
-    } catch (err) {
-      console.error("Error submitting form", err);
-      message.error("Error submitting form");
-    }
-  };
-  
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "specialtyId",
-      key: "specialtyId",
-      width: "10%",
+      title: "Reservation Id",
+      dataIndex: "reservationId",
+      key: "reservationId",
     },
     {
-      title: "Name",
-      dataIndex: "specialtyName",
-      key: "specialtyName",
-      width: "20%",
+      title: "Service Information",
+      dataIndex: "ServiceInformation",
+      key: "ServiceInformation",
+      render: (text: string) => (
+        <div className="flex items-start space-x-4">
+          <img
+            src="https://via.placeholder.com/60"
+            alt="Service"
+            className="w-14 h-14 object-cover rounded-md"
+          />
+          <div className="text-sm text-gray-900">{text}</div>
+        </div>
+      ),
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      width: "30%",
+      title: "Doctor Schedule Information",
+      dataIndex: "DoctorScheduleInformation",
+      key: "DoctorScheduleInformation",
+      render: (text: string) => (
+        <div className="text-sm whitespace-pre-line text-gray-700">
+          {text}
+        </div>
+      ),
     },
     {
-      title: "Image",
-      dataIndex: "image",
-      key: "image",
-      width: "15%",
-      render: (url: string) => <img src={url} alt="Specialty" className="h-12 w-auto" />,
+      title: "Reason Of Reservation",
+      dataIndex: "ReasonOfReservation",
+      key: "ReasonOfReservation",
     },
     {
-      title: "Created At",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      width: "15%",
+      title: "Update Date",
+      dataIndex: "updateDate",
+      key: "updateDate",
     },
     {
-      title: "Actions",
-      key: "actions",
-      width: "10%",
-      render: (_: any, specialty: ISpecialty) => (
+      title: "Action",
+      key: "action",
+      render: (_: any, record: IReservation) => (
         <Space size="middle">
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(specialty)}
-            type="primary"
-            size="small"
-          >
-            Edit
+          <Button onClick={() => handleConfirm(record)} type="primary" size="small">
+            Confirm
           </Button>
-          <Popconfirm
-            title="Are you sure you want to delete this service?"
-            onConfirm={() => handleDelete(specialty.specialtyId)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button
-              icon={<DeleteOutlined />}
-              danger
-              size="small"
-            >
-              Delete
-            </Button>
-          </Popconfirm>
+          <Button onClick={() => handleCancel(record)} danger size="small">
+            Cancel
+          </Button>
         </Space>
       ),
     },
@@ -155,66 +103,12 @@ const SpecialtiesManagement = () => {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Specialty Management</h1>
+        <h1 className="text-2xl font-bold">Reservation Management</h1>
       </div>
 
-      <div className="mb-6 flex justify-between items-center">
-        <PageBreadCrumb pageTitle="Specialty Management" />
-        <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
-          Add New Specialty
-        </Button>
-      </div>
-
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <Table dataSource={specialties} columns={columns} rowKey="specialtyId" />
-      </div>
-
-      <Modal
-        title={editingSpecialty ? "Edit Specialty" : "Add New Specialty"}
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        width={700}
-      >
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item
-            name="specialtyName"
-            label="Specialty Name"
-            rules={[{ required: true, message: "Please enter the name" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true, message: "Please enter the description" }]}
-          >
-            <Input.TextArea rows={3} />
-          </Form.Item>
-
-          <Form.Item
-            name="image"
-            label="Image URL"
-            rules={[{ required: true, message: "Please enter the image URL" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item>
-            <div className="flex justify-end">
-              <Button onClick={() => setIsModalVisible(false)} style={{ marginRight: 8 }}>
-                Cancel
-              </Button>
-              <Button type="primary" htmlType="submit">
-                {editingSpecialty ? "Update" : "Create"}
-              </Button>
-            </div>
-          </Form.Item>
-        </Form>
-      </Modal>
+      <Table dataSource={reservations} columns={columns} rowKey="reservationId" />
     </div>
   );
 };
 
-export default SpecialtiesManagement;
+export default Reservation;

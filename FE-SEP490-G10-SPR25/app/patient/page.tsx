@@ -41,24 +41,21 @@ const HomePage = async () => {
     ...specialties.map((s: ISpecialty) => ({
       label: s.specialtyName,
       value: s.specialtyId.toString(),
-      id: Number(s.specialtyId),
       image: s.image ?? "",
       type: "specialty",
     })),
     ...doctors.map((d: IDoctor) => ({
       label: d.doctorName,
       value: d.doctorId.toString(),
-      id: Number(d.doctorId),
       image: d.avatarUrl ?? "",
       type: "doctor",
     })),
     ...services.map((s: ServiceDTO) => ({
       label: s.serviceName,
       value: s.serviceId.toString(),
-      id: Number(s.serviceId),
       image: s.image ?? "",
       type: "service",
-    }))
+    })),
   ];
 
   return (
@@ -71,6 +68,11 @@ const HomePage = async () => {
       <div className="max-w-fit flex flex-col items-center justify-center container text-center p-6 md:px-5 lg:px-10 lg:mx-48 text-white z-30">
         <HomeSearch
           fields={[
+            {
+              label: "Tìm tất cả",
+              value: "all",
+              placeholder: "Tìm tất cả...",
+            },
             {
               label: "Chuyên khoa",
               value: "specialty",

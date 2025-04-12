@@ -23,7 +23,7 @@ const DoctorsPage = async ({
 
   let doctors: IDoctor[] = [];
   const sortOptions: ISortOption[] = [
-    { label: "Đánh giá cao nhất", value: "hightest_rating" },
+    { label: "Đánh giá cao nhất", value: "highest_rated" },
     { label: "Nhiều lần khám nhất", value: "most_exam" },
     { label: "Nhiều dịch vụ nhất", value: "most_service" },
     { label: "Học thuật cao nhất", value: "academic_title" },
@@ -62,7 +62,7 @@ const DoctorsPage = async ({
       <div className="flex flex-row flex-wrap items-center justify-center gap-5">
         <SelectSort
           options={sortOptions}
-          initialSelectedValue="hightest_rating"
+          initialSelectedValue="highest_rated"
           path="/patient/doctors"
         />
         <DisplayToggle />

@@ -34,8 +34,14 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public int  NumberOfService { get; set; }
 
         [JsonPropertyOrder(10)]
-        public int NumberOfExamination { get; set; } 
+        public int NumberOfExamination { get; set; }
 
-       
+        [JsonPropertyOrder(11)]
+        public double Rating { get; set; } = 0;
+
+        [JsonPropertyOrder(12)]
+        public int RatingCount { get; set; } = 0;
+
+
     }
 }

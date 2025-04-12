@@ -2,6 +2,7 @@
 using AppointmentSchedulingApp.Application.IServices;
 using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentSchedulingApp.Application.Services
@@ -16,12 +17,13 @@ namespace AppointmentSchedulingApp.Application.Services
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
         }
-
         public async Task<List<ReservationDTO>> GetListReservation()
         {
-            var reservations = await unitOfWork.ReservationRepository.GetAll();
-            return mapper.Map<List<ReservationDTO>>(reservations);
+            var query =  unitOfWork.ReservationRepository.GetQueryable();
+
+            return await  query.ProjectTo<ReservationDTO>(mapper.ConfigurationProvider).ToListAsync();
         }
+        
 
         public async Task<List<ReservationDTO>> GetListReservationByFilter(int patientId, string status, string sortBy)
         {

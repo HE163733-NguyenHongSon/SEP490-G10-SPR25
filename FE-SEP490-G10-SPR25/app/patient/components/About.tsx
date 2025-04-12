@@ -4,11 +4,13 @@ import Image from "next/image";
 import { doctorService } from "@/services/doctorService";
 import { serviceService } from "@/services/serviceService";
 import { specialtyService } from "@/services/specialtyService";
+import { patientService } from "@/services/patientService";
 
 export const About = () => {
   const numberOfDoctors = doctorService.getNumberOfDoctors();
   const numberOfServices = serviceService.getNumberOfServices();
   const numberOfSpecialties = specialtyService.getNumberOfSpecialties();
+  const numberOfExaminedPatients = patientService.getNumberOfExaminedPatients();
   return (
     <div
       className="mt-64 flex flex-col items-center justify-center container p-14 md:px-20 lg:px-32 w-full bg-white rounded-3xl"
@@ -37,25 +39,25 @@ export const About = () => {
           <div className="grid grid-cols-2 gap-6 md:gap-10 w-full 2xl:pr-28">
             <div>
               <p className="text-4xl font-medium text-cyan-500">
-                {numberOfDoctors}+
+                {numberOfDoctors}
               </p>
               <p>Bác sĩ có trình độ</p>
             </div>
             <div>
               <p className="text-4xl font-medium text-cyan-500">
-                {numberOfSpecialties}+
+                {numberOfSpecialties}
               </p>
               <p>Chuyên khoa</p>
             </div>
             <div>
               <p className="text-4xl font-medium text-cyan-500">
-                {numberOfServices}+
+                {numberOfServices}
               </p>
               <p>Dịch vụ y tế</p>
             </div>
             <div>
-              <p className="text-4xl font-medium text-cyan-500">10K+</p>
-              <p>Bệnh nhân hài lòng</p>
+              <p className="text-4xl font-medium text-cyan-500">{numberOfExaminedPatients}</p>
+              <p>Bệnh nhân đã khám</p>
             </div>
           </div>
           <p className="m-4 max-w-lg">

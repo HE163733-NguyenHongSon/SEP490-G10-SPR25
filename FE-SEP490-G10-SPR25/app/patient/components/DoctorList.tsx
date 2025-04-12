@@ -3,6 +3,7 @@ import React from "react";
 import Image from "next/image";
 // import { useRouter } from "next/navigation";
 import Link from "next/link";
+import RatingStars from "@/components/RatingStars";
 
 interface DoctorListProps {
   items: IDoctor[];
@@ -77,6 +78,7 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
 
                 {/* Số lượt đã khám */}
                 <div className="flex items-center gap-2 text-base">
+                <RatingStars rating={doctor.rating} />{doctor.ratingCount} đánh giá
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-5 h-5 text-green-500"

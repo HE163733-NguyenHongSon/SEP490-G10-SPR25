@@ -57,12 +57,13 @@ export const doctorService = {
   ): Promise<IDoctor[]> {
     const query = [];
     const sortOptions: { [key: string]: string } = {
+      hightest_rating: "rating",
       most_exam: "numberOfExamination",
       most_service: "numberOfService",
       academic_title: "academicTitle", 
     };
   
-    const orderBy = sortOptions[sortBy] || "numberOfExamination";
+    const orderBy = sortOptions[sortBy] || "rating";
   
     if (specialties.length > 0) {
       query.push(

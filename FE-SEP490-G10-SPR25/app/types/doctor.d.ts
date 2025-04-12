@@ -9,4 +9,6 @@
    specialtyNames: string[];
    numberOfService: number;
    numberOfExamination: number;
+   rating: number;
+   ratingCount: number;
  }  

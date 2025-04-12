@@ -25,6 +25,8 @@ namespace AppointmentSchedulingApp.Application.Profiles
             .ForMember(dest => dest.NumberOfService, opt => opt.MapFrom(src => src.Services.Count))         
              .ForMember(dest => dest.NumberOfExamination, opt => opt.MapFrom(src => src.DoctorSchedules.
              SelectMany(ds => ds.Reservations.Where(r => r.Status.Equals("Hoàn thành"))).ToList().Count))         
+            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))         
+            .ForMember(dest => dest.RatingCount, opt => opt.MapFrom(src => src.RatingCount))         
             .ReverseMap();
 
 

@@ -1,14 +1,19 @@
 import { About } from "./components/About";
 import { SpecialtyList } from "@/patient/components/SpecialtyList";
 import { specialtyService } from "@/services/specialtyService";
+import { doctorService } from "@/services/doctorService";
+import { serviceService } from "@/services/serviceService";
 import { feedbackService } from "@/services/feedbackService";
 import { DoctorList } from "@/patient/components/DoctorList";
 import { TabsGroup } from "@/components/TabsGroup";
-import { ListService } from "@/patient/components/ListService";
+import  ListService  from "@/patient/components/ListService";
 import FeedbackList from "@/patient/components/FeedbackList";
-import { ServiceDTO } from "@/types/service";
+import HomeSearch from "@/patient/components/HomeSearch";
+
 const HomePage = async () => {
   const specialties = await specialtyService.getSpecialtyList();
+  const doctors = await doctorService.getDoctorList();
+  const services = await serviceService.getAllServices();
   const feedbacks = await feedbackService.getFeedbackList();
   const doctorFeedbacks = feedbackService.extractDoctorFeedback(feedbacks);
   const serviceFeedbacks = feedbackService.extractServiceFeedback(feedbacks);
@@ -17,11 +22,11 @@ const HomePage = async () => {
 
   const doctorTabs: ITabItem[] = specialties.map((s) => ({
     label: s.specialtyName,
-    href: `${apiUrl}/api/Doctors?$filter=specialtyNames/any(s: s eq '${s.specialtyName}')&$orderby=rating desc&$top=6`,
+    href: `${apiUrl}/api/Doctors?$filter=specialtyNames/any(s: s eq '${s.specialtyName}')&$orderby=numberOfExamination desc&$top=6`,
   }));
   doctorTabs.unshift({
     label: "Tất cả chuyên khoa",
-    href: `${apiUrl}/api/Doctors?$orderby=rating desc&$top=6`,
+    href: `${apiUrl}/api/Doctors?$orderby=numberOfExamination desc&$top=6`,
   });
   const serviceTabs: ITabItem[] = specialties.map((s) => ({
     label: s.specialtyName,
@@ -31,6 +36,27 @@ const HomePage = async () => {
     label: "Tất cả dịch vụ",
     href: `${apiUrl}/api/Services?$orderby=rating desc&$top=6`,
   });
+  const suggestedData = [
+    ...specialties.map((s: ISpecialty) => ({
+      label: s.specialtyName,
+      value: s.specialtyId.toString(),
+      image: s.image ?? "",
+      type: "specialty",
+    })),
+    ...doctors.map((d: IDoctor) => ({
+      label: d.doctorName,
+      value: d.doctorId.toString(),
+      image: d.avatarUrl ?? "",
+      type: "doctor",
+    })),
+    ...services.map((s: ServiceDTO) => ({
+      label: s.serviceName,
+      value: s.serviceId.toString(),
+      image: s.image ?? "",
+      type: "service",
+    })),
+  ];
+
   return (
     <div
       className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center justify-center z-10"
@@ -39,6 +65,28 @@ const HomePage = async () => {
     >
       <div className="absolute inset-0 bg-black bg-opacity-50 z-20"></div>
       <div className="max-w-fit flex flex-col items-center justify-center container text-center p-6 md:px-5 lg:px-10 lg:mx-48 text-white z-30">
+        <HomeSearch
+          fields={[
+            {
+              label: "Tìm tất cả",
+              value: "all",
+              placeholder: "Tìm tất cả...",
+            },
+            {
+              label: "Chuyên khoa",
+              value: "specialty",
+              placeholder: "Tìm chuyên khoa...",
+            },
+            { label: "Bác sĩ", value: "doctor", placeholder: "Tìm bác sĩ..." },
+            {
+              label: "Dịch vụ",
+              value: "service",
+              placeholder: "Tìm dịch vụ...",
+            },
+          ]}
+          suggestedData={suggestedData}
+        />
+
         <div className="mt-52 flex flex-col items-center justify-center">
           <h2 className="text-3xl sm:text-4xl md:text-[50px] inline-grid max-w-3xl font-semibold pt-20">
             Đặt lịch khám và xem kết quả trực tuyến
@@ -102,16 +150,16 @@ const HomePage = async () => {
             displayView="grid"
           />
         </div>
-  
+
         <div className="container  flex  items-center justify-center flex-col  ">
-          <h2 className=" max-w-fit text-2xl sm:text-3xl md:text-4xl font-bold text-center mt-16 mb-8 bg-gradient-to-r from-cyan-500 to-white bg-clip-text text-transparent drop-shadow-sm">         
+          <h2 className=" max-w-fit text-2xl sm:text-3xl md:text-4xl font-bold text-center mt-16 mb-8 bg-gradient-to-r from-cyan-500 to-white bg-clip-text text-transparent drop-shadow-sm">
             Nhận xét đánh giá dịch vụ
           </h2>
 
           <FeedbackList feedbacks={serviceFeedbacks} displayView="slider" />
         </div>
       </div>
-    </div>  
+    </div>
   );
 };
 

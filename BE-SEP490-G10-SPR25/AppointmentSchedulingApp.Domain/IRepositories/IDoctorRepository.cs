@@ -9,5 +9,6 @@ namespace AppointmentSchedulingApp.Domain.IRepositories
 {
     public interface IDoctorRepository:IGenericRepository<Doctor>
     {
+
     }
 }

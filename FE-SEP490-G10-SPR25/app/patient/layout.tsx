@@ -3,7 +3,7 @@ import "@/globals.css";
 import Navbar from "@/patient/components/Navbar";
 import { Footer } from "@/patient/components/Footer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 import ProtectedRoute from '../components/ProtectedRoute';
 import { AppRole } from '../types/roles';
 

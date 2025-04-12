@@ -25,8 +25,9 @@ const DoctorsPage = async ({
   const sortOptions: ISortOption[] = [
     { label: "Đánh giá cao nhất", value: "highest_rated" },
     { label: "Nhiều lần khám nhất", value: "most_exam" },
-    { label: "Kinh nghiệm nhất", value: "most_exp" },
     { label: "Nhiều dịch vụ nhất", value: "most_service" },
+    { label: "Học thuật cao nhất", value: "academic_title" },
+
   ];
   
   if (

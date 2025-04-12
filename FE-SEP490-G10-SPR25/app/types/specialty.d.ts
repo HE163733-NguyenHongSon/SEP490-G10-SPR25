@@ -3,5 +3,4 @@
   specialtyName: string
   image: string
   description?: string
-  imageUrl?: string
 }

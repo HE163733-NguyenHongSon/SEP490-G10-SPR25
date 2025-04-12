@@ -104,6 +104,8 @@ public partial class AppointmentSchedulingDbContext : DbContext
             entity.Property(e => e.DoctorId).ValueGeneratedNever();
             entity.Property(e => e.AcademicTitle).HasMaxLength(50);
             entity.Property(e => e.Degree).HasMaxLength(50);
+            entity.Property(e => e.Rating) .HasDefaultValue(0);
+            entity.Property(e => e.RatingCount) .HasDefaultValue(0);
 
             entity.HasOne(d => d.DoctorNavigation).WithOne(p => p.Doctor)
                 .HasForeignKey<Doctor>(d => d.DoctorId)
@@ -354,6 +356,8 @@ public partial class AppointmentSchedulingDbContext : DbContext
             entity.Property(e => e.Overview).HasMaxLength(500);
             entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.ServiceName).HasMaxLength(100);
+            entity.Property(e => e.Rating).HasDefaultValue(0);
+            entity.Property(e => e.RatingCount).HasDefaultValue(0);
 
             entity.HasOne(d => d.Specialty).WithMany(p => p.Services)
                 .HasForeignKey(d => d.SpecialtyId)

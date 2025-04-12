@@ -1,4 +1,5 @@
 import { About } from "./components/About";
+import { FaChevronRight, FaSearch } from "react-icons/fa";
 import { SpecialtyList } from "@/patient/components/SpecialtyList";
 import { specialtyService } from "@/services/specialtyService";
 import { feedbackService } from "@/services/feedbackService";
@@ -39,6 +40,23 @@ const HomePage = async () => {
     >
       <div className="absolute inset-0 bg-black bg-opacity-50 z-20"></div>
       <div className="max-w-fit flex flex-col items-center justify-center container text-center p-6 md:px-5 lg:px-10 lg:mx-48 text-white z-30">
+        <div className="flex justify-center mb-3">
+          <div className="relative flex items-center w-[400px] bg-white rounded-full shadow-md border border-gray-300 overflow-hidden">
+            <button className="flex items-center bg-blue-500 text-white px-3 py-2">
+              Name <FaChevronRight className="ml-2" />
+            </button>
+            {/* <input
+              type="text"
+              placeholder="Enter the service's name to search"
+              className="w-full px-3 py-2 outline-none"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            /> */}
+            <button className="absolute right-3 text-gray-500">
+              <FaSearch />
+            </button>
+          </div>
+        </div>
         <div className="mt-52 flex flex-col items-center justify-center">
           <h2 className="text-3xl sm:text-4xl md:text-[50px] inline-grid max-w-3xl font-semibold pt-20">
             Đặt lịch khám và xem kết quả trực tuyến
@@ -102,16 +120,16 @@ const HomePage = async () => {
             displayView="grid"
           />
         </div>
-  
+
         <div className="container  flex  items-center justify-center flex-col  ">
-          <h2 className=" max-w-fit text-2xl sm:text-3xl md:text-4xl font-bold text-center mt-16 mb-8 bg-gradient-to-r from-cyan-500 to-white bg-clip-text text-transparent drop-shadow-sm">         
+          <h2 className=" max-w-fit text-2xl sm:text-3xl md:text-4xl font-bold text-center mt-16 mb-8 bg-gradient-to-r from-cyan-500 to-white bg-clip-text text-transparent drop-shadow-sm">
             Nhận xét đánh giá dịch vụ
           </h2>
 
           <FeedbackList feedbacks={serviceFeedbacks} displayView="slider" />
         </div>
       </div>
-    </div>  
+    </div>
   );
 };
 

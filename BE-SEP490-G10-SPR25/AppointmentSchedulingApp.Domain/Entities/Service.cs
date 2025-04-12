@@ -17,13 +17,17 @@ public partial class Service
 
     public decimal Price { get; set; }
 
-    public TimeOnly? EstimatedTime { get; set; }
+    public TimeOnly EstimatedTime { get; set; }
 
     public bool? IsPrepayment { get; set; }
 
     public int SpecialtyId { get; set; }
 
     public string? Image { get; set; }
+
+    public double Rating { get; set; } = 0;
+
+    public int RatingCount { get; set; } = 0;
 
     public virtual ICollection<DoctorSchedule> DoctorSchedules { get; set; } = new List<DoctorSchedule>();
 

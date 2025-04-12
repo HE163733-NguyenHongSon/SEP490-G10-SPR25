@@ -7,6 +7,7 @@ using AppointmentSchedulingApp.Application.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper.QueryableExtensions;
 
 namespace AppointmentSchedulingApp.Application.Services
 {
@@ -20,15 +21,19 @@ namespace AppointmentSchedulingApp.Application.Services
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
         }
+        //public async Task<List<DoctorDTO>> GetDoctorList()
+        //{
+        //    var query = unitOfWork.DoctorRepository.GetQueryable();
 
+        //    return await query.ProjectTo<DoctorDTO>(mapper.ConfigurationProvider).ToListAsync();
+        //}
         public async Task<List<ServiceDTO>> GetListService()
         {
             try
             {
-                var services = await unitOfWork.ServiceRepository.GetAll();
-                var serviceDTOs = mapper.Map<List<ServiceDTO>>(services);
+                var query = unitOfWork.ServiceRepository.GetQueryable();
+                return await query.ProjectTo<ServiceDTO>(mapper.ConfigurationProvider).ToListAsync();
 
-                return serviceDTOs;
             }
             catch (Exception ex)
             {

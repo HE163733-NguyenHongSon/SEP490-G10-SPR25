@@ -37,27 +37,43 @@ namespace AppointmentSchedulingApp.Application.Services
         public async Task<Dictionary<string, List<UserDTO>>> GetAccountsByType()
         {
             var result = new Dictionary<string, List<UserDTO>>();
-            
-            // Lấy tất cả users với roles và các thông tin liên quan
-            var users = await _dbContext.Users
-                .Include(u => u.Roles)
-                .Include(u => u.Doctor)
-                .Include(u => u.Receptionist)
-                .Include(u => u.Patient)
-                .ToListAsync();
-                
-            // Phân loại thành nhân viên bệnh viện (bác sĩ và lễ tân)
-            var staffUsers = users
-                .Where(u => u.Doctor != null || u.Receptionist != null)
-                .ToList();
-                
-            // Phân loại thành khách hàng (bệnh nhân và người giám hộ)
-            var customerUsers = users
-                .Where(u => u.Patient != null || u.PatientGuardians.Any())
-                .ToList();
-                
-            result["staff"] = _mapper.Map<List<UserDTO>>(staffUsers);
-            result["customers"] = _mapper.Map<List<UserDTO>>(customerUsers);
+
+            try
+            {
+                // Sử dụng .AsNoTracking() để tăng hiệu suất khi chỉ đọc dữ liệu
+                var users = await _dbContext.Users
+                    .Include(u => u.Roles)
+                    .Include(u => u.Doctor)
+                    .Include(u => u.Receptionist)
+                    .Include(u => u.Patient)
+                        .ThenInclude(p => p.Reservations)
+                            .ThenInclude(r => r.MedicalRecord)
+                    .Include(u => u.Patient)
+                        .ThenInclude(p => p.Guardian)
+                    .Include(u => u.PatientGuardians)
+                        .ThenInclude(p => p.PatientNavigation)
+                    .AsNoTracking()
+                    .ToListAsync();
+                    
+                // Phân loại thành nhân viên bệnh viện (bác sĩ và lễ tân)
+                var staffUsers = users
+                    .Where(u => u.Doctor != null || u.Receptionist != null)
+                    .ToList();
+                    
+                // Phân loại thành khách hàng (bệnh nhân và người giám hộ)
+                var customerUsers = users
+                    .Where(u => u.Patient != null || u.PatientGuardians.Any())
+                    .ToList();
+                    
+                result["staff"] = _mapper.Map<List<UserDTO>>(staffUsers);
+                result["customers"] = _mapper.Map<List<UserDTO>>(customerUsers);
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi
+                System.Diagnostics.Debug.WriteLine($"Lỗi trong GetAccountsByType: {ex.Message}");
+                throw; // Ném lại exception để caller xử lý
+            }
             
             return result;
         }
@@ -131,8 +147,8 @@ namespace AppointmentSchedulingApp.Application.Services
                 var doctor = new Doctor
                 {
                     DoctorId = user.UserId,
-                    DoctorDescription = adminDTO.Name,  // Use Name as default description
-                    CurrentWork = "Đang làm việc"       // Default current work status
+                    DoctorDescription = adminDTO.Name,  
+                    CurrentWork = "Đang làm việc"      
                 };
 
                 _dbContext.Doctors.Add(doctor);
@@ -213,13 +229,12 @@ namespace AppointmentSchedulingApp.Application.Services
                 var receptionistRole = await _roleService.GetRoleByNameAsync(AppRole.Receptionist);
                 user.Roles.Add(receptionistRole);
 
-                // Create receptionist profile
+                // Create receptionist profile - đã loại bỏ trường Status
                 var receptionist = new Receptionist
                 {
                     ReceptionistId = user.UserId,
                     StartDate = DateOnly.FromDateTime(DateTime.Now),
-                    Shift = "Ca sáng", // Default shift
-                    Status = "Đang làm việc"
+                    Shift = "Ca sáng" // Ca làm việc mặc định
                 };
 
                 _dbContext.Receptionists.Add(receptionist);
@@ -228,9 +243,11 @@ namespace AppointmentSchedulingApp.Application.Services
                 await transaction.CommitAsync();
                 return _mapper.Map<UserDTO>(user);
             }
-            catch
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync();
+                // Log lỗi
+                System.Diagnostics.Debug.WriteLine($"Lỗi trong CreateReceptionistAccount: {ex.Message}");
                 throw;
             }
         }
@@ -326,7 +343,7 @@ namespace AppointmentSchedulingApp.Application.Services
                         .Include(ds => ds.Reservations)
                         .Where(ds => ds.DoctorId == userId)
                         .SelectMany(ds => ds.Reservations)
-                        .AnyAsync(r => r.Status != "Cancelled" && r.Status != "Completed");
+                        .AnyAsync(r => r.Status != "Đã hủy" && r.Status != "Hoàn thành");
 
                     if (hasActiveAppointments)
                     {
@@ -394,6 +411,7 @@ namespace AppointmentSchedulingApp.Application.Services
 
                 if (user.Receptionist != null)
                 {
+                    // Kiểm tra thanh toán chưa hoàn thành
                     var hasUnfinishedPayments = await _dbContext.Payments
                         .AnyAsync(p => p.ReceptionistId == userId && p.PaymentStatus != "Completed");
 
@@ -402,12 +420,20 @@ namespace AppointmentSchedulingApp.Application.Services
                         throw new ValidationException("Không thể xóa tài khoản lễ tân vì có thanh toán chưa hoàn thành");
                     }
 
+                    // Kiểm tra xem lễ tân có lịch làm việc hay không
                     var receptionist = await _dbContext.Receptionists
                         .Include(r => r.Payments)
                         .FirstOrDefaultAsync(r => r.ReceptionistId == userId);
 
                     if (receptionist != null)
                     {
+                        // Kiểm tra nếu lễ tân đang trong ca làm việc
+                        if (!string.IsNullOrEmpty(receptionist.Shift))
+                        {
+                            throw new ValidationException("Không thể xóa tài khoản lễ tân vì đang có lịch làm việc");
+                        }
+
+                        // Cập nhật các thanh toán của lễ tân để gỡ tham chiếu
                         foreach (var payment in receptionist.Payments)
                         {
                             payment.ReceptionistId = null;

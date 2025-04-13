@@ -26,8 +26,20 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         [HttpGet("accounts/by-type")]
         public async Task<ActionResult<Dictionary<string, List<UserDTO>>>> GetAccountsByType()
         {
-            var accounts = await _adminService.GetAccountsByType();
-            return Ok(accounts);
+            try
+            {
+                var accounts = await _adminService.GetAccountsByType();
+                return Ok(accounts);
+            }
+            catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+            {
+                // Bắt cụ thể lỗi SQL - bao gồm lỗi "Invalid column name"
+                return StatusCode(500, new { message = "Lỗi truy vấn cơ sở dữ liệu", error = sqlEx.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Đã xảy ra lỗi khi lấy danh sách tài khoản", error = ex.Message });
+            }
         }
 
         [HttpPost("accounts/doctor")]

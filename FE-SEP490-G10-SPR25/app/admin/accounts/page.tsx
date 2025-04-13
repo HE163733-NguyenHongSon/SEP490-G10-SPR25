@@ -8,7 +8,6 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 import 'dayjs/locale/vi';
 
-// Thiết lập locale cho dayjs
 dayjs.locale('vi');
 
 const { TabPane } = Tabs;
@@ -33,8 +32,24 @@ const AccountManagement = () => {
       const data = await adminService.getAccountsByType();
       setStaffAccounts(data.staff || []);
       setCustomerAccounts(data.customers || []);
-    } catch (error) {
-      message.error('Failed to fetch accounts');
+    } catch (error: any) {
+      // Xử lý lỗi cụ thể
+      if (error.response && error.response.data && error.response.data.error) {
+        // Nếu có lỗi về cột SQL
+        if (error.response.data.error.includes("Invalid column name")) {
+          message.error('Lỗi cơ sở dữ liệu: Cột không hợp lệ');
+        } else {
+          message.error(`Lỗi: ${error.response.data.message || 'Không thể tải danh sách tài khoản'}`);
+        }
+      } else {
+        message.error('Không thể tải danh sách tài khoản');
+      }
+      
+      // Đặt mặc định cho các state để tránh lỗi UI
+      setStaffAccounts([]);
+      setCustomerAccounts([]);
+      
+      console.error('Chi tiết lỗi:', error);
     } finally {
       setLoading(false);
     }
@@ -89,10 +104,19 @@ const AccountManagement = () => {
   const handleDelete = async (userId: number) => {
     try {
       await adminService.deleteAccount(userId);
-      message.success('Account deleted successfully');
+      message.success('Xóa tài khoản thành công');
       fetchAccountsByType();
     } catch (error: any) {
-      message.error(error.response?.data || 'Failed to delete account');
+      // Hiển thị thông báo lỗi thu gọn nếu có
+      if (error.userMessage) {
+        message.error(error.userMessage);
+      } else if (error.response?.data?.message) {
+        message.error(error.response.data.message);
+      } else if (typeof error.response?.data === 'string') {
+        message.error(error.response.data);
+      } else {
+        message.error('Không thể xóa tài khoản');
+      }
     }
   };
 
@@ -126,9 +150,9 @@ const AccountManagement = () => {
         console.warn('DOB value is missing in form submission');
       }
 
-      // Đảm bảo chuyển đổi đúng trước khi gửi đi
+
       const accountData: AdminDTO = {
-        name: values.userName, // Ensure name matches userName
+        name: values.userName, 
         userName: values.userName,
         email: values.email,
         phone: values.phone,
@@ -139,14 +163,10 @@ const AccountManagement = () => {
         role: values.role
       };
 
-      // Thêm avatarUrl nếu có
       if (values.avatarUrl) {
         accountData.avatarUrl = values.avatarUrl;
       }
 
-      // Xử lý mật khẩu - LUÔN gửi mật khẩu bất kể nó có giá trị gì 
-      // (để backend có thể xử lý tương ứng)
-      // Sử dụng chữ P viết hoa cho trường password theo format của backend
       accountData.Password = values.password || '';
       
       const hasNewPassword = values.password && values.password.trim() !== '';
@@ -283,7 +303,7 @@ const AccountManagement = () => {
       }
     },
     {
-      title: 'Status',
+      title: 'Is Active',
       key: 'isActive',
       render: (_: any, record: IUser) => (
         <Switch

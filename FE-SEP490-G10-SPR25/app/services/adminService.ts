@@ -18,8 +18,27 @@ export const adminService = {
     try {
       const response = await axios.get(`${API_URL}/api/Admin/accounts/by-type`);
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching accounts by type:', error);
+      
+      // Log chi tiết về lỗi từ API
+      if (error.response) {
+        console.error('Response error data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        
+        // Nếu là lỗi SQL (thường được trả về bởi API trong message)
+        if (error.response.data && error.response.data.error && 
+            error.response.data.error.includes("Invalid column name")) {
+          console.error('SQL Error detected - Invalid column name issue');
+        }
+      }
+      
+      // Mặc định trả về một đối tượng rỗng để tránh gây lỗi UI
+      if (error.response && error.response.status === 500) {
+        console.warn('Returning empty result due to server error');
+        return { staff: [], customers: [] };
+      }
+      
       throw error;
     }
   },
@@ -183,8 +202,37 @@ export const adminService = {
     try {
       await axios.delete(`${API_URL}/api/Admin/accounts/${userId}`);
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting account:', error);
+      
+      // Xử lý lỗi từ API
+      if (error.response && error.response.data) {
+        // Trường hợp lỗi Validation
+        if (error.response.status === 400 || error.response.status === 500) {
+          // Lấy thông báo lỗi từ response
+          let errorMessage = 'Không thể xóa tài khoản';
+          
+          if (typeof error.response.data === 'string') {
+            errorMessage = error.response.data;
+          } else if (error.response.data.message) {
+            errorMessage = error.response.data.message;
+          } else if (error.response.data.error) {
+            errorMessage = error.response.data.error;
+          }
+          
+          // Nếu thông báo lỗi quá dài, rút gọn lại
+          if (errorMessage.includes("Không thể xóa tài khoản lễ tân vì")) {
+            errorMessage = "Không thể xóa tài khoản lễ tân vì đang có ca làm việc hoặc thanh toán chưa hoàn thành";
+          } else if (errorMessage.includes("Không thể xóa tài khoản bác sĩ vì")) {
+            errorMessage = "Không thể xóa tài khoản bác sĩ vì đang có lịch hẹn hoặc dịch vụ đang hoạt động";
+          } else if (errorMessage.includes("Không thể xóa tài khoản bệnh nhân vì")) {
+            errorMessage = "Không thể xóa tài khoản bệnh nhân vì đang có lịch hẹn hoặc dịch vụ đang hoạt động";
+          }
+          
+          error.userMessage = errorMessage;
+        }
+      }
+      
       throw error;
     }
   },

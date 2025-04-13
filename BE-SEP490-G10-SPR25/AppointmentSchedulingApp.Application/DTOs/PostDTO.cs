@@ -25,6 +25,6 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string PostSourceUrl { get; set; }
 
         [JsonPropertyOrder(6)]
-        public string AuthorName { get; set; }
+        public string? AuthorName { get; set; }
     }
 }

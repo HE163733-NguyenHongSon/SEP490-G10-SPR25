@@ -70,9 +70,17 @@ namespace AppointmentSchedulingApp.Application.Services
         }
         public async Task AddPostAsync(PostDetailDTO postDTO)
         {
-            var post = _mapper.Map<Post>(postDTO);
-            post.PostCreatedDate = DateTime.Now;
-            await _postRepository.AddAsync(post);
+            try
+            {
+                var post = _mapper.Map<Post>(postDTO);
+                post.PostCreatedDate = DateTime.Now;
+                await _postRepository.AddAsync(post);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi tạo bài viết: " + ex.Message, ex);
+            }
+            
         }
     }
 }

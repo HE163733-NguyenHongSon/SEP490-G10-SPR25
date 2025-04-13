@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Application.DTOs
 {
-    public
-        class PostSectionDTO:PostDTO
+    public class PostSectionDTO
     {
+        public string SectionTitle { get; set; }
+        public string SectionContent { get; set; }
+        public int SectionIndex { get; set; }
         public string? PostImageUrl { get; set; }
-        public string? PostCategory { get; set; }
-        public string? AuthorBio { get; set; }
-        public List<PostSectionDTO> Sections { get; set; } = new();
     }
 }

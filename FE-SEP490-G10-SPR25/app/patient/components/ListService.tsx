@@ -8,7 +8,7 @@ import "react-multi-carousel/lib/styles.css";
 import RatingStars from "@/components/RatingStars";
 
 interface ListServiceProps {
-  items: ServiceDTO[];
+  items: IService[];
   displayView?: string;
 }
 
@@ -16,12 +16,16 @@ const ListService = ({ items, displayView }: ListServiceProps) => {
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   const responsive = {
-    desktop: { breakpoint: { max: 3000, min: 1024 }, items: 3, slidesToSlide: 1 },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3,
+      slidesToSlide: 1,
+    },
     tablet: { breakpoint: { max: 1024, min: 640 }, items: 2, slidesToSlide: 1 },
     mobile: { breakpoint: { max: 640, min: 0 }, items: 1, slidesToSlide: 1 },
   };
 
-  const ServiceCard = ({ service }: { service: ServiceDTO }) => (
+  const ServiceCard = ({ service }: { service: IService }) => (
     <Link
       href={`/patient/service-detail/${service.serviceId}`}
       className="border border-gray-300 rounded-md shadow-md p-5 flex flex-col h-full"
@@ -53,7 +57,9 @@ const ListService = ({ items, displayView }: ListServiceProps) => {
           {service.price.toLocaleString()} VNĐ
         </p>
         {service.estimatedTime && (
-          <p className="text-sm text-gray-600 mb-1">⏱ {service.estimatedTime}</p>
+          <p className="text-sm text-gray-600 mb-1">
+            ⏱ {service.estimatedTime}
+          </p>
         )}
       </div>
     </Link>

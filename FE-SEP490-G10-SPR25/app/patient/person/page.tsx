@@ -2,7 +2,6 @@
 
 import * as Tabs from "@radix-ui/react-tabs";
 import Image from "next/image";
-import { assets } from "@/public/images/assets";
 import { useState, useEffect } from "react";
 import { patientService } from "@/services/patientService";
 import { useQuery } from "@tanstack/react-query";

@@ -15,7 +15,8 @@ dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 import Fuse from "fuse.js";
 import { DateRangeSelector } from "@/patient/components/DateRangeSelector";
-
+import { patientService } from "@/services/patientService";
+import SelectPatient from "@/patient/components/SelectPatient";
 import {
   ClipboardDocumentCheckIcon,
   UserGroupIcon,
@@ -32,29 +33,52 @@ import {
   UserIcon,
 } from "@heroicons/react/24/outline";
 const MedicalReportPage = () => {
-  const [patientId, setPatientId] = useState<number>(0);
+  const [patient, setPatient] = useState<IPatient>();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [selectedDependent, setSelectedDependent] = useState<IPatient | null>(
+    patient ?? null
+  );
+  // const [dependents, setDependents] = useState<IPatient[]>([]);
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
-  // Get user info from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
-      const user = JSON.parse(storedUser) as IUser;
-      setPatientId(user?.userId);
+      const user = JSON.parse(storedUser) as IPatient;
+      setPatient(user);
     }
   }, []);
 
-  // Fetch medical records
+  const { data: patientList } = useQuery({
+    queryKey: ["patients"],
+    queryFn: async () => {
+      const pd = await patientService.getPatientDetailById(
+        patient?.userId as number
+      );
+      const dependents = pd?.dependents || [];
+      pd.relationship =
+        dependents.length > 0 ? "Người giám hộ" : "Bệnh nhân chính";
+      setSelectedDependent(pd);
+      return [pd, ...dependents];
+    },
+    staleTime: 30000,
+    enabled: !!patient?.userId,
+  });
+
   const {
     data: medicalReport,
     isLoading: isLoadingMedicalReport,
     error: medicalReportError,
   } = useQuery<IMedicalReport>({
-    queryKey: ["medicalReport", patientId],
-    queryFn: () => medicalReportService.getMedicalReportByPatientId(patientId),
+    queryKey: ["medicalReport", selectedDependent?.userId],
+    queryFn: () =>
+      medicalReportService.getMedicalReportByPatientId(
+        selectedDependent?.userId as number
+      ),
     staleTime: 30000,
+    enabled: !!selectedDependent?.userId,
   });
 
   // Initialize Fuse.js for fuzzy search
@@ -120,10 +144,10 @@ const MedicalReportPage = () => {
     setSuggestions(uniqueSuggestions.slice(0, 5));
   }, [searchTerm, fuse]);
 
-  const handleResetFilters = () => {
-    setSearchTerm("");
-    setDateRange(null);
-  };
+  // const handleResetFilters = () => {
+  //   setSearchTerm("");
+  //   setDateRange(null);
+  // };
 
   const highlightText = (text: string = "") => {
     if (!searchTerm || !text) return text;
@@ -145,9 +169,8 @@ const MedicalReportPage = () => {
         </div>
       ) : (
         <div className="container mx-auto p-4">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 p-4 bg-white rounded-lg shadow">
-            <div className="flex items-center mb-4 md:mb-0">
+          <div className="flex justify-between items-start flex-wrap gap-4 bg-white p-4 rounded-lg shadow-md mb-6">
+            <div className="flex items-center">
               <Image
                 src={assets.logo}
                 alt="Hospital Logo"
@@ -157,25 +180,28 @@ const MedicalReportPage = () => {
               />
               <div>
                 <h1 className="text-2xl font-bold text-cyan-600">
-                  Báo cáo y tế {medicalReport?.patient?.userName}
+                 HAS HOSPITAL
                 </h1>
-                <p className="text-sm text-gray-500">
-                  {medicalReport?.patient?.gender === "Nam"
-                    ? "Bệnh nhân nam"
-                    : "Bệnh nhân nữ"}{" "}
-                  • {medicalReport?.patient?.dob}
+                <p className="text-sm text-gray-600">SĐT: 0123 456 789</p>
+                <p className="text-sm text-gray-600">
+                  Địa chỉ: 123 Đường ABC, TP XYZ
                 </p>
               </div>
             </div>
 
-            <div className="text-right">
-              <div className="flex items-center justify-end space-x-2 mb-1">
-                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                  Người giám hộ
-                </span>
-                <p className="text-gray-600">Nguyễn Văn A" (Bố)</p>
+            {(patientList ?? []).length > 1 && (
+              <div className="text-left max-w-xs w-full">
+                <SelectPatient
+                  patients={patientList || []}
+                  selectedPatient={selectedDependent ?? undefined}
+                  onChange={(p) => setSelectedDependent(p)}
+                />
+                <p className="text-sm text-gray-600 italic mt-2">
+                  Đang xem báo cáo y tế của:{" "}
+                  <strong>{selectedDependent?.userName || "Chưa chọn"}</strong>
+                </p>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Patient Information */}
@@ -371,7 +397,6 @@ const MedicalReportPage = () => {
               </div>
             </div>
           </div>
-
           {/* Medical Records List */}
           <div className="bg-white p-4 rounded-lg shadow">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">

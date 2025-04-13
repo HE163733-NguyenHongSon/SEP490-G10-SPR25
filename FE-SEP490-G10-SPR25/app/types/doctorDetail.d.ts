@@ -1,4 +1,3 @@
-
 interface IDoctorDetail extends IDoctor {
   detailDescription: string;
   workExperience?: string;
@@ -10,4 +9,14 @@ interface IDoctorDetail extends IDoctor {
   services: ServiceDTO[];
   feedbacks: IFeedback[];
   relevantDoctors: IDoctor[];
+  
+  // User fields
+  email?: string;
+  userName?: string;
+  password?: string;
+  citizenId?: string | number;
+  phone?: string;
+  gender?: string;
+  dateOfBirth?: string | Date;
+  address?: string;
 }

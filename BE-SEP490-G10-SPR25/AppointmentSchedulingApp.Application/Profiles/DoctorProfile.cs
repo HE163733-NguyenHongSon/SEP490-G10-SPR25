@@ -42,7 +42,24 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.Services, opt => opt.MapFrom(src => src.Services))
                 .ForMember(dest => dest.Feedbacks, opt => opt.MapFrom(src => src.DoctorSchedules.SelectMany(ds => ds.Reservations).Where(r => r.Status.Equals("Hoàn thành") && r.Feedback != null).Select(r => r.Feedback)))
                 .ForMember(dest => dest.RelevantDoctors, opt => opt.MapFrom(src => src.Specialties.SelectMany(sp=>sp.Doctors).Where(dr=>dr.DoctorId!=src.DoctorId)))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.DoctorNavigation.Email))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.DoctorNavigation.Phone))
+                .ForMember(dest => dest.CitizenId, opt => opt.MapFrom(src => src.DoctorNavigation.CitizenId.ToString()))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.DoctorNavigation.Gender))
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.DoctorNavigation.Password))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.DoctorNavigation.Address))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => DateTime.Parse(src.DoctorNavigation.Dob.ToString())))
                 .ReverseMap();
+
+            CreateMap<DoctorDetailDTO, Doctor>()
+                .IncludeBase<DoctorDTO, Doctor>()
+                .ForMember(dest => dest.DoctorDescription, opt => opt.MapFrom(src => src.DetailDescription))
+                .ForMember(dest => dest.WorkExperience, opt => opt.MapFrom(src => src.WorkExperience))
+                .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => src.Organization))
+                .ForMember(dest => dest.Prize, opt => opt.MapFrom(src => src.Prize))
+                .ForMember(dest => dest.ResearchProject, opt => opt.MapFrom(src => src.ResearchProject))
+                .ForMember(dest => dest.TrainingProcess, opt => opt.MapFrom(src => src.TrainingProcess))
+                .ForMember(dest => dest.Services, opt => opt.Ignore());
                  
                
 

@@ -36,7 +36,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message); 
+                return StatusCode(500, $"Internal server error: {ex.Message}"); 
             }
         }
 
@@ -64,7 +64,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
         [HttpPut("{doctorId}")]
         //[Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateDoctor(int doctorId, DoctorDetailDTO doctorDto)
+        public async Task<IActionResult> UpdateDoctor(int doctorId, [FromBody] DoctorDetailDTO doctorDto)
         {
             try
             {

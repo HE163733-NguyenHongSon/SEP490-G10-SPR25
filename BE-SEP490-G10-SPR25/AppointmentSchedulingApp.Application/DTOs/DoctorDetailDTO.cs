@@ -35,21 +35,24 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public List<DoctorDTO> RelevantDoctors { get; set; }
 
         [JsonPropertyOrder(23)]
-        public string Password { get; set; }
+        public string? Email { get; set; }
 
         [JsonPropertyOrder(24)]
-        public string CitizenId { get; set; }
+        public string Password { get; set; }
 
         [JsonPropertyOrder(25)]
-        public string Phone { get; set; }
+        public string CitizenId { get; set; }
 
         [JsonPropertyOrder(26)]
-        public string Gender { get; set; }
+        public string Phone { get; set; }
 
         [JsonPropertyOrder(27)]
-        public DateTime DateOfBirth { get; set; }
+        public string Gender { get; set; }
 
         [JsonPropertyOrder(28)]
+        public DateTime DateOfBirth { get; set; }
+
+        [JsonPropertyOrder(29)]
         public string Address { get; set; }
     }
 }

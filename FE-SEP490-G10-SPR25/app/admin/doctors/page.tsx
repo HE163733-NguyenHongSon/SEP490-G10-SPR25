@@ -4,7 +4,7 @@ import PageBreadCrumb from "../components/PageBreadCrumb";
 import { Button, Table, Space, Popconfirm, message, Modal } from "antd";
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import { doctorService } from "@/services/doctorService";
-import { IDoctor, IDoctorDetail } from "@/types/doctor";
+import { IDoctor, DoctorDetailDTO } from "@/types/doctor";
 import Link from "next/link";
 
 const DoctorsManagement = () => {
@@ -13,7 +13,7 @@ const DoctorsManagement = () => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [selectedDoctorId, setSelectedDoctorId] = useState<number | null>(null);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
-  const [selectedDoctor, setSelectedDoctor] = useState<IDoctorDetail | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<DoctorDetailDTO | null>(null);
 
   useEffect(() => {
     fetchDoctors();
@@ -56,17 +56,12 @@ const DoctorsManagement = () => {
 
     try {
       setLoading(true);
-      const result = await doctorService.deleteDoctor(selectedDoctorId);
-      
-      if (result.success) {
-        message.success(result.message);
-        fetchDoctors();
-      } else {
-        message.error(result.message);
-      }
+      await doctorService.deleteDoctor(selectedDoctorId);
+      message.success("Xóa bác sĩ thành công");
+      fetchDoctors();
     } catch (error) {
       console.error("Error deleting doctor:", error);
-      message.error("Lỗi khi xóa bác sĩ");
+      message.error("Lỗi khi xóa bác sĩ. Bác sĩ có thể đang có lịch khám hoặc cuộc hẹn đang hoạt động.");
     } finally {
       setLoading(false);
       setDeleteModalVisible(false);

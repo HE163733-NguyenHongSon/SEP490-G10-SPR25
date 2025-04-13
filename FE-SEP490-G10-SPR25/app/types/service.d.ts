@@ -1,4 +1,4 @@
- interface ServiceDTO {
+export interface ServiceDTO {
   serviceId: number;
   serviceName: string;
   overview?: string;
@@ -13,7 +13,7 @@
   ratingCount?: number;
 }
 
- interface ServiceDetailDTO extends ServiceDTO {
+export interface ServiceDetailDTO extends ServiceDTO {
   specialtyName?: string;
   doctorServices?: {
     doctorId: number;

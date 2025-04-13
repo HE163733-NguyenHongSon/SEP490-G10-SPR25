@@ -17,26 +17,64 @@ export interface ServiceUpdateDTO extends ServiceCreateDTO {
     serviceId: number;
 }
 
+// Hiển thị URL đang sử dụng để debug
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/Services`;
+console.log('Service API URL:', apiUrl);
+
+// Fallback URL trong trường hợp env không khả dụng
+const fallbackUrl = 'http://localhost:5220/api/Services';
 
 export const serviceService = {
     getNumberOfServices: async (): Promise<number> => {
         try {
-            const response = await fetch(`http://localhost:5220/odata/Services/$count`);
+            // Sử dụng API URL từ env hoặc fallback
+            const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5220'}/odata/Services/$count`;
+            console.log('Fetching count from:', url);
+            const response = await fetch(url, { 
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                cache: 'no-store'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
             return response.json();
         } catch (error) {
-            console.error('Error fetching services:', error);
-            throw error;
+            console.error('Error fetching services count:', error);
+            return 0; // Trả về 0 thay vì throw lỗi
         }
     },
 
     getAllServices: async (): Promise<ServiceDTO[]> => {
         try {
-            const response = await axios.get(apiUrl);
-            return response.data;
+            // Sử dụng API URL từ env hoặc fallback
+            const url = apiUrl || fallbackUrl;
+            console.log('Fetching all services from:', url);
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                cache: 'no-store'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log(`Successfully retrieved ${data.length} services`);
+            return data;
         } catch (error) {
             console.error('Error fetching services:', error);
-            throw error;
+            // Trả về mảng rỗng để tránh crash UI
+            return [];
         }
     },
 

@@ -15,16 +15,16 @@ namespace AppointmentSchedulingApp.Application.Services
         private readonly IMapper mapper;
         public IUnitOfWork unitOfWork { get; set; }
         private readonly AppointmentSchedulingDbContext dbContext;
-        public DoctorService(IMapper mapper, IUnitOfWork unitOfWork)
+        public DoctorService(IMapper mapper, IUnitOfWork unitOfWork, AppointmentSchedulingDbContext dbContext)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
+            this.dbContext = dbContext;
         }
 
         public async Task<List<DoctorDTO>> GetDoctorList()
         {
             var query = unitOfWork.DoctorRepository.GetQueryable();
-
             return await query.ProjectTo<DoctorDTO>(mapper.ConfigurationProvider).ToListAsync();
         }
 
@@ -50,6 +50,11 @@ namespace AppointmentSchedulingApp.Application.Services
                     user.Password = doctorDto.Password;
                     user.AvatarUrl = doctorDto.AvatarUrl;
                     
+                    if (!string.IsNullOrEmpty(doctorDto.Email))
+                    {
+                        user.Email = doctorDto.Email;
+                    }
+                    
                     if (!string.IsNullOrEmpty(doctorDto.CitizenId))
                     {
                         if (long.TryParse(doctorDto.CitizenId, out long citizenIdValue))
@@ -70,6 +75,24 @@ namespace AppointmentSchedulingApp.Application.Services
                     unitOfWork.UserRepository.Update(user);
                 }
 
+                // Handle the Services collection
+                if (doctorDto.Services != null && doctorDto.Services.Any())
+                {
+                    // Clear existing services
+                    existingDoctor.Services.Clear();
+                    
+                    // Add services from DTO
+                    foreach (var serviceDto in doctorDto.Services)
+                    {
+                        var service = await unitOfWork.ServiceRepository.Get(s => s.ServiceId == serviceDto.ServiceId);
+                        if (service != null)
+                        {
+                            existingDoctor.Services.Add(service);
+                        }
+                    }
+                }
+
+                // Map all other properties except Services (which we handled manually)
                 mapper.Map(doctorDto, existingDoctor);
 
                 unitOfWork.DoctorRepository.Update(existingDoctor);

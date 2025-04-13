@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Button, message, Select, Card, Spin } from "antd";
 import PageBreadCrumb from "../../../components/PageBreadCrumb";
 import { doctorService } from "@/services/doctorService";
-import { DoctorDetailDTO, IDoctorDetail } from "@/types/doctor";
+import { DoctorDetailDTO, IDoctor } from "@/types/doctor";
 import { useRouter } from "next/navigation";
 
 const { TextArea } = Input;
@@ -38,6 +38,8 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
           doctorService.getDoctorList(),
           doctorService.getDoctorDetailById(doctorId)
         ]);
+        
+        console.log("API response data:", JSON.stringify(doctorDetail, null, 2));
         
         const uniqueAcademicTitles = Array.from(
           new Set(
@@ -74,6 +76,7 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         form.setFieldsValue({
           userName: doctorDetail.userName || doctorDetail.doctorName,
           password: doctorDetail.password || "", 
+          email: doctorDetail.email || "",
           doctorName: doctorDetail.doctorName,
           avatarUrl: doctorDetail.avatarUrl,
           academicTitle: doctorDetail.academicTitle,
@@ -110,27 +113,45 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
       
       const dateOfBirth = new Date(values.dateOfBirth);
       
-      const citizenId = parseInt(values.citizenId) || 0;
+      const citizenId = values.citizenId ? values.citizenId.toString() : "";
       
       const doctorData: DoctorDetailDTO = {
-        ...values,
-        doctorId,
-        experienceYear,
-        citizenId,
-        dateOfBirth,
+        doctorId: doctorId,
+        doctorName: values.doctorName,
+        academicTitle: values.academicTitle,
+        degree: values.degree,
+        avatarUrl: values.avatarUrl,
+        currentWork: values.currentWork,
         basicDescription: values.detailDescription?.substring(0, 50) || "",
-        numberOfService: 0,
-        rating: 0,
-        numberOfExamination: 0,
-        specialtyNames: [],
+        specialtyNames: values.specialtyNames || [],
+        numberOfService: values.numberOfService || 0,
+        numberOfExamination: values.numberOfExamination || 0,
+        rating: values.rating || 0,
+        ratingCount: values.ratingCount || 0,
+        detailDescription: values.detailDescription,
+        workExperience: values.workExperience,
+        organization: values.organization,
+        prize: values.prize,
+        researchProject: values.researchProject,
+        trainingProcess: values.trainingProcess,
+        schedules: values.schedules || [],
+        services: values.services || [],
+        feedbacks: values.feedbacks || [],
+        relevantDoctors: values.relevantDoctors || [],
+        email: values.email,
+        phone: values.phone,
+        gender: values.gender,
+        dateOfBirth: dateOfBirth,
+        address: values.address,
+        citizenId: citizenId,
+        userName: values.userName
       };
 
       if (!values.password || values.password.trim() === '') {
-        delete doctorData.password;
-      }
-    
-      if (passwordVisible && values.password === actualPassword) {
-        delete doctorData.password;
+        // Use actual password if not changed
+        doctorData.password = actualPassword;
+      } else {
+        doctorData.password = values.password;
       }
 
       await doctorService.updateDoctor(doctorId, doctorData);
@@ -193,6 +214,17 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
               <Input.Password 
                 placeholder="Mật khẩu hiện tại"
               />
+            </Form.Item>
+            
+            <Form.Item
+              name="email"
+              label="Email"
+              rules={[
+                { required: true, message: "Vui lòng nhập email" },
+                { type: 'email', message: "Email không hợp lệ" }
+              ]}
+            >
+              <Input placeholder="Nhập email" />
             </Form.Item>
           </div>
 

@@ -1,13 +1,14 @@
 import Image from 'next/image';
-import { useHistory } from "react-router-dom";
+import { useRouter } from "next/navigation"; 
+
 export const SpecialtyDetails = () => {
-  // const { id } = useParams<{ id: string }>();
-  const history = useHistory();
+  const router = useRouter(); 
+
   return (
     <div className="bg-gray-50 min-h-screen p-8">
       <div className="bg-white rounded-lg shadow-lg p-6 max-w-6xl mx-auto">
-      <button
-          onClick={() => history.goBack()}
+        <button
+          onClick={() => router.back()} 
           className="flex items-center text-blue-500 hover:underline mb-4"
         >
           <svg

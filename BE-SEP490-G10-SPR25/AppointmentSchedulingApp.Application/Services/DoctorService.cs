@@ -2,6 +2,9 @@
 using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace AppointmentSchedulingApp.Application.Services
 {
@@ -18,20 +21,16 @@ namespace AppointmentSchedulingApp.Application.Services
 
         public async Task<List<DoctorDTO>> GetDoctorList()
         {
-            var doctors = await unitOfWork.DoctorRepository.GetAll();
-            return mapper.Map<List<DoctorDTO>>(doctors);
+            var query = unitOfWork.DoctorRepository.GetQueryable();
+
+            return await query.ProjectTo<DoctorDTO>(mapper.ConfigurationProvider).ToListAsync();
         }
 
         public async Task<DoctorDetailDTO> GetDoctorDetailById(int doctorId)
         {
-            var doctor = await unitOfWork.DoctorRepository.Get(d => d.DoctorId.Equals(doctorId));
-
-            if (doctor == null)
-            {
-                return null;
-            }
-
-            return mapper.Map<DoctorDetailDTO>(doctor);
+            var query = unitOfWork.DoctorRepository.GetQueryable(d => d.DoctorId == doctorId);
+            return await query.ProjectTo<DoctorDetailDTO>(mapper.ConfigurationProvider).FirstOrDefaultAsync();
         }
+
     }
 }

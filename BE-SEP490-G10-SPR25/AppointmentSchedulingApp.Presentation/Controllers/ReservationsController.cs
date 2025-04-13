@@ -1,8 +1,10 @@
-﻿using AppointmentSchedulingApp.Domain.Entities;
+﻿using AppointmentSchedulingApp.Application.DTOs;
+using AppointmentSchedulingApp.Application.IServices;
+using AppointmentSchedulingApp.Application.Services;
+using AppointmentSchedulingApp.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using AppointmentSchedulingApp.Application.IServices;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -24,14 +26,93 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             return Ok(await reservationService.GetListReservation());
         }
 
-        [HttpGet("{status}/{sortBy}")]
-        public async Task<IActionResult> GetListReservationByStatusAndSort( string? status = "pending", string? sortBy = "price_asc")
+        [HttpGet("{patientId}/{status}/{sortBy}")]
+        public async Task<IActionResult> GetListReservationByFilter(int patientId, string? status = "Đang chờ", string? sortBy = "Giá dịch vụ tăng dần")
         {
-            var reservations = await reservationService.GetListReservationByStatusAndSort(status, sortBy);
-            return Ok(reservations);
+            try
+            {
+
+                var reservations = await reservationService.GetListReservationByFilter(patientId, status, sortBy);
+                if (reservations == null)
+                {
+                    return NotFound($"Bệnh nhân với Id={patientId} không tồn tại!");
+                }
+                if ( !reservations.Any()  )
+                {
+                    return Ok($"Lịch hẹn với trạng thái '{status}' của bệnh nhân Id={patientId} chưa có!");
+                }
+                return Ok(reservations);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, ex.Message);
+
+            }
         }
 
+        [HttpGet("{reservationId}")]
+        [EnableQuery]
+        public async Task<IActionResult> GetReservationById(int reservationId)
+        {
+            try
+            {
+                var reservation = await reservationService.GetReservationById(reservationId);
 
+                if (reservation == null)
+                {
+                    return NotFound($"Cuộc hẹn với ID={reservationId} không tồn tại!");
+                }
+
+                return Ok(reservation);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
+        }
+
+        [HttpPut("UpdateReservationStatus")]
+        [EnableQuery]
+        public async Task<IActionResult> UpdateReservationStatus(ReservationStatusDTO reservationStatusDTO)
+        {
+            try
+            {
+                var reservation = await reservationService.GetReservationById(reservationStatusDTO.ReservationId);
+
+                if (reservation == null)
+                {
+                    return NotFound($"Cuộc hẹn với ID={reservationStatusDTO.ReservationId} không tồn tại!");
+                }
+                var isTrue = await reservationService.UpdateReservationStatus(reservationStatusDTO);
+                return Ok(isTrue);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("ViewReason{reservationId}")]
+        [EnableQuery]
+        public async Task<IActionResult> ViewCancellationReason(int reservationId)
+        {
+            try
+            {
+                var reservation = await reservationService.ViewCancellationReason(reservationId);
+
+                if (reservation == null)
+                {
+                    return NotFound($"Cuộc hẹn với ID={reservationId} không tồn tại!");
+                }
+
+                return Ok(reservation);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
+        }
 
     }
 }

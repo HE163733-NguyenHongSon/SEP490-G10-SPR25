@@ -32,8 +32,8 @@ export interface RegistrationCredentials {
 export interface ApiResponse {
   success: boolean;
   message: string;
-  data: any;
-  errors?: any;
+  data: Record<string, unknown> | null;
+  errors?: Record<string, string[]> | null;
 }
 
 // Lưu thông tin đăng nhập trong localStorage
@@ -125,7 +125,12 @@ export const logout = (): void => {
 // Kiểm tra token còn hạn dùng không
 const isTokenValid = (token: string): boolean => {
   try {
-    const decoded: any = jwtDecode(token);
+    interface DecodedToken {
+      exp?: number;
+      [key: string]: unknown; // Add specific fields as needed
+    }
+
+    const decoded: DecodedToken = jwtDecode<DecodedToken>(token);
     if (!decoded.exp) return false;
     
     // Kiểm tra hạn của token
@@ -223,7 +228,14 @@ export const login = async (credentials: LoginCredentials): Promise<User> => {
     } else {
       // Fallback to decoding the token if user info not provided
       console.log('No direct user info provided, decoding from token');
-      const decoded: any = jwtDecode(token);
+      interface DecodedToken {
+        nameid?: string;
+        UserName?: string;
+        email?: string;
+        role?: string | string[];
+        [key: string]: unknown; // Add specific fields as needed
+      }
+      const decoded: DecodedToken = jwtDecode<DecodedToken>(token);
       console.log('Decoded token:', decoded);
       
       // Extract roles from JWT token
@@ -266,8 +278,8 @@ export const login = async (credentials: LoginCredentials): Promise<User> => {
       }
       
       user = {
-        userId: decoded.nameid || decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || '0',
-        userName: decoded.UserName || decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || '',
+        userId: String(decoded.nameid || decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || '0'),
+        userName: String(decoded.UserName || decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || ''),
         email: decoded.email || '',
         role: roles.length > 0 ? roles[0] : 'Unknown',
         token
@@ -348,7 +360,7 @@ export const getRedirectUrl = (): string => {
     } else if (normalizedRole === AppRole.Patient) {
       return "/patient/dashboard";
     } else if (normalizedRole === AppRole.Guardian) {
-      return "/guardian/dashboard";
+      return "/patient/dashboard";
     }
   }
   
@@ -391,7 +403,7 @@ export const hasRole = (requiredRole: AppRole | AppRole[]): boolean => {
 };
 
 // Lấy token để gửi request
-export const getAuthHeader = (): { Authorization: string } | {} => {
+export const getAuthHeader = (): { Authorization: string } | Record<string, unknown> => {
   const user = getCurrentUser();
   if (!user || !isTokenValid(user.token)) return {};
   

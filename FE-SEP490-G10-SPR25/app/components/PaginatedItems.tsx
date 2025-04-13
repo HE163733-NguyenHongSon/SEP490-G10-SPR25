@@ -39,7 +39,7 @@ const PaginatedItems = <T,>({
   };
 
   return (
-    <div className="flex flex-col items-center mb-7 p-5">
+    <div className="flex flex-col items-center mb-7 p-5  ">
       <RenderComponent items={currentItems} displayView={displayView} />
 
       <div className="flex flex-row items-center justify-center mt-5">

@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BsFilter, BsCalendar } from "react-icons/bs";
+import {  BsCalendar } from "react-icons/bs";
 import { FaChevronRight, FaSearch, FaFilter, FaTimes } from "react-icons/fa";
 import { Service, serviceService } from "../../services/serviceService";
 import RatingStars from "../../components/RatingStars";
@@ -33,6 +33,7 @@ export function ServiceList({ services }: ServiceListProps) {
 
   const router = useRouter();
   const ITEMS_PER_PAGE = 6;
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   useEffect(() => {
     // Fetch specialties from backend
@@ -40,8 +41,8 @@ export function ServiceList({ services }: ServiceListProps) {
       try {
         const response = await fetch('http://localhost:5220/api/Specialties');
         if (response.ok) {
-          const data = await response.json();
-          setSpecialties(data.map((specialty: any) => ({
+          const data: { specialtyId: number; specialtyName: string }[] = await response.json();
+          setSpecialties(data.map((specialty) => ({
             id: specialty.specialtyId,
             name: specialty.specialtyName
           })));
@@ -139,27 +140,27 @@ export function ServiceList({ services }: ServiceListProps) {
     }
   };
 
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(prev => prev - 1);
-    }
-  };
+  // const handlePrevPage = () => {
+  //   if (currentPage > 1) {
+  //     setCurrentPage(prev => prev - 1);
+  //   }
+  // };
 
   const handleServiceClick = (serviceId: number) => {
     router.push(`/patient/services/service-detail/${serviceId}`);
   };
 
-  const handleSpecialtyChange = (specialtyName: string) => {
-    const specialty = specialties.find(s => s.name === specialtyName);
-    setSelectedSpecialty(specialty?.id || null);
-    setCurrentPage(1); // Reset to first page when changing specialty
-  };
+  // const handleSpecialtyChange = (specialtyName: string) => {
+  //   const specialty = specialties.find(s => s.name === specialtyName);
+  //   setSelectedSpecialty(specialty?.id || null);
+  //   setCurrentPage(1); // Reset to first page when changing specialty
+  // };
 
-  const handleCategoryChange = (categoryName: string) => {
-    const category = categories.find(c => c.name === categoryName);
-    setSelectedCategory(category?.id || null);
-    setCurrentPage(1); // Reset to first page when changing category
-  };
+  // const handleCategoryChange = (categoryName: string) => {
+  //   const category = categories.find(c => c.name === categoryName);
+  //   setSelectedCategory(category?.id || null);
+  //   setCurrentPage(1); // Reset to first page when changing category
+  // };
 
   const handleSortChange = (newSortBy: string) => {
     setSortBy(newSortBy);
@@ -421,9 +422,7 @@ export function ServiceList({ services }: ServiceListProps) {
                   >
                     <div className="relative h-32 w-full mb-2">
                       <Image
-                        src={service.image?.startsWith('/') ? service.image : 
-                             service.image?.startsWith('http') ? service.image : 
-                             service.image ? `/${service.image}` : "/images/service.png"}
+                        src={`${imgUrl}/${service.image}`}                         
                         alt={service.serviceName}
                         fill
                         className="object-cover rounded-md"

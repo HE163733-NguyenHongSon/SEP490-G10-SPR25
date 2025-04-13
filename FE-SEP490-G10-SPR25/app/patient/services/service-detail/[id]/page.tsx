@@ -1,10 +1,10 @@
 'use client';
 import React, { useEffect, useState } from "react";
-import { Star } from "lucide-react";
 import { serviceService, ServiceDetail } from "../../../../services/serviceService";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { isAuthenticated } from "../../../../services/authService";
 
 interface ServiceDetailPageProps {
     params: {
@@ -35,9 +35,9 @@ const ServiceDetailPage = ({ params }: ServiceDetailPageProps) => {
                 setService(serviceData);
                 setError(null);
                 setLoading(false);
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error("Error fetching service detail:", error);
-                const errorMessage = error.response?.status === 404 
+                const errorMessage = (error instanceof Error && error.message.includes("404")) 
                     ? "Service not found" 
                     : "Failed to load service details. Please try again later.";
                 setError(errorMessage);
@@ -53,8 +53,17 @@ const ServiceDetailPage = ({ params }: ServiceDetailPageProps) => {
     };
 
     const handleBookService = () => {
+        if (!isAuthenticated()) {
+            if (typeof window !== "undefined") {
+                const currentPath = window.location.pathname;
+                sessionStorage.setItem("redirectAfterLogin", currentPath);
+                router.push('/auth/login');
+            }
+            return;
+        }
+        
         if (service) {
-            router.push(`/patient/booking?serviceId=${service.serviceId}`);
+            router.push(`/patient/appointment-booking?serviceId=${service.serviceId}`);
         }
     };
 

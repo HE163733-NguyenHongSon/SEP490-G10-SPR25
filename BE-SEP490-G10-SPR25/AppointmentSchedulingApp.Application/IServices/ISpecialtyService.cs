@@ -11,5 +11,8 @@ namespace AppointmentSchedulingApp.Application.IServices
     {
         Task<List<SpecialtyDTO>> GetSpecialtyList();
         Task<SpecialtyDetailDTO> GetSpecialtyDetailById(int id);
+        Task AddSpecialty(SpecialtyDTO specialtyDto);
+        Task UpdateSpecialty(SpecialtyDTO specialtyDto);
+        Task DeleteSpecialty(int id);
     }
 }

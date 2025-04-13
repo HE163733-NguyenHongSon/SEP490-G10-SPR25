@@ -8,7 +8,7 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
+TooltipItem } from "chart.js";
 import { useState } from "react";
 
 ChartJS.register(
@@ -50,7 +50,7 @@ export default function MonthlySalesChart() {
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem: { raw: number }) => ` ${tooltipItem.raw}`,
+          label: (tooltipItem: TooltipItem<"bar">) => ` ${tooltipItem.raw as number}`,
         },
       },
     },
@@ -68,7 +68,7 @@ export default function MonthlySalesChart() {
       </div>
       <div className="max-w-full overflow-x-auto custom-scrollbar">
         <div className="-ml-5 min-w-[650px] xl:min-w-full pl-2">
-          <Bar data={data} options={options} height={180} />
+          {/* <Bar data={data} option={options} height={180} /> */}
         </div>
       </div>
     </div>

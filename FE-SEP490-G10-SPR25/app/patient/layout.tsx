@@ -11,9 +11,10 @@ interface PatientLayoutProps {
   children: ReactNode;
 }
 
-export default function PatientLayout({ children }: PatientLayoutProps) {
-  const queryClient = new QueryClient();
+// Create a client
+const queryClient = new QueryClient();
 
+export default function PatientLayout({ children }: PatientLayoutProps) {
   return (
     <ProtectedRoute allowedRoles={[AppRole.Patient, AppRole.Guardian]}>
       <div className="min-h-screen bg-gray-50">

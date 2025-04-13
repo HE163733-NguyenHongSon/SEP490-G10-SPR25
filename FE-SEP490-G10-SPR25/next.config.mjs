@@ -1,6 +1,7 @@
 // next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    output: 'standalone',
     images: {
       remotePatterns: [
         {
@@ -9,7 +10,7 @@ const nextConfig = {
         },
         {
           protocol: 'https',
-          hostname: 'th.bing.com',
+          hostname: 'sep490-g10-spr25.s3.ap-southeast-2.amazonaws.com',
         },
         {
           protocol: 'https',
@@ -29,9 +30,19 @@ const nextConfig = {
         return [
           {
             source: '/',
-            destination: '/guest',
+            destination: '/patient',
             permanent: true,
           },
+          {
+            source: '/guest',
+            destination: '/patient',
+            permanent: true,
+          },
+          {
+            source: '/guest/:path*',
+            destination: '/patient/:path*',
+            permanent: true,
+          }
         ]
       },
   };

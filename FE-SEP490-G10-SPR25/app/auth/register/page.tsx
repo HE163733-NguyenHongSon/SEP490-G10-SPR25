@@ -35,6 +35,7 @@ export default function RegisterPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -43,28 +44,91 @@ export default function RegisterPage() {
       ...prev,
       [name]: value
     }));
+    
+    // Xóa lỗi của trường khi người dùng sửa
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => {
+        const updated = {...prev};
+        delete updated[name];
+        return updated;
+      });
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {};
+    
+    // Kiểm tra họ tên
+    if (!formData.name.trim()) {
+      errors.name = 'Vui lòng nhập họ tên';
+    }
+    
+    // Kiểm tra tên đăng nhập
+    if (!formData.userName.trim()) {
+      errors.userName = 'Vui lòng nhập tên đăng nhập';
+    } else if (formData.userName.includes(' ')) {
+      errors.userName = 'Tên đăng nhập không được chứa khoảng trắng';
+    }
+    
+    // Kiểm tra email
+    if (!formData.email) {
+      errors.email = 'Vui lòng nhập email';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Email không đúng định dạng';
+    }
+    
+    // Kiểm tra mật khẩu
+    if (!formData.password) {
+      errors.password = 'Vui lòng nhập mật khẩu';
+    } else if (formData.password.length < 6) {
+      errors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+    }
+    
+    // Kiểm tra xác nhận mật khẩu
+    if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = 'Mật khẩu và xác nhận mật khẩu không khớp';
+    }
+    
+    // Kiểm tra số điện thoại
+    if (!formData.phoneNumber) {
+      errors.phoneNumber = 'Vui lòng nhập số điện thoại';
+    } else if (!/^(0|\+84)([0-9]{9})$/.test(formData.phoneNumber.replace(/\s/g, ''))) {
+      errors.phoneNumber = 'Số điện thoại không đúng định dạng (VD: 0xxxxxxxxx hoặc +84xxxxxxxxx)';
+    }
+    
+    // Kiểm tra ngày sinh
+    if (!formData.dob) {
+      errors.dob = 'Vui lòng nhập ngày sinh';
+    }
+    
+    // Kiểm tra giới tính
+    if (!formData.gender) {
+      errors.gender = 'Vui lòng chọn giới tính';
+    }
+    
+    // Kiểm tra địa chỉ
+    if (!formData.address.trim()) {
+      errors.address = 'Vui lòng nhập địa chỉ';
+    }
+    
+    // Kiểm tra CCCD/CMND
+    if (!formData.citizenId) {
+      errors.citizenId = 'Vui lòng nhập số CCCD/CMND';
+    } else if (!/^[0-9]{9}([0-9]{3})?$/.test(formData.citizenId)) {
+      errors.citizenId = 'Số CCCD/CMND không hợp lệ (9 hoặc 12 số)';
+    }
+    
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
-    // Validate the form
-    if (formData.password !== formData.confirmPassword) {
-      setError('Mật khẩu và xác nhận mật khẩu không khớp');
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setError('Mật khẩu phải có ít nhất 6 ký tự');
-      setLoading(false);
-      return;
-    }
-
-    if (!formData.dob) {
-      setError('Vui lòng nhập ngày sinh');
+    
+    // Kiểm tra form trước khi gửi
+    if (!validateForm()) {
       setLoading(false);
       return;
     }
@@ -89,19 +153,41 @@ export default function RegisterPage() {
       if (result.success) {
         setSuccess(true);
         console.log('Registration successful!');
+        window.scrollTo(0, 0);
         // Chuyển hướng đến trang đăng nhập sau 2 giây
         setTimeout(() => {
           router.push('/auth/login');
         }, 2000);
       } else {
         setError(result.message || 'Đăng ký không thành công. Vui lòng thử lại.');
+        
+        // Xử lý lỗi chi tiết từ server nếu có
         if (result.errors) {
-          console.error('Registration errors:', result.errors);
+          const serverErrors: Record<string, string> = {};
+          
+          // Chuyển đổi định dạng lỗi từ server
+          Object.entries(result.errors).forEach(([key, messages]) => {
+            if (Array.isArray(messages) && messages.length > 0) {
+              // Chuẩn hóa key (viết thường chữ cái đầu)
+              const normalizedKey = key.charAt(0).toLowerCase() + key.slice(1);
+              serverErrors[normalizedKey] = messages[0];
+            }
+          });
+          
+          setFieldErrors(serverErrors);
         }
+        
+        window.scrollTo(0, 0);
       }
-    } catch (err: any) {
-      console.error('Error during registration:', err);
-      setError(err.message || 'Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại sau.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('Error during registration:', err);
+        setError(err.message || 'Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại sau.');
+      } else {
+        console.error('Unexpected error during registration:', err);
+        setError('Có lỗi xảy ra trong quá trình đăng ký. Vui lòng thử lại sau.');
+      }
+      window.scrollTo(0, 0);
     } finally {
       setLoading(false);
     }
@@ -143,10 +229,11 @@ export default function RegisterPage() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className={`w-full px-3 py-2 border ${fieldErrors.name ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                   required
                   placeholder="Nhập họ tên đầy đủ"
                 />
+                {fieldErrors.name && <p className="mt-1 text-sm text-red-600">{fieldErrors.name}</p>}
               </div>
               
               <div>
@@ -157,10 +244,11 @@ export default function RegisterPage() {
                   name="userName"
                   value={formData.userName}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className={`w-full px-3 py-2 border ${fieldErrors.userName ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                   required
                   placeholder="Tên đăng nhập"
                 />
+                {fieldErrors.userName && <p className="mt-1 text-sm text-red-600">{fieldErrors.userName}</p>}
               </div>
             </div>
             
@@ -172,10 +260,11 @@ export default function RegisterPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                className={`w-full px-3 py-2 border ${fieldErrors.email ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                 required
                 placeholder="your@email.com"
               />
+              {fieldErrors.email && <p className="mt-1 text-sm text-red-600">{fieldErrors.email}</p>}
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -187,11 +276,12 @@ export default function RegisterPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className={`w-full px-3 py-2 border ${fieldErrors.password ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                   required
                   placeholder="Tối thiểu 6 ký tự"
                   minLength={6}
                 />
+                {fieldErrors.password && <p className="mt-1 text-sm text-red-600">{fieldErrors.password}</p>}
               </div>
               
               <div>
@@ -202,10 +292,11 @@ export default function RegisterPage() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className={`w-full px-3 py-2 border ${fieldErrors.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                   required
                   placeholder="Nhập lại mật khẩu"
                 />
+                {fieldErrors.confirmPassword && <p className="mt-1 text-sm text-red-600">{fieldErrors.confirmPassword}</p>}
               </div>
             </div>
             
@@ -218,10 +309,11 @@ export default function RegisterPage() {
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className={`w-full px-3 py-2 border ${fieldErrors.phoneNumber ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                   required
                   placeholder="Số điện thoại liên hệ"
                 />
+                {fieldErrors.phoneNumber && <p className="mt-1 text-sm text-red-600">{fieldErrors.phoneNumber}</p>}
               </div>
               
               <div>
@@ -232,10 +324,11 @@ export default function RegisterPage() {
                   name="citizenId"
                   value={formData.citizenId}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className={`w-full px-3 py-2 border ${fieldErrors.citizenId ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                   required
-                  placeholder="Số CCCD/CMND"
+                  placeholder="Số CCCD/CMND (9 hoặc 12 số)"
                 />
+                {fieldErrors.citizenId && <p className="mt-1 text-sm text-red-600">{fieldErrors.citizenId}</p>}
               </div>
             </div>
             
@@ -247,13 +340,13 @@ export default function RegisterPage() {
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className={`w-full px-3 py-2 border ${fieldErrors.gender ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                   required
                 >
                   <option value="male">Nam</option>
                   <option value="female">Nữ</option>
-                  <option value="other">Khác</option>
                 </select>
+                {fieldErrors.gender && <p className="mt-1 text-sm text-red-600">{fieldErrors.gender}</p>}
               </div>
               
               <div>
@@ -264,9 +357,10 @@ export default function RegisterPage() {
                   name="dob"
                   value={formData.dob}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className={`w-full px-3 py-2 border ${fieldErrors.dob ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                   required
                 />
+                {fieldErrors.dob && <p className="mt-1 text-sm text-red-600">{fieldErrors.dob}</p>}
               </div>
             </div>
             
@@ -277,28 +371,26 @@ export default function RegisterPage() {
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                required
-                placeholder="Địa chỉ liên hệ"
+                className={`w-full px-3 py-2 border ${fieldErrors.address ? 'border-red-500' : 'border-gray-300'} rounded-md`}
                 rows={2}
+                required
+                placeholder="Nhập địa chỉ đầy đủ"
               ></textarea>
+              {fieldErrors.address && <p className="mt-1 text-sm text-red-600">{fieldErrors.address}</p>}
             </div>
             
-            <div className="pt-2">
+            <div className="flex items-center justify-between mt-6">
+              <Link href="/auth/login" className="text-sm text-blue-600 hover:underline">
+                Đã có tài khoản? Đăng nhập
+              </Link>
+              
               <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+                className={`px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
                 disabled={loading}
               >
                 {loading ? 'Đang xử lý...' : 'Đăng ký'}
               </button>
-            </div>
-            
-            <div className="text-center mt-4">
-              <span className="text-gray-600">Đã có tài khoản? </span>
-              <Link href="/auth/login" className="text-blue-600 hover:underline">
-                Đăng nhập
-              </Link>
             </div>
           </form>
         </div>

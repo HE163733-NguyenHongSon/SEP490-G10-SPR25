@@ -7,7 +7,7 @@ public partial class User
 {
     public int UserId { get; set; }
 
-    public long? CitizenId { get; set; }
+    public long CitizenId { get; set; }
 
     public string? Email { get; set; }
 
@@ -17,15 +17,17 @@ public partial class User
 
     public string Phone { get; set; } = null!;
 
-    public string? Gender { get; set; }
+    public string Gender { get; set; } = null!;
 
-    public DateOnly? Dob { get; set; }
+    public DateOnly Dob { get; set; }
 
     public string? Address { get; set; }
 
     public string? AvatarUrl { get; set; }
 
-    public bool? IsVerify { get; set; }
+    public bool IsVerify { get; set; }
+
+    public bool IsActive { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
@@ -33,7 +35,7 @@ public partial class User
 
     public virtual ICollection<Patient> PatientGuardians { get; set; } = new List<Patient>();
 
-    public virtual Patient? PatientNavigation { get; set; }
+    public virtual Patient? Patient { get; set; }
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 

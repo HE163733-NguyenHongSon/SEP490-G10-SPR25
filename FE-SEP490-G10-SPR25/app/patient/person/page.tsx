@@ -1,163 +1,422 @@
-import { assets } from "@/public/images/assets";
+"use client";
+
+import * as Tabs from "@radix-ui/react-tabs";
 import Image from "next/image";
+import { assets } from "@/public/images/assets";
+import { useState, useEffect } from "react";
+import { patientService } from "@/services/patientService";
+import { useQuery } from "@tanstack/react-query";
 
 const ProfilePage = () => {
+  const [patientId, setPatientId] = useState<number>(1);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+      const user = JSON.parse(storedUser) as IUser;
+      setPatientId(user?.userId);
+    }
+  }, []);
+  const {
+    data: patientDetail,
+    // isLoading: isLoadingPatientDetail,
+    // error: patientDetailError,
+  } = useQuery({
+    queryKey: ["patientDetail", patientId],
+    queryFn: () => patientService.getPatientDetailById(patientId),
+    staleTime: 30000,
+  });
+
   return (
-    <div>
-      <form>
-        <div className="grid grid-rows-3 gap-6 p-5">
-          <div className="row-span-1 flex flex-col items-start justify-center border-b-2 border-gray-300 h-fit p-10 pl-0 ">
-            <Image
-              src={assets.profile}
-              alt="Ảnh đại diện"
-              height={100}
-              width={100}
-              className="border border-gray-500 rounded-md shadow-md"
-            />
-            <button className="mx-3 mt-2 text-cyan-500">Thay đổi ảnh</button>
-          </div>
-
-          <div className="row-span-1 flex flex-col">
-            <div className="grid grid-cols-4 gap-10 h-fit mb-5">
-              <div className="col-span-1">
-                <label
-                  htmlFor="citizen_id"
-                  className="block text-base font-medium text-gray-600"
-                >
-                  Số CMND/CCCD
-                </label>
-                <input
-                  id="citizen_id"
-                  type="number"
-                  value="03500200556"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                />
-              </div>
-              <div className="col-span-1">
-                <label
-                  htmlFor="user_name"
-                  className="block text-base font-medium text-gray-600"
-                >
-                  Họ và tên
-                </label>
-                <input
-                  id="user_name"
-                  type="text"
-                  value="Nguyễn Hồng Sơn"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                />
-              </div>
-              <div className="col-span-1">
-                <label
-                  htmlFor="dob"
-                  className="block text-base font-medium text-gray-600"
-                >
-                  Ngày sinh
-                </label>
-                <input
-                  id="dob"
-                  type="date"
-                  value="2002-06-27"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                />
-              </div>
-              <div className="col-span-1 grid grid-cols-2 gap-2 h-fit">
-                <label className="col-span-2 block text-base font-medium text-gray-600">
-                  Giới tính
-                </label>
-                <div className="col-span-1 flex items-center">
-                  <input id="male" type="radio" value="male" className="mr-2" />
-                  <label htmlFor="male">Nam</label>
-                </div>
-                <div className="col-span-1 flex items-center">
-                  <input
-                    id="female"
-                    type="radio"
-                    value="female"
-                    className="mr-2"
-                  />
-                  <label htmlFor="female">Nữ</label>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-10 h-fit">
-              <div className="col-span-1 grid grid-cols-4">
-                <div className="col-span-3">
-                  <label
-                    htmlFor="email"
-                    className="block text-base font-medium text-gray-600"
-                  >
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="string"
-                    value="03500200556"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                  />
-                </div>
-                <div className="col-span-1 flex px-2 py-6 ">
-                  <button className="h-fit w-full p-2 bg-cyan-500 min-w-fit rounded-full shadow-md text-white">
-                    Đã xác minh
-                  </button>
-                </div>
-              </div>
-              <div className="col-span-1 grid grid-cols-4">
-                <div className="col-span-3">
-                  <label
-                    htmlFor="phone"
-                    className="block text-base font-medium text-gray-600"
-                  >
-                    Số điện thoại
-                  </label>
-                  <input
-                    id="phone"
-                    type="string"
-                    value="03500200556"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                  />
-                </div>
-                <div className="col-span-1 flex px-2 py-6 ">
-                  <button className="h-fit w-full p-2 bg-cyan-500 min-w-fit rounded-full shadow-md text-white">
-                    Đã xác minh
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="gap-10 h-fit mb-5">
-              <label
-                htmlFor="address"
-                className="block text-base font-medium text-gray-600"
-              >
-                Địa chỉ
-              </label>
-              <textarea
-                name="address"
-                id="address"
-                rows={2}
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-600 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-xl"
+    <div className="p-8">
+      <Tabs.Root defaultValue="account" className="w-full">
+        <div className="row-span-1 flex flex-col items-start border-b-2 border-gray-300 gap-5">
+          <div className="flex flex-row items-center gap-3 px-5">
+            <div className="flex flex-col items-center gap-3 border-r-2 border-gray-300 pr-12">
+              <Image
+                src={assets.profile}
+                alt="Ảnh đại diện"
+                height={100}
+                width={100}
+                className="border border-gray-500 rounded-md shadow-md"
               />
+              <button className="text-cyan-500 hover:underline">
+                Thay đổi ảnh
+              </button>
+            </div>
+            <div className="text-gray-600">
+              <h3 className="font-semibold text-xl">
+                Hồ sơ cá nhân: {patientDetail?.userName}
+              </h3>
+              <p className="text-lg">
+                <span className="font-semibold">Vai trò: </span>{patientDetail?.roleNames}
+              </p>
             </div>
           </div>
-
-          <div className="row-span-1 gap-10 h-fit flex justify-end border-t-2 border-gray-300 my-3 py-5 pr-10">
-            <button
-              className="font-semibold text-gray-600 text-base"
-              type="reset"
+          <Tabs.List className="flex  ">
+            <Tabs.Trigger
+              value="account"
+              className="px-6 py-2 text-lg font-semibold text-gray-600 data-[state=active]:text-cyan-600 data-[state=active]:border-b-2 data-[state=active]:border-cyan-600 focus:outline-none"
             >
-              Đặt lại
-            </button>
-            <button
-              className="px-12 m-4 text-base text-#635F5F rounded-md bg-cyan-500 text-white flex items-center justify-start min-w-fit h-12 gap-4 border border-gray-300"
-              type="submit"
+              Thông tin cá nhân
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="dependents"
+              className="px-6 py-2 text-lg font-semibold text-gray-600 data-[state=active]:text-cyan-600 data-[state=active]:border-b-2 data-[state=active]:border-cyan-600 focus:outline-none"
             >
-              Cập nhật
-            </button>
-          </div>
+              Người thân được giám hộ
+            </Tabs.Trigger>
+          </Tabs.List>
         </div>
-      </form>
+
+        <Tabs.Content value="account">
+          <form>
+            <div className="row-span-1 flex flex-col py-10">
+              <div className="grid grid-cols-4 gap-10 mb-5">
+                <div>
+                  <label
+                    htmlFor="citizen_id"
+                    className="block font-medium text-gray-600"
+                  >
+                    Số CMND/CCCD
+                  </label>
+                  <input
+                    id="citizen_id"
+                    type="number"
+                    value={patientDetail?.citizenId}
+                    className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="user_name"
+                    className="block font-medium text-gray-600"
+                  >
+                    Họ và tên
+                  </label>
+                  <input
+                    id="user_name"
+                    type="text"
+                    value={patientDetail?.userName}
+                    className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="dob"
+                    className="block font-medium text-gray-600"
+                  >
+                    Ngày sinh
+                  </label>
+                  <input
+                    id="dob"
+                    type="date"
+                    value={patientDetail?.dob}
+                    className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <label className="col-span-2 block font-medium text-gray-600">
+                    Giới tính
+                  </label>
+                  <div className="flex items-center">
+                    <input
+                      id="male"
+                      type="radio"
+                      name="gender"
+                      value="male"
+                      checked={patientDetail?.gender === "male"}
+                      className="mr-2"
+                    />
+                    <label htmlFor="male">Nam</label>
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      id="female"
+                      type="radio"
+                      name="gender"
+                      value="female"
+                      checked={patientDetail?.gender === "female"}
+                      className="mr-2"
+                    />
+                    <label htmlFor="female">Nữ</label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Email và số điện thoại */}
+              <div className="grid grid-cols-2 gap-10">
+                <div className="grid grid-cols-4 items-center">
+                  <div className="col-span-3">
+                    <label
+                      htmlFor="email"
+                      className="block font-medium text-gray-600"
+                    >
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      value={patientDetail?.email}
+                      className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
+                    />
+                  </div>
+                  <div className="col-span-1 flex justify-center">
+                    <button className="h-fit px-4 py-2 bg-cyan-500 text-white rounded-full shadow-md">
+                      Đã xác minh
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-4 items-center">
+                  <div className="col-span-3">
+                    <label
+                      htmlFor="phone"
+                      className="block font-medium text-gray-600"
+                    >
+                      Số điện thoại
+                    </label>
+                    <input
+                      id="phone"
+                      type="tel"
+                      value={patientDetail?.phoneNumber}
+                      className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
+                    />
+                  </div>
+                  <div className="col-span-1 flex justify-center">
+                    <button className="h-fit px-4 py-2 bg-cyan-500 text-white rounded-full shadow-md">
+                      Đã xác minh
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Địa chỉ */}
+              <div className="mt-5">
+                <label
+                  htmlFor="address"
+                  className="block font-medium text-gray-600 mb-1"
+                >
+                  Địa chỉ
+                </label>
+                <textarea
+                  id="address"
+                  rows={2}
+                  value={patientDetail?.address}
+                  placeholder="Sửa lại địa chỉ của bạn..."
+                  className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
+                />
+              </div>
+            </div>
+
+            {/* Hành động */}
+            <div className="flex justify-end border-t-2 border-gray-300 pt-5 gap-5">
+              <button
+                type="reset"
+                className="text-base text-gray-600 font-semibold hover:underline"
+              >
+                Đặt lại
+              </button>
+              <button
+                type="submit"
+                className="px-8 py-3 bg-cyan-500 text-white font-semibold rounded-md shadow-md hover:bg-cyan-600 transition"
+              >
+                Cập nhật
+              </button>
+            </div>
+          </form>
+        </Tabs.Content>
+
+        <Tabs.Content value="dependents">
+          {patientDetail?.dependents?.length !== 0 ? (
+            patientDetail?.dependents?.map(
+              (dependent: IPatient, index: number) => (
+                <form key={dependent.userId}>
+                  <div className="row-span-1 flex flex-col py-10">
+                    <div className="flex flex-row items-center gap-3 py-5 mb-5">
+                      <div className="flex flex-col items-center gap-3  pr-12">
+                        <Image
+                          src={assets.profile}
+                          alt="Ảnh đại diện"
+                          height={100}
+                          width={100}
+                          className="border border-gray-500 rounded-md shadow-md"
+                        />
+                        <button className="text-cyan-500 hover:underline">
+                          Thay đổi ảnh
+                        </button>
+                      </div>
+                      <div className="text-gray-600">
+                        <h3 className="font-semibold text-xl">
+                          Người thân: {dependent.userName}
+                        </h3>
+                        <p className="text-lg">
+                          <span className="font-semibold">Mối quan hệ: </span>
+                          {dependent.relationship}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-4 gap-10 mb-5">
+                      <div>
+                        <label
+                          htmlFor={`citizen_id_${index}`}
+                          className="block font-medium text-gray-600"
+                        >
+                          Số CMND/CCCD
+                        </label>
+                        <input
+                          id={`citizen_id_${index}`}
+                          type="number"
+                          value={dependent.citizenId || ""}
+                          className="w-full border border-gray-300 px-3 py-2 rounded-md"
+                          readOnly
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="user_name"
+                          className="block font-medium text-gray-600"
+                        >
+                          Họ và tên
+                        </label>
+                        <input
+                          id="user_name"
+                          type="text"
+                          value={dependent.userName}
+                          className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="dob"
+                          className="block font-medium text-gray-600"
+                        >
+                          Ngày sinh
+                        </label>
+                        <input
+                          id="dob"
+                          type="date"
+                          value={dependent.dob}
+                          className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <label className="col-span-2 block font-medium text-gray-600">
+                          Giới tính
+                        </label>
+                        <div className="flex items-center">
+                          <input
+                            id="male"
+                            type="radio"
+                            name="gender"
+                            value="male"
+                            checked={dependent.gender === "male"}
+                            className="mr-2"
+                          />
+                          <label htmlFor="male">Nam</label>
+                        </div>
+                        <div className="flex items-center">
+                          <input
+                            id="female"
+                            type="radio"
+                            name="gender"
+                            value="female"
+                            checked={dependent.gender === "female"}
+                            className="mr-2"
+                          />
+                          <label htmlFor="female">Nữ</label>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Email và số điện thoại */}
+                    <div className="grid grid-cols-2 gap-10">
+                      <div className="grid grid-cols-4 items-center">
+                        <div className="col-span-3">
+                          <label
+                            htmlFor="email"
+                            className="block font-medium text-gray-600"
+                          >
+                            Email
+                          </label>
+                          <input
+                            id="email"
+                            type="email"
+                            value={dependent.email}
+                            className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
+                          />
+                        </div>
+                        <div className="col-span-1 flex justify-center">
+                          <button className="h-fit px-4 py-2 bg-cyan-500 text-white rounded-full shadow-md">
+                            Đã xác minh
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-4 items-center">
+                        <div className="col-span-3">
+                          <label
+                            htmlFor="phone"
+                            className="block font-medium text-gray-600"
+                          >
+                            Số điện thoại
+                          </label>
+                          <input
+                            id="phone"
+                            type="tel"
+                            value={dependent.phoneNumber}
+                            className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
+                          />
+                        </div>
+                        <div className="col-span-1 flex justify-center">
+                          <button className="h-fit px-4 py-2 bg-cyan-500 text-white rounded-full shadow-md">
+                            Đã xác minh
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Địa chỉ */}
+                    <div className="mt-5">
+                      <label
+                        htmlFor="address"
+                        className="block font-medium text-gray-600 mb-1"
+                      >
+                        Địa chỉ
+                      </label>
+                      <textarea
+                        id="address"
+                        rows={2}
+                        value={dependent.address}
+                        placeholder="Sửa lại địa chỉ của bạn..."
+                        className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Hành động */}
+                  <div className="flex justify-end border-t-2 border-gray-300 py-2 gap-5 bg-cyan-500 px-5">
+                    <button
+                      type="reset"
+                      className="text-base text-white font-semibold hover:underline border-2 border-white rounded-3xl px-4 py-2"
+                    >
+                      Đặt lại
+                    </button>
+                    <button
+                      type="submit"
+                      className="text-base text-white font-semibold hover:underline border-2 border-white rounded-3xl px-4 py-2"
+                    >
+                      Cập nhật
+                    </button>
+                  </div>
+                </form>
+              )
+            )
+          ) : (
+            <p>Không có người phụ thuộc</p>
+          )}
+        </Tabs.Content>
+      </Tabs.Root>
     </div>
   );
 };

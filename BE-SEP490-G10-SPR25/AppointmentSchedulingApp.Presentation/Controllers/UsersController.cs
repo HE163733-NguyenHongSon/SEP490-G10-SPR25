@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Linq;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -65,7 +66,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                     Console.WriteLine($"Token generated, length: {token.Length}");
                     
                     // Retrieve role information
-                    var roles = user.RoleInformations?.Select(r => r.RoleName).ToList() ?? new List<string>();
+                    var roles = user.Roles?.Select(r => r.RoleName).ToList() ?? new List<string>();
                     var primaryRole = roles.FirstOrDefault() ?? "Unknown";
                     
                     Console.WriteLine($"User primary role: {primaryRole}");
@@ -164,22 +165,40 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> RegisterPatient(RegistrationDTO registrationDTO)
         {
+            // Kiểm tra ModelState trước khi xử lý
+            if (!ModelState.IsValid)
+            {
+                var modelErrors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                    );
+                
+                return Ok(new ApiResponse
+                {
+                    Success = false,
+                    Message = "Dữ liệu không hợp lệ",
+                    Errors = modelErrors
+                });
+            }
+            
             var result = await _userService.RegisterPatient(registrationDTO);
             if (result == null || !result.Succeeded)
             {
-                return Ok(new
+                return Ok(new ApiResponse
                 {
                     Success = false,
-                    Message = "Register Failed",
+                    Message = result?.Message ?? "Đăng ký không thành công",
                     Errors = result?.Errors
                 });
             }
             else
             {
-                return Ok(new
+                return Ok(new ApiResponse
                 {
                     Success = true,
-                    Message = "Register Success",
+                    Message = "Đăng ký thành công",
                 });
             }
         }

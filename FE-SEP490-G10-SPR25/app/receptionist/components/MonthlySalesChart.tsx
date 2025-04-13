@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { useState } from "react";
+import { TooltipItem } from "chart.js";
 
 ChartJS.register(
   CategoryScale,
@@ -50,7 +51,7 @@ export default function MonthlySalesChart() {
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem: { raw: number }) => ` ${tooltipItem.raw}`,
+          label: (tooltipItem: TooltipItem<"bar">) => ` ${tooltipItem.raw as number}`,
         },
       },
     },

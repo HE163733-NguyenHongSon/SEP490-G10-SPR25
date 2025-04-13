@@ -6,16 +6,15 @@ import ClearButton from "@/components/ClearButton";
 export default async function DoctorsLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const academicTitles: ICheckboxOption[] = ["GS.TS", "PGS", "PGS.TS"].map(
-    (title) => {
-      return {
-        label: title,
-        value: title,
-        isChecked: false,
-      };
-    }
-  );
-  const degrees: ICheckboxOption[] = ["BS.CKI", "BS.CKII"].map((degree) => ({
+  const orderedTitles = ["GS.TS", "GS", "PGS.TS", "PGS", "TS"];
+
+  const academicTitles: ICheckboxOption[] = orderedTitles.map((title) => ({
+    label: title,
+    value: title,
+    isChecked: false,
+  }));
+  
+  const degrees: ICheckboxOption[] = ["BS.CK1", "BS.CK2"].map((degree) => ({
     label: degree,
     value: degree,
     isChecked: false,

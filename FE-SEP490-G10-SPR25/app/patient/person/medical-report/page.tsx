@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { assets } from "@/public/images/assets";
 import MedicalRecordList from "@/patient/components/MedicalRecordList";
+import ExportButton from "@/patient/components/ExportButton";
 import { medicalReportService } from "@/services/medicalReportService";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingTable } from "@/components/LoadingTable";
@@ -393,6 +394,8 @@ const MedicalReportPage = () => {
                 <button className="flex items-center text-sm text-cyan-600 hover:text-cyan-800">
                   <ArrowDownTrayIcon className="w-4 h-4 mr-1" />
                   Xuất báo cáo
+                  <ExportButton patientId={patient?.userId} />
+
                 </button>
               </div>
             </div>

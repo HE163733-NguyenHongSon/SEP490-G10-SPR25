@@ -6,17 +6,7 @@ interface IDoctorDetail extends IDoctor {
   researchProject?: string;
   trainingProcess?: string;
   schedules: IDoctorSchedule[];
-  services: ServiceDTO[];
+  services: IService[];
   feedbacks: IFeedback[];
   relevantDoctors: IDoctor[];
-  
-  // User fields
-  email?: string;
-  userName?: string;
-  password?: string;
-  citizenId?: string | number;
-  phone?: string;
-  gender?: string;
-  dateOfBirth?: string | Date;
-  address?: string;
 }

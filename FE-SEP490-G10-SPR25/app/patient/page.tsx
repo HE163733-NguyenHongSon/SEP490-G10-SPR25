@@ -6,7 +6,7 @@ import { serviceService } from "@/services/serviceService";
 import { feedbackService } from "@/services/feedbackService";
 import { DoctorList } from "@/patient/components/DoctorList";
 import { TabsGroup } from "@/components/TabsGroup";
-import  ListService  from "@/patient/components/ListService";
+import ListService from "@/patient/components/ListService";
 import FeedbackList from "@/patient/components/FeedbackList";
 import HomeSearch from "@/patient/components/HomeSearch";
 
@@ -49,7 +49,7 @@ const HomePage = async () => {
       image: d.avatarUrl ?? "",
       type: "doctor",
     })),
-    ...services.map((s: ServiceDTO) => ({
+    ...services.map((s: IService) => ({
       label: s.serviceName,
       value: s.serviceId.toString(),
       image: s.image ?? "",
@@ -144,7 +144,7 @@ const HomePage = async () => {
               chuyên khoa
             </span>
           </h1>
-          <TabsGroup<ServiceDTO>
+          <TabsGroup<IService>
             tabs={serviceTabs}
             RenderComponent={ListService}
             displayView="grid"

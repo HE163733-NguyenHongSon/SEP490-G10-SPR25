@@ -46,7 +46,7 @@ const PatientsPage = async ({
       <div className="overflow-y-auto">
         <PaginatedItems
           items={patients}
-          itemsPerPage={6}
+          itemsPerPage={10}
           RenderComponent={PatientList}
           displayView={searchParams.displayView || "grid"}
         />

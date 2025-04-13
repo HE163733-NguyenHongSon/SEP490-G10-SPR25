@@ -27,6 +27,10 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.MedicalRecords, opt => opt.MapFrom(src => src.Patient.Reservations.Where(r=>r.Status.Equals("Hoàn thành")).Select(r => r.MedicalRecord)))
                 .ReverseMap();
 
+            CreateMap<Patient, GuardianOfPatientDTO>()
+                .ForMember(dest => dest.GuardianId, opt => opt.MapFrom(src => src.GuardianId))
+                .ReverseMap();
+
         }
     }
 }

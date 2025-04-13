@@ -43,5 +43,66 @@ namespace AppointmentSchedulingApp.Application.Services
 
             return mapper.Map<List<ReservationDTO>>(await queryable.ToListAsync());
         }
+
+        public async Task<bool> UpdateReservationStatus(ReservationStatusDTO reservationStatusDTO)
+        {
+            try
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId.Equals(reservationStatusDTO.ReservationId));
+
+                if (reservation == null)
+                {
+                    return false;
+                }
+
+                mapper.Map(reservationStatusDTO, reservation);
+                unitOfWork.ReservationRepository.Update(reservation);
+                unitOfWork.CommitAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+        public async Task<ReservationDTO> GetReservationById(int reservationId)
+        {
+            try
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId.Equals(reservationId));
+
+                if (reservation == null)
+                {
+                    return null;
+                }
+
+                return mapper.Map<ReservationDTO>(reservation);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<ReservationStatusDTO> ViewCancellationReason(int reservationId)
+        {
+            try
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId.Equals(reservationId));
+
+                if (reservation == null)
+                {
+                    return null;
+                }
+
+                return mapper.Map<ReservationStatusDTO>(reservation);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

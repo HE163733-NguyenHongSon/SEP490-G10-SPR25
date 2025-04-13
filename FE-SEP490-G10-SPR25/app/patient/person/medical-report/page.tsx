@@ -170,37 +170,36 @@ const MedicalReportPage = () => {
         </div>
       ) : (
         <div className="container mx-auto p-4">
-          <div className="flex justify-between items-start flex-wrap gap-4 bg-white p-4 rounded-lg shadow-md mb-6">
-            <div className="flex items-center">
+          <div className="flex justify-between items-start flex-wrap bg-white p-6 rounded-lg shadow-md mb-6 gap-6">
+            {/* Logo và Thông tin bệnh viện */}
+            <div className="flex items-start gap-4">
               <Image
                 src={assets.logo}
                 alt="Hospital Logo"
-                width={40}
-                height={40}
-                className="mr-3"
+                width={50}
+                height={50}
+                className="mt-1"
               />
               <div>
-                <h1 className="text-2xl font-bold text-cyan-600">
-                 HAS HOSPITAL
+                <h1 className="text-2xl font-bold text-cyan-700">
+                  HAS HOSPITAL
                 </h1>
-                <p className="text-sm text-gray-600">SĐT: 0123 456 789</p>
+                <p className="text-sm text-gray-600">📞 SĐT: 0123 456 789</p>
                 <p className="text-sm text-gray-600">
-                  Địa chỉ: 123 Đường ABC, TP XYZ
+                  📍 123 Đường ABC, TP XYZ
                 </p>
               </div>
             </div>
 
+            {/* Phần chọn bệnh nhân và export */}
             {(patientList ?? []).length > 1 && (
-              <div className="text-left max-w-xs w-full">
+              <div className="flex flex-col gap-3 max-w-60 w-full">
                 <SelectPatient
                   patients={patientList || []}
                   selectedPatient={selectedDependent ?? undefined}
                   onChange={(p) => setSelectedDependent(p)}
                 />
-                <p className="text-sm text-gray-600 italic mt-2">
-                  Đang xem báo cáo y tế của:{" "}
-                  <strong>{selectedDependent?.userName || "Chưa chọn"}</strong>
-                </p>
+                <ExportButton patientId={patient?.userId} />
               </div>
             )}
           </div>
@@ -387,16 +386,6 @@ const MedicalReportPage = () => {
                     </p>
                   </div>
                 </div>
-              </div>
-
-              {/* Nút hành động */}
-              <div className="mt-6 flex justify-end">
-                <button className="flex items-center text-sm text-cyan-600 hover:text-cyan-800">
-                  <ArrowDownTrayIcon className="w-4 h-4 mr-1" />
-                  Xuất báo cáo
-                  <ExportButton patientId={patient?.userId} />
-
-                </button>
               </div>
             </div>
           </div>

@@ -1,7 +1,6 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 console.log('Doctor API URL base:', apiUrl);
 
-import { IDoctor, DoctorDetailDTO } from "@/types/doctor";
 
 export const doctorService = {
   async getDoctorList(): Promise<IDoctor[]> {
@@ -86,7 +85,7 @@ export const doctorService = {
 
   async getDoctorDetailById(
     doctorId: string | number
-  ): Promise<DoctorDetailDTO> {
+  ): Promise<IDoctorDetail> {
     try {
       console.log(`Fetching doctor detail from: ${apiUrl}/api/Doctors/${doctorId}`);
       const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}`);

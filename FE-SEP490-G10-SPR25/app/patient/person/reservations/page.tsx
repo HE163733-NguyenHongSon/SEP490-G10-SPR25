@@ -12,7 +12,7 @@ const ReservationPage = () => {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState("Đang chờ");
   const sortBy = searchParams.get("sortBy") || "Cuộc hẹn gần đây";
-  const [patientId, setPatientId] = useState<number>(23);
+  const [patientId, setPatientId] = useState<number>(1);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");

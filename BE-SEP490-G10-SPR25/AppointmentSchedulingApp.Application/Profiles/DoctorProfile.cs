@@ -20,7 +20,7 @@ namespace AppointmentSchedulingApp.Application.Profiles
             .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.DoctorNavigation.UserName))
             .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => src.DoctorNavigation.AvatarUrl))
             .ForMember(dest => dest.CurrentWork, opt => opt.MapFrom(src => src.CurrentWork))
-            .ForMember(dest => dest.BasicDescription, opt => opt.MapFrom(src => new string(src.DoctorDescription.Take(50).ToArray())))
+            .ForMember(dest => dest.BasicDescription, opt => opt.MapFrom(src => src.DoctorDescription != null ? new string(src.DoctorDescription.Take(50).ToArray()) : ""))
             .ForMember(dest => dest.SpecialtyNames, opt => opt.MapFrom(src => src.Specialties.Select(s => s.SpecialtyName).ToArray()))
             .ForMember(dest => dest.NumberOfService, opt => opt.MapFrom(src => src.Services.Count))
 
@@ -46,10 +46,27 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => src.Organization))
                 .ForMember(dest => dest.Prize, opt => opt.MapFrom(src => src.Prize))
                 .ForMember(dest => dest.ResearchProject, opt => opt.MapFrom(src => src.ResearchProject))
-                .ForMember(dest => dest.TrainingProcess, opt => opt.MapFrom(src => src.TrainingProcess)).ReverseMap();
+                .ForMember(dest => dest.TrainingProcess, opt => opt.MapFrom(src => src.TrainingProcess));
 
-
-
+            // Map từ DoctorDetailDTO sang Doctor (cho Create/Update)
+            CreateMap<DoctorDetailDTO, Doctor>()
+                .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.DoctorId))
+                .ForMember(dest => dest.AcademicTitle, opt => opt.MapFrom(src => src.AcademicTitle))
+                .ForMember(dest => dest.Degree, opt => opt.MapFrom(src => src.Degree))
+                .ForMember(dest => dest.CurrentWork, opt => opt.MapFrom(src => src.CurrentWork))
+                .ForMember(dest => dest.DoctorDescription, opt => opt.MapFrom(src => src.DetailDescription))
+                .ForMember(dest => dest.WorkExperience, opt => opt.MapFrom(src => src.WorkExperience))
+                .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => src.Organization))
+                .ForMember(dest => dest.Prize, opt => opt.MapFrom(src => src.Prize))
+                .ForMember(dest => dest.ResearchProject, opt => opt.MapFrom(src => src.ResearchProject))
+                .ForMember(dest => dest.TrainingProcess, opt => opt.MapFrom(src => src.TrainingProcess))
+                // Không cập nhật các mối quan hệ
+                .ForMember(dest => dest.Specialties, opt => opt.Ignore())
+                .ForMember(dest => dest.Services, opt => opt.Ignore())
+                .ForMember(dest => dest.DoctorNavigation, opt => opt.Ignore())
+                .ForMember(dest => dest.Certifications, opt => opt.Ignore())
+                .ForMember(dest => dest.DoctorSchedules, opt => opt.Ignore())
+                .ForMember(dest => dest.Posts, opt => opt.Ignore());
         }
     }
 }

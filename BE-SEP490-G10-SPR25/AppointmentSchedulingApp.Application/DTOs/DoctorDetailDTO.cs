@@ -21,5 +21,28 @@ namespace AppointmentSchedulingApp.Application.DTOs
 
         [JsonPropertyOrder(18)]
         public string? TrainingProcess { get; set; }
+        
+        // User account properties
+        [JsonPropertyOrder(19)]
+        public string UserName { get; set; }
+        
+        [JsonPropertyOrder(20)]
+        public string Password { get; set; }
+        
+        // Additional User information
+        [JsonPropertyOrder(21)]
+        public long CitizenId { get; set; }
+        
+        [JsonPropertyOrder(22)]
+        public string Phone { get; set; }
+        
+        [JsonPropertyOrder(23)]
+        public string Gender { get; set; }
+        
+        [JsonPropertyOrder(24)]
+        public DateTime DateOfBirth { get; set; }
+        
+        [JsonPropertyOrder(25)]
+        public string Address { get; set; }
     }
 }

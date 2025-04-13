@@ -11,5 +11,7 @@ namespace AppointmentSchedulingApp.Application.IServices
     {
         Task<List<DoctorDTO>> GetDoctorList();
         Task<DoctorDetailDTO> GetDoctorDetailById(int doctorId);
+        Task<DoctorDetailDTO> UpdateDoctor(DoctorDetailDTO doctorDto);
+        Task<bool> DeleteDoctor(int doctorId);
     }
 }

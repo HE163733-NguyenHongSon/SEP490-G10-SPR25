@@ -190,6 +190,7 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//Tự tìm mapper trong phạm vi  solution với các project đã tham chiếu với nhau
 

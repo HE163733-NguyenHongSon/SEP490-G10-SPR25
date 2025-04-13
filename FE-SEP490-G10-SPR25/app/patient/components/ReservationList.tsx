@@ -6,6 +6,8 @@ interface ReservationListProps {
 }
 
 const ReservationList = ({ items }: ReservationListProps) => {
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
+
   return (
     <div className="reservation-list">
       <table className="border-separate border border-gray-300 rounded-md">
@@ -42,10 +44,7 @@ const ReservationList = ({ items }: ReservationListProps) => {
                         className="border border-gray-300 rounded-md"
                         width={200}
                         height={100}
-                        src={
-                          // reservation.serviceImage
-                           "https://th.bing.com/th/id/OIP.Km2gGBfVnlIr5JhRhgiuQgHaD4?w=305&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7"
-                          }
+                        src={`${imgUrl}/${reservation.serviceImage}`}
                         alt=""
                       />
                     </div>
@@ -61,11 +60,11 @@ const ReservationList = ({ items }: ReservationListProps) => {
 
                   <div className="flex justify-center flex-col col-span-2 w-fit mx-6">
                     <p>
-                      Khám bởi{" "}
+                      Khám bởi bác sĩ{" "}
                       <span className="font-semibold">
                         {reservation.doctorName}
                       </span>{" "}
-                      bác sĩ
+                     
                     </p>
                     <p>
                       Khám vào{" "}

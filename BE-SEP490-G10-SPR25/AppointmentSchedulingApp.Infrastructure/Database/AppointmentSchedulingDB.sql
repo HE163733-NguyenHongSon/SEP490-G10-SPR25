@@ -1121,6 +1121,8 @@ VALUES
 -- Reservation 16 (Patient 16 - Chụp X-quang)
 (16, N'Đau lưng dưới sau khi mang vác nặng', N'Thoái hóa cột sống thắt lưng L4-L5', N'Vật lý trị liệu 3 lần/tuần, dùng thuốc giảm đau khi cần', '2025-03-21', N'Tránh mang vác nặng, tập các bài tập hỗ trợ cột sống'),
 
+(17, 'Đau vùng thắt lưng', 'Thoái hóa cột sống thắt lưng L4-L5', 'Vật lý trị liệu 3 lần/tuần, dùng thuốc giảm đau khi cần', '2025-03-21', 'Tránh mang vác nặng, tập các bài tập hỗ trợ cột sống'),
+
 -- Reservation 18 (Patient 18 - Xét nghiệm nước tiểu)
 (18, N'Tiểu buốt, tiểu rắt', N'Nhiễm trùng đường tiểu', N'Dùng kháng sinh Ciprofloxacin 500mg 2 lần/ngày trong 7 ngày', '2025-03-27', N'Uống nhiều nước, tái khám nếu triệu chứng không giảm'),
 
@@ -1129,6 +1131,8 @@ VALUES
 
 -- Reservation 21 (Patient 21 - Khám viêm họng)
 (21, N'Đau họng, sốt nhẹ 37.8°C', N'Viêm họng cấp', N'Dùng thuốc hạ sốt khi sốt >38.5°C, súc họng nước muối', '2025-03-17', N'Bệnh nhân đã được test nhanh loại trừ COVID-19'),
+
+(22, N'Đau đầu, chóng mặt', N'Mất nước, thiếu ngủ', N'Uống nước, nghỉ ngơi, tránh căng thẳng', '2025-03-22', N'Khuyến nghị nghỉ ngơi và bổ sung nước đầy đủ'),
 
 -- Reservation 24 (Patient 24 - Khám tổng quát)
 (24, N'Khám sức khỏe tổng quát định kỳ', N'Sức khỏe tốt, cholesterol hơi cao', N'Điều chỉnh chế độ ăn ít chất béo, tăng cường rau xanh', NULL, N'HDL 45, LDL 130 - cần theo dõi'),

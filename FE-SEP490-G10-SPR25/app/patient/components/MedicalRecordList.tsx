@@ -41,41 +41,41 @@ const MedicalRecordList = ({
         <tbody>
           {medicalRecordList?.length ? (
             medicalRecordList.map((record) => (
-              <tr key={record.reservationId} className="hover:bg-gray-50">
+              <tr key={record?.reservationId} className="hover:bg-gray-50">
                 <td className="p-3 border border-gray-300">
-                  {record.reservationId}
+                  {record?.reservationId}
                 </td>
                 <td className="p-3 border border-gray-300">
-                  {record.appointmentDate}
+                  {record?.appointmentDate}
                 </td>
                 <td className="p-3 border border-gray-300">
                   <div className="space-y-2">
                     <p>
                       <strong>Triệu chứng:</strong>{" "}
                       <span dangerouslySetInnerHTML={{
-                        __html: highlightSearchTerm(record.symptoms),
+                        __html: highlightSearchTerm(record?.symptoms),
                       }}/>
                     </p>
                     <p>
                       <strong>Chẩn đoán:</strong>{" "}
                       <span dangerouslySetInnerHTML={{
-                        __html: highlightSearchTerm(record.diagnosis),
+                        __html: highlightSearchTerm(record?.diagnosis),
                       }}/>
                     </p>
                     <p>
                       <strong>Phác đồ điều trị:</strong>{" "}
                       <span dangerouslySetInnerHTML={{
-                        __html: highlightSearchTerm(record.treatmentPlan),
+                        __html: highlightSearchTerm(record?.treatmentPlan),
                       }}/>
                     </p>
                   </div>
                 </td>
                 <td className="p-3 border border-gray-300">
-                  {record.followUpDate??"Không có ngày tái khám"}
+                  {record?.followUpDate??"Không có ngày tái khám"}
                 </td>
                 <td className="p-3 border border-gray-300">
                   <span dangerouslySetInnerHTML={{
-                    __html: highlightSearchTerm(record.notes),
+                    __html: highlightSearchTerm(record?.notes),
                   }}/>
                 </td>
                 <td className="p-3 border border-gray-300 text-blue-500 hover:text-blue-700 cursor-pointer">

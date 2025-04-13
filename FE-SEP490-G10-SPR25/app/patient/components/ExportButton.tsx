@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 
 
-const ExportButton = ({ patientId }: {patientId: string | number;}) => {
+const ExportButton = ({ patientId }: {patientId?: number;}) => {
     const [isLoading, setIsLoading] = useState(false);
     
     const handleExport = async () => {

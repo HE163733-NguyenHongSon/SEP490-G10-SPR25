@@ -31,7 +31,7 @@ interface PostDetail {
   comments: Comment[];
 }
 
-const GuestBlogDetailPage = () => {
+const PatientBlogDetailPage = () => {
   const params = useParams();
   const id = params?.id;
 
@@ -73,7 +73,6 @@ const GuestBlogDetailPage = () => {
     );
   };
 
-
   if (loading) return <div className="text-center mt-10">Đang tải...</div>;
   if (error || !post) return <div className="text-center text-red-500 mt-10">{error || "Không tìm thấy bài viết"}</div>;
 
@@ -109,16 +108,15 @@ const GuestBlogDetailPage = () => {
           </div>
         ))}
 
-<div className="mt-12">
+        <div className="mt-12">
           <h3 className="text-2xl font-semibold mb-4">Bình luận</h3>
           {post.comments
             .filter(c => !c.repliedCommentId)
             .map(parent => renderComment(parent, post.comments))}
         </div>
-
       </div>
     </div>
   );
 };
 
-export default GuestBlogDetailPage;
+export default PatientBlogDetailPage;

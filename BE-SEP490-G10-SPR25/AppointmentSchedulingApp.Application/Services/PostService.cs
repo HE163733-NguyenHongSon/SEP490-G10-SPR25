@@ -3,6 +3,7 @@ using AppointmentSchedulingApp.Application.IServices;
 using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Domain.IUnitOfWork;
+using AppointmentSchedulingApp.Infrastructure.Repositories;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,14 @@ namespace AppointmentSchedulingApp.Application.Services
     {
         public IUnitOfWork unitOfWork { get; set; }
         private readonly IMapper _mapper;
+        private readonly IPostRepository _postRepository;
+
 
         public PostService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             _mapper = mapper;
+            _postRepository = unitOfWork.PostRepository;
         }
         public async Task<List<PostDetailDTO>> GetAllPostDetailAsync()
         {

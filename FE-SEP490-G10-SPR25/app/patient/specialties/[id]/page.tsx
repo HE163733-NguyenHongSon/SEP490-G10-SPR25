@@ -121,6 +121,7 @@ export default function SpecialtyDetails() {
                   key={index}
                   className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
                 >
+
                   <Image 
                     src={`https://via.placeholder.com/150?text=Service+${index+1}`}
                     alt={`Service ${index+1}`}

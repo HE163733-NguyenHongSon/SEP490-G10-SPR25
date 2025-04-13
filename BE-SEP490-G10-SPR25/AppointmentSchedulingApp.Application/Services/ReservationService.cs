@@ -2,6 +2,7 @@
 using AppointmentSchedulingApp.Application.IServices;
 using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentSchedulingApp.Application.Services
@@ -16,12 +17,13 @@ namespace AppointmentSchedulingApp.Application.Services
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
         }
-
         public async Task<List<ReservationDTO>> GetListReservation()
         {
-            var reservations = await unitOfWork.ReservationRepository.GetAll();
-            return mapper.Map<List<ReservationDTO>>(reservations);
+            var query =  unitOfWork.ReservationRepository.GetQueryable();
+
+            return await  query.ProjectTo<ReservationDTO>(mapper.ConfigurationProvider).ToListAsync();
         }
+        
 
         public async Task<List<ReservationDTO>> GetListReservationByFilter(int patientId, string status, string sortBy)
         {
@@ -40,6 +42,67 @@ namespace AppointmentSchedulingApp.Application.Services
             };
 
             return mapper.Map<List<ReservationDTO>>(await queryable.ToListAsync());
+        }
+
+        public async Task<bool> UpdateReservationStatus(ReservationStatusDTO reservationStatusDTO)
+        {
+            try
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId.Equals(reservationStatusDTO.ReservationId));
+
+                if (reservation == null)
+                {
+                    return false;
+                }
+
+                mapper.Map(reservationStatusDTO, reservation);
+                unitOfWork.ReservationRepository.Update(reservation);
+                unitOfWork.CommitAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+
+        public async Task<ReservationDTO> GetReservationById(int reservationId)
+        {
+            try
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId.Equals(reservationId));
+
+                if (reservation == null)
+                {
+                    return null;
+                }
+
+                return mapper.Map<ReservationDTO>(reservation);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<ReservationStatusDTO> ViewCancellationReason(int reservationId)
+        {
+            try
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId.Equals(reservationId));
+
+                if (reservation == null)
+                {
+                    return null;
+                }
+
+                return mapper.Map<ReservationStatusDTO>(reservation);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

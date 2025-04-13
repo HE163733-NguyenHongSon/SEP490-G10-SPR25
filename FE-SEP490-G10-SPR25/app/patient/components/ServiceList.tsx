@@ -33,6 +33,7 @@ export function ServiceList({ services }: ServiceListProps) {
 
   const router = useRouter();
   const ITEMS_PER_PAGE = 6;
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   useEffect(() => {
     // Fetch specialties from backend
@@ -421,9 +422,7 @@ export function ServiceList({ services }: ServiceListProps) {
                   >
                     <div className="relative h-32 w-full mb-2">
                       <Image
-                        src={service.image?.startsWith('/') ? service.image : 
-                             service.image?.startsWith('http') ? service.image : 
-                             service.image ? `/${service.image}` : "/images/service.png"}
+                        src={`${imgUrl}/${service.image}`}                         
                         alt={service.serviceName}
                         fill
                         className="object-cover rounded-md"

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentSchedulingApp.Infrastructure.Repositories
 {
@@ -14,5 +15,6 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
         public DoctorRepository(AppointmentSchedulingDbContext dbContext) : base(dbContext)
         {
         }
+       
     }
 }

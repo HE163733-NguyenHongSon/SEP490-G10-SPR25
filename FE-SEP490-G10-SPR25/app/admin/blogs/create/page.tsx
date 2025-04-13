@@ -7,7 +7,7 @@ interface PostSection {
   sectionTitle: string;
   sectionContent: string;
   sectionIndex: number;
-  postImageUrl?: string;
+  postImageFile?: File;
 }
 
 const CreateBlogAdminPage = () => {
@@ -15,10 +15,7 @@ const CreateBlogAdminPage = () => {
   const [postTitle, setPostTitle] = useState("");
   const [postDescription, setPostDescription] = useState("");
   const [postSourceUrl, setPostSourceUrl] = useState("");
-  const [postImageUrl, setPostImageUrl] = useState("");
-  const [postCategory, setPostCategory] = useState("");
-  const [authorBio, setAuthorBio] = useState("");
-  const [postAuthorId, setPostAuthorId] = useState<number | null>(null); // 👈 thêm authorId nếu cần gửi
+  const [postAuthorId, setPostAuthorId] = useState<number | null>(null);
   const [sections, setSections] = useState<PostSection[]>([]);
 
   const handleAddSection = () => {
@@ -28,7 +25,7 @@ const CreateBlogAdminPage = () => {
     ]);
   };
 
-  const handleSectionChange = (index: number, key: keyof PostSection, value: string) => {
+  const handleSectionChange = (index: number, key: keyof PostSection, value: any) => {
     const updated = [...sections];
     updated[index][key] = value;
     setSections(updated);
@@ -42,25 +39,30 @@ const CreateBlogAdminPage = () => {
       return;
     }
 
-    const payload: any = {
-      postTitle,
-      postDescription,
-      postSourceUrl,
-      postImageUrl,
-      postCategory,
-      authorBio,
-      postSections: sections,
-    };
+    const formData = new FormData();
+    formData.append("postTitle", postTitle);
+    formData.append("postDescription", postDescription);
+    formData.append("postSourceUrl", postSourceUrl);
+    if (postAuthorId !== null) formData.append("postAuthorId", postAuthorId.toString());
 
-    if (postAuthorId !== null) payload.postAuthorId = postAuthorId; // 👈 thêm nếu có
+    const sectionsToSend = sections.map((sec, idx) => {
+      if (sec.postImageFile) {
+        formData.append("files", sec.postImageFile);
+      }
+      return {
+        sectionTitle: sec.sectionTitle,
+        sectionContent: sec.sectionContent,
+        sectionIndex: idx,
+        postImageUrl: sec.postImageFile ? "" : undefined
+      };
+    });
 
-    console.log("Payload gửi:", JSON.stringify(payload, null, 2));
+    formData.append("postSectionsJson", JSON.stringify(sectionsToSend));
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: formData,
       });
 
       if (!res.ok) {
@@ -84,11 +86,6 @@ const CreateBlogAdminPage = () => {
         <input value={postTitle} onChange={(e) => setPostTitle(e.target.value)} placeholder="Tiêu đề" className="w-full p-2 border rounded" required />
         <textarea value={postDescription} onChange={(e) => setPostDescription(e.target.value)} placeholder="Mô tả" className="w-full p-2 border rounded" required />
         <input value={postSourceUrl} onChange={(e) => setPostSourceUrl(e.target.value)} placeholder="Nguồn (nếu có)" className="w-full p-2 border rounded" />
-        <input value={postImageUrl} onChange={(e) => setPostImageUrl(e.target.value)} placeholder="Ảnh bài viết" className="w-full p-2 border rounded" />
-        <input value={postCategory} onChange={(e) => setPostCategory(e.target.value)} placeholder="Chuyên mục" className="w-full p-2 border rounded" />
-        <input value={authorBio} onChange={(e) => setAuthorBio(e.target.value)} placeholder="Giới thiệu tác giả" className="w-full p-2 border rounded" />
-
-        {/* Nếu cần nhập authorId bằng tay (tạm thời) */}
         <input type="number" value={postAuthorId ?? ""} onChange={(e) => setPostAuthorId(Number(e.target.value))} placeholder="Mã tác giả (PostAuthorId)" className="w-full p-2 border rounded" />
 
         <h2 className="text-lg font-semibold mt-6">Sections</h2>
@@ -109,9 +106,9 @@ const CreateBlogAdminPage = () => {
               required
             />
             <input
-              value={sec.postImageUrl || ""}
-              onChange={(e) => handleSectionChange(i, "postImageUrl", e.target.value)}
-              placeholder="Ảnh (nếu có)"
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleSectionChange(i, "postImageFile", e.target.files?.[0])}
               className="w-full p-2 border rounded"
             />
           </div>

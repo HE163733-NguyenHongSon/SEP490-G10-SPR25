@@ -22,6 +22,8 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
         {
             return await _context.Posts
                 .Include(p => p.PostSections)
+                .Include(p => p.PostAuthor)
+                    .ThenInclude(d => d.DoctorNavigation)
                 .ToListAsync();
         }
         public async Task<IQueryable<Post>> GetAllPosts()
@@ -35,9 +37,25 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
         public async Task<Post?> GetPostDetailById(int id)
         {
             return await _context.Posts
+            .Include(p => p.PostSections)
+            .Include(p => p.Comments) 
+            .Include(p => p.PostAuthor)
+                .ThenInclude(d => d.DoctorNavigation)
+            .FirstOrDefaultAsync(p => p.PostId == id);
+        }
+        public async Task DeletePostAsync(int id)
+        {
+            var post = await _context.Posts
                 .Include(p => p.PostSections)
-                .Include(p => p.PostAuthor)
+                .Include(p => p.Comments)
                 .FirstOrDefaultAsync(p => p.PostId == id);
+            if (post != null)
+            {
+                _context.PostSections.RemoveRange(post.PostSections);
+                _context.Comments.RemoveRange(post.Comments);
+                _context.Posts.Remove(post);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

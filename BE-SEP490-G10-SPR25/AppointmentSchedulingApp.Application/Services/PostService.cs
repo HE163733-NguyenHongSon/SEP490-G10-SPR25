@@ -5,6 +5,8 @@ using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AppointmentSchedulingApp.Infrastructure.Repositories;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,6 +89,14 @@ namespace AppointmentSchedulingApp.Application.Services
                 throw new Exception("Lỗi khi tạo bài viết: " + ex.Message, ex);
             }
             
+        }
+        public async Task<bool> DeletePostAsync(int id)
+        {
+            var post = await _postRepository.GetPostById(id);
+            if (post == null) return false;
+            await _postRepository.DeletePostAsync(id);
+            await unitOfWork.CommitAsync();
+            return true;
         }
     }
 }

@@ -22,9 +22,13 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public DateTime PostCreatedDate { get; set; }
 
         [JsonPropertyOrder(5)]
-        public string PostSourceUrl { get; set; }
+        public string PostSourceUrl { get; set; } = "";
 
         [JsonPropertyOrder(6)]
         public string? AuthorName { get; set; }
+        [JsonPropertyOrder(7)]
+        public string? PostImageUrl { get; set; }
+        [JsonPropertyOrder(8)]
+        public int? AuthorId { get; set; }
     }
 }

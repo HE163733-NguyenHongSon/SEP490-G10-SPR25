@@ -13,5 +13,6 @@ namespace AppointmentSchedulingApp.Domain.IRepositories
         Task<IQueryable<Post>> GetAllPosts();
         Task<Post?> GetPostById(int id);
         Task<Post?> GetPostDetailById(int id);
+        Task DeletePostAsync(int id);
     }
 }

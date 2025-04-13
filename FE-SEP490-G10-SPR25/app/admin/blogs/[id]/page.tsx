@@ -32,7 +32,7 @@ interface PostDetail {
   comments: Comment[];
 }
 
-const PatientBlogDetailPage = () => {
+const AdminBlogDetailPage = () => {
   const params = useParams();
   const id = params?.id;
 
@@ -74,7 +74,7 @@ const PatientBlogDetailPage = () => {
     );
   };
 
-  if (loading) return <div className="text-center mt-10">Đang tải...</div>;
+  if (loading) return <div className="text-center mt-10">\u0110ang tải...</div>;
   if (error || !post) return <div className="text-center text-red-500 mt-10">{error || "Không tìm thấy bài viết"}</div>;
 
   return (
@@ -130,4 +130,4 @@ const PatientBlogDetailPage = () => {
   );
 };
 
-export default PatientBlogDetailPage;
+export default AdminBlogDetailPage;

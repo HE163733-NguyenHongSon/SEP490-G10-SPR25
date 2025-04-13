@@ -119,14 +119,17 @@ const PatientBlogsPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {filteredBlogs.map((blog) => (
               <div key={blog.id} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 h-full flex flex-col">
-                <div className="relative h-48">
+                <div className="relative h-48 w-full">
                   <Image
-                    width={150}
-                    height={150}
-                    src={blog.imageUrl || "/images/placeholder.jpg"}
-                    alt={blog.title}
-                    className="object-cover"
-                  />
+                        src={
+                          blog.imageUrl
+                            ? `${process.env.NEXT_PUBLIC_S3_BASE_URL}/${blog.imageUrl}`
+                            : "/images/placeholder.jpg"
+                        }
+                        alt={blog.title}
+                        fill
+                        className="object-cover rounded-t-lg"
+                    />
                   <div className="absolute top-0 right-0 bg-cyan-500 text-white px-2 py-1 text-xs">
                     {blog.category}
                   </div>

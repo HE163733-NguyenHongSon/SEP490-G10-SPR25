@@ -1,25 +1,5 @@
 import axios from 'axios';
-
-export interface Service {
-    serviceId: number;
-    serviceName: string;
-    overview: string;
-    process: string;
-    treatmentTechniques: string;
-    price: number;
-    image: string;
-    specialtyId: number;
-    estimatedTime?: string;
-    rating?: number;
-    ratingCount?: number;
-    isPrepayment?: boolean;
-}
-
-export interface ServiceDetail extends Service {
-    specialtyName: string;
-    relatedDoctors: string[];
-    requiredDevices: string[];
-}
+import { ServiceDTO, ServiceDetailDTO } from '../types/service';
 
 export interface ServiceCreateDTO {
     serviceName: string;
@@ -37,30 +17,68 @@ export interface ServiceUpdateDTO extends ServiceCreateDTO {
     serviceId: number;
 }
 
+// Hiển thị URL đang sử dụng để debug
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/Services`;
+console.log('Service API URL:', apiUrl);
+
+// Fallback URL trong trường hợp env không khả dụng
+const fallbackUrl = 'http://localhost:5220/api/Services';
 
 export const serviceService = {
-
     getNumberOfServices: async (): Promise<number> => {
         try {
-            const response = await fetch(`http://localhost:5220/odata/Services/$count`);
+            // Sử dụng API URL từ env hoặc fallback
+            const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5220'}/odata/Services/$count`;
+            console.log('Fetching count from:', url);
+            const response = await fetch(url, { 
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                cache: 'no-store'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
             return response.json();
         } catch (error) {
-            console.error('Error fetching services:', error);
-            throw error;
-        }
-    },
-    getAllServices: async (): Promise<Service[]> => {
-        try {
-            const response = await axios.get(apiUrl);
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching services:', error);
-            throw error;
+            console.error('Error fetching services count:', error);
+            return 0; // Trả về 0 thay vì throw lỗi
         }
     },
 
-    getServiceById: async (id: number): Promise<Service> => {
+    getAllServices: async (): Promise<ServiceDTO[]> => {
+        try {
+            // Sử dụng API URL từ env hoặc fallback
+            const url = apiUrl || fallbackUrl;
+            console.log('Fetching all services from:', url);
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                cache: 'no-store'
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log(`Successfully retrieved ${data.length} services`);
+            return data;
+        } catch (error) {
+            console.error('Error fetching services:', error);
+            // Trả về mảng rỗng để tránh crash UI
+            return [];
+        }
+    },
+
+    getServiceById: async (id: number): Promise<ServiceDTO> => {
         try {
             const response = await axios.get(`${apiUrl}/${id}`);
             return response.data;
@@ -70,9 +88,8 @@ export const serviceService = {
         }
     },
 
-    getServiceDetailById: async (id: number): Promise<ServiceDetail> => {
+    getServiceDetailById: async (id: number): Promise<ServiceDetailDTO> => {
         try {
-            // Set timeout to 10 seconds to avoid long waiting time
             const response = await axios.get(`${apiUrl}/details/${id}`, {
                 timeout: 10000
             });
@@ -80,26 +97,21 @@ export const serviceService = {
         } catch (error: unknown) {
             console.error(`Error fetching service detail with ID ${id}:`, error);
             
-            // Provide more detailed error messages
             if (axios.isAxiosError(error) && error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
                 if (error.response.status === 404) {
                     throw new Error(`Service with ID ${id} not found`);
                 } else {
                     throw new Error(`Server error: ${error.response.status} ${error.response.statusText}`);
                 }
             } else if (axios.isAxiosError(error) && error.request) {
-                // The request was made but no response was received
                 throw new Error('No response from server. Please check your connection and try again.');
             } else {
-                // Something else caused the error
                 throw new Error(`Error: ${error instanceof Error ? error.message : 'An unknown error occurred'}`);
             }
         }
     },
 
-    createService: async (serviceData: ServiceCreateDTO): Promise<Service> => {
+    createService: async (serviceData: ServiceCreateDTO): Promise<ServiceDTO> => {
         try {
             const response = await axios.post(apiUrl, serviceData);
             return response.data;
@@ -109,7 +121,7 @@ export const serviceService = {
         }
     },
 
-    updateService: async (serviceData: ServiceUpdateDTO): Promise<Service> => {
+    updateService: async (serviceData: ServiceUpdateDTO): Promise<ServiceDTO> => {
         try {
             const response = await axios.put(`${apiUrl}/${serviceData.serviceId}`, serviceData);
             return response.data;
@@ -128,7 +140,7 @@ export const serviceService = {
         }
     },
 
-    getServicesBySpecialty: async (specialtyId: number): Promise<Service[]> => {
+    getServicesBySpecialty: async (specialtyId: number): Promise<ServiceDTO[]> => {
         try {
             const response = await axios.get(`${apiUrl}/specialty/${specialtyId}`);
             return response.data;
@@ -138,7 +150,7 @@ export const serviceService = {
         }
     },
 
-    getServicesByCategory: async (categoryId: number): Promise<Service[]> => {
+    getServicesByCategory: async (categoryId: number): Promise<ServiceDTO[]> => {
         try {
             const response = await axios.get(`${apiUrl}/category/${categoryId}`);
             return response.data;
@@ -148,7 +160,7 @@ export const serviceService = {
         }
     },
 
-    getServicesSortedByRating: async (): Promise<Service[]> => {
+    getServicesSortedByRating: async (): Promise<ServiceDTO[]> => {
         try {
             const response = await axios.get(`${apiUrl}/sort/rating`);
             return response.data;
@@ -157,4 +169,4 @@ export const serviceService = {
             throw error;
         }
     }
-}; 
+};

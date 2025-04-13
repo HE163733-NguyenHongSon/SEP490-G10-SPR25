@@ -13,7 +13,7 @@ namespace AppointmentSchedulingApp.Domain.IUnitOfWork
 
         IPostRepository PostRepository { get; }
         IUserRepository  UserRepository { get; }
-
+        IRoleRepository RoleRepository { get; }
         IFeedbackRepository FeedbackRepository { get; }
         void Commit();
 
@@ -23,6 +23,9 @@ namespace AppointmentSchedulingApp.Domain.IUnitOfWork
 
         Task RollbackAsync();
 
-
+        // Transaction methods
+        Task BeginTransactionAsync();
+        Task CommitTransactionAsync();
+        Task RollbackTransactionAsync();
     }
 }

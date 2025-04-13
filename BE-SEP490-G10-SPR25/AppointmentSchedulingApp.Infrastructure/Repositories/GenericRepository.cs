@@ -1,5 +1,3 @@
-
-
 using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -34,13 +32,13 @@ namespace AppointmentSchedulingApp.Infrastructure
         {
             return await _entitySet.FirstOrDefaultAsync(expression);
         }
-        public IQueryable<T> GetQueryable()
+        public virtual IQueryable<T> GetQueryable()
         {
-            return _entitySet.AsQueryable();
+            return _entitySet.AsNoTracking().AsQueryable();
         }
-        public IQueryable<T> GetQueryable(Expression<Func<T, bool>> expression)
+        public virtual IQueryable<T> GetQueryable(Expression<Func<T, bool>> expression)
         {
-            return _entitySet.Where(expression);
+            return _entitySet.Where(expression).AsNoTracking();
         }
 
 

@@ -1,0 +1,5 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/BE-SEP490-G10-SPR25/AppointmentSchedulingApp.Presentation/appsettings.Development.json

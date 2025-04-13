@@ -295,9 +295,6 @@ public partial class AppointmentSchedulingDbContext : DbContext
             entity.Property(e => e.Shift)
                 .HasMaxLength(20)
                 .HasDefaultValue("Ca sáng");
-            entity.Property(e => e.Status)
-                .HasMaxLength(20)
-                .HasDefaultValue("Đang làm việc");
 
             entity.HasOne(d => d.ReceptionistNavigation).WithOne(p => p.Receptionist)
                 .HasForeignKey<Receptionist>(d => d.ReceptionistId)

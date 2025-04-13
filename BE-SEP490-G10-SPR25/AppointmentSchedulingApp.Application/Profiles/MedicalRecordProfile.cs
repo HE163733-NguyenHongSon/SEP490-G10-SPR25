@@ -19,7 +19,7 @@ namespace AppointmentSchedulingApp.Application.Profiles
          .ForMember(dest => dest.Symptoms, opt => opt.MapFrom(src => src.Symptoms))
          .ForMember(dest => dest.Diagnosis, opt => opt.MapFrom(src => src.Diagnosis))
          .ForMember(dest => dest.TreatmentPlan, opt => opt.MapFrom(src => src.TreatmentPlan))
-         .ForMember(dest => dest.FollowUpDate, opt => opt.MapFrom(src => src.FollowUpDate.HasValue ? src.FollowUpDate.Value.ToString("dd/MM/yyyy  hh:mm:ss") : null))
+         .ForMember(dest => dest.FollowUpDate, opt => opt.MapFrom(src => src.FollowUpDate))
          .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
           .ReverseMap();
         }

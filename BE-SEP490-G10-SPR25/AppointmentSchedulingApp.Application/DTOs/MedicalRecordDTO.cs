@@ -20,7 +20,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
 
         public string? TreatmentPlan { get; set; }
 
-        public string? FollowUpDate { get; set; }
+        public DateTime? FollowUpDate { get; set; }
 
         public string? Notes { get; set; }
 

@@ -4,7 +4,6 @@ import PaginatedItems from "@/components/PaginatedItems";
 import { DoctorList } from "@/patient/components/DoctorList";
 import Search from "@/components/Search";
 import DisplayToggle from "@/components/DisplayToggle";
-import { IDoctor } from "@/types/doctor";
 import SelectSort from "@/components/SelectSort";
 export const dynamic = "force-dynamic"; // Enable SSR
 
@@ -54,9 +53,9 @@ const DoctorsPage = async ({
   }
   const searchOptions: ISearchOption[] = (
     await doctorService.getDoctorList()
-  ).map((d) => ({
-    label: d.doctorName,
-    value: d.doctorId.toString(),
+  ).map((d:IDoctor) => ({
+    label: d.userName,
+    value: d.userId.toString(),
   }));
   return (
     <div className="flex flex-col h-screen mt-10 gap-5 ">

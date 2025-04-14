@@ -1,7 +1,6 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-import { IDoctor, IDoctorDetailDTO } from "@/types/doctor";
-import { IDoctorSchedule } from "@/types/doctorSchedule";
+
 
 export const doctorService = {
   async getDoctorList(): Promise<IDoctor[]> {
@@ -67,7 +66,7 @@ export const doctorService = {
         most_service: "numberOfService",
       };
       const doctors = (await this.getDoctorList()).filter((d) =>
-        idList.includes(d.doctorId.toString())
+        idList.includes(d.userId.toString())
       );
 
       const sortKey = sortOptions[sortBy];

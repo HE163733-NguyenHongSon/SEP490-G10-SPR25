@@ -1,5 +1,5 @@
-export interface IService {
-  serviceId: number;
+ interface IService {
+  serviceId:  string;
   serviceName: string;
   overview?: string;
   process?: string;
@@ -12,7 +12,7 @@ export interface IService {
   rating?: number;
   ratingCount?: number;
 }
-export interface IServiceDetail extends IService {
+ interface IServiceDetail extends IService {
   specialtyName?: string;
   doctorServices?: {
     doctorId: number;

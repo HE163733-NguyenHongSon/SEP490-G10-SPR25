@@ -26,7 +26,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
 
         [JsonPropertyOrder(21)]
         public int NumberOfExamination { get; set; }
-
+    
         [JsonPropertyOrder(22)]
         public double Rating { get; set; } = 0;
 

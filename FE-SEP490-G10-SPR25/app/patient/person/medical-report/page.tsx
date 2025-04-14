@@ -57,7 +57,7 @@ const MedicalReportPage = () => {
     queryKey: ["patients"],
     queryFn: async () => {
       const pd = await patientService.getPatientDetailById(
-        patient?.userId as number
+        patient?.userId 
       );
       const dependents = pd?.dependents || [];
       pd.relationship =
@@ -77,7 +77,7 @@ const MedicalReportPage = () => {
     queryKey: ["medicalReport", selectedDependent?.userId],
     queryFn: () =>
       medicalReportService.getMedicalReportByPatientId(
-        selectedDependent?.userId as number
+        selectedDependent?.userId 
       ),
     staleTime: 30000,
     enabled: !!selectedDependent?.userId,

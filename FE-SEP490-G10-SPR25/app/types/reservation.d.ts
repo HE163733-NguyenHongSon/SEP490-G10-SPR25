@@ -2,7 +2,6 @@ interface IReservation {
   reservationId: string;
   patient: IPatient;
   appointmentDate: string;
-  updatedDate: string;
   serviceImage: string;
   serviceName: string;
   servicePrice: string;
@@ -14,4 +13,9 @@ interface IReservation {
   reason: string;
   priorExaminationImg: string;
   status: string;
+  cancellationReason:string;
+  createdDate:string;
+  createdByUserId:string;
+  updatedDate: string;
+  updatedByUserId:string;
 }

@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import moment from "moment";
 import { formatTimeWithPeriod } from "@/utils/timeUtils";
-import axios from "axios"; // hoặc fetch nếu bạn không dùng axios
-
+import reservationService from "@/services/reservationService";
+import { Modal } from "./Modal";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 interface ReservationListProps {
   items: IReservation[];
-  onCancelSuccess?: (id: string) => void; // callback sau khi hủy thành công
+  onCancelSuccess: (reservationId: string) => void;
 }
 
 const ReservationList = ({ items, onCancelSuccess }: ReservationListProps) => {
+  const [showModal, setShowModal] = useState(false);
+  const [reservationToCancel, setReservationToCancel] =
+    useState<IReservation | null>(null);
+  const [cancellationReason, setCancellationReason] = useState<string>(""); // State to store cancellation reason
+
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   const canCancel = (reservation: IReservation): boolean => {
@@ -20,36 +27,53 @@ const ReservationList = ({ items, onCancelSuccess }: ReservationListProps) => {
       `${reservation.appointmentDate} ${reservation.startTime}`,
       "DD/MM/YYYY hh:mm A"
     );
-    const reservationTime = moment(reservation.createdDate, "DD/MM/YYYY HH:mm:ss");
+    const reservationTime = moment(
+      reservation.createdDate,
+      "DD/MM/YYYY HH:mm:ss"
+    );
 
     const hoursUntilAppointment = appointmentTime.diff(now, "hours", true);
     const hoursSinceReservation = now.diff(reservationTime, "hours", true);
 
-    if (hoursUntilAppointment >= 24) {
-      return true;
-    } else if (hoursUntilAppointment < 24 && hoursSinceReservation <= 1) {
-      return true;
-    }
-
-    return false;
+    return (
+      hoursUntilAppointment >= 24 ||
+      (hoursUntilAppointment < 24 && hoursSinceReservation <= 1)
+    );
   };
 
-  const handleCancel = async (reservation: IReservation) => {
-    const confirmCancel = window.confirm("Bạn có chắc muốn hủy lịch hẹn này?");
-    if (!confirmCancel) return;
-
-    try {
-      // Gọi API hủy lịch
-      await axios.post(`/api/reservations/cancel`, {
-        reservationId: reservation.reservationId,
-      });
-
-      alert("Hủy lịch thành công!");
-      onCancelSuccess?.(reservation.reservationId); // cập nhật danh sách nếu cần
-    } catch (error) {
-      console.error("Cancel failed:", error);
-      alert("Có lỗi xảy ra khi hủy lịch.");
+  const handleCancel = (reservation: IReservation) => {
+    if (!canCancel(reservation)) {
+      alert("Không thể hủy lịch này.");
+      return;
     }
+
+    // Show modal for reason input
+    setReservationToCancel(reservation);
+    setShowModal(true);
+  };
+
+  const handleModalConfirm = async () => {
+    if (reservationToCancel) {
+      try {
+        await reservationService.updateReservationStatus({
+          reservationId: reservationToCancel.reservationId,
+          cancellationReason,
+          status: "Đã hủy",
+        });
+        alert("xoa thnh congcong");
+        onCancelSuccess?.(reservationToCancel.reservationId);
+        setShowModal(false);
+        setCancellationReason("");
+      } catch (error) {
+        console.error("Cancel failed:", error);
+        alert("Có lỗi xảy ra khi hủy lịch.");
+      }
+    }
+  };
+
+  const handleModalCancel = () => {
+    setShowModal(false); // Close modal without canceling
+    setCancellationReason(""); // Reset reason if canceled
   };
 
   return (
@@ -57,15 +81,25 @@ const ReservationList = ({ items, onCancelSuccess }: ReservationListProps) => {
       <table className="border-separate border border-gray-300 rounded-md">
         <thead>
           <tr>
-            <th className="border border-gray-300 rounded-md font-medium">Mã đặt lịch</th>
-            <th className="border border-gray-300 rounded-md font-medium">Thông tin đặt lịch</th>
-            <th className="border border-gray-300 rounded-md font-medium">Lý do đặt lịch</th>
-            <th className="border border-gray-300 rounded-md font-medium">Ngày cập nhật</th>
-            <th className="border border-gray-300 rounded-md font-medium">Hành động</th>
+            <th className="border border-gray-300 rounded-md font-medium">
+              Mã đặt lịch
+            </th>
+            <th className="border border-gray-300 rounded-md font-medium">
+              Thông tin đặt lịch
+            </th>
+            <th className="border border-gray-300 rounded-md font-medium">
+              Lý do đặt lịch
+            </th>
+            <th className="border border-gray-300 rounded-md font-medium">
+              Ngày cập nhật
+            </th>
+            <th className="border border-gray-300 rounded-md font-medium">
+              Hành động
+            </th>
           </tr>
         </thead>
         <tbody>
-          {items.map((reservation: IReservation) => {
+          {items.map((reservation) => {
             const canCancelReservation = canCancel(reservation);
 
             return (
@@ -77,27 +111,38 @@ const ReservationList = ({ items, onCancelSuccess }: ReservationListProps) => {
                   <div className="grid grid-cols-3 py-3 px-8">
                     <div className="service col-span-1 gap-2 grid grid-cols-3 border-r-2 border-gray-300">
                       <div className="col-span-1 flex justify-center items-center">
-                        <Image
-                          className="border border-gray-300 rounded-md"
-                          width={200}
-                          height={100}
-                          src={`${imgUrl}/${reservation.serviceImage}`}
-                          alt=""
-                        />
+                        <div className="w-[100px] h-[50px] overflow-hidden rounded-lg">
+                          <Image
+                            className="border border-gray-300 rounded-md object-cover w-full h-full"
+                            width={100}
+                            height={50}
+                            src={`${imgUrl}/${reservation.serviceImage}`}
+                            alt=""
+                          />
+                        </div>
                       </div>
                       <div className="col-span-2 flex justify-center flex-col">
-                        <p className="text-base w-fit">{reservation.serviceName}</p>
-                        <p className="text-sm font-semibold">{reservation.servicePrice} VND</p>
+                        <p className="text-base w-fit">
+                          {reservation.serviceName}
+                        </p>
+                        <p className="text-sm font-semibold">
+                          {reservation.servicePrice} VND
+                        </p>
                       </div>
                     </div>
                     <div className="flex justify-center flex-col col-span-2 w-fit mx-6">
                       <p>
                         Khám bởi bác sĩ{" "}
-                        <span className="font-semibold">{reservation.doctorName}</span>
+                        <span className="font-semibold">
+                          {reservation.doctorName}
+                        </span>
                       </p>
                       <p>
                         Khám vào{" "}
-                        <span className="font-semibold">{reservation.appointmentDate}</span> từ{" "}
+                        <span className="font-semibold">
+                          {reservation.appointmentDate}
+                        </span>{" "}
+                        từ{" "}
                         <span className="font-semibold">
                           {formatTimeWithPeriod(reservation.startTime)}
                         </span>{" "}
@@ -105,13 +150,20 @@ const ReservationList = ({ items, onCancelSuccess }: ReservationListProps) => {
                         <span className="font-semibold">
                           {formatTimeWithPeriod(reservation.endTime)}
                         </span>{" "}
-                        tại <span className="font-semibold">{reservation.roomName}</span>
+                        tại{" "}
+                        <span className="font-semibold">
+                          {reservation.roomName}
+                        </span>
                       </p>
                     </div>
                   </div>
                 </td>
-                <td className="border border-gray-300 rounded-md px-2">{reservation.reason}</td>
-                <td className="border border-gray-300 rounded-md px-2">{reservation.updatedDate}</td>
+                <td className="border border-gray-300 rounded-md px-2">
+                  {reservation.reason}
+                </td>
+                <td className="border border-gray-300 rounded-md px-2">
+                  {reservation.updatedDate}
+                </td>
                 <td className="border border-gray-300 rounded-md px-2">
                   <button
                     disabled={!canCancelReservation}
@@ -130,6 +182,17 @@ const ReservationList = ({ items, onCancelSuccess }: ReservationListProps) => {
           })}
         </tbody>
       </table>
+
+      {/* Modal for reason input */}
+      {showModal && reservationToCancel && (
+        <Modal
+          message="Nhập lý do hủy lịch hẹn"
+          onConfirm={handleModalConfirm}
+          onCancel={handleModalCancel}
+          onChangeReason={(reason: string) => setCancellationReason(reason)}
+          cancellationReason={cancellationReason}
+        />
+      )}
     </div>
   );
 };

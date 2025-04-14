@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AppointmentSchedulingApp.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -13,7 +14,6 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public int ReservationId { get; set; }
         public PatientDTO Patient { get;set; }
         public string AppointmentDate { get; set; }
-        public string UpdatedDate { get; set; }
         public string ServiceImage { get; set; } = null!;
         public string ServiceName { get; set; } = null!;
         public string ServicePrice { get; set; }
@@ -26,6 +26,15 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string? PriorExaminationImg { get; set; }
         public string Status { get; set; }
         public string? CancellationReason { get; set; }
+
+        public int CreatedByUserId { get; set; }
+        public string CreatedDate { get; set; }
+
+
+        public string UpdatedDate { get; set; }
+
+        public int UpdatedByUserId { get; set; }
+
 
     }
 

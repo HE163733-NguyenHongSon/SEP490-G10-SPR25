@@ -74,7 +74,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
         [HttpPut("UpdateReservationStatus")]
         [EnableQuery]
-        public async Task<IActionResult> UpdateReservationStatus(ReservationStatusDTO reservationStatusDTO)
+        public async Task<IActionResult> UpdateReservationStatus([FromBody] ReservationStatusDTO reservationStatusDTO)
         {
             try
             {

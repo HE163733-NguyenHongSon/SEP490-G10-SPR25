@@ -146,7 +146,7 @@ CREATE TABLE Patients (
 ) ;
 INSERT INTO Patients (PatientId, GuardianId, Relationship, MainCondition, Rank)
 VALUES
-    (1, NULL, NULL, 'Tiểu đường type 2', N'Thường'), 
+    (1, NULL, NULL, N'Tiểu đường type 2', N'Thường'), 
     (2, NULL, NULL, N'Tiểu đường', N'Thường'), 
     (11, 1, N'Con', N'Cao huyết áp', N'Thường'), 
     (12, 1, N'Con', N'Tiểu đường', N'Thường'), 

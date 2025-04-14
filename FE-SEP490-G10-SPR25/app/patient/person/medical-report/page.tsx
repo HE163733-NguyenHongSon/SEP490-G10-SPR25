@@ -41,9 +41,7 @@ const MedicalReportPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [selectedDependent, setSelectedDependent] = useState<IPatient | null>(
-    patient ?? null
-  );
+  const [selectedDependent, setSelectedDependent] = useState<IPatient>();
   // const [dependents, setDependents] = useState<IPatient[]>([]);
   // const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
@@ -64,8 +62,8 @@ const MedicalReportPage = () => {
       const dependents = pd?.dependents || [];
       pd.relationship =
         dependents.length > 0 ? "Người giám hộ" : "Bệnh nhân chính";
-      setSelectedDependent(pd);
-      return [pd, ...dependents];
+      setSelectedDependent(pd as IPatient);
+      return [pd as IPatient, ...dependents];
     },
     staleTime: 30000,
     enabled: !!patient?.userId,

@@ -1,7 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import PageBreadCrumb from "../components/PageBreadCrumb";
-import { Service, serviceService } from "../../services/serviceService";
+import { serviceService } from "../../services/serviceService";
+import { IService } from "@/types/service";
+import { ISpecialty } from "@/types/specialty";
 import { specialtyService } from "../../services/specialtyService";
 import { Button, Modal, Form, Input, InputNumber, Select, message, Space, Popconfirm, Table } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
@@ -9,12 +11,12 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
 const ServicesManagement = () => {
-  const [services, setServices] = useState<Service[]>([]);
+  const [services, setServices] = useState<IService[]>([]);
   const [specialties, setSpecialties] = useState<ISpecialty[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [editingService, setEditingService] = useState<Service | null>(null);
+  const [editingService, setEditingService] = useState<IService | null>(null);
 
   useEffect(() => {
     fetchServices();
@@ -44,7 +46,7 @@ const ServicesManagement = () => {
     }
   };
 
-  const handleEdit = (service: Service) => {
+  const handleEdit = (service: IService) => {
     setEditingService(service);
     form.setFieldsValue({
       serviceName: service.serviceName,
@@ -166,7 +168,7 @@ const ServicesManagement = () => {
       title: "Actions",
       key: "actions",
       width: "25%",
-      render: (_: unknown, record: Service) => (
+      render: (_: unknown, record: IService) => (
         <Space size="middle">
           <Button
             icon={<EditOutlined />}

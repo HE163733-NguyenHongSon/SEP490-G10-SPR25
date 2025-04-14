@@ -1,11 +1,11 @@
 'use client';
 import React, { useEffect, useState } from "react";
-import { serviceService, ServiceDetail } from "../../../../services/serviceService";
+import { serviceService} from "../../../../services/serviceService";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { isAuthenticated } from "../../../../services/authService";
-
+import { IServiceDetail } from "@/types/service";
 interface ServiceDetailPageProps {
     params: {
         id: string;
@@ -13,7 +13,7 @@ interface ServiceDetailPageProps {
 }
 
 const ServiceDetailPage = ({ params }: ServiceDetailPageProps) => {
-    const [service, setService] = useState<ServiceDetail | null>(null);
+    const [service, setService] = useState<IServiceDetail | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState("overall");
@@ -188,8 +188,11 @@ const ServiceDetailPage = ({ params }: ServiceDetailPageProps) => {
                         <h2 className="font-semibold text-lg">Doctors Providing This Service</h2>
                         {service.relatedDoctors && service.relatedDoctors.length > 0 ? (
                             <ul className="text-gray-600 mt-2 text-sm list-disc pl-6">
-                                {service.relatedDoctors.map((doctor: string, index: number) => (
-                                    <li key={index}>{doctor}</li>
+                                {service.relatedDoctors.map((doctor, index) => (
+                                    <li key={index}>{typeof doctor === 'string' ? doctor : 
+                                        typeof doctor === 'object' && doctor !== null ? 
+                                        `${doctor.academicTitle || ''} ${doctor.degree || ''} ${doctor.doctorName || ''}`.trim() : 
+                                        'Unknown doctor'}</li>
                                 ))}
                             </ul>
                         ) : (

@@ -1,5 +1,6 @@
+import { IUser } from '@/types/user';
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-console.log('Patient API URL base:', apiUrl);
 
 export const patientService = {
   async getNumberOfExaminedPatients(): Promise<number> {

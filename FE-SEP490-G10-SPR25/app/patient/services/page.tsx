@@ -1,10 +1,11 @@
 'use client';
 import React, { useEffect, useState } from "react";
 import { ServiceList } from "../components/ServiceList";
-import { serviceService, Service } from "../../services/serviceService";
+import { serviceService } from "../../services/serviceService";
+import { IService } from "@/types/service";
 
 const ServicesPage = () => {
-  const [services, setServices] = useState<Service[]>([]);
+  const [services, setServices] = useState<IService[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

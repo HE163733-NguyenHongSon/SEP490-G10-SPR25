@@ -66,7 +66,9 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         }
         
         const formattedDate = doctorDetail.dateOfBirth ? 
-          new Date(doctorDetail.dateOfBirth).toISOString().split('T')[0] : 
+          (typeof doctorDetail.dateOfBirth === 'string' ? 
+            doctorDetail.dateOfBirth.split('T')[0] : 
+            new Date(doctorDetail.dateOfBirth).toISOString().split('T')[0]) : 
           new Date().toISOString().split('T')[0];
         
         if (doctorDetail.password) {

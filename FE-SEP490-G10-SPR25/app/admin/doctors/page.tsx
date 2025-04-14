@@ -116,7 +116,7 @@ const DoctorsManagement = () => {
               </div>
               <div>
                 <h3 className="font-bold">Kinh nghiệm</h3>
-                <p>{selectedDoctor.experienceYear} năm</p>
+                <p>{selectedDoctor.workExperience?.match(/\d+/)?.[0] || "0"} năm</p>
               </div>
             </div>
 

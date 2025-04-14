@@ -4,6 +4,7 @@ import PaginatedItems from "@/components/PaginatedItems";
 import { DoctorList } from "@/patient/components/DoctorList";
 import Search from "@/components/Search";
 import DisplayToggle from "@/components/DisplayToggle";
+import { IDoctor } from "@/types/doctor";
 import SelectSort from "@/components/SelectSort";
 export const dynamic = "force-dynamic"; // Enable SSR
 

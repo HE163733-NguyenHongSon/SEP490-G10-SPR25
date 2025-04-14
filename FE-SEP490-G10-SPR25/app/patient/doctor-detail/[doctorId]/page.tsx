@@ -2,6 +2,8 @@ import * as Tabs from "@radix-ui/react-tabs";
 import Image from "next/image";
 import BackButton from "@/components/BackButton";
 import { doctorService } from "@/services/doctorService";
+import { DoctorDetailDTO } from "@/types/doctor";
+import { IFeedback } from "@/types/feedback";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import { assets } from "@/public/images/assets";
 import ScheduleTab from "@/patient/components/ScheduleTab";
@@ -15,7 +17,7 @@ export default async function DoctorDetails({
 }: {
   params: { doctorId: string };
 }) {
-  const doctorDetail: IDoctorDetail = await doctorService.getDoctorDetailById(
+  const doctorDetail: DoctorDetailDTO = await doctorService.getDoctorDetailById(
     params.doctorId
   );
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;

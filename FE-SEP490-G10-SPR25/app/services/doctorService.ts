@@ -103,7 +103,7 @@ export const doctorService = {
     }
   },
 
-  async updateDoctor(doctorId: number, doctorData: any): Promise<any> {
+  async updateDoctor(doctorId: number, doctorData: DoctorDetailDTO): Promise<DoctorDetailDTO> {
     try {
       console.log(`Updating doctor with ID ${doctorId}`);
       
@@ -112,15 +112,16 @@ export const doctorService = {
       
       // Xử lý schedules nếu có
       if (processedData.schedules && processedData.schedules.length > 0) {
-        processedData.schedules = processedData.schedules.map((schedule: any) => {
+        processedData.schedules = processedData.schedules.map((schedule) => {
           // Chuyển định dạng thời gian thành chuỗi nếu cần
-          if (schedule.slotStartTime) {
-            schedule.slotStartTime = schedule.slotStartTime.toString();
+          const scheduleWithStringTimes = { ...schedule };
+          if (scheduleWithStringTimes.slotStartTime) {
+            scheduleWithStringTimes.slotStartTime = scheduleWithStringTimes.slotStartTime.toString();
           }
-          if (schedule.slotEndTime) {
-            schedule.slotEndTime = schedule.slotEndTime.toString();
+          if (scheduleWithStringTimes.slotEndTime) {
+            scheduleWithStringTimes.slotEndTime = scheduleWithStringTimes.slotEndTime.toString();
           }
-          return schedule;
+          return scheduleWithStringTimes;
         });
       }
       

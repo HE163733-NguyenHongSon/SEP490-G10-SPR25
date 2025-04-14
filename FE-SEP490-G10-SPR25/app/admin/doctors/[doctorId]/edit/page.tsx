@@ -44,16 +44,16 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         const uniqueAcademicTitles = Array.from(
           new Set(
             doctors
-              .map(doctor => doctor.academicTitle)
-              .filter(title => title && title.trim() !== '')
+              .map((doctor: IDoctor) => doctor.academicTitle)
+              .filter((title: string | undefined) => title && title.trim() !== '')
           )
         ) as string[];
         
         const uniqueDegrees = Array.from(
           new Set(
             doctors
-              .map(doctor => doctor.degree)
-              .filter(degree => degree && degree.trim() !== '')
+              .map((doctor: IDoctor) => doctor.degree)
+              .filter((degree: string | undefined) => degree && degree.trim() !== '')
           )
         ) as string[];
 

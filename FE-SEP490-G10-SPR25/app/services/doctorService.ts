@@ -1,6 +1,8 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 console.log('Doctor API URL base:', apiUrl);
 
+import { IDoctor, DoctorDetailDTO } from "@/types/doctor";
+import { IDoctorSchedule } from "@/types/doctorSchedule";
 
 export const doctorService = {
   async getDoctorList(): Promise<IDoctor[]> {
@@ -85,7 +87,7 @@ export const doctorService = {
 
   async getDoctorDetailById(
     doctorId: string | number
-  ): Promise<IDoctorDetail> {
+  ): Promise<DoctorDetailDTO> {
     try {
       console.log(`Fetching doctor detail from: ${apiUrl}/api/Doctors/${doctorId}`);
       const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}`);
@@ -111,7 +113,7 @@ export const doctorService = {
       
       // Xử lý schedules nếu có
       if (processedData.schedules && processedData.schedules.length > 0) {
-        processedData.schedules = processedData.schedules.map((schedule) => {
+        processedData.schedules = processedData.schedules.map((schedule: IDoctorSchedule) => {
           // Chuyển định dạng thời gian thành chuỗi nếu cần
           const scheduleWithStringTimes = { ...schedule };
           if (scheduleWithStringTimes.slotStartTime) {

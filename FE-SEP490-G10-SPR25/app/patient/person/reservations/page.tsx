@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingTable } from "@/components/LoadingTable";
 import { useSearchParams } from "next/navigation";
+import { IUser } from "@/types/user";
 const ReservationPage = () => {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState("Đang chờ");

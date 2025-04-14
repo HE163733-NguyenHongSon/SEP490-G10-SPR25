@@ -1,4 +1,5 @@
-  import api from "./api"
+import { IMedicalReport } from "@/types/medicalReport";
+import api from "./api"
 
 export const medicalReportService = {
     async getMedicalReportByPatientId(patientId:number): Promise<IMedicalReport> {

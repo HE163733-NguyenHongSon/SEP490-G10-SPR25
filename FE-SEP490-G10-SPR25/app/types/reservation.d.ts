@@ -1,4 +1,4 @@
- interface IReservation {
+export interface IReservation {
   reservationId: string;
   patientId: string;
   patientName: string;

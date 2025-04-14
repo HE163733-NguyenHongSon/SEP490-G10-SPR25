@@ -18,6 +18,9 @@ import Fuse from "fuse.js";
 import { DateRangeSelector } from "@/patient/components/DateRangeSelector";
 import { patientService } from "@/services/patientService";
 import SelectPatient from "@/patient/components/SelectPatient";
+import { IPatient } from "@/types/patient";
+import { IUser } from "@/types/user";
+import { IMedicalReport } from "@/types/medicalReport";
 import {
   ClipboardDocumentCheckIcon,
   UserGroupIcon,
@@ -34,11 +37,11 @@ import {
   UserIcon,
 } from "@heroicons/react/24/outline";
 const MedicalReportPage = () => {
-  const [patient, setPatient] = useState<IPatient>();
+  const [patient, setPatient] = useState<IPatient & IUser>();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [selectedDependent, setSelectedDependent] = useState<IPatient | null>(
+  const [selectedDependent, setSelectedDependent] = useState<IPatient & IUser | null>(
     patient ?? null
   );
   // const [dependents, setDependents] = useState<IPatient[]>([]);
@@ -47,7 +50,7 @@ const MedicalReportPage = () => {
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
-      const user = JSON.parse(storedUser) as IPatient;
+      const user = JSON.parse(storedUser) as IPatient & IUser;
       setPatient(user);
     }
   }, []);
@@ -61,7 +64,7 @@ const MedicalReportPage = () => {
       const dependents = pd?.dependents || [];
       pd.relationship =
         dependents.length > 0 ? "Người giám hộ" : "Bệnh nhân chính";
-      setSelectedDependent(pd);
+      setSelectedDependent(pd as unknown as IPatient & IUser);
       return [pd, ...dependents];
     },
     staleTime: 30000,

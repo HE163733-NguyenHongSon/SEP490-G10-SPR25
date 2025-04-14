@@ -1,5 +1,6 @@
-interface IPatientDetail extends IPatient {
+export interface IPatientDetail extends IPatient {
   guardian?: IUser;
   dependents?: IPatient[];
   medicalRecords?: IMedicalRecord[];
+  relationship?: string;
 }

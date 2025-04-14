@@ -1,4 +1,4 @@
-interface IMedicalReport {
+export interface IMedicalReport {
   patient: IUser;
   numberOfVisits: number;
   firstVisitFormatted: string;

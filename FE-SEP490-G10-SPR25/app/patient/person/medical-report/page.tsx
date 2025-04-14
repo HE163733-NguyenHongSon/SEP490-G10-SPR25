@@ -18,17 +18,20 @@ import Fuse from "fuse.js";
 import { DateRangeSelector } from "@/patient/components/DateRangeSelector";
 import { patientService } from "@/services/patientService";
 import SelectPatient from "@/patient/components/SelectPatient";
+import { getTimeAgo } from "@/utils/timeUtils";
+
 import {
   ClipboardDocumentCheckIcon,
   UserGroupIcon,
   CalendarIcon,
   ArrowTrendingUpIcon,
   HeartIcon,
-  ArrowDownTrayIcon,
   UserCircleIcon,
   ShieldCheckIcon,
   PhoneIcon,
   EnvelopeIcon,
+  IdentificationIcon,
+  CreditCardIcon,
   MapPinIcon,
   MapIcon,
   UserIcon,
@@ -42,7 +45,7 @@ const MedicalReportPage = () => {
     patient ?? null
   );
   // const [dependents, setDependents] = useState<IPatient[]>([]);
-  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
+  // const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
@@ -209,17 +212,56 @@ const MedicalReportPage = () => {
             {/* Patient Information Card */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
               <div className="flex items-center justify-between mb-5">
-                <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                <h2 className="text-xl font-bold text-gray-600 flex items-center">
                   <UserCircleIcon className="w-5 h-5 text-cyan-600 mr-2" />
                   Thông tin bệnh nhân
                 </h2>
-                <span className="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full flex items-center">
-                  <ShieldCheckIcon className="w-3 h-3 mr-1" />
-                  Hồ sơ đang hoạt động
+                <span
+                  className={`text-xs px-3 py-1 rounded-full flex items-center ${
+                    medicalReport?.patient?.isActive
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {medicalReport?.patient?.isActive ? (
+                    <>
+                      <ShieldCheckIcon className="w-3 h-3 mr-1" />
+                      Hồ sơ đang hoạt động
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheckIcon className="w-3 h-3 mr-1" />
+                      Hồ sơ không hoạt động
+                    </>
+                  )}
                 </span>
               </div>
-
               <div className="space-y-4">
+                {/* Thêm thông tin ID */}
+                <div className="flex flex-col md:flex-row gap-4">
+                  {/* ID xác minh */}
+                  <div className="flex-1 bg-gray-50 p-3 rounded-lg">
+                    <p className="text-xs font-medium text-gray-400 mb-1 flex items-center">
+                      <IdentificationIcon className="w-4 h-4 text-gray-400 mr-2" />
+                      ID xác minh
+                    </p>
+                    <p className="text-lg font-semibold text-gray-600">
+                      {medicalReport?.patient?.userId || "Chưa cập nhật"}
+                    </p>
+                  </div>
+
+                  {/* Căn cước công dân */}
+                  <div className="flex-1 bg-gray-50 p-3 rounded-lg">
+                    <p className="text-xs font-medium text-gray-400 mb-1 flex items-center">
+                      <CreditCardIcon className="w-4 h-4 text-gray-400 mr-2" />
+                      Căn cước công dân
+                    </p>
+                    <p className="text-lg font-semibold text-gray-600">
+                      {medicalReport?.patient?.citizenId || "Chưa cập nhật"}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="flex flex-col md:flex-row gap-4">
                   {/* Họ và tên */}
                   <div className="flex-1 bg-gray-50 p-3 rounded-lg">
@@ -227,7 +269,7 @@ const MedicalReportPage = () => {
                       <UserIcon className="w-4 h-4 text-gray-400 mr-1" />
                       Họ và tên
                     </p>
-                    <p className="text-lg font-semibold text-gray-800">
+                    <p className="text-lg font-semibold text-gray-600">
                       {medicalReport?.patient?.userName || "Chưa cập nhật"}
                     </p>
                   </div>
@@ -238,13 +280,14 @@ const MedicalReportPage = () => {
                       <CalendarIcon className="w-4 h-4 text-gray-400 mr-1" />
                       Ngày sinh
                     </p>
-                    <p className="text-lg font-semibold text-gray-800">
+                    <p className="text-lg font-semibold text-gray-600">
                       {medicalReport?.patient?.dob || "Chưa cập nhật"}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row gap-4">
+                  {/* Giới tính */}
                   <div className="flex-1 bg-gray-50 p-3 rounded-lg">
                     <p className="text-xs font-medium text-gray-400 mb-1">
                       Giới tính
@@ -253,34 +296,39 @@ const MedicalReportPage = () => {
                       {medicalReport?.patient?.gender === "male" ? (
                         <>
                           <MapIcon className="w-4 h-4 text-blue-500 mr-2" />
-                          <span className="text-gray-800">Nam</span>
+                          <p className="text-lg font-semibold text-gray-600">
+                            Nam
+                          </p>
                         </>
                       ) : (
                         <>
                           <UserIcon className="w-4 h-4 text-pink-500 mr-2" />
-                          <span className="text-gray-800">Nữ</span>
+                          <p className="text-lg font-semibold text-gray-600">
+                            Nữ
+                          </p>
                         </>
                       )}
                     </div>
                   </div>
                 </div>
 
+                {/* Liên hệ */}
                 <div className="bg-gray-50 p-3 rounded-lg">
                   <p className="text-xs font-medium text-gray-400 mb-1">
                     Liên hệ
                   </p>
-                  <div className="flex flex-row  gap-16">
-                    <div className="flex items-center ">
+                  <div className="flex flex-row gap-5">
+                    <div className="flex items-center">
                       <PhoneIcon className="w-4 h-4 text-gray-400 mr-2" />
-                      <span className="text-gray-800">
+                      <p className="text-lg font-semibold text-gray-600">
                         {medicalReport?.patient?.phoneNumber || "Chưa cập nhật"}
-                      </span>
+                      </p>
                     </div>
-                    <div className="flex items-center ">
+                    <div className="flex items-center">
                       <EnvelopeIcon className="w-5 h-5 text-gray-400 mr-2" />
-                      <span className="text-gray-800">
+                      <p className="text-lg font-semibold text-gray-600">
                         {medicalReport?.patient?.email || "Chưa cập nhật"}
-                      </span>
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -292,7 +340,7 @@ const MedicalReportPage = () => {
                   </p>
                   <div className="flex items-start">
                     <MapPinIcon className="w-4 h-4 text-gray-400 mr-2 mt-0.5" />
-                    <p className="text-gray-800">
+                    <p className="text-lg font-semibold text-gray-600">
                       {medicalReport?.patient?.address ||
                         "Chưa cập nhật địa chỉ"}
                     </p>
@@ -314,7 +362,7 @@ const MedicalReportPage = () => {
             {/* Medical Summary */}
             <div className="bg-white p-6  rounded-xl shadow-md border border-gray-100">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                <h2 className="text-xl font-bold text-gray-600 flex items-center">
                   <ClipboardDocumentCheckIcon className="w-5 h-5 text-cyan-600 mr-2" />
                   Tóm tắt y tế
                 </h2>
@@ -332,7 +380,7 @@ const MedicalReportPage = () => {
                     </p>
                     <UserGroupIcon className="w-5 h-5 text-gray-400" />
                   </div>
-                  <p className="text-3xl font-bold text-gray-800 mt-2">
+                  <p className="text-3xl font-bold text-gray-600 mt-2">
                     {medicalReport?.numberOfVisits}
                   </p>
                   <p className="text-xs text-gray-400 mt-1">
@@ -349,17 +397,12 @@ const MedicalReportPage = () => {
                     </p>
                     <CalendarIcon className="w-5 h-5 text-gray-400" />
                   </div>
-                  <p className="text-xl font-bold text-gray-800 mt-2">
+                  <p className="text-xl font-bold text-gray-600 mt-2">
                     {medicalReport?.lastVisitFormatted}
                   </p>
                   <p className="text-xs text-cyan-600 mt-1 flex items-center">
                     <ArrowTrendingUpIcon className="w-3 h-3 mr-1" />
-                    Đã khám{" "}
-                    {dayjs().diff(
-                      dayjs(medicalReport?.lastVisitFormatted),
-                      "day"
-                    )}{" "}
-                    ngày trước
+                    Đã khám {getTimeAgo(medicalReport?.lastVisitFormatted)}
                   </p>
                 </div>
 
@@ -371,8 +414,9 @@ const MedicalReportPage = () => {
                     </p>
                     <HeartIcon className="w-5 h-5 text-gray-400" />
                   </div>
-                  <p className="text-lg font-semibold text-gray-800 mt-2">
-                    {medicalReport?.mainCondition || "Không có thông tin"}
+                  <p className="text-lg font-semibold text-gray-600 mt-2">
+                    {medicalReport?.patient.mainCondition ||
+                      "Không có thông tin"}
                   </p>
                   <div className="mt-3">
                     <div className="w-full bg-gray-200 rounded-full h-1.5">
@@ -391,7 +435,7 @@ const MedicalReportPage = () => {
           </div>
           {/* Medical Records List */}
           <div className="bg-white p-4 rounded-lg shadow">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            <h2 className="text-lg font-semibold text-gray-600 mb-4">
               Danh sách hồ sơ y tế ({filteredRecords.length})
             </h2>
             {/* Search and Filter Section */}

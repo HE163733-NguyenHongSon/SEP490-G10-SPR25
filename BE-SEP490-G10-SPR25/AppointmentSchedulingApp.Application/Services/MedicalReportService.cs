@@ -134,7 +134,7 @@ namespace AppointmentSchedulingApp.Application.Services
                                         grid.Item().Text($"Tổng lượt khám: {data.NumberOfVisits}");
                                         grid.Item().Text($"Khám bệnh từ: {data.FirstVisitFormatted}");
                                         grid.Item().Text($"Lần khám gần nhất: {data.LastVisitFormatted}");
-                                        grid.Item().Text($"Tình trạng chính: {data.MainCondition}");
+                                        grid.Item().Text($"Tình trạng chính: {data.Patient.MainCondition}");
                                     });
 
                                 });

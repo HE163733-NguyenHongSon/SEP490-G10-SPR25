@@ -1,3 +1,4 @@
+import { IFeedback } from "@/types/feedback";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 console.log('Feedback API URL base:', apiUrl);
 

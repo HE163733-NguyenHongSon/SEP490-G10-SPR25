@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { AdminDTO } from '@/types/admin';
-
+import { IUser } from '@/types/user';
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const adminService = {

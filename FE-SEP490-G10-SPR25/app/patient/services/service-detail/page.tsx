@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 import Image from 'next/image';
 
 const ServiceDetailPage = () => {
-    // const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
+    //const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
     return (
         <div className="min-h-screen w-full bg-gray-100 flex flex-col items-center p-6 mt-16">

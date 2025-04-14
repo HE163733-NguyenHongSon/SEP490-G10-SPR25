@@ -6,6 +6,7 @@ import { adminService } from '@/services/adminService';
 import { AdminDTO } from '@/types/admin';
 import dayjs from 'dayjs';
 import Image from 'next/image';
+import { IUser } from '@/types/user';
 import 'dayjs/locale/vi';
 
 dayjs.locale('vi');

@@ -1,5 +1,6 @@
+import { ISpecialty } from '@/types/specialty';
+
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}`;
-console.log('Specialty API URL base:', apiUrl);
 
 export const specialtyService = {
   async getNumberOfSpecialties(): Promise<number> {

@@ -64,7 +64,7 @@ export const patientService = {
     }
   },
 
-  async getPatientDetailById(patientId: string | number): Promise<IPatientDetail> {
+  async getPatientDetailById(patientId?: string | number  ): Promise<IPatientDetail> {
     try {
       const url = `${apiUrl}/api/Patients/${patientId}`;
       console.log(`Fetching patient detail from: ${url}`);

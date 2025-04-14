@@ -2,7 +2,7 @@ import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-const ExportButton = ({ patientId }: { patientId?: number }) => {
+const ExportButton = ({ patientId }: { patientId?: string }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleExport = async () => {

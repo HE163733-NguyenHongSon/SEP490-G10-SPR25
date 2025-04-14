@@ -19,7 +19,6 @@ namespace AppointmentSchedulingApp.Application.Profiles
             
              .ForMember(dest => dest.Patient, opt => opt.MapFrom(src => src.Patient.PatientNavigation))           
              .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate.ToString("dd/MM/yyyy")))
-             .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => src.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss ")))
              .ForMember(dest => dest.ServiceImage, opt => opt.MapFrom(src => src.DoctorSchedule.Service.Image))
              .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.DoctorSchedule.Service.ServiceName))
              .ForMember(dest => dest.ServicePrice, opt => opt.MapFrom(src => src.DoctorSchedule.Service.Price.ToString("N0")))
@@ -28,6 +27,8 @@ namespace AppointmentSchedulingApp.Application.Profiles
              .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.EndTime.ToString("hh:mm tt")))
              .ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.DoctorSchedule.Room.RoomName))
              .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.DoctorSchedule.Room.Location))
+             .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => src.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss ")))
+             .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate.ToString("dd/MM/yyyy hh:mm:ss ")))
              .ReverseMap();   
 
 

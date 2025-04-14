@@ -57,7 +57,7 @@ namespace AppointmentSchedulingApp.Application.Services
 
                 mapper.Map(reservationStatusDTO, reservation);
                 unitOfWork.ReservationRepository.Update(reservation);
-                unitOfWork.CommitAsync();
+                await unitOfWork.CommitAsync();
                 return true;
             }
             catch (Exception ex)

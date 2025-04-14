@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace AppointmentSchedulingApp.Domain.Entities;
 
@@ -26,9 +25,9 @@ public partial class Doctor
 
     public string? Degree { get; set; }
 
-    public double Rating { get; set; } = 0;
+    public double Rating { get; set; }
 
-    public int RatingCount { get; set; } = 0;
+    public int RatingCount { get; set; }
 
     public virtual ICollection<Certification> Certifications { get; set; } = new List<Certification>();
 

@@ -1,5 +1,5 @@
  interface IMedicalRecord {
-    medicalRecordId: number;
+  reservationId: number;
     appointmentDate: string;
     symptoms: string;
     diagnosis: string;

@@ -23,7 +23,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string? TrainingProcess { get; set; }
 
         [JsonPropertyOrder(19)]
-        public  List<DoctorScheduleDTO> Schedules { get; set; }
+        public List<DoctorScheduleDTO> Schedules { get; set; }
 
         [JsonPropertyOrder(20)]
         public List<ServiceDTO> Services { get; set; }
@@ -32,8 +32,27 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public List<FeedbackDTO> Feedbacks { get; set; }
 
         [JsonPropertyOrder(22)]
-         public List<DoctorDTO> RelevantDoctors { get; set; } 
+        public List<DoctorDTO> RelevantDoctors { get; set; }
 
+        [JsonPropertyOrder(23)]
+        public string? Email { get; set; }
 
+        [JsonPropertyOrder(24)]
+        public string Password { get; set; }
+
+        [JsonPropertyOrder(25)]
+        public string CitizenId { get; set; }
+
+        [JsonPropertyOrder(26)]
+        public string Phone { get; set; }
+
+        [JsonPropertyOrder(27)]
+        public string Gender { get; set; }
+
+        [JsonPropertyOrder(28)]
+        public DateTime DateOfBirth { get; set; }
+
+        [JsonPropertyOrder(29)]
+        public string Address { get; set; }
     }
 }

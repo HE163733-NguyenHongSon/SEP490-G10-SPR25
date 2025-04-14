@@ -1,5 +1,6 @@
 # Ignore bin and obj folders
 bin/
 obj/
-appsettings.Development.json
+SEP490-G10-SPR25/BE-SEP490-G10-SPR25/AppointmentSchedulingApp.Presentation/appsettings.Development.json
+
 

@@ -1,4 +1,3 @@
-
 interface IDoctorDetail extends IDoctor {
   detailDescription: string;
   workExperience?: string;
@@ -7,7 +6,7 @@ interface IDoctorDetail extends IDoctor {
   researchProject?: string;
   trainingProcess?: string;
   schedules: IDoctorSchedule[];
-  services: ServiceDTO[];
+  services: IService[];
   feedbacks: IFeedback[];
   relevantDoctors: IDoctor[];
 }

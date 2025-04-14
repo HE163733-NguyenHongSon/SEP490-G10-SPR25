@@ -1,4 +1,4 @@
- interface ServiceDTO {
+interface IService {
   serviceId: number;
   serviceName: string;
   overview?: string;
@@ -13,13 +13,3 @@
   ratingCount?: number;
 }
 
- interface ServiceDetailDTO extends ServiceDTO {
-  specialtyName?: string;
-  doctorServices?: {
-    doctorId: number;
-    doctorName: string;
-    expertise: string;
-    image?: string;
-  }[];
-  relatedServices?: ServiceDTO[];
-} 

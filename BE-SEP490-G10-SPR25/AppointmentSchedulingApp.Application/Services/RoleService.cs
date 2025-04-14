@@ -26,7 +26,7 @@ namespace AppointmentSchedulingApp.Application.Services
         
         public async Task<Role> GetRoleByNameAsync(string roleName)
         {
-            var role = await _roleRepository.Get(r => r.RoleName.Equals(roleName, StringComparison.OrdinalIgnoreCase));
+            var role = await _roleRepository.Get(r => r.RoleName.ToLower() == roleName.ToLower());
             return role;
         }
 

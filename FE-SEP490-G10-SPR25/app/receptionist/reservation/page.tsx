@@ -1,153 +1,178 @@
 "use client";
-import React, { useState } from 'react';
-import { format } from 'date-fns';
+import { Button, Space, Table, message } from "antd";
+import { useState } from "react";
 
-interface Reservation {
-  id: number;
+interface IReservation {
+  reservationId: number;
   patientId: number;
   name: string;
-  phone: string;
+  phoneNumber: string;
   email: string;
-  appointmentDate: Date;
-  updateDate: Date;
-  status: 'pending' | 'confirmed' | 'cancelled';
+  appointmentDate: string;
+  updateDate: string;
 }
 
-export default function ReservationManagement() {
-  const [searchQuery, setSearchQuery] = useState('');
-  
-  // Mock data
-  const [reservations, setReservations] = useState<Reservation[]>([
+const Reservation = () => {
+  const [reservations] = useState<IReservation[]>([
     {
-      id: 1,
+      reservationId: 1,
       patientId: 23,
-      name: 'Patient One',
-      phone: '0912345693',
-      email: 'patient1@example.com',
-      appointmentDate: new Date('2025-01-10T09:15:00'),
-      updateDate: new Date('2025-01-10T09:15:00'),
-      status: 'pending'
+      name: "Patient One",
+      phoneNumber: "0912345693",
+      email: "patient1@example.com",
+      appointmentDate: "2025-01-10 09:15:00",
+      updateDate: "2025-01-10 09:15:00",
     },
     {
-      id: 2,
+      reservationId: 2,
       patientId: 24,
-      name: 'Patient Two',
-      phone: '0912345694',
-      email: 'patient2@example.com',
-      appointmentDate: new Date('2025-01-20T13:00:00'),
-      updateDate: new Date('2025-01-20T13:00:00'),
-      status: 'pending'
+      name: "Patient Two",
+      phoneNumber: "0912345694",
+      email: "patient2@example.com",
+      appointmentDate: "2025-01-20 13:00:00",
+      updateDate: "2025-01-20 13:00:00",
     },
     {
-      id: 3,
+      reservationId: 3,
       patientId: 25,
-      name: 'Patient Three',
-      phone: '0912345695',
-      email: 'patient3@example.com',
-      appointmentDate: new Date('2025-01-21T15:00:00'),
-      updateDate: new Date('2025-01-29T13:30:00'),
-      status: 'pending'
-    }
+      name: "Patient Three",
+      phoneNumber: "0912345695",
+      email: "patient3@example.com",
+      appointmentDate: "2025-01-21 15:00:00",
+      updateDate: "2025-01-29 13:30:00",
+    },
+    {
+      reservationId: 4,
+      patientId: 26,
+      name: "Patient Four",
+      phoneNumber: "0912345696",
+      email: "patient4@example.com",
+      appointmentDate: "2025-01-25 11:00:00",
+      updateDate: "2025-01-26 09:00:00",
+    },
+    {
+      reservationId: 5,
+      patientId: 27,
+      name: "Patient Five",
+      phoneNumber: "0912345697",
+      email: "patient5@example.com",
+      appointmentDate: "2025-02-01 16:00:00",
+      updateDate: "2025-02-02 10:00:00",
+    },
+    {
+      reservationId: 6,
+      patientId: 28,
+      name: "Patient Six",
+      phoneNumber: "0912345698",
+      email: "patient6@example.com",
+      appointmentDate: "2025-02-05 14:30:00",
+      updateDate: "2025-02-06 09:00:00",
+    },
+    {
+      reservationId: 7,
+      patientId: 29,
+      name: "Patient Seven",
+      phoneNumber: "0912345699",
+      email: "patient7@example.com",
+      appointmentDate: "2025-02-10 10:00:00",
+      updateDate: "2025-02-10 15:00:00",
+    },
+    {
+      reservationId: 8,
+      patientId: 30,
+      name: "Patient Eight",
+      phoneNumber: "0912345700",
+      email: "patient8@example.com",
+      appointmentDate: "2025-02-15 09:45:00",
+      updateDate: "2025-02-16 11:15:00",
+    },
   ]);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+  const handleConfirm = (record: IReservation) => {
+    message.success(`Confirmed reservation ID: ${record.reservationId}`);
   };
 
-  const handleConfirm = (reservationId: number) => {
-    setReservations(reservations.map(res => 
-      res.id === reservationId ? { ...res, status: 'confirmed' } : res
-    ));
+  const handleCancel = (record: IReservation) => {
+    message.warning(`Cancelled reservation ID: ${record.reservationId}`);
   };
 
-  const handleCancel = (reservationId: number) => {
-    setReservations(reservations.map(res => 
-      res.id === reservationId ? { ...res, status: 'cancelled' } : res
-    ));
-  };
-
-  const filteredReservations = reservations.filter(reservation =>
-    reservation.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    reservation.phone.includes(searchQuery) ||
-    reservation.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const columns = [
+    {
+      title: "ReservationId",
+      dataIndex: "reservationId",
+      key: "reservationId",
+      sorter: (a: IReservation, b: IReservation) => a.reservationId - b.reservationId,
+    },
+    {
+      title: "Patient Id",
+      dataIndex: "patientId",
+      key: "patientId",
+      sorter: (a: IReservation, b: IReservation) => a.patientId - b.patientId,
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      sorter: (a: IReservation, b: IReservation) => a.name.localeCompare(b.name),
+    },
+    {
+      title: "Phone number",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Appointment date",
+      dataIndex: "appointmentDate",
+      key: "appointmentDate",
+      sorter: (a: IReservation, b: IReservation) =>
+        new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime(),
+    },
+    {
+      title: "Update date",
+      dataIndex: "updateDate",
+      key: "updateDate",
+      sorter: (a: IReservation, b: IReservation) =>
+        new Date(a.updateDate).getTime() - new Date(b.updateDate).getTime(),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: IReservation) => (
+        <Space size="middle">
+          <Button onClick={() => handleConfirm(record)} type="primary" size="small">
+            Confirm
+          </Button>
+          <Button onClick={() => handleCancel(record)} danger size="small">
+            Cancel
+          </Button>
+        </Space>
+      ),
+    },
+  ];
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Appointment Booking Management</h1>
-      
-      {/* Search Section */}
+    <div className="p-6">
       <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Enter patient's information to search"
-          className="w-full p-2 border rounded-lg"
-          value={searchQuery}
-          onChange={handleSearch}
-        />
+        <h1 className="text-2xl font-bold">Reservation Management</h1>
       </div>
-
-      {/* Reservation Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Patient Care</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Reservation ID</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Patient ID</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Name</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Phone Number</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Email</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Appointment Date</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Update Date</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
-            </tr>
-          </thead>
-          
-          <tbody className="divide-y divide-gray-200">
-            {filteredReservations.map((reservation) => (
-              <tr key={reservation.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 text-sm text-gray-600">Support</td>
-                <td className="px-4 py-3 text-sm text-gray-600">#{reservation.id}</td>
-                <td className="px-4 py-3 text-sm text-gray-600">#{reservation.patientId}</td>
-                <td className="px-4 py-3 text-sm text-gray-800 font-medium">{reservation.name}</td>
-                <td className="px-4 py-3 text-sm text-gray-600">{reservation.phone}</td>
-                <td className="px-4 py-3 text-sm text-gray-600">{reservation.email}</td>
-                <td className="px-4 py-3 text-sm text-gray-600">
-                  {format(reservation.appointmentDate, 'yyyy-MM-dd HH:mm:ss')}
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-600">
-                  {format(reservation.updateDate, 'yyyy-MM-dd HH:mm:ss')}
-                </td>
-                <td className="px-4 py-3 text-sm space-x-2">
-                  <button
-                    onClick={() => handleConfirm(reservation.id)}
-                    className={`px-3 py-1 rounded ${
-                      reservation.status === 'confirmed' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-blue-100 text-blue-800 hover:bg-blue-200'
-                    }`}
-                    disabled={reservation.status !== 'pending'}
-                  >
-                    Confirm
-                  </button>
-                  <button
-                    onClick={() => handleCancel(reservation.id)}
-                    className={`px-3 py-1 rounded ${
-                      reservation.status === 'cancelled' 
-                        ? 'bg-red-100 text-red-800' 
-                        : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                    }`}
-                    disabled={reservation.status !== 'pending'}
-                  >
-                    Cancel
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      
+      <Table
+        dataSource={reservations}
+        columns={columns}
+        rowKey="reservationId"
+        pagination={{
+          pageSize: 7,
+          position: ["bottomCenter"],
+        }}
+        scroll={{ y: 500 }}
+      />
     </div>
   );
-}
+};
+
+export default Reservation;

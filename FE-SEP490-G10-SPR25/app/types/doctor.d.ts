@@ -1,9 +1,9 @@
- interface IDoctor {
-   doctorId: number ;
+ interface IDoctor extends IUser {
+   doctorId: number;
    academicTitle: string;
    degree: string;
    doctorName: string;
-   avatarUrl:string;
+   avatarUrl: string;
    currentWork?: string;
    basicDescription: string;
    specialtyNames: string[];
@@ -11,4 +11,5 @@
    numberOfExamination: number;
    rating: number;
    ratingCount: number;
- }  
+}
+

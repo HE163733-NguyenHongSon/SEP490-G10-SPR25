@@ -1,4 +1,5 @@
 ﻿using AppointmentSchedulingApp.Application.IServices;
+using AppointmentSchedulingApp.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -34,5 +35,19 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500,ex.Message);
             }
         }
+        [HttpGet("ExportPdf/{patientId}")]
+        public async Task<IActionResult> ExportPatientReportAsync(int patientId)
+        {
+            var medicalReport = await medicalReportService.GetMedicalReportByPatientId(patientId);
+            if (medicalReport == null)
+            {
+                return NotFound("Không tìm thấy báo cáo y tế.");
+            }
+
+            var pdfBytes = await medicalReportService.GenerateMedicalReportPdf(medicalReport);
+
+            return File(pdfBytes, "application/pdf", $"BaoCaoYTe_{patientId}.pdf");
+        }
+
     }
 }

@@ -100,8 +100,17 @@ namespace AppointmentSchedulingApp.Application.Services
                     }
                 }
 
-                // Map all other properties except Services (which we handled manually)
-                mapper.Map(doctorDto, existingDoctor);
+                existingDoctor.AcademicTitle = doctorDto.AcademicTitle;
+                existingDoctor.Degree = doctorDto.Degree;
+                existingDoctor.CurrentWork = doctorDto.CurrentWork;
+                existingDoctor.DoctorDescription = doctorDto.DoctorDescription;
+                existingDoctor.WorkExperience = doctorDto.WorkExperience;
+                existingDoctor.Organization = doctorDto.Organization;
+                existingDoctor.Prize = doctorDto.Prize;
+                existingDoctor.ResearchProject = doctorDto.ResearchProject;
+                existingDoctor.TrainingProcess = doctorDto.TrainingProcess;
+                existingDoctor.Rating = doctorDto.Rating;
+                existingDoctor.RatingCount = doctorDto.RatingCount;
 
                 unitOfWork.DoctorRepository.Update(existingDoctor);
                 await unitOfWork.CommitAsync();

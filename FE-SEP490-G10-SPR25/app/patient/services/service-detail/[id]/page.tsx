@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { isAuthenticated } from "../../../../services/authService";
-import { IServiceDetail } from "@/types/service";
 interface ServiceDetailPageProps {
     params: {
         id: string;

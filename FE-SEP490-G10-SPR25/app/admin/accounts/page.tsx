@@ -6,7 +6,6 @@ import { adminService } from '@/services/adminService';
 import { AdminDTO } from '@/types/admin';
 import dayjs from 'dayjs';
 import Image from 'next/image';
-import { IUser } from '@/types/user';
 import 'dayjs/locale/vi';
 
 dayjs.locale('vi');
@@ -66,7 +65,7 @@ const AccountManagement = () => {
   };
 
   const handleEdit = (record: IUser) => {
-    setEditingUserId(record.userId);
+    setEditingUserId(Number(record.userId));
     
     // Xử lý giá trị ngày tháng đúng cách
     let dobValue = undefined;
@@ -309,7 +308,7 @@ const AccountManagement = () => {
       render: (_: any, record: IUser) => (
         <Switch
           checked={record.isActive}
-          onChange={(checked) => handleToggleStatus(record.userId, checked)}
+          onChange={(checked) => handleToggleStatus(Number(record.userId), checked)}
         />
       ),
     },
@@ -327,7 +326,7 @@ const AccountManagement = () => {
           </Button>
           <Popconfirm
             title="Are you sure you want to delete this account?"
-            onConfirm={() => handleDelete(record.userId)}
+            onConfirm={() => handleDelete(Number(record.userId))}
             okText="Yes"
             cancelText="No"
           >

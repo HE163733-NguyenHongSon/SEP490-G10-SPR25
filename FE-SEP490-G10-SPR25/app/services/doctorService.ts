@@ -138,7 +138,20 @@ export const doctorService = {
         });
       }
       
-      console.log('Doctor data being sent:', processedData);
+      // Prepare data for API
+      const apiData = {
+        ...processedData,
+        userId: typeof processedData.userId === 'string' ? parseInt(processedData.userId) : processedData.userId,
+        // Chỉ dùng roleNames đơn giản, không cần Roles object
+        roleNames: "Doctor"
+      };
+      
+      // Loại bỏ trường Roles nếu có để tránh xung đột
+      if ('Roles' in apiData) {
+        delete apiData.Roles;
+      }
+      
+      console.log('Doctor data being sent:', JSON.stringify(apiData, null, 2));
       
       const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}`, {
         method: 'PUT',
@@ -146,12 +159,13 @@ export const doctorService = {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify(processedData)
+        body: JSON.stringify(apiData)
       });
       
       if (!res.ok) {
-        console.error(`Error updating doctor: ${res.statusText}`);
-        throw new Error(`HTTP error! Status: ${res.status}`);
+        const errorText = await res.text().catch(() => "Unknown error");
+        console.error(`Error updating doctor: Status ${res.status}, Details: ${errorText}`);
+        throw new Error(`HTTP error! Status: ${res.status}, Details: ${errorText}`);
       }
       
       return res.json();

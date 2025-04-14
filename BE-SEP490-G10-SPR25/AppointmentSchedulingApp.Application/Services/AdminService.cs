@@ -139,16 +139,13 @@ namespace AppointmentSchedulingApp.Application.Services
                 _dbContext.Users.Add(user);
                 await _dbContext.SaveChangesAsync();
 
-                // Assign doctor role
                 var doctorRole = await _roleService.GetRoleByNameAsync(AppRole.Doctor);
                 user.Roles.Add(doctorRole);
 
-                // Create doctor profile
                 var doctor = new Doctor
                 {
                     DoctorId = user.UserId,
-                    DoctorDescription = adminDTO.Name,  
-                    CurrentWork = "Đang làm việc"      
+                    CurrentWork = null      
                 };
 
                 _dbContext.Doctors.Add(doctor);
@@ -229,12 +226,12 @@ namespace AppointmentSchedulingApp.Application.Services
                 var receptionistRole = await _roleService.GetRoleByNameAsync(AppRole.Receptionist);
                 user.Roles.Add(receptionistRole);
 
-                // Create receptionist profile - đã loại bỏ trường Status
+                // Create receptionist profile
                 var receptionist = new Receptionist
                 {
                     ReceptionistId = user.UserId,
                     StartDate = DateOnly.FromDateTime(DateTime.Now),
-                    Shift = "Ca sáng" // Ca làm việc mặc định
+                    Shift = null // Set to null instead of default shift
                 };
 
                 _dbContext.Receptionists.Add(receptionist);
@@ -427,19 +424,23 @@ namespace AppointmentSchedulingApp.Application.Services
 
                     if (receptionist != null)
                     {
-                        // Kiểm tra nếu lễ tân đang trong ca làm việc
-                        if (!string.IsNullOrEmpty(receptionist.Shift))
+                        // Only prevent deletion if there's an active shift assigned
+                        // that isn't empty or null
+                        if (!string.IsNullOrEmpty(receptionist.Shift) && receptionist.Shift != "Không có ca")
                         {
                             throw new ValidationException("Không thể xóa tài khoản lễ tân vì đang có lịch làm việc");
                         }
 
-                        // Cập nhật các thanh toán của lễ tân để gỡ tham chiếu
+                        // Update payments to remove reference to this receptionist
                         foreach (var payment in receptionist.Payments)
                         {
                             payment.ReceptionistId = null;
                         }
+                        await _dbContext.SaveChangesAsync();
 
+                        // Delete receptionist entity
                         _dbContext.Receptionists.Remove(receptionist);
+                        await _dbContext.SaveChangesAsync();
                     }
                 }
 

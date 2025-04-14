@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from "react";
 import PageBreadCrumb from "../components/PageBreadCrumb";
 import { serviceService } from "../../services/serviceService";
-import { IService } from "@/types/service";
-import { ISpecialty } from "@/types/specialty";
 import { specialtyService } from "../../services/specialtyService";
 import { Button, Modal, Form, Input, InputNumber, Select, message, Space, Popconfirm, Table } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
@@ -100,7 +98,7 @@ const ServicesManagement = () => {
       if (editingService) {
         const payload = {
           ...values,
-          serviceId: editingService.serviceId,
+          serviceId: Number(editingService.serviceId),
           overview: values.overview || "",
           process: values.process || "",
           treatmentTechniques: values.treatmentTechniques || "",
@@ -180,7 +178,7 @@ const ServicesManagement = () => {
           </Button>
           <Popconfirm
             title="Are you sure you want to delete this service?"
-            onConfirm={() => handleDelete(record.serviceId)}
+            onConfirm={() => handleDelete(Number(record.serviceId))}
             okText="Yes"
             cancelText="No"
           >

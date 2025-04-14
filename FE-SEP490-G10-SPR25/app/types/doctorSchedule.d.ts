@@ -1,4 +1,4 @@
- interface IDoctorSchedule {
+export interface IDoctorSchedule {
     doctorScheduleId: number;
     doctorId: number;
     doctorName: string;

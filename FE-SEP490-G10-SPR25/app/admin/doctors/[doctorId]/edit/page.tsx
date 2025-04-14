@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Button, message, Select, Card, Spin } from "antd";
 import PageBreadCrumb from "../../../components/PageBreadCrumb";
 import { doctorService } from "@/services/doctorService";
-import { DoctorDetailDTO, IDoctor } from "@/types/doctor";
+import { IDoctorDetailDTO, IDoctor } from "@/types/doctor";
 import { useRouter } from "next/navigation";
 
 const { TextArea } = Input;
@@ -44,16 +44,16 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         const uniqueAcademicTitles = Array.from(
           new Set(
             doctors
-              .map(doctor => doctor.academicTitle)
-              .filter(title => title && title.trim() !== '')
+              .map((doctor: IDoctor) => doctor.academicTitle)
+              .filter((title: string | undefined) => title && title.trim() !== '')
           )
         ) as string[];
         
         const uniqueDegrees = Array.from(
           new Set(
             doctors
-              .map(doctor => doctor.degree)
-              .filter(degree => degree && degree.trim() !== '')
+              .map((doctor: IDoctor) => doctor.degree)
+              .filter((degree: string | undefined) => degree && degree.trim() !== '')
           )
         ) as string[];
 
@@ -66,7 +66,9 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         }
         
         const formattedDate = doctorDetail.dateOfBirth ? 
-          new Date(doctorDetail.dateOfBirth).toISOString().split('T')[0] : 
+          (typeof doctorDetail.dateOfBirth === 'string' ? 
+            doctorDetail.dateOfBirth.split('T')[0] : 
+            new Date(doctorDetail.dateOfBirth).toISOString().split('T')[0]) : 
           new Date().toISOString().split('T')[0];
         
         if (doctorDetail.password) {
@@ -115,7 +117,7 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
       
       const citizenId = values.citizenId ? values.citizenId.toString() : "";
       
-      const doctorData: DoctorDetailDTO = {
+      const doctorData: IDoctorDetailDTO = {
         doctorId: doctorId,
         doctorName: values.doctorName,
         academicTitle: values.academicTitle,

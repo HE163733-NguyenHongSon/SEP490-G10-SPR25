@@ -5,7 +5,9 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { patientService } from "@/services/patientService";
 import { useQuery } from "@tanstack/react-query";
-
+import { IUser } from "@/types/user";
+import { IPatient } from "@/types/patient";
+import { IPatientDetail } from "@/types/patientDetail";
 const ProfilePage = () => {
   const [patientId, setPatientId] = useState<number>(1);
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
@@ -21,9 +23,12 @@ const ProfilePage = () => {
     data: patientDetail,
     // isLoading: isLoadingPatientDetail,
     // error: patientDetailError,
-  } = useQuery({
+  } = useQuery<IPatientDetail & IUser>({
     queryKey: ["patientDetail", patientId],
-    queryFn: () => patientService.getPatientDetailById(patientId),
+    queryFn: async () => {
+      const data = await patientService.getPatientDetailById(patientId);
+      return data as unknown as IPatientDetail & IUser;
+    },
     staleTime: 30000,
   });
 
@@ -233,7 +238,7 @@ const ProfilePage = () => {
         <Tabs.Content value="dependents">
           {patientDetail?.dependents?.length !== 0 ? (
             patientDetail?.dependents?.map(
-              (dependent: IPatient, index: number) => (
+              (dependent: IPatient & IUser, index: number) => (
                 <form key={dependent.userId}>
                   <div className="row-span-1 flex flex-col py-10">
                     <div className="flex flex-row items-center gap-3 py-5 mb-5">

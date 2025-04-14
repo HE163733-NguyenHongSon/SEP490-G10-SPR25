@@ -1,5 +1,8 @@
+import { IUser } from '@/types/user';
+import { IPatient } from '@/types/patient';
+import { IPatientDetail } from '@/types/patientDetail';
+import { IReservation } from '@/types/reservation';
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-console.log('Patient API URL base:', apiUrl);
 
 export const patientService = {
   async getNumberOfExaminedPatients(): Promise<number> {

@@ -1,5 +1,7 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+import { IDoctor, IDoctorDetailDTO } from "@/types/doctor";
+import { IDoctorSchedule } from "@/types/doctorSchedule";
 
 export const doctorService = {
   async getDoctorList(): Promise<IDoctor[]> {
@@ -84,7 +86,7 @@ export const doctorService = {
 
   async getDoctorDetailById(
     doctorId: string | number
-  ): Promise<IDoctorDetail> {
+  ): Promise<IDoctorDetailDTO> {
     try {
       console.log(`Fetching doctor detail from: ${apiUrl}/api/Doctors/${doctorId}`);
       const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}`);
@@ -101,7 +103,7 @@ export const doctorService = {
     }
   },
 
-  async updateDoctor(doctorId: number, doctorData: any): Promise<any> {
+  async updateDoctor(doctorId: number, doctorData: IDoctorDetailDTO): Promise<IDoctorDetailDTO> {
     try {
       console.log(`Updating doctor with ID ${doctorId}`);
       
@@ -110,15 +112,16 @@ export const doctorService = {
       
       // Xử lý schedules nếu có
       if (processedData.schedules && processedData.schedules.length > 0) {
-        processedData.schedules = processedData.schedules.map((schedule: any) => {
+        processedData.schedules = processedData.schedules.map((schedule: IDoctorSchedule) => {
           // Chuyển định dạng thời gian thành chuỗi nếu cần
-          if (schedule.slotStartTime) {
-            schedule.slotStartTime = schedule.slotStartTime.toString();
+          const scheduleWithStringTimes = { ...schedule };
+          if (scheduleWithStringTimes.slotStartTime) {
+            scheduleWithStringTimes.slotStartTime = scheduleWithStringTimes.slotStartTime.toString();
           }
-          if (schedule.slotEndTime) {
-            schedule.slotEndTime = schedule.slotEndTime.toString();
+          if (scheduleWithStringTimes.slotEndTime) {
+            scheduleWithStringTimes.slotEndTime = scheduleWithStringTimes.slotEndTime.toString();
           }
-          return schedule;
+          return scheduleWithStringTimes;
         });
       }
       

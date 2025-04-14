@@ -9,6 +9,9 @@ import { TabsGroup } from "@/components/TabsGroup";
 import ListService from "@/patient/components/ListService";
 import FeedbackList from "@/patient/components/FeedbackList";
 import HomeSearch from "@/patient/components/HomeSearch";
+import { IDoctor } from "@/types/doctor";
+import { IService } from "@/types/service";
+import { ISpecialty } from "@/types/specialty";
 
 const HomePage = async () => {
   const specialties = await specialtyService.getSpecialtyList();

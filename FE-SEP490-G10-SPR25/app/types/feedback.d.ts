@@ -1,5 +1,5 @@
 // types.ts
- interface IFeedback {
+export interface IFeedback {
     feedbackId: number;
     reservationId: number;
     patientId: number;

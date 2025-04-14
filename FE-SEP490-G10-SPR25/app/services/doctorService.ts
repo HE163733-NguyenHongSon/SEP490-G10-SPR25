@@ -1,7 +1,7 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 console.log('Doctor API URL base:', apiUrl);
 
-import { IDoctor, DoctorDetailDTO } from "@/types/doctor";
+import { IDoctor, IDoctorDetailDTO } from "@/types/doctor";
 import { IDoctorSchedule } from "@/types/doctorSchedule";
 
 export const doctorService = {
@@ -87,7 +87,7 @@ export const doctorService = {
 
   async getDoctorDetailById(
     doctorId: string | number
-  ): Promise<DoctorDetailDTO> {
+  ): Promise<IDoctorDetailDTO> {
     try {
       console.log(`Fetching doctor detail from: ${apiUrl}/api/Doctors/${doctorId}`);
       const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}`);
@@ -104,7 +104,7 @@ export const doctorService = {
     }
   },
 
-  async updateDoctor(doctorId: number, doctorData: DoctorDetailDTO): Promise<DoctorDetailDTO> {
+  async updateDoctor(doctorId: number, doctorData: IDoctorDetailDTO): Promise<IDoctorDetailDTO> {
     try {
       console.log(`Updating doctor with ID ${doctorId}`);
       

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Button, message, Select, Card, Spin } from "antd";
 import PageBreadCrumb from "../../../components/PageBreadCrumb";
 import { doctorService } from "@/services/doctorService";
-import { DoctorDetailDTO, IDoctor } from "@/types/doctor";
+import { IDoctorDetailDTO, IDoctor } from "@/types/doctor";
 import { useRouter } from "next/navigation";
 
 const { TextArea } = Input;
@@ -117,7 +117,7 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
       
       const citizenId = values.citizenId ? values.citizenId.toString() : "";
       
-      const doctorData: DoctorDetailDTO = {
+      const doctorData: IDoctorDetailDTO = {
         doctorId: doctorId,
         doctorName: values.doctorName,
         academicTitle: values.academicTitle,

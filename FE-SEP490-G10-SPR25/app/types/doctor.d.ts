@@ -13,7 +13,7 @@ export interface IDoctor extends IUser {
   ratingCount: number;
 }
 
-export interface DoctorDetailDTO extends IDoctor {
+export interface IDoctorDetailDTO extends IDoctor {
   detailDescription: string;
   workExperience?: string;
   organization?: string;

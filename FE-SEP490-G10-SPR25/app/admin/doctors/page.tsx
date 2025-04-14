@@ -4,7 +4,7 @@ import PageBreadCrumb from "../components/PageBreadCrumb";
 import { Button, Table, Space, Popconfirm, message, Modal } from "antd";
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import { doctorService } from "@/services/doctorService";
-import { IDoctor, DoctorDetailDTO } from "@/types/doctor";
+import { IDoctor, IDoctorDetailDTO } from "@/types/doctor";
 import Link from "next/link";
 
 const DoctorsManagement = () => {
@@ -13,7 +13,7 @@ const DoctorsManagement = () => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [selectedDoctorId, setSelectedDoctorId] = useState<number | null>(null);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
-  const [selectedDoctor, setSelectedDoctor] = useState<DoctorDetailDTO | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<IDoctorDetailDTO | null>(null);
 
   useEffect(() => {
     fetchDoctors();

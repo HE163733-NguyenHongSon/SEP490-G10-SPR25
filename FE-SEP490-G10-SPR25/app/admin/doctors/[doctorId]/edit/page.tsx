@@ -1,9 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, message, Select, Card, Spin } from "antd";
+import { Form, Input, Button, message, Select, Card, Spin, DatePicker } from "antd";
 import PageBreadCrumb from "../../../components/PageBreadCrumb";
 import { doctorService } from "@/services/doctorService";
 import { useRouter } from "next/navigation";
+import dayjs from 'dayjs';
+import 'dayjs/locale/vi';
+
+dayjs.locale('vi');
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -28,7 +32,7 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
   const [doctorDetail, setDoctorDetail] = useState<IDoctorDetailDTO | null>(null);
   const router = useRouter();
   const doctorId = parseInt(params.doctorId);
-
+  const [editingUserId, setEditingUserId] = useState<number | null>(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -65,21 +69,30 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
           setDegrees(uniqueDegrees);
         }
         
-        let formattedDate;
+        // Parse date of birth
+        let dobValue = undefined;
         try {
           if (fetchedDoctorDetail.dob) {
-            const dateObj = new Date(fetchedDoctorDetail.dob);
-            if (!isNaN(dateObj.getTime())) {
-              formattedDate = dateObj.toISOString().split('T')[0];
-            } else {
-              formattedDate = fetchedDoctorDetail.dob.split('T')[0];
+            // Try to parse the date string using common formats
+            const dateFormats = ['YYYY-MM-DD', 'DD/MM/YYYY', 'MM/DD/YYYY', 'DD-MM-YYYY'];
+            for (const format of dateFormats) {
+              const parsedDate = dayjs(fetchedDoctorDetail.dob, format);
+              if (parsedDate.isValid()) {
+                dobValue = parsedDate;
+                break;
+              }
             }
-          } else {
-            formattedDate = new Date().toISOString().split('T')[0];
+            
+            // If parsing with specific formats fails, try automatic parsing
+            if (!dobValue) {
+              const autoDate = dayjs(fetchedDoctorDetail.dob);
+              if (autoDate.isValid()) {
+                dobValue = autoDate;
+              }
+            }
           }
         } catch (error) {
-          console.error("Error formatting date:", error);
-          formattedDate = new Date().toISOString().split('T')[0];
+          console.error("Error parsing date:", error);
         }
         
         if (fetchedDoctorDetail.password) {
@@ -104,7 +117,7 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
           citizenId: fetchedDoctorDetail.citizenId,
           phone: fetchedDoctorDetail.phone,
           gender: fetchedDoctorDetail.gender,
-          dateOfBirth: formattedDate,
+          dateOfBirth: dobValue,
           address: fetchedDoctorDetail.address
         });
       } catch (error) {
@@ -127,7 +140,16 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
       setLoading(true);
       const experienceYear = parseInt(values.workExperience?.match(/\d+/)?.[0] || "0");
       
-      const dateOfBirth = new Date(values.dateOfBirth);
+      // Xử lý ngày tháng đúng cách
+      let dobValue = '';
+      if (values.dateOfBirth) {
+        if (values.dateOfBirth.isValid && values.dateOfBirth.isValid()) {
+          dobValue = values.dateOfBirth.format('YYYY-MM-DD');
+        } else {
+          message.error('Định dạng ngày không hợp lệ. Vui lòng chọn ngày hợp lệ.');
+          return;
+        }
+      }
       
       const citizenId = values.citizenId ? values.citizenId.toString() : "";
       
@@ -162,7 +184,7 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         phone: values.phone,
         phoneNumber: values.phone,
         gender: values.gender,
-        dob: dateOfBirth.toISOString().split('T')[0],
+        dob: dobValue,
         address: values.address,
         citizenId: parseInt(citizenId) || 0,
         password: !values.password || values.password.trim() === '' ? actualPassword : values.password,
@@ -280,7 +302,17 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
               label="Ngày sinh"
               rules={[{ required: true, message: "Vui lòng chọn ngày sinh" }]}
             >
-              <Input type="date" />
+              <DatePicker 
+                style={{ width: '100%' }} 
+                format="YYYY-MM-DD"
+                allowClear={true}
+                placeholder="Chọn ngày sinh"
+                popupStyle={{ zIndex: 1060 }}
+                disabledDate={(current) => {
+                  // Không cho phép chọn ngày trong tương lai
+                  return current && current > dayjs().endOf('day');
+                }}
+              />
             </Form.Item>
 
             <Form.Item

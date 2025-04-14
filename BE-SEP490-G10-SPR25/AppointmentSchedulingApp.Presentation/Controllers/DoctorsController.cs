@@ -68,7 +68,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         {
             try
             {
-                if (doctorId != doctorDto.DoctorId)
+                if (doctorId != doctorDto.UserId)
                 {
                     return BadRequest("ID bác sĩ không khớp");
                 }

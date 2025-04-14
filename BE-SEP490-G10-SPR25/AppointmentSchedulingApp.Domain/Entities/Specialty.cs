@@ -11,7 +11,7 @@ public partial class Specialty
 
     public string? SpecialtyDescription { get; set; }
 
-    public string? Image { get; set; }
+    public string Image { get; set; } = null!;
 
     public virtual ICollection<Service> Services { get; set; } = new List<Service>();
 

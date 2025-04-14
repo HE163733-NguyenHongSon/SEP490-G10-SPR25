@@ -25,15 +25,25 @@ public partial class Reservation
 
     public string? CancellationReason { get; set; }
 
+    public DateTime CreatedDate { get; set; }
+
+    public int CreatedByUserId { get; set; }
+
     public DateTime UpdatedDate { get; set; }
+
+    public int UpdatedByUserId { get; set; }
+
+    public virtual User CreatedByUser { get; set; } = null!;
 
     public virtual DoctorSchedule DoctorSchedule { get; set; } = null!;
 
-    public virtual Feedback Feedback { get; set; }
+    public virtual Feedback? Feedback { get; set; }
 
     public virtual MedicalRecord? MedicalRecord { get; set; }
 
     public virtual Patient Patient { get; set; } = null!;
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
+    public virtual User UpdatedByUser { get; set; } = null!;
 }

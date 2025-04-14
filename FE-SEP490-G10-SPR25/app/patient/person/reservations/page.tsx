@@ -8,12 +8,11 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingTable } from "@/components/LoadingTable";
 import { useSearchParams } from "next/navigation";
-import { IUser } from "@/types/user";
 const ReservationPage = () => {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState("Đang chờ");
   const sortBy = searchParams.get("sortBy") || "Cuộc hẹn gần đây";
-  const [patientId, setPatientId] = useState<number>(1);
+  const [patientId, setPatientId] = useState<string>("1");
 
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");

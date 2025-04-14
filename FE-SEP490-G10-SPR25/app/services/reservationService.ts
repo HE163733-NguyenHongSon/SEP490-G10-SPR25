@@ -2,7 +2,7 @@ import api from "./api";
 
 const reservationService = {
   async getListReservationByFilter(
-    patientId: number,
+    patientId: string,
     status: string,
     sortBy: string
   ) {
@@ -13,7 +13,7 @@ const reservationService = {
   },
 
   async getNumberOfReservationsByPatientIdAndStatus(
-    patientId: number,
+    patientId: string,
     status: string
   ): Promise<IStatus> {
     const response = await api.get(

@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { ServiceList } from "../components/ServiceList";
 import { serviceService } from "../../services/serviceService";
-import { IService } from "@/types/service";
 
 const ServicesPage = () => {
   const [services, setServices] = useState<IService[]>([]);

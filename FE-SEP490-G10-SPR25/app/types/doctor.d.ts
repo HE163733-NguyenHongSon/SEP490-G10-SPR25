@@ -1,5 +1,3 @@
-
-
  interface IDoctor extends IUser {
   academicTitle: string;
   degree: string;

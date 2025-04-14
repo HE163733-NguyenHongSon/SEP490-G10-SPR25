@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Button, message, Select, Card, Spin } from "antd";
 import PageBreadCrumb from "../../../components/PageBreadCrumb";
 import { doctorService } from "@/services/doctorService";
-import { IDoctorDetailDTO, IDoctor } from "@/types/doctor";
 import { useRouter } from "next/navigation";
 
 const { TextArea } = Input;
@@ -26,6 +25,7 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
   const [degrees, setDegrees] = useState<string[]>(DEFAULT_DEGREES);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [actualPassword, setActualPassword] = useState("");
+  const [doctorDetail, setDoctorDetail] = useState<IDoctorDetailDTO | null>(null);
   const router = useRouter();
   const doctorId = parseInt(params.doctorId);
 
@@ -34,12 +34,12 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
       try {
         setInitializing(true);
         
-        const [doctors, doctorDetail] = await Promise.all([
-          doctorService.getDoctorList(),
-          doctorService.getDoctorDetailById(doctorId)
-        ]);
+        const fetchedDoctorDetail = await doctorService.getDoctorDetailById(doctorId);
+        setDoctorDetail(fetchedDoctorDetail);
         
-        console.log("API response data:", JSON.stringify(doctorDetail, null, 2));
+        console.log("API response data:", JSON.stringify(fetchedDoctorDetail, null, 2));
+        
+        const doctors = await doctorService.getDoctorList();
         
         const uniqueAcademicTitles = Array.from(
           new Set(
@@ -65,41 +65,55 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
           setDegrees(uniqueDegrees);
         }
         
-        const formattedDate = doctorDetail.dateOfBirth ? 
-          (typeof doctorDetail.dateOfBirth === 'string' ? 
-            doctorDetail.dateOfBirth.split('T')[0] : 
-            new Date(doctorDetail.dateOfBirth).toISOString().split('T')[0]) : 
-          new Date().toISOString().split('T')[0];
+        let formattedDate;
+        try {
+          if (fetchedDoctorDetail.dob) {
+            const dateObj = new Date(fetchedDoctorDetail.dob);
+            if (!isNaN(dateObj.getTime())) {
+              formattedDate = dateObj.toISOString().split('T')[0];
+            } else {
+              formattedDate = fetchedDoctorDetail.dob.split('T')[0];
+            }
+          } else {
+            formattedDate = new Date().toISOString().split('T')[0];
+          }
+        } catch (error) {
+          console.error("Error formatting date:", error);
+          formattedDate = new Date().toISOString().split('T')[0];
+        }
         
-        if (doctorDetail.password) {
-          setActualPassword(doctorDetail.password);
+        if (fetchedDoctorDetail.password) {
+          setActualPassword(fetchedDoctorDetail.password);
         }
         
         form.setFieldsValue({
-          userName: doctorDetail.userName || doctorDetail.doctorName,
-          password: doctorDetail.password || "", 
-          email: doctorDetail.email || "",
-          doctorName: doctorDetail.doctorName,
-          avatarUrl: doctorDetail.avatarUrl,
-          academicTitle: doctorDetail.academicTitle,
-          degree: doctorDetail.degree,
-          currentWork: doctorDetail.currentWork,
-          organization: doctorDetail.organization,
-          detailDescription: doctorDetail.detailDescription,
-          workExperience: doctorDetail.workExperience,
-          trainingProcess: doctorDetail.trainingProcess,
-          researchProject: doctorDetail.researchProject,
-          prize: doctorDetail.prize,
-          citizenId: doctorDetail.citizenId,
-          phone: doctorDetail.phone,
-          gender: doctorDetail.gender,
+          userName: fetchedDoctorDetail.userName,
+          password: fetchedDoctorDetail.password || "", 
+          email: fetchedDoctorDetail.email || "",
+          doctorName: fetchedDoctorDetail.userName,
+          avatarUrl: fetchedDoctorDetail.avatarUrl,
+          academicTitle: fetchedDoctorDetail.academicTitle,
+          degree: fetchedDoctorDetail.degree,
+          currentWork: fetchedDoctorDetail.currentWork,
+          organization: fetchedDoctorDetail.organization,
+          detailDescription: fetchedDoctorDetail.doctorDescription,
+          workExperience: fetchedDoctorDetail.workExperience,
+          trainingProcess: fetchedDoctorDetail.trainingProcess,
+          researchProject: fetchedDoctorDetail.researchProject,
+          prize: fetchedDoctorDetail.prize,
+          citizenId: fetchedDoctorDetail.citizenId,
+          phone: fetchedDoctorDetail.phone,
+          gender: fetchedDoctorDetail.gender,
           dateOfBirth: formattedDate,
-          address: doctorDetail.address
+          address: fetchedDoctorDetail.address
         });
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
-        message.error("Không thể tải thông tin bác sĩ. Vui lòng thử lại sau.");
-        router.push("/admin/doctors");
+        message.error("Không thể tải thông tin bác sĩ. Vui lòng kiểm tra kết nối đến API hoặc thử lại sau.");
+        
+        setTimeout(() => {
+          router.push("/admin/doctors");
+        }, 2000);
       } finally {
         setInitializing(false);
       }
@@ -117,20 +131,24 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
       
       const citizenId = values.citizenId ? values.citizenId.toString() : "";
       
+      if (!doctorDetail) {
+        message.error("Không có thông tin bác sĩ!");
+        return;
+      }
+      
       const doctorData: IDoctorDetailDTO = {
-        doctorId: doctorId,
-        doctorName: values.doctorName,
+        userId: doctorId.toString(),
+        userName: values.userName,
         academicTitle: values.academicTitle,
         degree: values.degree,
         avatarUrl: values.avatarUrl,
         currentWork: values.currentWork,
-        basicDescription: values.detailDescription?.substring(0, 50) || "",
+        doctorDescription: values.detailDescription,
         specialtyNames: values.specialtyNames || [],
         numberOfService: values.numberOfService || 0,
         numberOfExamination: values.numberOfExamination || 0,
         rating: values.rating || 0,
         ratingCount: values.ratingCount || 0,
-        detailDescription: values.detailDescription,
         workExperience: values.workExperience,
         organization: values.organization,
         prize: values.prize,
@@ -142,19 +160,16 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         relevantDoctors: values.relevantDoctors || [],
         email: values.email,
         phone: values.phone,
+        phoneNumber: values.phone,
         gender: values.gender,
-        dateOfBirth: dateOfBirth,
+        dob: dateOfBirth.toISOString(),
         address: values.address,
         citizenId: citizenId,
-        userName: values.userName
+        password: !values.password || values.password.trim() === '' ? actualPassword : values.password,
+        roleNames: "Doctor",
+        isVerify: doctorDetail.isVerify,
+        isActive: doctorDetail.isActive
       };
-
-      if (!values.password || values.password.trim() === '') {
-        // Use actual password if not changed
-        doctorData.password = actualPassword;
-      } else {
-        doctorData.password = values.password;
-      }
 
       await doctorService.updateDoctor(doctorId, doctorData);
       message.success("Cập nhật thông tin bác sĩ thành công!");

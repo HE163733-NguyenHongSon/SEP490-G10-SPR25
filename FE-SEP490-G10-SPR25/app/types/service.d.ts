@@ -1,5 +1,5 @@
- interface IService {
-  serviceId:  string;
+interface IService {
+  serviceId: string;
   serviceName: string;
   overview?: string;
   process?: string;
@@ -12,22 +12,31 @@
   rating?: number;
   ratingCount?: number;
 }
- interface IServiceDetail extends IService {
+
+interface IDoctorService {
+  doctorId: number;
+  doctorName: string;
+  expertise: string;
+  image?: string;
+}
+
+interface IRelatedDoctor {
+  doctorId: number;
+  academicTitle?: string;
+  degree?: string;
+  doctorName: string;
+  expertise?: string;
+  specialties?: string[];
+  image?: string;
+  rating?: number;
+  ratingCount?: number;
+}
+
+interface IServiceDetail extends IService {
   specialtyName?: string;
-  doctorServices?: {
-    doctorId: number;
-    doctorName: string;
-    expertise: string;
-    image?: string;
-  }[];
+  doctorServices?: IDoctorService[];
   relatedServices?: IService[];
   requiredDevices?: string[];
-  relatedDoctors?: (string | {
-    doctorId: number;
-    academicTitle?: string;
-    degree?: string;
-    doctorName: string;
-    [key: string]: any;
-  })[];
+  relatedDoctors?: (string | IRelatedDoctor)[];
 }
 

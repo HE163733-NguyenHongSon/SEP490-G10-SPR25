@@ -4,7 +4,6 @@ import PageBreadCrumb from "../components/PageBreadCrumb";
 import { Button, Table, Space, Popconfirm, message, Modal } from "antd";
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import { doctorService } from "@/services/doctorService";
-import { IDoctor, IDoctorDetailDTO } from "@/types/doctor";
 import Link from "next/link";
 
 const DoctorsManagement = () => {
@@ -87,12 +86,12 @@ const DoctorsManagement = () => {
             <div className="flex items-center">
               <img
                 src={selectedDoctor.avatarUrl || "/avatar-placeholder.png"}
-                alt={selectedDoctor.doctorName}
+                alt={selectedDoctor.userName}
                 className="w-24 h-24 rounded-full object-cover"
               />
               <div className="ml-4">
                 <h2 className="text-xl font-bold">
-                  {selectedDoctor.academicTitle} {selectedDoctor.degree} {selectedDoctor.doctorName}
+                  {selectedDoctor.academicTitle} {selectedDoctor.degree} {selectedDoctor.userName}
                 </h2>
                 <p className="text-gray-500">{selectedDoctor.currentWork}</p>
               </div>
@@ -122,7 +121,7 @@ const DoctorsManagement = () => {
 
             <div>
               <h3 className="font-bold">Mô tả</h3>
-              <p>{selectedDoctor.detailDescription}</p>
+              <p>{selectedDoctor.doctorDescription}</p>
             </div>
 
             <div>
@@ -180,7 +179,7 @@ const DoctorsManagement = () => {
       dataIndex: "userName",
       key: "userName",
       width: "10%",
-      render: (userName: string, record: IDoctor) => userName || record.doctorName,
+      render: (userName: string, record: IDoctor) => userName || record.userName,
     },
     {
       title: "Mật khẩu",
@@ -194,7 +193,7 @@ const DoctorsManagement = () => {
       width: "15%",
       render: (record: IDoctor) => (
         <span>
-          {record.academicTitle} {record.degree} {record.doctorName}
+          {record.academicTitle} {record.degree} {record.userName}
         </span>
       ),
     },
@@ -220,7 +219,7 @@ const DoctorsManagement = () => {
         <Space size="middle">
           <Button
             icon={<EyeOutlined />}
-            onClick={() => handleViewDetail(record.doctorId)}
+            onClick={() => handleViewDetail(parseInt(record.userId))}
             type="default"
             size="small"
           >
@@ -231,13 +230,13 @@ const DoctorsManagement = () => {
             type="primary"
             size="small"
           >
-            <Link href={`/admin/doctors/${record.doctorId}/edit`}>Sửa</Link>
+            <Link href={`/admin/doctors/${record.userId}/edit`}>Sửa</Link>
           </Button>
           <Button
             icon={<DeleteOutlined />}
             danger
             size="small"
-            onClick={() => showDeleteConfirm(record.doctorId)}
+            onClick={() => showDeleteConfirm(parseInt(record.userId))}
           >
             Xoá
           </Button>

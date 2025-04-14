@@ -87,10 +87,24 @@ export const doctorService = {
     doctorId: string | number
   ): Promise<IDoctorDetailDTO> {
     try {
+      if (!apiUrl) {
+        console.error("API URL is undefined. Check your .env.local file for NEXT_PUBLIC_API_URL");
+        throw new Error("API URL is not configured");
+      }
+      
       console.log(`Fetching doctor detail from: ${apiUrl}/api/Doctors/${doctorId}`);
-      const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}`);
+      const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}`, {
+        cache: 'no-store',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      });
+      
       if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
+        const errorText = await res.text().catch(() => "Unknown error");
+        console.error(`HTTP error! Status: ${res.status}, Details: ${errorText}`);
+        throw new Error(`HTTP error! Status: ${res.status}, Details: ${errorText}`);
       }
 
       const data = await res.json();

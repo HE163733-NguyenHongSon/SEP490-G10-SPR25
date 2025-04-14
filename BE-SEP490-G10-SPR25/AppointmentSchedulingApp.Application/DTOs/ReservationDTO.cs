@@ -11,8 +11,8 @@ namespace AppointmentSchedulingApp.Application.DTOs
     {
         [Key]
         public int ReservationId { get; set; }
-        public PatientDTO Patient { get; set; }
-        public string? AppointmentDate { get; set; }
+        public PatientDTO Patient { get;set; }
+        public string AppointmentDate { get; set; }
         public string UpdatedDate { get; set; }
         public string ServiceImage { get; set; } = null!;
         public string ServiceName { get; set; } = null!;

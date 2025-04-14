@@ -1,7 +1,4 @@
-import { IUser } from '@/types/user';
-import { IPatient } from '@/types/patient';
-import { IPatientDetail } from '@/types/patientDetail';
-import { IReservation } from '@/types/reservation';
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const patientService = {
@@ -27,7 +24,7 @@ export const patientService = {
       }
     
       const data: IReservation[] = await res.json();
-      const uniquePatients = new Set(data.map((r: IReservation) => r.patientId));
+      const uniquePatients = new Set(data.map((r: IReservation) => r.patient.userId));
       console.log(`Found ${uniquePatients.size} unique examined patients`);
     
       return uniquePatients.size;

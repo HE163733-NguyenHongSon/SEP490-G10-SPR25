@@ -12,9 +12,11 @@ export default function SpecialtyDetails() {
   interface Specialty {
     specialtyName: string;
     specialtyDescription: string;
+    image: string;
   }
 
   const [specialty, setSpecialty] = useState<Specialty | null>(null);
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
   useEffect(() => {
     fetch(`http://localhost:5220/api/Specialties/${id}`)
       .then((res) => res.json())
@@ -69,7 +71,7 @@ export default function SpecialtyDetails() {
           {/* Right - image */}
           <div className="w-64 h-48 ml-2">
             <Image
-              src="https://via.placeholder.com/256x192.png?text=Heart+Care"
+              src={`${imgUrl}/${specialty?.image}`}
               alt="Specialty"
               width={256}
               height={192}

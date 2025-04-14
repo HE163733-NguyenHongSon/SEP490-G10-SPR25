@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 using AppointmentSchedulingApp.Application.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -64,15 +65,26 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
         [HttpPut("{doctorId}")]
         //[Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateDoctor(int doctorId, [FromBody] DoctorDetailDTO doctorDto)
+        public async Task<IActionResult> UpdateDoctor(int doctorId, [FromBody] object requestData)
         {
             try
             {
-                if (doctorId != doctorDto.DoctorId)
+                // Chuyển đổi từ dynamic object sang DoctorDetailDTO
+                var options = new System.Text.Json.JsonSerializerOptions 
+                { 
+                    PropertyNameCaseInsensitive = true 
+                };
+                var jsonString = System.Text.Json.JsonSerializer.Serialize(requestData);
+                var doctorDto = System.Text.Json.JsonSerializer.Deserialize<DoctorDetailDTO>(jsonString, options);
+                
+                if (doctorId != doctorDto.UserId)
                 {
                     return BadRequest("ID bác sĩ không khớp");
                 }
 
+                // Đảm bảo RoleNames được thiết lập
+                doctorDto.RoleNames = "Doctor";
+                
                 var updatedDoctor = await _doctorService.UpdateDoctor(doctorDto);
                 if (updatedDoctor == null)
                 {

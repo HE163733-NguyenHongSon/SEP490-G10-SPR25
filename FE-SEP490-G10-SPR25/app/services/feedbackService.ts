@@ -1,12 +1,8 @@
+import { IFeedback } from "@/types/feedback";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 console.log('Feedback API URL base:', apiUrl);
 
-const getInitials = (name: string) =>
-  name
-    .split(" ")
-    .map((s) => s[0])
-    .join("")
-    .toUpperCase();
+
 
 const getRelativeTime = (dateStr: string) => {
   const date = new Date(dateStr);

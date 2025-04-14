@@ -1,6 +1,7 @@
 ﻿using AppointmentSchedulingApp.Application;
 using AppointmentSchedulingApp.Application.IServices;
 using AppointmentSchedulingApp.Application.Services;
+using AppointmentSchedulingApp.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -45,5 +46,26 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
             }
         }
+        [HttpGet("{medicalRecordId}")]
+        public async Task<IActionResult> GetMedicalRecordDetailById(int medicalRecordId)
+        {
+
+            try
+            {
+                var medicalRecordDetail = await medicalRecordService.GetMedicalRecordDetailById(medicalRecordId);
+
+                if (medicalRecordDetail == null)
+                {
+                    return NotFound($"Báo cáo chi tiết  với medical record id={medicalRecordId} không tồn tại");
+                }
+
+                return Ok(medicalRecordDetail);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
+        }
+
     }
 }

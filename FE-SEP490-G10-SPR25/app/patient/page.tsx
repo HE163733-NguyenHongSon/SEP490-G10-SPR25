@@ -39,19 +39,19 @@ const HomePage = async () => {
   const suggestedData = [
     ...specialties.map((s: ISpecialty) => ({
       label: s.specialtyName,
-      value: s.specialtyId.toString(),
+      value: s.specialtyId,
       image: s.image ?? "",
       type: "specialty",
     })),
     ...doctors.map((d: IDoctor) => ({
-      label: d.doctorName,
-      value: d.doctorId.toString(),
+      label: d.userName,
+      value: d.userId,
       image: d.avatarUrl ?? "",
       type: "doctor",
     })),
     ...services.map((s: IService) => ({
       label: s.serviceName,
-      value: s.serviceId.toString(),
+      value: s.serviceId,
       image: s.image ?? "",
       type: "service",
     })),

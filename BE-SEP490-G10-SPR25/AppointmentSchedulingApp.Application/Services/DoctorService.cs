@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.ComponentModel.DataAnnotations;
 using AppointmentSchedulingApp.Infrastructure.Database;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AppointmentSchedulingApp.Application.Services
 {
@@ -24,27 +25,27 @@ namespace AppointmentSchedulingApp.Application.Services
 
         public async Task<List<DoctorDTO>> GetDoctorList()
         {
-            var query = unitOfWork.DoctorRepository.GetQueryable();
+            var query = unitOfWork.UserRepository.GetQueryable(u => u.Roles.Any(r => r.RoleId == 4) && u.IsActive);
             return await query.ProjectTo<DoctorDTO>(mapper.ConfigurationProvider).ToListAsync();
         }
 
         public async Task<DoctorDetailDTO> GetDoctorDetailById(int doctorId)
         {
-            var query = unitOfWork.DoctorRepository.GetQueryable(d => d.DoctorId == doctorId);
+            var query = unitOfWork.UserRepository.GetQueryable(u => u.UserId == doctorId);
             return await query.ProjectTo<DoctorDetailDTO>(mapper.ConfigurationProvider).FirstOrDefaultAsync();
         }
         public async Task<DoctorDetailDTO> UpdateDoctor(DoctorDetailDTO doctorDto)
         {
             try
             {
-                var existingDoctor = await unitOfWork.DoctorRepository.Get(d => d.DoctorId == doctorDto.DoctorId);
+                var existingDoctor = await unitOfWork.DoctorRepository.Get(d => d.DoctorId == doctorDto.UserId);
                 if (existingDoctor == null)
                 {
-                    throw new ValidationException($"Không tìm thấy bác sĩ với ID {doctorDto.DoctorId}");
+                    throw new ValidationException($"Không tìm thấy bác sĩ với ID {doctorDto.UserId}");
                 }
 
                 await unitOfWork.BeginTransactionAsync();
-                var user = await unitOfWork.UserRepository.Get(u => u.UserId == doctorDto.DoctorId);
+                var user = await unitOfWork.UserRepository.Get(u => u.UserId == doctorDto.UserId);
                 if (user != null)
                 {
                     user.Password = doctorDto.Password;
@@ -55,9 +56,9 @@ namespace AppointmentSchedulingApp.Application.Services
                         user.Email = doctorDto.Email;
                     }
                     
-                    if (!string.IsNullOrEmpty(doctorDto.CitizenId))
+                    if (!string.IsNullOrEmpty(doctorDto.CitizenId.ToString()))
                     {
-                        if (long.TryParse(doctorDto.CitizenId, out long citizenIdValue))
+                        if (long.TryParse(doctorDto.CitizenId.ToString(), out long citizenIdValue))
                         {
                             user.CitizenId = citizenIdValue;
                         }
@@ -69,7 +70,14 @@ namespace AppointmentSchedulingApp.Application.Services
                     
                     user.Phone = doctorDto.Phone;
                     user.Gender = doctorDto.Gender;
-                    user.Dob = DateOnly.FromDateTime(doctorDto.DateOfBirth);
+                    if (DateOnly.TryParse(doctorDto.Dob, out var dob))
+                    {
+                        user.Dob = dob;
+                    }
+                    else
+                    {
+                        throw new Exception("Ngày sinh không hợp lệ.");
+                    }
                     user.Address = doctorDto.Address;
 
                     unitOfWork.UserRepository.Update(user);
@@ -92,8 +100,17 @@ namespace AppointmentSchedulingApp.Application.Services
                     }
                 }
 
-                // Map all other properties except Services (which we handled manually)
-                mapper.Map(doctorDto, existingDoctor);
+                existingDoctor.AcademicTitle = doctorDto.AcademicTitle;
+                existingDoctor.Degree = doctorDto.Degree;
+                existingDoctor.CurrentWork = doctorDto.CurrentWork;
+                existingDoctor.DoctorDescription = doctorDto.DoctorDescription;
+                existingDoctor.WorkExperience = doctorDto.WorkExperience;
+                existingDoctor.Organization = doctorDto.Organization;
+                existingDoctor.Prize = doctorDto.Prize;
+                existingDoctor.ResearchProject = doctorDto.ResearchProject;
+                existingDoctor.TrainingProcess = doctorDto.TrainingProcess;
+                existingDoctor.Rating = doctorDto.Rating;
+                existingDoctor.RatingCount = doctorDto.RatingCount;
 
                 unitOfWork.DoctorRepository.Update(existingDoctor);
                 await unitOfWork.CommitAsync();

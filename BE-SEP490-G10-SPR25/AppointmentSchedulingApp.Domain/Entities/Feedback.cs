@@ -11,11 +11,11 @@ public partial class Feedback
 
     public string ServiceFeedbackContent { get; set; } = null!;
 
-    public int ServiceFeedbackGrade { get; set; } = 0;
+    public int? ServiceFeedbackGrade { get; set; }
 
     public string DoctorFeedbackContent { get; set; } = null!;
 
-    public int DoctorFeedbackGrade { get; set; } = 0;
+    public int? DoctorFeedbackGrade { get; set; }
 
     public DateTime FeedbackDate { get; set; }
 

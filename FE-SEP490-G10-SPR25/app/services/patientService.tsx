@@ -1,5 +1,5 @@
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-console.log('Patient API URL base:', apiUrl);
 
 export const patientService = {
   async getNumberOfExaminedPatients(): Promise<number> {
@@ -24,7 +24,7 @@ export const patientService = {
       }
     
       const data: IReservation[] = await res.json();
-      const uniquePatients = new Set(data.map((r: IReservation) => r.patientId));
+      const uniquePatients = new Set(data.map((r: IReservation) => r.patient.userId));
       console.log(`Found ${uniquePatients.size} unique examined patients`);
     
       return uniquePatients.size;
@@ -64,7 +64,7 @@ export const patientService = {
     }
   },
 
-  async getPatientDetailById(patientId: string | number): Promise<IPatientDetail> {
+  async getPatientDetailById(patientId?: string | number  ): Promise<IPatientDetail> {
     try {
       const url = `${apiUrl}/api/Patients/${patientId}`;
       console.log(`Fetching patient detail from: ${url}`);

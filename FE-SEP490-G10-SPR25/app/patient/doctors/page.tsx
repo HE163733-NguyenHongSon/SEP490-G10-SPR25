@@ -53,9 +53,9 @@ const DoctorsPage = async ({
   }
   const searchOptions: ISearchOption[] = (
     await doctorService.getDoctorList()
-  ).map((d) => ({
-    label: d.doctorName,
-    value: d.doctorId.toString(),
+  ).map((d:IDoctor) => ({
+    label: d.userName,
+    value: d.userId,
   }));
   return (
     <div className="flex flex-col h-screen mt-10 gap-5 ">

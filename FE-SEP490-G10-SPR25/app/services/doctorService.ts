@@ -1,7 +1,6 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-console.log('Doctor API URL base:', apiUrl);
 
-import { IDoctor, DoctorDetailDTO } from "@/types/doctor";
+
 
 export const doctorService = {
   async getDoctorList(): Promise<IDoctor[]> {
@@ -67,7 +66,7 @@ export const doctorService = {
         most_service: "numberOfService",
       };
       const doctors = (await this.getDoctorList()).filter((d) =>
-        idList.includes(d.doctorId.toString())
+        idList.includes(d.userId.toString())
       );
 
       const sortKey = sortOptions[sortBy];
@@ -86,12 +85,26 @@ export const doctorService = {
 
   async getDoctorDetailById(
     doctorId: string | number
-  ): Promise<DoctorDetailDTO> {
+  ): Promise<IDoctorDetailDTO> {
     try {
+      if (!apiUrl) {
+        console.error("API URL is undefined. Check your .env.local file for NEXT_PUBLIC_API_URL");
+        throw new Error("API URL is not configured");
+      }
+      
       console.log(`Fetching doctor detail from: ${apiUrl}/api/Doctors/${doctorId}`);
-      const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}`);
+      const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}`, {
+        cache: 'no-store',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      });
+      
       if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`);
+        const errorText = await res.text().catch(() => "Unknown error");
+        console.error(`HTTP error! Status: ${res.status}, Details: ${errorText}`);
+        throw new Error(`HTTP error! Status: ${res.status}, Details: ${errorText}`);
       }
 
       const data = await res.json();
@@ -103,7 +116,7 @@ export const doctorService = {
     }
   },
 
-  async updateDoctor(doctorId: number, doctorData: any): Promise<any> {
+  async updateDoctor(doctorId: number, doctorData: IDoctorDetailDTO): Promise<IDoctorDetailDTO> {
     try {
       console.log(`Updating doctor with ID ${doctorId}`);
       
@@ -112,19 +125,33 @@ export const doctorService = {
       
       // Xử lý schedules nếu có
       if (processedData.schedules && processedData.schedules.length > 0) {
-        processedData.schedules = processedData.schedules.map((schedule: any) => {
+        processedData.schedules = processedData.schedules.map((schedule: IDoctorSchedule) => {
           // Chuyển định dạng thời gian thành chuỗi nếu cần
-          if (schedule.slotStartTime) {
-            schedule.slotStartTime = schedule.slotStartTime.toString();
+          const scheduleWithStringTimes = { ...schedule };
+          if (scheduleWithStringTimes.slotStartTime) {
+            scheduleWithStringTimes.slotStartTime = scheduleWithStringTimes.slotStartTime.toString();
           }
-          if (schedule.slotEndTime) {
-            schedule.slotEndTime = schedule.slotEndTime.toString();
+          if (scheduleWithStringTimes.slotEndTime) {
+            scheduleWithStringTimes.slotEndTime = scheduleWithStringTimes.slotEndTime.toString();
           }
-          return schedule;
+          return scheduleWithStringTimes;
         });
       }
       
-      console.log('Doctor data being sent:', processedData);
+      // Prepare data for API
+      const apiData = {
+        ...processedData,
+        userId: typeof processedData.userId === 'string' ? parseInt(processedData.userId) : processedData.userId,
+        // Chỉ dùng roleNames đơn giản, không cần Roles object
+        roleNames: "Doctor"
+      };
+      
+      // Loại bỏ trường Roles nếu có để tránh xung đột
+      if ('Roles' in apiData) {
+        delete apiData.Roles;
+      }
+      
+      console.log('Doctor data being sent:', JSON.stringify(apiData, null, 2));
       
       const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}`, {
         method: 'PUT',
@@ -132,12 +159,13 @@ export const doctorService = {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify(processedData)
+        body: JSON.stringify(apiData)
       });
       
       if (!res.ok) {
-        console.error(`Error updating doctor: ${res.statusText}`);
-        throw new Error(`HTTP error! Status: ${res.status}`);
+        const errorText = await res.text().catch(() => "Unknown error");
+        console.error(`Error updating doctor: Status ${res.status}, Details: ${errorText}`);
+        throw new Error(`HTTP error! Status: ${res.status}, Details: ${errorText}`);
       }
       
       return res.json();

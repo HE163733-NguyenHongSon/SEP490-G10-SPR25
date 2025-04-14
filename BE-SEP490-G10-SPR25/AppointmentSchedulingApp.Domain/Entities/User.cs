@@ -41,5 +41,9 @@ public partial class User
 
     public virtual Receptionist? Receptionist { get; set; }
 
+    public virtual ICollection<Reservation> ReservationCreatedByUsers { get; set; } = new List<Reservation>();
+
+    public virtual ICollection<Reservation> ReservationUpdatedByUsers { get; set; } = new List<Reservation>();
+
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 }

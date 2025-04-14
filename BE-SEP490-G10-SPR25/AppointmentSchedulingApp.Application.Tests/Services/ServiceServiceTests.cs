@@ -479,8 +479,8 @@ namespace AppointmentSchedulingApp.Application.Tests.Services
 
             var serviceDTOs = new List<ServiceDTO>
             {
-                new ServiceDTO { ServiceId = 1, ServiceName = "Service 1", Rating = 3.5m },
-                new ServiceDTO { ServiceId = 2, ServiceName = "Service 2", Rating = 4.5m }
+                new ServiceDTO { ServiceId = 1, ServiceName = "Service 1", Rating = (double)3.5m },
+                new ServiceDTO { ServiceId = 2, ServiceName = "Service 2", Rating = (double)4.5m }
             };
 
             var sortedServiceDTOs = serviceDTOs.OrderByDescending(s => s.Rating).ToList();

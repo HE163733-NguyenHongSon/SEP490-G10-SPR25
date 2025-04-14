@@ -1,5 +1,4 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-console.log('Doctor API URL base:', apiUrl);
 
 import { IDoctor, IDoctorDetailDTO } from "@/types/doctor";
 import { IDoctorSchedule } from "@/types/doctorSchedule";

@@ -16,11 +16,8 @@ namespace AppointmentSchedulingApp.Application.Profiles
         {
             
              CreateMap<Reservation,ReservationDTO>()
-             .ForMember(dest => dest.ReservationId, opt => opt.MapFrom(src => src.ReservationId))
-             .ForMember(dest => dest.PatientId, opt => opt.MapFrom(src => src.PatientId))
-             .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient.PatientNavigation.UserName))
-             .ForMember(dest => dest.PatientPhone, opt => opt.MapFrom(src => src.Patient.PatientNavigation.Phone))
-             .ForMember(dest => dest.PatientEmail, opt => opt.MapFrom(src => src.Patient.PatientNavigation.Email))
+            
+             .ForMember(dest => dest.Patient, opt => opt.MapFrom(src => src.Patient.PatientNavigation))           
              .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate.ToString("dd/MM/yyyy")))
              .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => src.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss ")))
              .ForMember(dest => dest.ServiceImage, opt => opt.MapFrom(src => src.DoctorSchedule.Service.Image))
@@ -31,10 +28,6 @@ namespace AppointmentSchedulingApp.Application.Profiles
              .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.EndTime.ToString("hh:mm tt")))
              .ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.DoctorSchedule.Room.RoomName))
              .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.DoctorSchedule.Room.Location))
-             .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason))
-             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-             .ForMember(dest => dest.CancellationReason, opt => opt.MapFrom(src => src.CancellationReason))
-
              .ReverseMap();   
 
 

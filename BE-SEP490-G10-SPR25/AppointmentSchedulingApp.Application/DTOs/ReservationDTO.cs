@@ -10,11 +10,8 @@ namespace AppointmentSchedulingApp.Application.DTOs
     public class ReservationDTO
     {
         [Key]
-        public string ReservationId { get; set; }
-        public string PatientId { get; set; }
-        public string PatientName { get; set; } = null!;
-        public string PatientPhone { get; set; } = null!;
-        public string? PatientEmail { get; set; }
+        public int ReservationId { get; set; }
+        public PatientDTO Patient { get; set; }
         public string? AppointmentDate { get; set; }
         public string UpdatedDate { get; set; }
         public string ServiceImage { get; set; } = null!;
@@ -26,8 +23,9 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string RoomName { get; set; } = null!;
         public string Location { get; set; } = null!;
         public string? Reason { get; set; }
+        public string? PriorExaminationImg { get; set; }
         public string Status { get; set; }
-        public string CancellationReason { get; set; }
+        public string? CancellationReason { get; set; }
 
     }
 

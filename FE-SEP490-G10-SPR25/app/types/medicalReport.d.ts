@@ -1,8 +1,7 @@
-export interface IMedicalReport {
-  patient: IUser;
+interface IMedicalReport {
+  patient: IPatient;
   numberOfVisits: number;
   firstVisitFormatted: string;
   lastVisitFormatted: string;
-  mainCondition: string;
   medicalRecords: IMedicalRecord[];
 }

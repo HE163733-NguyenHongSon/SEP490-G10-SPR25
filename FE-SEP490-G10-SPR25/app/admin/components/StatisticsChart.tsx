@@ -26,16 +26,21 @@ ChartJS.register(
   Filler
 );
 
-const StatisticsChart: React.FC = () => {
+interface StatisticsChartProps {
+  items: IDashboardAdminStatistic[];
+}
+
+const StatisticsChart: React.FC<StatisticsChartProps> = ({ items }) => {
+  const labels = items.map((item) => item.time);
+  const appointmentData = items.map((item) => item.appointmentCount);
+  const revenueData = items.map((item) => item.revenue);
+
   const data: ChartData<"line"> = {
-    labels: [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-    ],
+    labels: labels,
     datasets: [
       {
-        label: "Sales",
-        data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
+        label: "Lịch hẹn",
+        data: appointmentData,
         fill: true,
         backgroundColor: "rgba(70, 95, 255, 0.2)",
         borderColor: "#0891b2",
@@ -43,8 +48,8 @@ const StatisticsChart: React.FC = () => {
         tension: 0.4,
       },
       {
-        label: "Revenue",
-        data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
+        label: "Doanh thu",
+        data: revenueData,
         fill: true,
         backgroundColor: "rgba(156, 185, 255, 0.2)",
         borderColor: "#9CB9FF",
@@ -92,13 +97,12 @@ const StatisticsChart: React.FC = () => {
       <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
         <div className="w-full">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Statistics
+            Thống kê lịch khám
           </h3>
           <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-            Target you’ve set for each month
+            Số lượng lịch khám và doanh thu theo từng tháng trong năm        
           </p>
         </div>
-        {/* Nếu có ChartTab thì giữ lại, nếu không thì có thể xoá */}
         <div className="flex items-start w-full gap-3 sm:justify-end">
           {/* <ChartTab /> */}
         </div>

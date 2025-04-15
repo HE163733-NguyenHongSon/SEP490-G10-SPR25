@@ -1,32 +1,36 @@
 import type { Metadata } from "next";
 import { HospitalMetrics } from "./components/HospitalMetrics";
 import React from "react";
-import MonthlyTarget from "./components/MonthlyTarget";
+import { MonthlyTarget } from "./components/MonthlyTarget";
 import MonthlySalesChart from "./components/MonthlySalesChart";
 import StatisticsChart from "./components/StatisticsChart";
 import RecentOrders from "./components/RecentOrders";
 import DemographicCard from "./components/DemographicCard";
+import { adminService } from "@/services/adminService";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard",
   description: "Admin dashboard page",
 };
 
-export default function AnalyticsPage() {
+export default async function AnalyticsPage() {
+
+  const dashboardData: IDashboardAdmin = await adminService.getDashboard();
+  const statistics: IDashboardAdminStatistic[] = await adminService.getStatics();
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12 space-y-6 xl:col-span-7">
-        <HospitalMetrics/>
+      <  HospitalMetrics items={dashboardData} />
 
         <MonthlySalesChart />
       </div>
 
       <div className="col-span-12 xl:col-span-5">
-        <MonthlyTarget />
+        <MonthlyTarget items={dashboardData}/>
       </div>
 
       <div className="col-span-12">
-        <StatisticsChart />
+        <StatisticsChart items={statistics}/>
       </div>
 
       <div className="col-span-12 xl:col-span-5">

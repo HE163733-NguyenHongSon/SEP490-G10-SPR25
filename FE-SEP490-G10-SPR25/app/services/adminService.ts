@@ -275,5 +275,26 @@ export const adminService = {
       console.error('Error removing role:', error);
       throw error;
     }
+  },
+
+  async getDashboard(): Promise<IDashboardAdmin> {
+    try {
+      const response = await axios.get(`${API_URL}/api/Admin/dashboard`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching dashboard metrics:', error);
+      throw error;
+    }
+  },
+  async getStatics(): Promise<IDashboardAdminStatistic[]> {
+    try {
+      const response = await axios.get(`${API_URL}/api/Admin/statistics/last-12-months`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching dashboard statistics:', error);
+      throw error;
+    }
   }
+
+
 };

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
 using AppointmentSchedulingApp.Domain.Entities;
@@ -54,17 +55,17 @@ namespace AppointmentSchedulingApp.Application.Services
                         .ThenInclude(p => p.PatientNavigation)
                     .AsNoTracking()
                     .ToListAsync();
-                    
+
                 // Phân loại thành nhân viên bệnh viện (bác sĩ và lễ tân)
                 var staffUsers = users
                     .Where(u => u.Doctor != null || u.Receptionist != null)
                     .ToList();
-                    
+
                 // Phân loại thành khách hàng (bệnh nhân và người giám hộ)
                 var customerUsers = users
                     .Where(u => u.Patient != null || u.PatientGuardians.Any())
                     .ToList();
-                    
+
                 result["staff"] = _mapper.Map<List<UserDTO>>(staffUsers);
                 result["customers"] = _mapper.Map<List<UserDTO>>(customerUsers);
             }
@@ -74,7 +75,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 System.Diagnostics.Debug.WriteLine($"Lỗi trong GetAccountsByType: {ex.Message}");
                 throw; // Ném lại exception để caller xử lý
             }
-            
+
             return result;
         }
 
@@ -86,23 +87,23 @@ namespace AppointmentSchedulingApp.Application.Services
                 // Validate required fields
                 if (string.IsNullOrEmpty(adminDTO.UserName))
                     throw new ValidationException("Username is required");
-                
+
                 if (string.IsNullOrEmpty(adminDTO.Email))
                     throw new ValidationException("Email is required");
-                
+
                 if (string.IsNullOrEmpty(adminDTO.Password))
                     throw new ValidationException("Password is required");
-                
+
                 if (string.IsNullOrEmpty(adminDTO.Phone))
                     throw new ValidationException("Phone number is required");
-                
+
                 if (string.IsNullOrEmpty(adminDTO.Gender))
                     throw new ValidationException("Gender is required");
-                
+
                 // Validate date format
                 if (!DateOnly.TryParse(adminDTO.Dob, out DateOnly dob))
                     throw new ValidationException("Invalid date format for Date of Birth");
-                
+
                 // Validate email format
                 if (!IsValidEmail(adminDTO.Email))
                     throw new ValidationException("Invalid email format");
@@ -147,8 +148,8 @@ namespace AppointmentSchedulingApp.Application.Services
                 var doctor = new Doctor
                 {
                     DoctorId = user.UserId,
-                    DoctorDescription = adminDTO.Name,  
-                    CurrentWork = "Đang làm việc"      
+                    DoctorDescription = adminDTO.Name,
+                    CurrentWork = "Đang làm việc"
                 };
 
                 _dbContext.Doctors.Add(doctor);
@@ -172,23 +173,23 @@ namespace AppointmentSchedulingApp.Application.Services
                 // Validate required fields
                 if (string.IsNullOrEmpty(adminDTO.UserName))
                     throw new ValidationException("Username is required");
-                
+
                 if (string.IsNullOrEmpty(adminDTO.Email))
                     throw new ValidationException("Email is required");
-                
+
                 if (string.IsNullOrEmpty(adminDTO.Password))
                     throw new ValidationException("Password is required");
-                
+
                 if (string.IsNullOrEmpty(adminDTO.Phone))
                     throw new ValidationException("Phone number is required");
-                
+
                 if (string.IsNullOrEmpty(adminDTO.Gender))
                     throw new ValidationException("Gender is required");
-                
+
                 // Validate date format
                 if (!DateOnly.TryParse(adminDTO.Dob, out DateOnly dob))
                     throw new ValidationException("Invalid date format for Date of Birth");
-                
+
                 // Validate email format
                 if (!IsValidEmail(adminDTO.Email))
                     throw new ValidationException("Invalid email format");
@@ -278,16 +279,16 @@ namespace AppointmentSchedulingApp.Application.Services
                 user.Email = adminDTO.Email;
                 user.Phone = adminDTO.Phone;
                 user.Gender = ConvertGender(adminDTO.Gender);
-                
+
                 // Parse date string to DateOnly
                 if (DateOnly.TryParse(adminDTO.Dob, out DateOnly dob))
                 {
                     user.Dob = dob;
                 }
-                
+
                 user.Address = adminDTO.Address;
                 user.CitizenId = adminDTO.CitizenId;
-                
+
                 // Cập nhật mật khẩu nếu được cung cấp
                 if (!string.IsNullOrEmpty(adminDTO.Password))
                 {
@@ -351,16 +352,16 @@ namespace AppointmentSchedulingApp.Application.Services
                     }
 
                     var doctor = user.Doctor;
-                    
+
                     doctor.Specialties.Clear();
                     doctor.Services.Clear();
-                    
+
                     foreach (var schedule in doctor.DoctorSchedules.ToList())
                     {
                         var reservations = await _dbContext.Reservations
                             .Where(r => r.DoctorScheduleId == schedule.DoctorScheduleId)
                             .ToListAsync();
-                            
+
                         foreach (var reservation in reservations)
                         {
                             var feedback = await _dbContext.Feedbacks
@@ -369,29 +370,29 @@ namespace AppointmentSchedulingApp.Application.Services
                             {
                                 _dbContext.Feedbacks.Remove(feedback);
                             }
-                            
+
                             var medicalRecord = await _dbContext.MedicalRecords
                                 .FirstOrDefaultAsync(mr => mr.ReservationId == reservation.ReservationId);
                             if (medicalRecord != null)
                             {
                                 _dbContext.MedicalRecords.Remove(medicalRecord);
                             }
-                            
+
                             var payments = await _dbContext.Payments
                                 .Where(p => p.ReservationId == reservation.ReservationId)
                                 .ToListAsync();
-                                
+
                             foreach (var payment in payments)
                             {
                                 _dbContext.Payments.Remove(payment);
                             }
-                            
+
                             _dbContext.Reservations.Remove(reservation);
                         }
-                        
+
                         _dbContext.DoctorSchedules.Remove(schedule);
                     }
-                    
+
                     var posts = await _dbContext.Posts
                         .Where(p => p.PostAuthorId == userId)
                         .ToListAsync();
@@ -399,12 +400,12 @@ namespace AppointmentSchedulingApp.Application.Services
                     {
                         _dbContext.Posts.Remove(post);
                     }
-                    
+
                     foreach (var certification in doctor.Certifications.ToList())
                     {
                         _dbContext.Certifications.Remove(certification);
                     }
-                    
+
                     _dbContext.Doctors.Remove(doctor);
                     await _dbContext.SaveChangesAsync();
                 }
@@ -446,18 +447,18 @@ namespace AppointmentSchedulingApp.Application.Services
                 if (user.Patient != null)
                 {
                     var hasActiveReservations = await _dbContext.Reservations
-                        .AnyAsync(r => r.PatientId == user.Patient.PatientId && 
+                        .AnyAsync(r => r.PatientId == user.Patient.PatientId &&
                                        (r.Status != "Cancelled" && r.Status != "Completed"));
-                            
+
                     if (hasActiveReservations)
                     {
                         throw new ValidationException("Không thể xóa tài khoản bệnh nhân vì có lịch hẹn đang hoạt động");
                     }
-                    
+
                     var reservations = await _dbContext.Reservations
                         .Where(r => r.PatientId == user.Patient.PatientId)
                         .ToListAsync();
-                        
+
                     foreach (var reservation in reservations)
                     {
                         var feedback = await _dbContext.Feedbacks
@@ -466,49 +467,49 @@ namespace AppointmentSchedulingApp.Application.Services
                         {
                             _dbContext.Feedbacks.Remove(feedback);
                         }
-                        
+
                         var medicalRecord = await _dbContext.MedicalRecords
                             .FirstOrDefaultAsync(mr => mr.ReservationId == reservation.ReservationId);
                         if (medicalRecord != null)
                         {
                             _dbContext.MedicalRecords.Remove(medicalRecord);
                         }
-                        
+
                         var payments = await _dbContext.Payments
                             .Where(p => p.ReservationId == reservation.ReservationId)
                             .ToListAsync();
-                            
+
                         foreach (var payment in payments)
                         {
                             _dbContext.Payments.Remove(payment);
                         }
-                        
+
                         _dbContext.Reservations.Remove(reservation);
                     }
-                    
+
                     _dbContext.Patients.Remove(user.Patient);
                     await _dbContext.SaveChangesAsync();
                 }
-                
+
                 var guardedPatients = await _dbContext.Patients
                     .Where(p => p.GuardianId == userId)
                     .ToListAsync();
-                    
+
                 foreach (var patient in guardedPatients)
                 {                    // Xóa liên kết người giám hộ
                     patient.GuardianId = null;
                 }
-                
+
 
                 var userComments = await _dbContext.Comments
                     .Where(c => c.UserId == userId)
                     .ToListAsync();
-                    
+
                 foreach (var comment in userComments)
                 {
                     _dbContext.Comments.Remove(comment);
                 }
-                
+
                 await _dbContext.SaveChangesAsync();
 
                 user.Roles.Clear();
@@ -593,13 +594,13 @@ namespace AppointmentSchedulingApp.Application.Services
         private string ConvertGender(string gender)
         {
             if (string.IsNullOrEmpty(gender))
-                return "Nam"; 
+                return "Nam";
 
             return gender.ToLower() switch
             {
                 "male" => "Nam",
                 "female" => "Nữ",
-                _ => gender 
+                _ => gender
             };
         }
 
@@ -618,5 +619,209 @@ namespace AppointmentSchedulingApp.Application.Services
                 return false;
             }
         }
+
+        // Manh lam dashboard o duoi
+        public DashboardDTO DashboardAdmin()
+        {
+            var totalAppointmentSchedule = TotalAppointmentScheduleDashboard();
+            var totalPatient = TotalPatientDashboard();
+            var totalDoctor = TotalDoctorDashboard();
+            var totalService = TotalServiceDashboard();
+            var appointmentChangePercent = AppointmentSchedulePercentChangeDashboard();
+            var patientChangePercent = PatientPercentChangeDashboard();
+
+            var todayTotal = TodayAmountAsync().Result;
+            var monthTotal = ThisMonthAmountAsync().Result;
+            var lastMonthTotal = LastMonthAmountAsync().Result;
+            var percentChange = PercentChangeAsync();
+            var target = 50000000; // Giá trị mục tiêu
+
+
+            return new DashboardDTO
+            {
+                TotalAppointmentSchedule = totalAppointmentSchedule,
+                TotalPatient = totalPatient,
+                TotalDoctor = totalDoctor,
+                TotalService = totalService,
+                AppointmentScheduleChangePercent = appointmentChangePercent,
+                PatientChangePercent = patientChangePercent,
+
+                todayTotal = todayTotal,   
+                monthTotal = monthTotal,
+                lastMonthTotal = lastMonthTotal,
+                percentChange = percentChange,
+                target = target,
+            };
+        }
+
+
+        private int TotalAppointmentScheduleDashboard()
+        {
+            return _dbContext.Reservations.Count(r => r.Status == "Hoàn thành");
+        }
+
+        private int TotalPatientDashboard()
+        {
+            return _dbContext.Patients.Count();
+        }
+
+        private int TotalDoctorDashboard()
+        {
+            return _dbContext.Doctors.Count();
+        }
+
+        private int TotalServiceDashboard()
+        {
+            return _dbContext.Services.Count();
+        }
+
+        private double AppointmentSchedulePercentChangeDashboard()
+        {
+            var today = DateTime.Today;
+
+            // Tháng hiện tại: từ ngày 1 đến hôm nay
+            var currentMonthStart = new DateTime(today.Year, today.Month, 1);
+            var currentMonthEnd = today;
+
+            // Tháng trước: từ ngày 1 đến hết tháng trước
+            var previousMonth = today.AddMonths(-1);
+            var previousMonthStart = new DateTime(previousMonth.Year, previousMonth.Month, 1);
+            var previousMonthEnd = new DateTime(previousMonth.Year, previousMonth.Month, DateTime.DaysInMonth(previousMonth.Year, previousMonth.Month));
+
+            var currentCount = _dbContext.Reservations
+                .Where(r => r.Status == "Hoàn thành"
+                            && r.AppointmentDate >= currentMonthStart
+                            && r.AppointmentDate <= currentMonthEnd)
+                .Count();
+
+            var previousCount = _dbContext.Reservations
+                .Where(r => r.Status == "Hoàn thành"
+                            && r.AppointmentDate >= previousMonthStart
+                            && r.AppointmentDate <= previousMonthEnd)
+                .Count();
+
+            var percentageChange = ((currentCount - previousCount) / (double)Math.Max(previousCount, 1)) * 100;
+            return Math.Round(percentageChange, 2);
+        }
+
+        private double PatientPercentChangeDashboard()
+        {
+            var today = DateTime.Today;
+
+            // Tháng hiện tại: từ ngày 1 đến hôm nay
+            var currentMonthStart = new DateTime(today.Year, today.Month, 1);
+            var currentMonthEnd = today;
+
+            // Tháng trước: từ ngày 1 đến hết tháng
+            var previousMonth = today.AddMonths(-1);
+            var previousMonthStart = new DateTime(previousMonth.Year, previousMonth.Month, 1);
+            var previousMonthEnd = new DateTime(previousMonth.Year, previousMonth.Month, DateTime.DaysInMonth(previousMonth.Year, previousMonth.Month));
+
+            // Bệnh nhân mới trong tháng hiện tại
+            var currentNewPatientCount = _dbContext.Reservations
+                .Where(r => r.Status == "Hoàn thành"
+                            && r.AppointmentDate >= currentMonthStart
+                            && r.AppointmentDate <= currentMonthEnd
+                            && !_dbContext.Reservations
+                                .Any(prev => prev.PatientId == r.PatientId
+                                             && prev.AppointmentDate < currentMonthStart))
+                .Select(r => r.PatientId)
+                .Distinct()
+                .Count();
+
+            // Bệnh nhân mới trong tháng trước
+            var previousNewPatientCount = _dbContext.Reservations
+                .Where(r => r.Status == "Hoàn thành"
+                            && r.AppointmentDate >= previousMonthStart
+                            && r.AppointmentDate <= previousMonthEnd
+                            && !_dbContext.Reservations
+                                .Any(prev => prev.PatientId == r.PatientId
+                                             && prev.AppointmentDate < previousMonthStart))
+                .Select(r => r.PatientId)
+                .Distinct()
+                .Count();
+
+            // Tính phần trăm thay đổi
+            var percentageChange = ((currentNewPatientCount - previousNewPatientCount) / (double)Math.Max(previousNewPatientCount, 1)) * 100;
+            return Math.Round(percentageChange, 2);
+        }
+
+
+        private async Task<double> TodayAmountAsync()
+        {
+            var today = DateTime.Today;
+
+            // Tổng doanh thu hôm nay (trả về decimal)
+            var todayTotal = await _dbContext.Payments
+                .Where(p => p.PaymentDate.HasValue && p.PaymentDate.Value.Date == today && p.PaymentStatus == "Đã thanh toán")
+                .SumAsync(p => (decimal?)p.Amount) ?? 0;
+
+            // Chuyển từ decimal sang double
+            return Convert.ToDouble(todayTotal);
+        }
+
+        private async Task<double> ThisMonthAmountAsync()
+        {
+            var today = DateTime.Today;
+            // Tổng doanh thu tháng này (trả về decimal)
+            var thisMonthTotal = await _dbContext.Payments
+                .Where(p => p.PaymentDate.HasValue && p.PaymentDate.Value.Month == today.Month && p.PaymentDate.Value.Year == today.Year && p.PaymentStatus == "Đã thanh toán")
+                .SumAsync(p => (decimal?)p.Amount) ?? 0;
+            // Chuyển từ decimal sang double
+            return Convert.ToDouble(thisMonthTotal);
+        }
+
+        private async Task<double> LastMonthAmountAsync()
+        {
+            var today = DateTime.Today;
+            // Tổng doanh thu tháng trước (trả về decimal)
+            var lastMonthTotal = await _dbContext.Payments
+                .Where(p => p.PaymentDate.HasValue && p.PaymentDate.Value.Month == today.AddMonths(-1).Month && p.PaymentDate.Value.Year == today.AddMonths(-1).Year && p.PaymentStatus == "Đã thanh toán")
+                .SumAsync(p => (decimal?)p.Amount) ?? 0;
+            // Chuyển từ decimal sang double
+            return Convert.ToDouble(lastMonthTotal);
+        }
+
+        private double PercentChangeAsync()
+        {
+            var thisMonthTotal = ThisMonthAmountAsync().Result;
+            var lastMonthTotal = LastMonthAmountAsync().Result;
+
+            double percentChange = lastMonthTotal == 0
+            ? 100
+            : ((double)(thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100;
+
+            return percentChange;
+        }
+
+        public async Task<List<StatisticDTO>> GetStatisticsForLast12Months()
+        {
+            var today = DateTime.Today;
+
+            // Bắt đầu từ tháng hiện tại của năm trước
+            var startDate = new DateTime(today.Year - 1, today.Month, 1);
+
+            // Kết thúc là tháng trước của năm nay (ngày cuối cùng của tháng)
+            var endDate = new DateTime(today.Year, today.Month, 1).AddDays(-1);
+
+            var statistics = await _dbContext.Reservations
+                .Where(r => r.AppointmentDate >= startDate && r.AppointmentDate <= endDate)
+                .GroupBy(r => new { r.AppointmentDate.Year, r.AppointmentDate.Month })
+                .Select(g => new StatisticDTO
+                {
+                    Time = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(g.Key.Month) + " " + g.Key.Year,
+                    AppointmentCount = g.Count(p =>p.Status == "Hoàn thành"),
+                    Revenue = g.SelectMany(r => r.Payments)
+                               .Where(p => p.PaymentStatus == "Đã thanh toán")
+                               .Sum(p => p.Amount)
+                })
+                .ToListAsync();
+
+            // Sắp xếp lại thủ công theo năm-tháng
+            statistics = statistics.OrderBy(s => DateTime.ParseExact(s.Time, "MMMM yyyy", CultureInfo.CurrentCulture)).ToList();
+
+            return statistics;
+        }
+
     }
 }

@@ -19,10 +19,6 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  useEffect(() => {
-    console.log('AdminLayout mounted - Admin page is loading');
-    console.log('AdminLayout - Current pathname:', window.location.pathname);
-  }, []);
 
   return (
     <ProtectedRoute allowedRoles={[AppRole.Admin]}>

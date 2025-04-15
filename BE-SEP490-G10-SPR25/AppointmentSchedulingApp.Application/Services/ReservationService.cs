@@ -32,7 +32,7 @@ namespace AppointmentSchedulingApp.Application.Services
             {
                 return null;
             }
-            var queryable = await unitOfWork.ReservationRepository.GetListReservationByPatientIdAndStatus(patientId, status);
+            var queryable =  unitOfWork.ReservationRepository.GetQueryable(r => r.PatientId.Equals(patientId) && r.Status.Equals(status));
             queryable = sortBy switch
             {
                 "Cuộc hẹn gần đây" => queryable.OrderByDescending(r => r.AppointmentDate),
@@ -41,7 +41,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 _ => queryable.OrderByDescending(r => r.DoctorSchedule.Service.Price),
             };
 
-            return mapper.Map<List<ReservationDTO>>(await queryable.ToListAsync());
+            return await queryable.ProjectTo<ReservationDTO>(mapper.ConfigurationProvider).ToListAsync();
         }
 
         public async Task<bool> UpdateReservationStatus(ReservationStatusDTO reservationStatusDTO)
@@ -57,7 +57,7 @@ namespace AppointmentSchedulingApp.Application.Services
 
                 mapper.Map(reservationStatusDTO, reservation);
                 unitOfWork.ReservationRepository.Update(reservation);
-                unitOfWork.CommitAsync();
+                await unitOfWork.CommitAsync();
                 return true;
             }
             catch (Exception ex)

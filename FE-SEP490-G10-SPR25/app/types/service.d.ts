@@ -1,5 +1,5 @@
- interface ServiceDTO {
-  serviceId: number;
+interface IService {
+  serviceId: string;
   serviceName: string;
   overview?: string;
   process?: string;
@@ -13,13 +13,30 @@
   ratingCount?: number;
 }
 
- interface ServiceDetailDTO extends ServiceDTO {
+interface IDoctorService {
+  doctorId: number;
+  doctorName: string;
+  expertise: string;
+  image?: string;
+}
+
+interface IRelatedDoctor {
+  doctorId: number;
+  academicTitle?: string;
+  degree?: string;
+  doctorName: string;
+  expertise?: string;
+  specialties?: string[];
+  image?: string;
+  rating?: number;
+  ratingCount?: number;
+}
+
+interface IServiceDetail extends IService {
   specialtyName?: string;
-  doctorServices?: {
-    doctorId: number;
-    doctorName: string;
-    expertise: string;
-    image?: string;
-  }[];
-  relatedServices?: ServiceDTO[];
-} 
+  doctorServices?: IDoctorService[];
+  relatedServices?: IService[];
+  requiredDevices?: string[];
+  relatedDoctors?: (string | IRelatedDoctor)[];
+}
+

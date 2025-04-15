@@ -1,11 +1,8 @@
+import { IFeedback } from "@/types/feedback";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+console.log('Feedback API URL base:', apiUrl);
 
-const getInitials = (name: string) =>
-  name
-    .split(" ")
-    .map((s) => s[0])
-    .join("")
-    .toUpperCase();
+
 
 const getRelativeTime = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -50,11 +47,31 @@ export const feedbackService = {
   extractServiceFeedback,
   extractDoctorFeedback,
   async getFeedbackList(): Promise<IFeedback[]> {
-    const res = await fetch(`${apiUrl}/api/Feedbacks`);
-    if (!res.ok) {
-      throw new Error(`HTTP error! Status: ${res.status}`);
-    }
+    try {
+      const url = `${apiUrl}/api/Feedbacks`;
+      console.log('Fetching feedback list from:', url);
+      
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        cache: 'no-store'
+      });
+      
+      if (!res.ok) {
+        console.error(`Feedback fetch failed with status: ${res.status}`);
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
 
-    return res.json();    
+      const data = await res.json();
+      console.log(`Successfully retrieved ${data.length} feedback items`);
+      return data;
+    } catch (error) {
+      console.error('Error fetching feedback list:', error);
+      // Trả về mảng rỗng để tránh crash UI
+      return [];
+    }
   },
 };

@@ -35,14 +35,14 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
 
   const DoctorCard = ({ doctor }: { doctor: IDoctor }) => (
     <Link
-      key={doctor.doctorId}
-      href={`/patient/doctor-detail/${doctor.doctorId}`}
+      key={doctor.userId}
+      href={`/patient/doctor-detail/${doctor.userId}`}
     >
       <h1 className="text-center font-semibold text-lg text-gray-700 mt-3">
         <span className="mr-2">
           {doctor.academicTitle},{doctor.degree}
         </span>
-        {doctor.doctorName}
+        {doctor.userName}
       </h1>
 
       <div className="grid grid-cols-3 my-3">
@@ -61,7 +61,7 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
         </div>
         <div className="col-span-2 flex flex-col items-start text-start justify-between font-sans pl-4">
           <h2 className="text-lg text-gray-700">{doctor.currentWork}</h2>
-          <p>{doctor.basicDescription}...</p>
+          <p>{doctor.doctorDescription.slice(0,20)}...</p>
           <p className="text-gray-400">
             {doctor.specialtyNames?.join(", ") || "Chưa có chuyên khoa"}
           </p>
@@ -130,7 +130,7 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
         >
           {items?.map((doctor) => (
             <div
-              key={doctor.doctorId}
+              key={doctor.userId}
               className="h-full border border-gray-300 rounded-md shadow-md"
             >
               <DoctorCard doctor={doctor} />
@@ -151,7 +151,7 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
     >
       {items?.map((doctor) => (
         <div
-          key={doctor.doctorId}
+          key={doctor.userId}
           className="flex flex-col h-full border border-gray-300 rounded-md shadow-md"
         >
           <DoctorCard doctor={doctor} />

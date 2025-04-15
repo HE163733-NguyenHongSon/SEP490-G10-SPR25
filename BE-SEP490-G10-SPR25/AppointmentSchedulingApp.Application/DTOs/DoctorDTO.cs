@@ -3,45 +3,34 @@ using System.Text.Json.Serialization;
 
 namespace AppointmentSchedulingApp.Application.DTOs
 {
-    public class DoctorDTO
+    public class DoctorDTO:UserDTO
     {
-        [Key]
-        [JsonPropertyOrder(1)]
-        public int  DoctorId { get; set; }
-
-        [JsonPropertyOrder(2)]
+        
+        [JsonPropertyOrder(15)]
         public string? AcademicTitle { get; set; }
 
-        [JsonPropertyOrder(3)]
+        [JsonPropertyOrder(16)]
         public string Degree { get; set; }
 
-        [JsonPropertyOrder(4)]
-        public string DoctorName { get; set; }
-
-        [JsonPropertyOrder(5)]
-        public string AvatarUrl { get; set; }
-
-        [JsonPropertyOrder(6)]
+        [JsonPropertyOrder(17)]
         public string? CurrentWork { get; set; }
 
-        [JsonPropertyOrder(7)]
-        public string BasicDescription { get; set; }
+        [JsonPropertyOrder(18)]
+        public string DoctorDescription { get; set; }
 
-        [JsonPropertyOrder(8)]
+        [JsonPropertyOrder(19)]
         public string[] SpecialtyNames { get; set; }
 
-        [JsonPropertyOrder(9)]
-        public int  NumberOfService { get; set; }
+        [JsonPropertyOrder(20)]
+        public int NumberOfService { get; set; }
 
-        [JsonPropertyOrder(10)]
+        [JsonPropertyOrder(21)]
         public int NumberOfExamination { get; set; }
-
-        [JsonPropertyOrder(11)]
+    
+        [JsonPropertyOrder(22)]
         public double Rating { get; set; } = 0;
 
-        [JsonPropertyOrder(12)]
+        [JsonPropertyOrder(23)]
         public int RatingCount { get; set; } = 0;
-
-
     }
 }

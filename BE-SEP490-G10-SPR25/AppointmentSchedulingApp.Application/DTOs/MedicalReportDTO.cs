@@ -11,7 +11,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
     public  class MedicalReportDTO
     {
         [Key]
-        public UserDTO Patient { get; set; } = new UserDTO(); 
+        public PatientDTO Patient { get; set; } 
         public int NumberOfVisits { get; set; } = 0;
 
         [JsonIgnore]
@@ -22,7 +22,6 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public DateTime? LastVisit { get; set; }
         public string LastVisitFormatted { get; set; }
 
-        public string? MainCondition { get; set; } 
 
         public List<MedicalRecordDTO> MedicalRecords { get; set; } 
 

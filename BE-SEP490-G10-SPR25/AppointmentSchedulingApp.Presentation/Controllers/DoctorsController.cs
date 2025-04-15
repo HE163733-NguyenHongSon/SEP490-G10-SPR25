@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using System;
 using System.Threading.Tasks;
+using AppointmentSchedulingApp.Application.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -34,7 +37,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message); 
+                return StatusCode(500, $"Internal server error: {ex.Message}"); 
             }
         }
 
@@ -49,7 +52,6 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 if (doctorDetail == null)
                 {
                     return NotFound($"Bác sĩ với ID={doctorId} không tồn tại!");
-
                 }
 
                 return Ok(doctorDetail); 
@@ -57,6 +59,63 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message); 
+            }
+        }
+      
+
+        [HttpPut("{doctorId}")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateDoctor(int doctorId, [FromBody] object requestData)
+        {
+            try
+            {
+                // Chuyển đổi từ dynamic object sang DoctorDetailDTO
+                var options = new System.Text.Json.JsonSerializerOptions 
+                { 
+                    PropertyNameCaseInsensitive = true 
+                };
+                var jsonString = System.Text.Json.JsonSerializer.Serialize(requestData);
+                var doctorDto = System.Text.Json.JsonSerializer.Deserialize<DoctorDetailDTO>(jsonString, options);
+                
+                if (doctorId != doctorDto.UserId)
+                {
+                    return BadRequest("ID bác sĩ không khớp");
+                }
+
+                // Đảm bảo RoleNames được thiết lập
+                doctorDto.RoleNames = "Doctor";
+                
+                var updatedDoctor = await _doctorService.UpdateDoctor(doctorDto);
+                if (updatedDoctor == null)
+                {
+                    return NotFound($"Không tìm thấy bác sĩ với ID={doctorId}");
+                }
+
+                return Ok(updatedDoctor);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Đã xảy ra lỗi khi cập nhật bác sĩ: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{doctorId}")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteDoctor(int doctorId)
+        {
+            try
+            {
+                var result = await _doctorService.DeleteDoctor(doctorId);
+                if (!result)
+                {
+                    return NotFound($"Không tìm thấy bác sĩ với ID={doctorId}");
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Đã xảy ra lỗi khi xóa bác sĩ: {ex.Message}");
             }
         }
     }

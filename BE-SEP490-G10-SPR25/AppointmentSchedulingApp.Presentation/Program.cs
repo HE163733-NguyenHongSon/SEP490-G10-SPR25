@@ -26,6 +26,7 @@ var configuration = builder.Configuration;
 builder.Services.AddControllers();
 ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<ReservationDTO>("Reservations");
+//modelBuilder.EntityType<ReservationDTO>().Property(r => r.AppointmentDate).AsDate(); 
 modelBuilder.EntitySet<MedicalRecordDTO>("MedicalRecords");
 modelBuilder.EntitySet<DoctorDTO>("Doctors");
 modelBuilder.EntitySet<PatientDTO>("Patients");
@@ -33,6 +34,8 @@ modelBuilder.EntitySet<SpecialtyDTO>("Specialties");
 modelBuilder.EntitySet<ServiceDTO>("Services");
 modelBuilder.EntitySet<FeedbackDTO>("Feedbacks");
 modelBuilder.EntitySet<UserDTO>("Users");
+
+
 var provider = builder.Services.BuildServiceProvider();
 var config = provider.GetService<IConfiguration>();
 
@@ -194,10 +197,11 @@ builder.Services.AddScoped<IStorageService, StorageService >();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//Tự tìm mapper trong phạm vi  solution với các project đã tham chiếu với nhau
 
-//builder.WebHost.UseUrls("http://0.0.0.0:8080"); // Lắng nghe tất cả các địa chỉ IP 
 
 
 // Add Email Configs
@@ -209,7 +213,6 @@ builder.Services.AddScoped<IAIAgentService, AIAgentService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

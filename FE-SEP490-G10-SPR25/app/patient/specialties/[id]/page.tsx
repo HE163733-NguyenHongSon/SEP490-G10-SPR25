@@ -8,26 +8,28 @@ import { useEffect, useState } from "react";
 export default function SpecialtyDetails() {
   const router = useRouter();
   const { id } = useParams()
-  
+
   interface Specialty {
     specialtyName: string;
     specialtyDescription: string;
+    image: string;
   }
 
   const [specialty, setSpecialty] = useState<Specialty | null>(null);
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
   useEffect(() => {
     fetch(`http://localhost:5220/api/Specialties/${id}`)
-    .then((res) => res.json())
-    .then((data) => setSpecialty(data))
-    .catch((error) => console.error("Error fetching specialty:", error));
+      .then((res) => res.json())
+      .then((data) => setSpecialty(data))
+      .catch((error) => console.error("Error fetching specialty:", error));
   }, [id])
-  
+
   return (
     <div className="bg-gray-100 min-h-screen p-8 pt-24">
       <div className="bg-white rounded-lg shadow-lg p-6 max-w-6xl mx-auto">
         {/* Nút Back */}
         <button
-          onClick={() => router.back()} 
+          onClick={() => router.back()}
           className="flex items-center text-blue-500 hover:underline mb-4"
         >
           <svg
@@ -44,11 +46,11 @@ export default function SpecialtyDetails() {
           </svg>
           Back
         </button>
-        <h1 className="text-2xl font-bold text-black">{specialty?.specialtyName || "Loading..."}</h1>
 
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
+        <div className="flex justify-between items-start mb-6">
+          {/* Left - text */}
+          <div className="flex-1">
             <h1 className="text-2xl font-bold text-black">{specialty?.specialtyName || "Loading..."}</h1>
             <div className="text-gray-600 mt-2 space-y-2">
               <Link href="#introduce" className="block text-blue-500 hover:underline">
@@ -64,12 +66,18 @@ export default function SpecialtyDetails() {
                 Book appointment
               </button>
             </div>
+          </div>
 
-            {/* <div className="mt-4">
-              <h3 className="text-lg font-semibold">General Consultation</h3>
-              <p className="text-gray-500">350,000 VND</p>
-              <p className="text-gray-500">4.7 ★ (123 reviews)</p>
-            </div> */}
+          {/* Right - image */}
+          <div className="w-64 h-48 ml-2">
+            <Image
+              src={`${imgUrl}/${specialty?.image}`}
+              alt="Specialty"
+              width={256}
+              height={192}
+              className="w-full h-full object-cover rounded-lg shadow"
+              unoptimized
+            />
           </div>
         </div>
 
@@ -94,7 +102,7 @@ export default function SpecialtyDetails() {
 
           {/* Devices */}
           <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-2 text-black" >Devices</h2>
+            <h2 className="text-lg font-semibold mb-2 text-black">Devices</h2>
             <ul className="text-gray-700 list-disc pl-5">
               <li>MRI Scanner: Provides detailed imaging of internal organs.</li>
               <li>X-Ray Machine: Produces X-ray images for diagnostic purposes.</li>
@@ -121,10 +129,9 @@ export default function SpecialtyDetails() {
                   key={index}
                   className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow"
                 >
-
-                  <Image 
-                    src={`https://via.placeholder.com/150?text=Service+${index+1}`}
-                    alt={`Service ${index+1}`}
+                  <Image
+                    src={`https://via.placeholder.com/150?text=Service+${index + 1}`}
+                    alt={`Service ${index + 1}`}
                     className="w-full h-40 object-cover rounded-t-lg text-black"
                     width={150}
                     height={150}

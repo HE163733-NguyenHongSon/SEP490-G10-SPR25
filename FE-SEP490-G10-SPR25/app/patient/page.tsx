@@ -6,7 +6,7 @@ import { serviceService } from "@/services/serviceService";
 import { feedbackService } from "@/services/feedbackService";
 import { DoctorList } from "@/patient/components/DoctorList";
 import { TabsGroup } from "@/components/TabsGroup";
-import  ListService  from "@/patient/components/ListService";
+import ListService from "@/patient/components/ListService";
 import FeedbackList from "@/patient/components/FeedbackList";
 import HomeSearch from "@/patient/components/HomeSearch";
 
@@ -39,19 +39,19 @@ const HomePage = async () => {
   const suggestedData = [
     ...specialties.map((s: ISpecialty) => ({
       label: s.specialtyName,
-      value: s.specialtyId.toString(),
+      value: s.specialtyId,
       image: s.image ?? "",
       type: "specialty",
     })),
     ...doctors.map((d: IDoctor) => ({
-      label: d.doctorName,
-      value: d.doctorId.toString(),
+      label: d.userName,
+      value: d.userId,
       image: d.avatarUrl ?? "",
       type: "doctor",
     })),
-    ...services.map((s: ServiceDTO) => ({
+    ...services.map((s: IService) => ({
       label: s.serviceName,
-      value: s.serviceId.toString(),
+      value: s.serviceId,
       image: s.image ?? "",
       type: "service",
     })),
@@ -144,7 +144,7 @@ const HomePage = async () => {
               chuyên khoa
             </span>
           </h1>
-          <TabsGroup<ServiceDTO>
+          <TabsGroup<IService>
             tabs={serviceTabs}
             RenderComponent={ListService}
             displayView="grid"

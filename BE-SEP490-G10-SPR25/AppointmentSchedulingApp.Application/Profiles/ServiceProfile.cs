@@ -22,10 +22,21 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image))
                 .ForMember(dest => dest.SpecialtyId, opt => opt.MapFrom(src => src.SpecialtyId))
                 .ForMember(dest => dest.EstimatedTime, opt => opt.MapFrom(src => src.EstimatedTime.ToString("HH:mm")))
-                 .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
-                  .ForMember(dest => dest.RatingCount, opt => opt.MapFrom(src => src.RatingCount)).ReverseMap();
+                .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
+                .ForMember(dest => dest.RatingCount, opt => opt.MapFrom(src => src.RatingCount));
 
-           
+            CreateMap<ServiceDTO, Service>()
+                .ForMember(dest => dest.EstimatedTime, opt => opt.MapFrom((src, dest) => {
+                    if (string.IsNullOrEmpty(src.EstimatedTime))
+                        return new TimeOnly(0, 0);
+                    
+                    try {
+                        return TimeOnly.Parse(src.EstimatedTime);
+                    }
+                    catch {
+                        return new TimeOnly(0, 0);
+                    }
+                }));
 
             // Add mapping for ServiceDetailDTO
             CreateMap<Service, ServiceDetailDTO>()

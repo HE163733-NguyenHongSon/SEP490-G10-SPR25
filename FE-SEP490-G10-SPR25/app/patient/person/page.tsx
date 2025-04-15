@@ -2,13 +2,15 @@
 
 import * as Tabs from "@radix-ui/react-tabs";
 import Image from "next/image";
-import { assets } from "@/public/images/assets";
 import { useState, useEffect } from "react";
 import { patientService } from "@/services/patientService";
 import { useQuery } from "@tanstack/react-query";
-
+import { IUser } from "@/types/user";
+import { IPatient } from "@/types/patient";
+import { IPatientDetail } from "@/types/patientDetail";
 const ProfilePage = () => {
   const [patientId, setPatientId] = useState<number>(1);
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
@@ -21,9 +23,12 @@ const ProfilePage = () => {
     data: patientDetail,
     // isLoading: isLoadingPatientDetail,
     // error: patientDetailError,
-  } = useQuery({
+  } = useQuery<IPatientDetail & IUser>({
     queryKey: ["patientDetail", patientId],
-    queryFn: () => patientService.getPatientDetailById(patientId),
+    queryFn: async () => {
+      const data = await patientService.getPatientDetailById(patientId);
+      return data as unknown as IPatientDetail & IUser;
+    },
     staleTime: 30000,
   });
 
@@ -33,13 +38,15 @@ const ProfilePage = () => {
         <div className="row-span-1 flex flex-col items-start border-b-2 border-gray-300 gap-5">
           <div className="flex flex-row items-center gap-3 px-5">
             <div className="flex flex-col items-center gap-3 border-r-2 border-gray-300 pr-12">
-              <Image
-                src={assets.profile}
-                alt="Ảnh đại diện"
-                height={100}
-                width={100}
-                className="border border-gray-500 rounded-md shadow-md"
-              />
+              <div className="w-[100px] h-[100px] overflow-hidden rounded-lg">
+                <Image
+                  className="object-cover w-full h-full"
+                  src={`${imgUrl}/${patientDetail?.avatarUrl}`}
+                  alt="avatar patient"
+                  width={100}
+                  height={100}
+                />
+              </div>
               <button className="text-cyan-500 hover:underline">
                 Thay đổi ảnh
               </button>
@@ -49,7 +56,8 @@ const ProfilePage = () => {
                 Hồ sơ cá nhân: {patientDetail?.userName}
               </h3>
               <p className="text-lg">
-                <span className="font-semibold">Vai trò: </span>{patientDetail?.roleNames}
+                <span className="font-semibold">Vai trò: </span>
+                {patientDetail?.roleNames}
               </p>
             </div>
           </div>
@@ -230,18 +238,21 @@ const ProfilePage = () => {
         <Tabs.Content value="dependents">
           {patientDetail?.dependents?.length !== 0 ? (
             patientDetail?.dependents?.map(
-              (dependent: IPatient, index: number) => (
+              (dependent: IPatient & IUser, index: number) => (
                 <form key={dependent.userId}>
                   <div className="row-span-1 flex flex-col py-10">
                     <div className="flex flex-row items-center gap-3 py-5 mb-5">
                       <div className="flex flex-col items-center gap-3  pr-12">
-                        <Image
-                          src={assets.profile}
-                          alt="Ảnh đại diện"
-                          height={100}
-                          width={100}
-                          className="border border-gray-500 rounded-md shadow-md"
-                        />
+                        <div className="w-[100px] h-[100px] overflow-hidden rounded-lg">
+                          <Image
+                            className="object-cover w-full h-full"
+                            src={`${imgUrl}/${dependent?.avatarUrl}`}
+                            alt="avatar patient"
+                            width={100}
+                            height={100}
+                          />
+                        </div>
+
                         <button className="text-cyan-500 hover:underline">
                           Thay đổi ảnh
                         </button>

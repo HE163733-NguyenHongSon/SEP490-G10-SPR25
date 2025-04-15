@@ -5,10 +5,12 @@ import { useEffect, useState } from "react";
 
 interface IReservation {
   reservationId: number;
-  patientId: number;
-  patientName: string;
-  patientPhone: string;
-  patientEmail: string;
+  patient: {
+    userName: string;
+    phoneNumber: string;
+    email: string;
+    citizenId: string;
+  };
   appointmentDate: string;
   updatedDate: string;
 }
@@ -19,6 +21,7 @@ const Reservation = () => {
     const fetchReservations = async () => {
       const response = await axios.get("http://localhost:5220/api/Reservations")
       setReservations(response.data)
+
       console.log(response.data)
     }
     fetchReservations()
@@ -37,28 +40,28 @@ const Reservation = () => {
       dataIndex: "reservationId",
       key: "reservationId",
       sorter: (a: IReservation, b: IReservation) => a.reservationId - b.reservationId,
-    },
-    {
-      title: "Patient Id",
-      dataIndex: "patientId",
-      key: "patientId",
-      sorter: (a: IReservation, b: IReservation) => a.patientId - b.patientId,
-    },
+    },    
     {
       title: "Name",
-      dataIndex: "patientName",
-      key: "patientName",
-      sorter: (a: IReservation, b: IReservation) => a.patientName.localeCompare(b.patientName),
+      key: "name",
+      sorter: (a: IReservation, b: IReservation) =>
+        a.patient.userName.localeCompare(b.patient.userName),
+      render: (_: any, record: IReservation) => record.patient.userName,
+    },
+    {
+      title: "CCCD",
+      key: "citizenId",
+      render: (_: any, record: IReservation) => record.patient.citizenId,
     },
     {
       title: "Phone number",
-      dataIndex: "patientPhone",
-      key: "patientPhone",
+      key: "phoneNumber",
+      render: (_: any, record: IReservation) => record.patient.phoneNumber,
     },
     {
       title: "Email",
-      dataIndex: "patientEmail",
-      key: "patientEmail",
+      key: "email",
+      render: (_: any, record: IReservation) => record.patient.email,
     },
     {
       title: "Appointment date",
@@ -104,7 +107,6 @@ const Reservation = () => {
           pageSize: 7,
           position: ["bottomCenter"],
         }}
-        scroll={{ y: 500 }}
       />
     </div>
   );

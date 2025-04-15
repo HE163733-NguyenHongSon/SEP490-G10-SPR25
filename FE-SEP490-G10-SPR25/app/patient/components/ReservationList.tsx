@@ -10,7 +10,7 @@ import { emailService } from "@/services/emailService";
 interface ReservationListProps {
   items: IReservation[];
   onCancelSuccess: (reservationId: string) => void;
-  onCancelFailed?: (error: any) => void;
+  onCancelFailed?: (error: Error) => void;
 }
 
 const ReservationList: React.FC<ReservationListProps> = ({
@@ -29,7 +29,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
       await reservationService.getCancelledReservationsThisMonth(
         reservation.patient.userId
       );
-
+  console.log(count)
     if (count >= 3 || reservation.status !== "Đang chờ") return false;
 
     const now = moment();
@@ -90,7 +90,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
       });
       await onCancelSuccess(reservationToCancel.reservationId);
     } catch (error) {
-      onCancelFailed?.(error);
+      onCancelFailed?.(error as Error);
     } finally {
       setShowModal(false);
       setCancellationReason("");

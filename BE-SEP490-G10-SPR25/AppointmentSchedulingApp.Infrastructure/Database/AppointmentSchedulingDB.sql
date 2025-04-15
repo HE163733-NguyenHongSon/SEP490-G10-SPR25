@@ -900,19 +900,19 @@ INSERT INTO Reservations (PatientId, DoctorScheduleId, Reason, PriorExaminationI
 VALUES
 (1, 1, N'Muốn khám', N'lichhen1_benhnhan1_phacdotruoc.jpg', '2025-01-10', '09:15:00', '09:45:00', N'Hoàn thành', NULL, 1, 31),
 (1, 2, N'Tái khám', N'lichhen2_benhnhan1_phacdotruoc.jpg', '2025-01-15', '09:00:00', '09:30:00', N'Hoàn thành', NULL, 1, 32),
-(1, 3, N'Muốn khám', NULL, '2025-01-20', '10:00:00', '10:30:00', N'Đang chờ', NULL, 1, 31),
+(1, 3, N'Muốn khám', NULL, '2025-08-20', '10:00:00', '10:30:00', N'Đang chờ', NULL, 1, 31),
 (1, 4, N'Không khỏe', NULL, '2025-01-19', '11:00:00', '11:45:00', N'Xác nhận', NULL, 1, 32),
-(1, 5, N'Cần kiểm tra sức khỏe', NULL, '2025-01-27', '14:00:00', '14:45:00', N'Xác nhận', NULL, 1, 31),
+(1, 5, N'Cần kiểm tra sức khỏe', NULL, '2025-08-27', '14:00:00', '14:45:00', N'Đang chờ', NULL, 1, 31),
 (1, 6, N'Cần tư vấn', NULL, '2025-01-23', '09:30:00', '10:00:00', N'Xác nhận', NULL, 1, 32),
 (1, 7, N'Tái khám', NULL, '2025-01-17', '14:30:00', '15:00:00', N'Xác nhận', NULL, 1, 31),
 (1, 8, N'Muốn khám', NULL, '2025-01-18', '08:30:00', '09:15:00', N'Đã hủy', N'Bệnh nhân hủy', 1, 32),
 (1, 9, N'Cần tư vấn', NULL, '2025-01-20', '13:00:00', '13:45:00', N'Không đến', NULL, 1, 31),
 (1, 10, N'Muốn khám', NULL, '2025-01-21', '15:00:00', '15:30:00', N'Xác nhận', NULL, 1, 32),
-(1, 11, N'Không khỏe', NULL, '2025-01-22', '16:30:00', '17:00:00', N'Đang chờ', NULL, 1, 31),
+(1, 11, N'Không khỏe', NULL, '2025-08-22', '16:30:00', '17:00:00', N'Đang chờ', NULL, 1, 31),
 (1, 12, N'Muốn khám', NULL, '2025-01-24', '10:45:00', '11:15:00', N'Đã hủy', N'Bệnh nhân hủy', 1, 32),
 (1, 13, N'Cần kiểm tra sức khỏe', NULL, '2025-01-25', '12:00:00', '12:30:00', N'Hoàn thành', NULL, 1, 31),
 (1, 14, N'Không khỏe', NULL, '2025-01-26', '11:00:00', '11:45:00', N'Không đến', NULL, 1, 32),
-(1, 15, N'Muốn khám', NULL, '2025-01-28', '08:00:00', '08:45:00', N'Xác nhận', NULL, 1, 31),
+(1, 15, N'Muốn khám', NULL, '2025-08-28', '08:00:00', '08:45:00', N'Đang chờ', NULL, 1, 31),
 
 -- Patient 11 (do bệnh nhân tự đặt lịch)
 (11, 21, N'Muốn khám', NULL, '2025-02-05', '09:00:00', '09:30:00', N'Xác nhận', NULL, 11, 11),

@@ -26,6 +26,7 @@ var configuration = builder.Configuration;
 builder.Services.AddControllers();
 ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<ReservationDTO>("Reservations");
+//modelBuilder.EntityType<ReservationDTO>().Property(r => r.AppointmentDate).AsDate(); 
 modelBuilder.EntitySet<MedicalRecordDTO>("MedicalRecords");
 modelBuilder.EntitySet<DoctorDTO>("Doctors");
 modelBuilder.EntitySet<PatientDTO>("Patients");
@@ -33,6 +34,8 @@ modelBuilder.EntitySet<SpecialtyDTO>("Specialties");
 modelBuilder.EntitySet<ServiceDTO>("Services");
 modelBuilder.EntitySet<FeedbackDTO>("Feedbacks");
 modelBuilder.EntitySet<UserDTO>("Users");
+
+
 var provider = builder.Services.BuildServiceProvider();
 var config = provider.GetService<IConfiguration>();
 

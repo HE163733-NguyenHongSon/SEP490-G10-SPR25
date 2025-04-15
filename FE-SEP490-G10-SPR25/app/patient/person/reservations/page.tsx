@@ -88,17 +88,14 @@ const ReservationPage = () => {
     staleTime: 30000,
   });
 
-  // Thêm hàm xử lý khi hủy thành công
   const handleCancelSuccess = async (reservationId: string) => {
     try {
-      // 1. Hiển thị thông báo
       toast.success("Hủy đặt chỗ  thành công!", {
         position: "top-right",
         autoClose: 3000,
         style: { marginTop: "4rem" },
       });
 
-      // 2. Làm mới toàn bộ dữ liệu
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: ["reservations", patientId, status, sortBy],
@@ -107,8 +104,14 @@ const ReservationPage = () => {
       ]);
     } catch (error) {
       toast.error("Có lỗi khi cập nhật dữ liệu");
-      console.error("Update error:", error);
     }
+  };
+  const handleCancelFailed = (error: any) => {
+    toast.error(error?.message , {
+      position: "top-right",
+      autoClose: 3000,
+      style: { marginTop: "4rem" },
+    });
   };
   return (
     <>
@@ -161,6 +164,7 @@ const ReservationPage = () => {
                 <ReservationList
                   {...props}
                   onCancelSuccess={handleCancelSuccess}
+                  onCancelFailed={(error) => handleCancelFailed(error)}
                 />
               )}
             />

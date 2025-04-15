@@ -6,10 +6,19 @@ import { DropdownItem } from "../components/DropdownItem";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, TooltipItem } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 
+interface IDashboardAdmin {
+  todayTotal: number;
+  monthTotal: number;
+  lastMonthTotal: number;
+  percentChange: number;
+  target: number; 
+}
+
 // Đăng ký các thành phần cần thiết của Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function MonthlyTarget() {
+export const MonthlyTarget = ({ items }: { items: IDashboardAdmin }) => {
+
   const series = [75.55];
 
   const data = {
@@ -60,17 +69,17 @@ export default function MonthlyTarget() {
         <div className="flex justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-              Monthly Target
+              Mục tiêu hàng tháng
             </h3>
             <p className="mt-1 font-normal text-gray-500 text-theme-sm dark:text-gray-400">
-              Target you’ve set for each month
+              Mục tiêu bạn đã đặt ra cho mỗi tháng
             </p>
           </div>
           <div className="relative inline-block">
             <button onClick={toggleDropdown} className="dropdown-toggle">
               ^
             </button>
-            <Dropdown
+            {/* <Dropdown
               isOpen={isOpen}
               onClose={closeDropdown}
               className="w-40 p-2"
@@ -89,7 +98,7 @@ export default function MonthlyTarget() {
               >
                 Delete
               </DropdownItem>
-            </Dropdown>
+            </Dropdown> */}
           </div>
         </div>
         <div className="relative">
@@ -98,22 +107,22 @@ export default function MonthlyTarget() {
           </div>
 
           <span className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-[95%] rounded-full bg-success-50 px-3 py-1 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
-            +10%
+            {/* +10% */}
           </span>
         </div>
         <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
-          You earn $3287 today, it&apos;s higher than last month. Keep up your
-          good work!
+          Hôm nay bạn kiếm được {items.todayTotal.toLocaleString("vi-VN")} VNĐ. <br />
+          Tiếp tục công việc tốt của bạn!
         </p>
       </div>
 
       <div className="flex items-center justify-center gap-5 px-6 py-3.5 sm:gap-8 sm:py-5">
         <div>
           <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Target
+            Mục tiêu
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            $20K
+            {items.target.toLocaleString("vi-VN")} VNĐ
           </p>
         </div>
 
@@ -121,10 +130,10 @@ export default function MonthlyTarget() {
 
         <div>
           <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Revenue
+            Doanh thu tháng trước
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            $20K
+            {items.lastMonthTotal.toLocaleString("vi-VN")} VNĐ
           </p>
         </div>
 
@@ -132,12 +141,13 @@ export default function MonthlyTarget() {
 
         <div>
           <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Today
+            Doanh thu tháng này
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            $20K
+            {items.monthTotal.toLocaleString("vi-VN")} VNĐ
           </p>
         </div>
+        
       </div>
     </div>
   );

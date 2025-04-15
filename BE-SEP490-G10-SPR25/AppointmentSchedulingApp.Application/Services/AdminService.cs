@@ -146,7 +146,8 @@ namespace AppointmentSchedulingApp.Application.Services
                 var doctor = new Doctor
                 {
                     DoctorId = user.UserId,
-                    CurrentWork = null      
+                    DoctorDescription = adminDTO.Name,
+                    CurrentWork = "Đang làm việc"
                 };
 
                 _dbContext.Doctors.Add(doctor);

@@ -294,7 +294,40 @@ export const adminService = {
       console.error('Error fetching dashboard statistics:', error);
       throw error;
     }
+  },
+  async exportDashboardToExcel(): Promise<void> {
+    try {
+      const response = await axios.get(`${API_URL}/api/File/export-dashboard`, {
+        responseType: 'blob',
+      });
+  
+      const blob = new Blob([response.data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+  
+      // Tạo ngày tháng định dạng DDMMYYYY
+      const today = new Date();
+      const formattedDate = [
+        today.getDate().toString().padStart(2, '0'),     // Ngày
+        (today.getMonth() + 1).toString().padStart(2, '0'), // Tháng (+1 vì getMonth() trả về 0-11)
+        today.getFullYear()                              // Năm
+      ].join('');
+  
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = `DashBoard_${formattedDate}.xlsx`; // Thêm ngày vào tên file
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error('Lỗi khi export dashboard:', error);
+      throw error;
+    }
   }
+
+  
 
 
 };

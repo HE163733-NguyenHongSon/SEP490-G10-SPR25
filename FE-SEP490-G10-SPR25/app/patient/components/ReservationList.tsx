@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import moment from "moment";
+import ReactDOMServer from "react-dom/server";
 import { formatTimeWithPeriod } from "@/utils/timeUtils";
 import reservationService from "@/services/reservationService";
 import { Modal } from "./Modal";
-
+import CancelReservationMessage from "./CancelReservationMessage";
+import { emailService } from "@/services/emailService";
 interface ReservationListProps {
   items: IReservation[];
   onCancelSuccess: (reservationId: string) => void;
@@ -17,10 +19,10 @@ const ReservationList: React.FC<ReservationListProps> = ({
   onCancelFailed,
 }) => {
   const [showModal, setShowModal] = useState(false);
-  const [reservationToCancel, setReservationToCancel] =
-    useState<IReservation | null>(null);
+  const [reservationToCancel, setReservationToCancel] = useState<IReservation | null>();
   const [cancellationReason, setCancellationReason] = useState("");
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
+ 
 
   const canCancel = async (reservation: IReservation): Promise<boolean> => {
     const { count } =
@@ -53,7 +55,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
       (hoursUntilAppointment < 24 && hoursSinceReservation <= 1)
     );
   };
-
+  //set reservation được hủy
   const handleCancel = async (reservation: IReservation) => {
     const isCancelable = await canCancel(reservation);
 
@@ -68,16 +70,25 @@ const ReservationList: React.FC<ReservationListProps> = ({
     setShowModal(true);
   };
 
-  const handleModalConfirm = async () => {
+  const handleModalConfirm = async (reason: string) => {
     if (!reservationToCancel) return;
 
     try {
       await reservationService.updateReservationStatus({
         reservationId: reservationToCancel.reservationId,
-        cancellationReason,
+        cancellationReason: reason,
         status: "Đã hủy",
       });
-      onCancelSuccess(reservationToCancel.reservationId);
+      reservationToCancel.cancellationReason= reason;
+      const htmlMessage = ReactDOMServer.renderToStaticMarkup(
+        <CancelReservationMessage reservation={reservationToCancel} />
+      );
+      await emailService.sendEmail({
+        toEmail: reservationToCancel.patient.email,
+        subject: "Cảnh báo hủy hẹn lịch!",
+        message: htmlMessage,
+      });
+      await onCancelSuccess(reservationToCancel.reservationId);
     } catch (error) {
       onCancelFailed?.(error);
     } finally {
@@ -103,7 +114,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
               "Thông tin đặt lịch",
               "Lý do đặt lịch",
               "Ngày tạo",
-              "Ngày cập nhật",
+              "Lý do hủy",
               "Hành động",
             ].map((header) => (
               <th
@@ -123,28 +134,28 @@ const ReservationList: React.FC<ReservationListProps> = ({
               </td>
 
               <td className="border border-gray-300 rounded-md">
-                  <div className="grid grid-cols-3 py-3 px-8">
-                    <div className="service col-span-1 gap-2 grid grid-cols-3 border-r-2 border-gray-300">
-                      <div className="col-span-1 flex justify-center items-center">
-                        <div className="w-[100px] h-[50px] overflow-hidden rounded-lg">
-                          <Image
-                            className="border border-gray-300 rounded-md object-cover w-full h-full"
-                            width={100}
-                            height={50}
-                            src={`${imgUrl}/${reservation.serviceImage}`}
-                            alt=""
-                          />
-                        </div>
-                      </div>
-                      <div className="col-span-2 flex justify-center flex-col">
-                        <p className="text-base w-fit">
-                          {reservation.serviceName}
-                        </p>
-                        <p className="text-sm font-semibold">
-                          {reservation.servicePrice} VND
-                        </p>
+                <div className="grid grid-cols-3 py-3 px-8">
+                  <div className="service col-span-1 gap-2 grid grid-cols-3 border-r-2 border-gray-300">
+                    <div className="col-span-1 flex justify-center items-center">
+                      <div className="w-[100px] h-[50px] overflow-hidden rounded-lg">
+                        <Image
+                          className="border border-gray-300 rounded-md object-cover w-full h-full"
+                          width={100}
+                          height={50}
+                          src={`${imgUrl}/${reservation.serviceImage}`}
+                          alt=""
+                        />
                       </div>
                     </div>
+                    <div className="col-span-2 flex justify-center flex-col">
+                      <p className="text-base w-fit">
+                        {reservation.serviceName}
+                      </p>
+                      <p className="text-sm font-semibold">
+                        {reservation.servicePrice} VND
+                      </p>
+                    </div>
+                  </div>
 
                   <div className="col-span-2 pl-4">
                     <p>
@@ -183,8 +194,11 @@ const ReservationList: React.FC<ReservationListProps> = ({
               <td className="border border-gray-300 px-4">
                 {reservation.createdDate}
               </td>
-              <td className="border border-gray-300 px-4">
-                {reservation.updatedDate}
+              <td className="border border-gray-300 px-4 ">
+                {reservation.cancellationReason ??
+                  (reservation.status === "Đang chờ"
+                    ? "Lịch hẹn chưa bị hủy"
+                    : "")}
               </td>
 
               <td className="border border-gray-300 px-4">
@@ -208,7 +222,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
       {showModal && reservationToCancel && (
         <Modal
           message="Nhập lý do hủy lịch hẹn"
-          onConfirm={handleModalConfirm}
+          onConfirm={(reason) => handleModalConfirm(reason)}
           onCancel={handleModalCancel}
           onChangeReason={setCancellationReason}
           cancellationReason={cancellationReason}

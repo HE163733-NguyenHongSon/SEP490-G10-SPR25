@@ -25,9 +25,9 @@ public partial class Service
 
     public string? Image { get; set; }
 
-    public double Rating { get; set; } = 0;
+    public double Rating { get; set; }
 
-    public int RatingCount { get; set; } = 0;
+    public int RatingCount { get; set; }
 
     public virtual ICollection<DoctorSchedule> DoctorSchedules { get; set; } = new List<DoctorSchedule>();
 

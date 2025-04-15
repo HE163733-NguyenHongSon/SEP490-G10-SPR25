@@ -95,9 +95,32 @@ namespace AppointmentSchedulingApp.Application.Services
                     throw new ValidationException("Service data cannot be null");
                 }
 
+                // Validate that the SpecialtyId exists in the database
+                var specialty = await unitOfWork.SpecialtyRepository.Get(s => s.SpecialtyId == serviceDto.SpecialtyId);
+                if (specialty == null)
+                {
+                    throw new ValidationException($"Specialty with ID {serviceDto.SpecialtyId} does not exist. Please select a valid specialty.");
+                }
+
+                // Additional validations
+                if (string.IsNullOrWhiteSpace(serviceDto.ServiceName))
+                {
+                    throw new ValidationException("Service name is required");
+                }
+
+                if (serviceDto.Price <= 0)
+                {
+                    throw new ValidationException("Price must be greater than zero");
+                }
+
                 var service = mapper.Map<Service>(serviceDto);
-                 unitOfWork.ServiceRepository.Add(service);
+                unitOfWork.ServiceRepository.Add(service);
                 await unitOfWork.CommitAsync();
+            }
+            catch (ValidationException)
+            {
+                // Just rethrow validation exceptions
+                throw;
             }
             catch (Exception ex)
             {

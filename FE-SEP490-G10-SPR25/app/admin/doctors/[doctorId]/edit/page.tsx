@@ -1,10 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, message, Select, Card, Spin } from "antd";
+import { Form, Input, Button, message, Select, Card, Spin, DatePicker } from "antd";
 import PageBreadCrumb from "../../../components/PageBreadCrumb";
 import { doctorService } from "@/services/doctorService";
-import { DoctorDetailDTO, IDoctor } from "@/types/doctor";
 import { useRouter } from "next/navigation";
+import dayjs from 'dayjs';
+import 'dayjs/locale/vi';
+
+dayjs.locale('vi');
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -26,34 +29,35 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
   const [degrees, setDegrees] = useState<string[]>(DEFAULT_DEGREES);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [actualPassword, setActualPassword] = useState("");
+  const [doctorDetail, setDoctorDetail] = useState<IDoctorDetailDTO | null>(null);
   const router = useRouter();
   const doctorId = parseInt(params.doctorId);
-
+  const [editingUserId, setEditingUserId] = useState<number | null>(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
         setInitializing(true);
         
-        const [doctors, doctorDetail] = await Promise.all([
-          doctorService.getDoctorList(),
-          doctorService.getDoctorDetailById(doctorId)
-        ]);
+        const fetchedDoctorDetail = await doctorService.getDoctorDetailById(doctorId);
+        setDoctorDetail(fetchedDoctorDetail);
         
-        console.log("API response data:", JSON.stringify(doctorDetail, null, 2));
+        console.log("API response data:", JSON.stringify(fetchedDoctorDetail, null, 2));
+        
+        const doctors = await doctorService.getDoctorList();
         
         const uniqueAcademicTitles = Array.from(
           new Set(
             doctors
-              .map(doctor => doctor.academicTitle)
-              .filter(title => title && title.trim() !== '')
+              .map((doctor: IDoctor) => doctor.academicTitle)
+              .filter((title: string | undefined) => title && title.trim() !== '')
           )
         ) as string[];
         
         const uniqueDegrees = Array.from(
           new Set(
             doctors
-              .map(doctor => doctor.degree)
-              .filter(degree => degree && degree.trim() !== '')
+              .map((doctor: IDoctor) => doctor.degree)
+              .filter((degree: string | undefined) => degree && degree.trim() !== '')
           )
         ) as string[];
 
@@ -65,39 +69,64 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
           setDegrees(uniqueDegrees);
         }
         
-        const formattedDate = doctorDetail.dateOfBirth ? 
-          new Date(doctorDetail.dateOfBirth).toISOString().split('T')[0] : 
-          new Date().toISOString().split('T')[0];
+        // Parse date of birth
+        let dobValue = undefined;
+        try {
+          if (fetchedDoctorDetail.dob) {
+            // Try to parse the date string using common formats
+            const dateFormats = ['YYYY-MM-DD', 'DD/MM/YYYY', 'MM/DD/YYYY', 'DD-MM-YYYY'];
+            for (const format of dateFormats) {
+              const parsedDate = dayjs(fetchedDoctorDetail.dob, format);
+              if (parsedDate.isValid()) {
+                dobValue = parsedDate;
+                break;
+              }
+            }
+            
+            // If parsing with specific formats fails, try automatic parsing
+            if (!dobValue) {
+              const autoDate = dayjs(fetchedDoctorDetail.dob);
+              if (autoDate.isValid()) {
+                dobValue = autoDate;
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error parsing date:", error);
+        }
         
-        if (doctorDetail.password) {
-          setActualPassword(doctorDetail.password);
+        if (fetchedDoctorDetail.password) {
+          setActualPassword(fetchedDoctorDetail.password);
         }
         
         form.setFieldsValue({
-          userName: doctorDetail.userName || doctorDetail.doctorName,
-          password: doctorDetail.password || "", 
-          email: doctorDetail.email || "",
-          doctorName: doctorDetail.doctorName,
-          avatarUrl: doctorDetail.avatarUrl,
-          academicTitle: doctorDetail.academicTitle,
-          degree: doctorDetail.degree,
-          currentWork: doctorDetail.currentWork,
-          organization: doctorDetail.organization,
-          detailDescription: doctorDetail.detailDescription,
-          workExperience: doctorDetail.workExperience,
-          trainingProcess: doctorDetail.trainingProcess,
-          researchProject: doctorDetail.researchProject,
-          prize: doctorDetail.prize,
-          citizenId: doctorDetail.citizenId,
-          phone: doctorDetail.phone,
-          gender: doctorDetail.gender,
-          dateOfBirth: formattedDate,
-          address: doctorDetail.address
+          userName: fetchedDoctorDetail.userName,
+          password: fetchedDoctorDetail.password || "", 
+          email: fetchedDoctorDetail.email || "",
+          doctorName: fetchedDoctorDetail.userName,
+          avatarUrl: fetchedDoctorDetail.avatarUrl,
+          academicTitle: fetchedDoctorDetail.academicTitle,
+          degree: fetchedDoctorDetail.degree,
+          currentWork: fetchedDoctorDetail.currentWork,
+          organization: fetchedDoctorDetail.organization,
+          detailDescription: fetchedDoctorDetail.doctorDescription,
+          workExperience: fetchedDoctorDetail.workExperience,
+          trainingProcess: fetchedDoctorDetail.trainingProcess,
+          researchProject: fetchedDoctorDetail.researchProject,
+          prize: fetchedDoctorDetail.prize,
+          citizenId: fetchedDoctorDetail.citizenId,
+          phone: fetchedDoctorDetail.phone,
+          gender: fetchedDoctorDetail.gender,
+          dateOfBirth: dobValue,
+          address: fetchedDoctorDetail.address
         });
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
-        message.error("Không thể tải thông tin bác sĩ. Vui lòng thử lại sau.");
-        router.push("/admin/doctors");
+        message.error("Không thể tải thông tin bác sĩ. Vui lòng kiểm tra kết nối đến API hoặc thử lại sau.");
+        
+        setTimeout(() => {
+          router.push("/admin/doctors");
+        }, 2000);
       } finally {
         setInitializing(false);
       }
@@ -111,24 +140,37 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
       setLoading(true);
       const experienceYear = parseInt(values.workExperience?.match(/\d+/)?.[0] || "0");
       
-      const dateOfBirth = new Date(values.dateOfBirth);
+      // Xử lý ngày tháng đúng cách
+      let dobValue = '';
+      if (values.dateOfBirth) {
+        if (values.dateOfBirth.isValid && values.dateOfBirth.isValid()) {
+          dobValue = values.dateOfBirth.format('YYYY-MM-DD');
+        } else {
+          message.error('Định dạng ngày không hợp lệ. Vui lòng chọn ngày hợp lệ.');
+          return;
+        }
+      }
       
       const citizenId = values.citizenId ? values.citizenId.toString() : "";
       
-      const doctorData: DoctorDetailDTO = {
-        doctorId: doctorId,
-        doctorName: values.doctorName,
+      if (!doctorDetail) {
+        message.error("Không có thông tin bác sĩ!");
+        return;
+      }
+      
+      const doctorData: IDoctorDetailDTO = {
+        userId: doctorId.toString(),
+        userName: values.userName,
         academicTitle: values.academicTitle,
         degree: values.degree,
         avatarUrl: values.avatarUrl,
         currentWork: values.currentWork,
-        basicDescription: values.detailDescription?.substring(0, 50) || "",
+        doctorDescription: values.detailDescription,
         specialtyNames: values.specialtyNames || [],
         numberOfService: values.numberOfService || 0,
         numberOfExamination: values.numberOfExamination || 0,
         rating: values.rating || 0,
         ratingCount: values.ratingCount || 0,
-        detailDescription: values.detailDescription,
         workExperience: values.workExperience,
         organization: values.organization,
         prize: values.prize,
@@ -140,19 +182,16 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         relevantDoctors: values.relevantDoctors || [],
         email: values.email,
         phone: values.phone,
+        phoneNumber: values.phone,
         gender: values.gender,
-        dateOfBirth: dateOfBirth,
+        dob: dobValue,
         address: values.address,
-        citizenId: citizenId,
-        userName: values.userName
+        citizenId: parseInt(citizenId) || 0,
+        password: !values.password || values.password.trim() === '' ? actualPassword : values.password,
+        roleNames: "Doctor",
+        isVerify: doctorDetail.isVerify,
+        isActive: doctorDetail.isActive
       };
-
-      if (!values.password || values.password.trim() === '') {
-        // Use actual password if not changed
-        doctorData.password = actualPassword;
-      } else {
-        doctorData.password = values.password;
-      }
 
       await doctorService.updateDoctor(doctorId, doctorData);
       message.success("Cập nhật thông tin bác sĩ thành công!");
@@ -263,7 +302,17 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
               label="Ngày sinh"
               rules={[{ required: true, message: "Vui lòng chọn ngày sinh" }]}
             >
-              <Input type="date" />
+              <DatePicker 
+                style={{ width: '100%' }} 
+                format="YYYY-MM-DD"
+                allowClear={true}
+                placeholder="Chọn ngày sinh"
+                popupStyle={{ zIndex: 1060 }}
+                disabledDate={(current) => {
+                  // Không cho phép chọn ngày trong tương lai
+                  return current && current > dayjs().endOf('day');
+                }}
+              />
             </Form.Item>
 
             <Form.Item

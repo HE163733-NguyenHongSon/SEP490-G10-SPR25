@@ -22,6 +22,11 @@ namespace AppointmentSchedulingApp.Application.Profiles
          .ForMember(dest => dest.FollowUpDate, opt => opt.MapFrom(src => src.FollowUpDate))
          .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
           .ReverseMap();
+
+            CreateMap<MedicalRecord, MedicalRecordDetailDTO>()
+             .IncludeBase<MedicalRecord, MedicalRecordDTO>()
+             .ForMember(dest => dest.Reservation, opt => opt.MapFrom(src => src.Reservation)).
+              ReverseMap();
         }
     }
 }

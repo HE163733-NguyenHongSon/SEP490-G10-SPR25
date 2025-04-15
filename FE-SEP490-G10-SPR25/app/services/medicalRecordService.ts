@@ -1,19 +1,31 @@
-  import api from "./api"
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+export const medicalRecordService = {
+  async getMedicalRecordList(): Promise<IMedicalRecord[]> {
+    const res = await fetch(`${apiUrl}/api/MedicalRecords`);
+    return res.json();
+  },
 
- export const medicalRecordService = {
-   async getMedicalRecordList(): Promise<IMedicalRecord[]> {
-     const res= await api.get('/api/MedicalRecords');
-     return res.data;
-   },
-
-   async getAllMedicalRecordByPatientId(patientId: string | number): Promise<IMedicalRecord[]> {
-    const res = await fetch(`http://localhost:5220/api/MedicalRecords/GetAllMedicalRecordByPatientId/${patientId}`);
+  async getAllMedicalRecordByPatientId(
+    patientId: string | number
+  ): Promise<IMedicalRecord[]> {
+    const res = await fetch(
+      `${apiUrl}/api/MedicalRecords/GetAllMedicalRecordByPatientId/${patientId}`
+    );
     if (!res.ok) {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
 
     return res.json();
-  }
+  },
+  async getMedicalRecordDetailById(
+    Id: string | number
+  ): Promise<IMedicalRecordDetail> {
+    const res = await fetch(`${apiUrl}/api/MedicalRecords/${Id}`);
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
 
- }
+    return res.json();
+  },
+};

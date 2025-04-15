@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using AppointmentSchedulingApp.Application.IServices;
 using Microsoft.AspNetCore.OData.Query;
+using System.ComponentModel.DataAnnotations;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -75,10 +76,39 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddService(ServiceDTO serviceDto)
+        [Consumes("application/json")]
+        [Produces("application/json")]
+        public async Task<IActionResult> AddService([FromBody] ServiceDTO serviceDto)
         {
-            await _serviceService.AddService(serviceDto);
-            return CreatedAtAction(nameof(GetServiceById), new { id = serviceDto.ServiceId }, serviceDto);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { success = false, message = "Invalid model state", errors = ModelState });
+            }
+
+            try
+            {
+                await _serviceService.AddService(serviceDto);
+                return Ok(new { success = true, message = "Service created successfully" });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error adding service: {ex.Message}");
+                if (ex.InnerException != null) 
+                {
+                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+                
+                return StatusCode(500, new { 
+                    success = false, 
+                    message = "An error occurred while creating the service", 
+                    error = ex.Message 
+                });
+            }
         }
 
         [HttpPut("{id}")]

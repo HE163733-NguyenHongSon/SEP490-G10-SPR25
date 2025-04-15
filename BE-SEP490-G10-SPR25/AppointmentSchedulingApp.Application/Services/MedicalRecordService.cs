@@ -2,6 +2,8 @@
 using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentSchedulingApp.Application.Services
 {
@@ -38,5 +40,13 @@ namespace AppointmentSchedulingApp.Application.Services
 
             return mapper.Map<List<MedicalRecordDTO>>(medicalRecords);
         }
+        public async Task<MedicalRecordDetailDTO> GetMedicalRecordDetailById(int Id)
+        {
+            var query = unitOfWork.MedicalRecordRepository.GetQueryable(mr=>mr.ReservationId.Equals(Id));
+            return await query.ProjectTo<MedicalRecordDetailDTO>(mapper.ConfigurationProvider).FirstOrDefaultAsync();
+
+
+        }
+
     }
 }

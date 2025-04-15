@@ -10,7 +10,10 @@ namespace AppointmentSchedulingApp.Application.IServices
     public interface IPostService
     {
         Task<List<PostDTO>> GetAllPostsAsync();
+        Task<List<PostDetailDTO>> GetAllPostDetailAsync();
         Task<PostDTO?> GetPostByIdAsync(int id);
+        Task<PostDetailDTO> GetPostDetailAsync(int id);
         Task AddPostAsync(PostDetailDTO postDetailDTO);
+        Task <bool> DeletePostAsync(int id);
     }
 }

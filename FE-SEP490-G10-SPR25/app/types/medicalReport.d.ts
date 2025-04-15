@@ -1,8 +1,7 @@
 interface IMedicalReport {
-  patient: IUser;
+  patient: IPatient;
   numberOfVisits: number;
   firstVisitFormatted: string;
   lastVisitFormatted: string;
-  mainCondition: string;
   medicalRecords: IMedicalRecord[];
 }

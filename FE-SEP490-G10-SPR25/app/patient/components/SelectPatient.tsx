@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import Image from "next/image";
 
-interface SelectpProps {
+interface SelectPatientProps {
   patients: IPatient[];
   selectedPatient?: IPatient;
   onChange: (p: IPatient) => void;
 }
 
-const SelectPatient: React.FC<SelectpProps> = ({
+const SelectPatient: React.FC<SelectPatientProps> = ({
   patients,
   selectedPatient,
   onChange,

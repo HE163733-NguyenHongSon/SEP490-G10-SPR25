@@ -1,3 +1,4 @@
+import { emailService } from "./emailService";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const reservationService = {
@@ -23,7 +24,7 @@ const reservationService = {
     const data = await response.json();
     return { name: status, count: data };
   },
-  async getCancelledReservationsThisMonth(patientId: string): Promise<IStatus> {
+  async getCancelledReservationsThisMonth(patientId?: string): Promise<IStatus> {
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1; // JS: 0 = Jan
@@ -73,13 +74,10 @@ const reservationService = {
     }
 
     const data = await response.json();
+
     return data;
   },
-
-  // async deleteReservation(id: number) {
-  //   const response = await api.delete(`/Reservation/${id}`);
-  //   return response.data;
-  // },
+  
 };
 
 export default reservationService;

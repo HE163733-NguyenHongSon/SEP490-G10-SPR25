@@ -102,11 +102,11 @@ const ReservationPage = () => {
         }),
         queryClient.invalidateQueries({ queryKey: ["statusList"] }),
       ]);
-    } catch (error) {
+    } catch {
       toast.error("Có lỗi khi cập nhật dữ liệu");
     }
   };
-  const handleCancelFailed = (error: any) => {
+  const handleCancelFailed = (error: { message: string }) => {
     toast.error(error?.message , {
       position: "top-right",
       autoClose: 3000,

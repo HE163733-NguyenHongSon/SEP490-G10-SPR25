@@ -101,63 +101,6 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         }
 
 
-        //[HttpGet("export-monthly-target")]
-        //public IActionResult ExportMonthlyTargetToExcel()
-        //{
-        //    // Giả định dữ liệu từ hệ thống
-        //    //var target = 50000000;
-        //    //var lastMonthRevenue = 2720000;
-        //    //var thisMonthRevenue = 400000;
-        //    //var todayRevenue = 300000;
-
-        //    var dashboardData = _adminService.DashboardAdmin();
-
-        //    using var workbook = new XLWorkbook();
-        //    var worksheet = workbook.Worksheets.Add("Mục tiêu tháng");
-
-        //    worksheet.Cell("A1").Value = "Tổng số lịch hẹn";
-        //    worksheet.Cell("B1").Value = dashboardData.TotalAppointmentSchedule + " lịch hẹn";
-
-        //    worksheet.Cell("A2").Value = "Tổng số bệnh nhân";
-        //    worksheet.Cell("B2").Value = dashboardData.TotalPatient + " bệnh nhân";
-
-        //    worksheet.Cell("A3").Value = "Tổng số bác sĩ";
-        //    worksheet.Cell("B3").Value = dashboardData.TotalDoctor + " bác sĩ";
-
-        //    worksheet.Cell("A4").Value = "Tổng số dịch vụ";
-        //    worksheet.Cell("B4").Value = dashboardData.TotalService + " dịch vụ";
-
-        //    worksheet.Cell("D1").Value = "Tỉ lệ lịch hẹn so với tháng trước";
-        //    worksheet.Cell("E1").Value = dashboardData.AppointmentScheduleChangePercent + " %";
-
-        //    worksheet.Cell("D2").Value = "Tỉ lệ bệnh nhâ so với tháng trước";
-        //    worksheet.Cell("E2").Value = dashboardData.PatientChangePercent + " %";
-
-        //    //worksheet.Cell("A1").Value = "Chỉ tiêu";
-        //    //worksheet.Cell("B1").Value = "Giá trị (VND)";
-
-        //    //worksheet.Cell("A2").Value = "Mục tiêu";
-        //    //worksheet.Cell("B2").Value = target;
-
-        //    //worksheet.Cell("A3").Value = "Doanh thu tháng trước";
-        //    //worksheet.Cell("B3").Value = lastMonthRevenue;
-
-        //    //worksheet.Cell("A4").Value = "Doanh thu tháng này";
-        //    //worksheet.Cell("B4").Value = thisMonthRevenue;
-
-        //    //worksheet.Cell("A5").Value = "Doanh thu hôm nay";
-        //    //worksheet.Cell("B5").Value = todayRevenue;
-
-        //    using var stream = new MemoryStream();
-        //    workbook.SaveAs(stream);
-        //    stream.Seek(0, SeekOrigin.Begin);
-
-        //    var fileName = $"MonthlyTarget_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
-        //    return File(stream.ToArray(),
-        //                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        //                fileName);
-        //}
-
         [HttpGet("export-dashboard")]
         public IActionResult ExportDashboardToExcel()
         {
@@ -236,51 +179,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             statsSheet.Columns().AdjustToContents();
 
 
-            // Sheet 3: Biểu đồ thống kê
-            // Sheet 3: Thống kê theo tháng + Biểu đồ
-            var chartSheet = workbook.Worksheets.Add("Thống kê theo tháng");
-
-            // Tiêu đề cột
-            chartSheet.Cell("A1").Value = "Tháng";
-            chartSheet.Cell("B1").Value = "Số lịch khám";
-            chartSheet.Cell("C1").Value = "Doanh thu (VND)";
-            chartSheet.Range("A1:C1").Style.Font.SetBold().Fill.SetBackgroundColor(XLColor.LightGray);
-
-            // Ghi dữ liệu thống kê từng tháng
-            for (int i = 0; i < statistics.Count; i++)
-            {
-                var stat = statistics[i];
-                chartSheet.Cell(i + 2, 1).Value = stat.Time;
-                chartSheet.Cell(i + 2, 2).Value = stat.AppointmentCount;
-                chartSheet.Cell(i + 2, 3).Value = stat.Revenue;
-            }
-
-            // Định dạng cột doanh thu
-            chartSheet.Range($"C2:C{statistics.Count + 1}").Style.NumberFormat.Format = "#,##0 VND";
-
-            // Tạo biểu đồ 2 trục
-            //var chart = chartSheet.Charts.Add<IXLChart>("Biểu đồ");
-            //chart.SetPosition(1, 0, 5, 0); // Vị trí ở cột F
-            //chart.SetSize(800, 400);
-            //chart.ChartType = XLChartType.ColumnClustered;
-
-            //// Dữ liệu biểu đồ: Dải dữ liệu từ A1 đến C{n}
-            //var range = chartSheet.Range($"A1:C{statistics.Count + 1}");
-
-            //// Series cột - Lịch khám
-            //chart.Series.Add(range.Column(2).ColumnLetter() + "2:" + range.Column(2).ColumnLetter() + (statistics.Count + 1),
-            //                 range.Column(1).ColumnLetter() + "2:" + range.Column(1).ColumnLetter() + (statistics.Count + 1));
-
-            //// Series đường - Doanh thu (2nd axis)
-            //var revenueSeries = chart.Series.Add(range.Column(3).ColumnLetter() + "2:" + range.Column(3).ColumnLetter() + (statistics.Count + 1),
-            //                                     range.Column(1).ColumnLetter() + "2:" + range.Column(1).ColumnLetter() + (statistics.Count + 1));
-            //revenueSeries.ChartType = XLChartType.Line;
-            //revenueSeries.AxisGroup = XLAxisGroup.Secondary;
-
-            //chart.Title.Text = "Thống kê số lịch khám & doanh thu theo tháng";
-            //chart.Legend.Position = XLLegendPosition.Right;
-
-
+           
             // Xuất file
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);

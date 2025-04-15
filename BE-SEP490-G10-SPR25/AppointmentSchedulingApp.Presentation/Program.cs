@@ -17,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using AppointmentSchedulingApp.Application.IServices;
 using System.Security.Claims;
+using AppointmentSchedulingApp.Presentation.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -50,6 +51,20 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });   
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("SignalRCorsPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // cần cho SignalR dùng WebSocket
+    });
+
+    // Giữ nguyên DefaultPolicy nếu cần
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -192,6 +207,7 @@ builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IStorageService, StorageService >();
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 // Đăng ký các dịch vụ liên quan đến người dùng
 builder.Services.AddScoped<IUserService, UserService>();
@@ -212,6 +228,9 @@ builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<IAIAgentService, AIAgentService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 
+//Đăng ký SignalR
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -219,7 +238,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors();
+app.UseCors("SignalRCorsPolicy");
 app.MapGet("/healthz", () => "Healthy");
 
 // app.UseHttpsRedirection(); // Tạm thời vô hiệu hóa để tránh lỗi HTTPS port
@@ -227,5 +246,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<CommentHub>("/hubs/comments")
+   .RequireCors("SignalRCorsPolicy");
 
 app.Run();

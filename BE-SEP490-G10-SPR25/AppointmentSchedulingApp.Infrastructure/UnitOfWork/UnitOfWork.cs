@@ -22,7 +22,7 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         private IPostRepository _postRepository;
         private IRoleRepository _roleRepository;
         private ICommentRepository _commentRepository;
-
+        private IDoctorScheduleRepository _doctorScheduleRepository;
 
         public UnitOfWork(AppointmentSchedulingDbContext dbContext)
         {
@@ -45,22 +45,26 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
             _serviceRepository ??= new ServiceRepository(_dbContext);
 
         public ISpecialtyRepository SpecialtyRepository =>
-            _specialtyRepository ??= new SpecialtyRepository(_dbContext); 
-        
+            _specialtyRepository ??= new SpecialtyRepository(_dbContext);
+
         public IUserRepository UserRepository =>
             _userRepository ??= new UserRepository(_dbContext);
-        
+
         public IFeedbackRepository FeedbackRepository =>
             _feedbackRepository ??= new FeedbackRepository(_dbContext);
-        
+
         public IPostRepository PostRepository =>
             _postRepository ??= new PostRepository(_dbContext);
-            
+
         public IRoleRepository RoleRepository =>
             _roleRepository ??= new RoleRepository(_dbContext);
 
         public ICommentRepository CommentRepository =>
             _commentRepository ??= new CommentRepository(_dbContext);
+
+
+        public IDoctorScheduleRepository DoctorScheduleRepository =>
+            _doctorScheduleRepository ?? new DoctorScheduleRepository(_dbContext);
         public void Commit() => _dbContext.SaveChanges();
 
         public async Task CommitAsync() => await _dbContext.SaveChangesAsync();
@@ -68,7 +72,7 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         public void Rollback() => _dbContext.Dispose();
 
         public async Task RollbackAsync() => await _dbContext.DisposeAsync();
-        
+
         public async Task BeginTransactionAsync()
         {
             _transaction = await _dbContext.Database.BeginTransactionAsync();

@@ -2,6 +2,7 @@ interface IReservation {
   reservationId: string;
   patient: IPatient;
   appointmentDate: string;
+  doctorScheduleId:string;
   serviceImage: string;
   serviceName: string;
   servicePrice: string;

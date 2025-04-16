@@ -35,6 +35,7 @@ modelBuilder.EntitySet<SpecialtyDTO>("Specialties");
 modelBuilder.EntitySet<ServiceDTO>("Services");
 modelBuilder.EntitySet<FeedbackDTO>("Feedbacks");
 modelBuilder.EntitySet<UserDTO>("Users");
+modelBuilder.EntitySet<DoctorScheduleDTO>("DoctorSchedules");
 
 
 var provider = builder.Services.BuildServiceProvider();
@@ -214,6 +215,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//Tự tìm mapper trong phạm vi  solution với các project đã tham chiếu với nhau

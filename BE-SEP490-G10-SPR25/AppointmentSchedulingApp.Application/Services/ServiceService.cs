@@ -235,10 +235,8 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             try
             {
-                var services = await unitOfWork.ServiceRepository.GetServicesBySpecialty(specialtyId);
-                var serviceDTOs = mapper.Map<List<ServiceDTO>>(services);
-                
-                return serviceDTOs;
+                var query = unitOfWork.ServiceRepository.GetQueryable(s=>s.SpecialtyId.Equals(specialtyId));
+                return await query.ProjectTo<ServiceDTO>(mapper.ConfigurationProvider).ToListAsync();
             }
             catch (Exception ex)
             {

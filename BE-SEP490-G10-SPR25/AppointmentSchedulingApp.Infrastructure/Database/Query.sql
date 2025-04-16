@@ -31,4 +31,4 @@ from  MedicalRecords mr inner join  Reservations r on mr.ReservationId=r.Reserva
     Status = N'Đang chờ',
     CancellationReason = N'Lý do hủy từ khách hàng'
      WHERE 
-    ReservationId = 11;
+    ReservationId in (15,5,11);

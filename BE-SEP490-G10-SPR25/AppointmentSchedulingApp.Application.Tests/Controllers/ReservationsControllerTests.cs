@@ -227,20 +227,12 @@ namespace AppointmentSchedulingApp.Application.Tests.Controllers
         {
             // Arrange
             int reservationId = 1;
-            
-            // Trong tình huống thực tế, controller gọi service.ViewCancellationReason() để lấy lý do
-            // Và service trả về một ReservationStatusDTO
-            // Giả sử đối tượng ReservationStatusDTO đã được cấu hình để chứa thông tin về lý do hủy 
-            
-            // Phương thức ViewCancellationReason trong controller nên thực hiện xử lý để trích xuất 
-            // thông tin lý do từ ReservationStatusDTO và trả về dạng string
-            
+
             _mockReservationService.Setup(s => s.ViewCancellationReason(reservationId))
                 .ReturnsAsync(new ReservationStatusDTO 
                 { 
                     ReservationId = reservationId,
                     Status = "Đã hủy"
-                    // Lưu ý: Không thể thiết lập thuộc tính Reason vì nó không tồn tại trong ReservationStatusDTO
                 });
 
             // Act
@@ -249,9 +241,7 @@ namespace AppointmentSchedulingApp.Application.Tests.Controllers
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(200, result.StatusCode);
-            
-            // Không thể kiểm tra nội dung chi tiết của lý do hủy 
-            // Chúng ta chỉ đảm bảo rằng controller trả về status code 200 OK
+
         }
 
         [Test]

@@ -67,7 +67,7 @@ namespace AppointmentSchedulingApp.Application.Tests.Services
                 UserId = 1, 
                 UserName = "testuser", 
                 Email = "testuser@example.com",
-                Password = "$2a$11$2LQO8xbR6DBiCNTvZ/UKHeY1Z1U2yrFxnKFcprVldOiPhCGu5HuYS", // Hashed "Password123!"
+                Password = "$2a$11$2LQO8xbR6DBiCNTvZ/UKHeY1Z1U2yrFxnKFcprVldOiPhCGu5HuYS", 
                 Phone = "1234567890",
                 Gender = "Male",
                 Dob = DateOnly.FromDateTime(new DateTime(1990, 1, 1)),
@@ -178,14 +178,9 @@ namespace AppointmentSchedulingApp.Application.Tests.Services
         [Test]
         public async Task LoginUser_WithEmptyCredentials_ReturnsNull()
         {
-            // Arrange
             var signInDto = new SignInDTO { UserName = "", Password = "" };
             var message = new StringBuilder();
-
-            // Act
             var result = await _userService.LoginUser(signInDto, message);
-
-            // Assert
             Assert.IsNull(result);
             Assert.AreEqual("Username/email and password are required", message.ToString());
         }
@@ -199,18 +194,10 @@ namespace AppointmentSchedulingApp.Application.Tests.Services
                 UserId = 1,
                 UserName = "testuser",
                 Email = "test@example.com",
-                // Roles will be initialized by the DTO constructor or factory method
-            };
-            
-            // Add roles using an appropriate method if the property is read-only
-
-            // Act
+            };           
             var token = _userService.GenerateToken(userDto);
-
-            // Assert
             Assert.IsNotNull(token);
             Assert.IsNotEmpty(token);
-            // We can't validate the exact token content easily, but we can check it's not empty
         }
     }
 } 

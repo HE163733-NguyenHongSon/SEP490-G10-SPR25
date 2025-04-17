@@ -1,11 +1,7 @@
 ﻿using AppointmentSchedulingApp.Application.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using System;
-using System.Threading.Tasks;
 using AppointmentSchedulingApp.Application.DTOs;
-using Microsoft.AspNetCore.Authorization;
-using System.Collections.Generic;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {

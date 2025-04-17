@@ -1,9 +1,11 @@
 "use client";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Modal, Popconfirm, Space, Table, message } from "antd";
+import { DeleteOutlined, EditOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
+import { Button, Form, Input, message, Modal, Popconfirm, Space, Table, Upload } from "antd";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import PageBreadCrumb from "../components/PageBreadCrumb";
-import axios from "axios";
+
+
 
 interface ISpecialty {
   specialtyId: number;
@@ -33,9 +35,26 @@ const SpecialtiesManagement = () => {
     setIsModalVisible(true);
   };
   const handleEdit = (specialty: ISpecialty) => {
-    setEditingSpecialty(specialty);                
-    form.setFieldsValue(specialty);               
-    setIsModalVisible(true);                       
+    setEditingSpecialty(specialty);
+  
+    // Convert image string to Upload format
+    const fileList = specialty.image
+      ? [
+          {
+            uid: '-1',
+            name: 'Uploaded Image',
+            status: 'done',
+            url: specialty.image,
+          },
+        ]
+      : [];
+  
+    form.setFieldsValue({
+      ...specialty,
+      image: fileList,
+    });
+  
+    setIsModalVisible(true);
   };
 
   const handleDelete = async (id: number) => {
@@ -195,11 +214,26 @@ const SpecialtiesManagement = () => {
 
           <Form.Item
             name="image"
-            label="Image URL"
-            rules={[{ required: true, message: "Please enter the image URL" }]}
+            label="Upload Image"
+            valuePropName="fileList"
+            getValueFromEvent={(e) => {
+              if (Array.isArray(e)) {
+                return e;
+              }
+              return e?.fileList;
+            }}
+            rules={[{ required: true, message: "Please upload an image" }]}
           >
-            <Input />
+            <Upload
+              name="image"
+              listType="picture"
+              beforeUpload={() => false}
+              accept="image/*"
+            >
+              <Button icon={<UploadOutlined />}>Click to Upload</Button>
+            </Upload>
           </Form.Item>
+
 
           <Form.Item>
             <div className="flex justify-end">

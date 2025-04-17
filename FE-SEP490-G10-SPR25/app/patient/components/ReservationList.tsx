@@ -37,7 +37,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
     // Gộp appointmentDate + startTime đúng định dạng
     const appointmentTime = moment(
       `${moment(reservation.appointmentDate).format("YYYY-MM-DD")} ${
-        reservation.startTime
+        reservation.doctorSchedule.slotStartTime
       }`,
       "YYYY-MM-DD hh:mm A"
     );
@@ -142,17 +142,17 @@ const ReservationList: React.FC<ReservationListProps> = ({
                           className="border border-gray-300 rounded-md object-cover w-full h-full"
                           width={100}
                           height={50}
-                          src={`${imgUrl}/${reservation.serviceImage}`}
+                          src={`${imgUrl}/${reservation.doctorSchedule.serviceImage}`}
                           alt=""
                         />
                       </div>
                     </div>
                     <div className="col-span-2 flex justify-center flex-col">
                       <p className="text-base w-fit">
-                        {reservation.serviceName}
+                        {reservation.doctorSchedule.serviceName}
                       </p>
                       <p className="text-sm font-semibold">
-                        {reservation.servicePrice} VND
+                        {reservation.doctorSchedule.servicePrice} VND
                       </p>
                     </div>
                   </div>
@@ -161,7 +161,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
                     <p>
                       Khám bởi bác sĩ{" "}
                       <span className="font-semibold">
-                        {reservation.doctorName}
+                        {reservation.doctorSchedule.doctorName}
                       </span>
                     </p>
                     <p>
@@ -173,15 +173,15 @@ const ReservationList: React.FC<ReservationListProps> = ({
                       </span>{" "}
                       từ{" "}
                       <span className="font-semibold">
-                        {formatTimeWithPeriod(reservation.startTime)}
+                        {formatTimeWithPeriod(reservation.doctorSchedule.slotStartTime)}
                       </span>{" "}
                       đến{" "}
                       <span className="font-semibold">
-                        {formatTimeWithPeriod(reservation.endTime)}
+                        {formatTimeWithPeriod(reservation.doctorSchedule.slotEndTime)}
                       </span>{" "}
                       tại{" "}
                       <span className="font-semibold">
-                        {reservation.roomName}
+                        {reservation.doctorSchedule.roomName}
                       </span>
                     </p>
                   </div>

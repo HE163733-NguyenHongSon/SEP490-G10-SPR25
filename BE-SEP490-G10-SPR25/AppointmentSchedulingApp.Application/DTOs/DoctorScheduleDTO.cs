@@ -3,13 +3,16 @@
 public class DoctorScheduleDTO
 {
     [Key]
-    public int DoctorScheduleId { get; set; }
+    public string  DoctorScheduleId { get; set; }
 
     public int DoctorId { get; set; }
     public string DoctorName { get; set; }
+    public string DoctorImage { get; set; }
 
     public int ServiceId { get; set; }
-    public string ServiceName { get; set; } 
+    public string ServiceName { get; set; }
+    public string ServiceImage { get; set; }
+    public string  ServicePrice { get; set; }
 
     public string DayOfWeek { get; set; } = null!;
 

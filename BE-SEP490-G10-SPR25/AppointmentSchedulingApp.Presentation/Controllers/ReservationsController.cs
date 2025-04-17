@@ -1,8 +1,5 @@
 ﻿using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
-using AppointmentSchedulingApp.Application.Services;
-using AppointmentSchedulingApp.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 

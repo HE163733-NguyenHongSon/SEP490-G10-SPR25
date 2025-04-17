@@ -2,15 +2,7 @@ interface IReservation {
   reservationId: string;
   patient: IPatient;
   appointmentDate: string;
-  doctorScheduleId:string;
-  serviceImage: string;
-  serviceName: string;
-  servicePrice: string;
-  doctorName: string;
-  startTime: string;
-  endTime: string;
-  roomName: string;
-  location: string;
+  doctorSchedule:IDoctorSchedule
   reason: string;
   priorExaminationImg: string;
   status: string;

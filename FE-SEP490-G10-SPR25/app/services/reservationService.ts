@@ -1,4 +1,3 @@
-import { emailService } from "./emailService";
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const reservationService = {

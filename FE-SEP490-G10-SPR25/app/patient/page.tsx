@@ -9,7 +9,7 @@ import { TabsGroup } from "@/components/TabsGroup";
 import ListService from "@/patient/components/ListService";
 import FeedbackList from "@/patient/components/FeedbackList";
 import HomeSearch from "@/patient/components/HomeSearch";
-
+import SymptomPopup from "@/patient/components/SymptomPopup";
 const HomePage = async () => {
   const specialties = await specialtyService.getSpecialtyList();
   const doctors = await doctorService.getDoctorList();
@@ -95,20 +95,21 @@ const HomePage = async () => {
             Giờ đây bạn có thể đặt lịch hẹn trước khi đến khám và nhanh chóng
             xem kết quả xét nghiệm trực tuyến mọi lúc, mọi nơi.
           </h2>
-          <div className="space-x-6 mt-10">
-            <a
+          {/* <div className="space-x-6 mt-10 text-gray-500"> */}
+            {/* <a
               className="border border-white px-8 py-3 rounded hover:underline underline-offset-4"
               href="#"
             >
               Đặt lịch khám
-            </a>
-            <a
+            </a> */}
+            <SymptomPopup />
+            {/* <a
               className="bg-cyan-600 px-8 py-3 rounded hover:underline underline-offset-4"
               href="#"
             >
               Liên hệ với chúng tôi
-            </a>
-          </div>
+            </a> */}
+          {/* </div> */}
         </div>
         <About />
         <div className="container flex  items-center justify-center flex-col">

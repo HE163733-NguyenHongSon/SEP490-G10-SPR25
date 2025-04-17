@@ -15,5 +15,14 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<List<RoleDTO>> GetAllRoles();
         Task<bool> AssignRole(int userId, int roleId);
         Task<bool> RemoveRole(int userId, int roleId);
+        //manh lam
+        //int TotalAppointmentScheduleDashboard();
+        //int TotalPatientDashboard();
+        //int TotalDoctorDashboard();
+        //int TotalServiceDashboard();
+        //double AppointmentSchedulePercentChangeDashboard();
+        DashboardDTO DashboardAdmin();
+
+        Task<List<StatisticDTO>> GetStatisticsForLast12Months();
     }
 }

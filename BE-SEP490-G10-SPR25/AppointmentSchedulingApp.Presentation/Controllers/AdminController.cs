@@ -155,5 +155,28 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             var result = await _adminService.RemoveRole(userId, roleId);
             return Ok(result);
         }
+
+
+        [HttpGet("Dashboard")]
+        public IActionResult GetDashboardData()
+        {
+            var dashboardData = _adminService.DashboardAdmin();
+            return Ok(dashboardData);
+        }
+
+        [HttpGet("statistics/last-12-months")]
+        public async Task<ActionResult<List<StatisticDTO>>> GetStatisticsForLast12Months()
+        {
+            try
+            {
+                var statistics = await _adminService.GetStatisticsForLast12Months();
+                return Ok(statistics);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while fetching statistics", error = ex.Message });
+            }
+        }
+
     }
 }

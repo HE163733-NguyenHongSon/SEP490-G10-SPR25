@@ -8,11 +8,18 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingTable } from "@/components/LoadingTable";
 import { useSearchParams } from "next/navigation";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const ReservationPage = () => {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState("Đang chờ");
   const sortBy = searchParams.get("sortBy") || "Cuộc hẹn gần đây";
   const [patientId, setPatientId] = useState<string>("1");
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
@@ -33,14 +40,19 @@ const ReservationPage = () => {
     data: reservationList = [],
     isLoading: isLoadingReservations,
     error: reservationError,
-    fetchStatus,
   } = useQuery({
     queryKey: ["reservations", patientId, status, sortBy],
-    queryFn: () =>
-      reservationService.getListReservationByFilter(patientId, status, sortBy),
+    queryFn: async (): Promise<IReservation[]> => {
+      const result = await reservationService.getListReservationByFilter(
+        patientId,
+        status,
+        sortBy
+      );
+
+      return result;
+    },
     staleTime: 30000,
   });
-  console.log(fetchStatus);
 
   const {
     data: statusList = [],
@@ -75,8 +87,46 @@ const ReservationPage = () => {
     },
     staleTime: 30000,
   });
+
+  const handleCancelSuccess = async (reservationId: string) => {
+    try {
+      toast.success("Hủy đặt chỗ  thành công!", {
+        position: "top-right",
+        autoClose: 3000,
+        style: { marginTop: "4rem" },
+      });
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["reservations", patientId, status, sortBy],
+        }),
+        queryClient.invalidateQueries({ queryKey: ["statusList"] }),
+      ]);
+    } catch {
+      toast.error("Có lỗi khi cập nhật dữ liệu");
+    }
+  };
+  const handleCancelFailed = (error: { message: string }) => {
+    toast.error(error?.message , {
+      position: "top-right",
+      autoClose: 3000,
+      style: { marginTop: "4rem" },
+    });
+  };
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       {reservationList.length === 0 ? (
         <div>
           <p>Bệnh nhân chưa có lịch hẹn</p>
@@ -110,7 +160,13 @@ const ReservationPage = () => {
             <PaginatedItems
               itemsPerPage={4}
               items={reservationList}
-              RenderComponent={ReservationList}
+              RenderComponent={(props) => (
+                <ReservationList
+                  {...props}
+                  onCancelSuccess={handleCancelSuccess}
+                  onCancelFailed={(error) => handleCancelFailed(error)}
+                />
+              )}
             />
           )}
         </div>

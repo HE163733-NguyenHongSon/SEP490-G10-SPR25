@@ -13,7 +13,7 @@ export default function EditPatientPage({ params }: { params: { patientId: strin
     const router = useRouter();
     const [formData, setFormData] = useState<Partial<IUser>>({
         avatarUrl: '',
-        userId: parseInt(params.patientId, 10),
+        userId: String(parseInt(params.patientId, 10)),
         userName: '',
         phone: '',
         gender: 'Nam',
@@ -63,7 +63,7 @@ export default function EditPatientPage({ params }: { params: { patientId: strin
 
                 setFormData({
                     avatarUrl: patientData.avatarUrl || '',
-                    userId: parseInt(params.patientId, 10),
+                    userId: String(parseInt(params.patientId, 10)),
                     userName: patientData.userName || patientData.userName || '', // Xử lý cả username và userName
                     phone: patientData.phone || patientData.phoneNumber || '', // Xử lý cả phone và phoneNumber
                     gender: patientData.gender || 'Nam',
@@ -96,7 +96,7 @@ export default function EditPatientPage({ params }: { params: { patientId: strin
             // Gọi API cập nhật thông tin cá nhân
             await patientService.updatePatientContact({
               ...formData,
-              userId: parseInt(params.patientId, 10)
+              userId: String(parseInt(params.patientId, 10))
             } as IUser);
             console.log('Cập nhật thông tin thành công');
           

@@ -12,9 +12,12 @@ namespace AppointmentSchedulingApp.Domain.IUnitOfWork
         ISpecialtyRepository SpecialtyRepository { get; }
 
         IPostRepository PostRepository { get; }
+        ICommentRepository CommentRepository { get; }
         IUserRepository  UserRepository { get; }
         IRoleRepository RoleRepository { get; }
         IFeedbackRepository FeedbackRepository { get; }
+
+        IDoctorScheduleRepository DoctorScheduleRepository { get; }
         void Commit();
 
         void Rollback();

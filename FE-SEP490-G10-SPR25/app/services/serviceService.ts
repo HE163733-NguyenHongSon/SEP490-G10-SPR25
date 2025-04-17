@@ -1,5 +1,4 @@
 import axios from "axios";
-import { IService, IServiceDetail } from "../types/service";
 
 export interface ServiceCreateDTO {
   serviceName: string;

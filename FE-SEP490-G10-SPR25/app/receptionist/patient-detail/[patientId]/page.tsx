@@ -202,13 +202,13 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
                             <td className="py-3 px-4">{record.diagnosis}</td>
                             <td className="py-3 px-4">
                             <button 
-                            onClick={() => window.location.href = `/medical-records/${record.medicalRecordId}`}
+                            onClick={() => window.location.href = `/medical-records/${record.reservationId}`}
                             className="px-3 py-1 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors"
                           >
                             Chi tiết
                           </button>
                           </td>
-                          <td className="hidden">{record.medicalRecordId}</td>
+                          <td className="hidden">{record.reservationId}</td>
                         </tr>
                       ))
                     ) : (

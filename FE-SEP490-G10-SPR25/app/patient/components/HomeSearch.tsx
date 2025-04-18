@@ -4,12 +4,6 @@ import { useRouter, usePathname } from "next/navigation";
 import Select, { SingleValue, GroupBase, OptionProps } from "react-select";
 import Image from "next/image";
 
-interface ISearchOption {
-  value: string;
-  label: string;
-  type: string;
-  image: string;
-}
 
 interface IFieldConfig {
   label: string;

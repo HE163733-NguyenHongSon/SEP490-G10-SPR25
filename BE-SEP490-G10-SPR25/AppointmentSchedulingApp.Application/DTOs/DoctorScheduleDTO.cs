@@ -18,6 +18,7 @@ public class DoctorScheduleDTO
 
     public int RoomId { get; set; }
     public string  RoomName { get; set; }
+    public string  Location { get; set; }
 
     public int SlotId { get; set; }
 

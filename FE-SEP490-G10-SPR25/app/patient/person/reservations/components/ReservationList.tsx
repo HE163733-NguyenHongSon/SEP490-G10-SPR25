@@ -19,17 +19,17 @@ const ReservationList: React.FC<ReservationListProps> = ({
   onCancelFailed,
 }) => {
   const [showModal, setShowModal] = useState(false);
-  const [reservationToCancel, setReservationToCancel] = useState<IReservation | null>();
+  const [reservationToCancel, setReservationToCancel] =
+    useState<IReservation | null>();
   const [cancellationReason, setCancellationReason] = useState("");
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
- 
 
   const canCancel = async (reservation: IReservation): Promise<boolean> => {
     const { count } =
       await reservationService.getCancelledReservationsThisMonth(
         reservation.patient.userId
       );
-  console.log(count)
+    console.log(count);
     if (count >= 3 || reservation.status !== "Đang chờ") return false;
 
     const now = moment();
@@ -79,7 +79,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
         cancellationReason: reason,
         status: "Đã hủy",
       });
-      reservationToCancel.cancellationReason= reason;
+      reservationToCancel.cancellationReason = reason;
       const htmlMessage = ReactDOMServer.renderToStaticMarkup(
         <CancelReservationMessage reservation={reservationToCancel} />
       );
@@ -173,11 +173,15 @@ const ReservationList: React.FC<ReservationListProps> = ({
                       </span>{" "}
                       từ{" "}
                       <span className="font-semibold">
-                        {formatTimeWithPeriod(reservation.doctorSchedule.slotStartTime)}
+                        {formatTimeWithPeriod(
+                          reservation.doctorSchedule.slotStartTime
+                        )}
                       </span>{" "}
                       đến{" "}
                       <span className="font-semibold">
-                        {formatTimeWithPeriod(reservation.doctorSchedule.slotEndTime)}
+                        {formatTimeWithPeriod(
+                          reservation.doctorSchedule.slotEndTime
+                        )}
                       </span>{" "}
                       tại{" "}
                       <span className="font-semibold">

@@ -29,19 +29,19 @@ const Navbar: React.FC = () => {
           ...specialties.map((s: ISpecialty) => ({
             label: s.specialtyName,
             value: s.specialtyId,
-            image: s.image ?? "",
-            type: "specialty",
+            image: s.image ,
+            type: "specialty" ,
           })),
           ...doctors.map((d: IDoctor) => ({
             label: d.userName,
             value: d.userId,
-            image: d.avatarUrl ?? "",
+            image: d.avatarUrl ,
             type: "doctor",
           })),
           ...services.map((s: IService) => ({
             label: s.serviceName,
             value: s.serviceId,
-            image: s.image ?? "",
+            image: s.image ,
             type: "service",
           })),
         ];

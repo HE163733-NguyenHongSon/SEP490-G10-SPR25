@@ -3,7 +3,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const reservationService = {
   async getListReservationByFilter(
-    patientId: string,
+    patientId: string | undefined,
     status: string,
     sortBy: string
   ) {

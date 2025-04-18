@@ -17,6 +17,17 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             _patientService = patientService;
 
         }
+        [HttpPost("AddPatient")]
+        public async Task<IActionResult> AddPatient([FromBody] AddedPatientDTO patientDTO)
+        {
+            bool result = await _patientService.AddPatient(patientDTO);
+
+            if (result)
+                return Ok(new { success = true, message = "Thêm bệnh nhân thành công" });
+            else
+                return BadRequest(new { success = false, message = "Bệnh nhân đã tồn tại" });
+        }
+
 
         [HttpGet]
         [EnableQuery]

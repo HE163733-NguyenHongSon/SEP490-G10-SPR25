@@ -2,35 +2,24 @@
 
 import * as Tabs from "@radix-ui/react-tabs";
 import Image from "next/image";
-import { useState, useEffect } from "react";
 import { patientService } from "@/services/patientService";
 import { useQuery } from "@tanstack/react-query";
-import { IUser } from "@/types/user";
-import { IPatient } from "@/types/patient";
-import { IPatientDetail } from "@/types/patientDetail";
+import { useUser } from '@/contexts/UserContext';
+
 const ProfilePage = () => {
-  const [patientId, setPatientId] = useState<number>(1);
+  const { user } = useUser(); 
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("currentUser");
-    if (storedUser) {
-      const user = JSON.parse(storedUser) as IUser;
-      setPatientId(user?.userId);
-    }
-  }, []);
-  const {
-    data: patientDetail,
-    // isLoading: isLoadingPatientDetail,
-    // error: patientDetailError,
-  } = useQuery<IPatientDetail & IUser>({
-    queryKey: ["patientDetail", patientId],
+  
+  const { data: patientDetail } = useQuery<IPatientDetail & IUser>({
+    queryKey: ["patientDetail", user],
     queryFn: async () => {
-      const data = await patientService.getPatientDetailById(patientId);
-      return data as unknown as IPatientDetail & IUser;
+      const data = await patientService.getPatientDetailById(user?.userId);
+      return data;
     },
     staleTime: 30000,
   });
+  
 
   return (
     <div className="p-8">

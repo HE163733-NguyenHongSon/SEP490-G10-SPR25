@@ -6,7 +6,7 @@ import { IDoctorDetailDTO } from "@/types/doctor";
 import { IFeedback } from "@/types/feedback";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import { assets } from "@/public/images/assets";
-import ScheduleTab from "@/patient/components/ScheduleTab";
+import ScheduleTab from "@/patient/doctors/components/ScheduleTab";
 import { DoctorList } from "@/patient/components/DoctorList";
 import  ListService  from "@/patient/components/ListService";
 import { feedbackService } from "@/services/feedbackService";

@@ -6,7 +6,7 @@ import { DoctorList } from "@/patient/components/DoctorList";
 import { TabsGroup } from "@/components/TabsGroup";
 import ListService from "@/patient/components/ListService";
 import FeedbackList from "@/patient/components/FeedbackList";
-import SymptomPopup from "@/patient/components/SymptomPopup";
+import SymptomPopup from "@/patient/appointment-booking/components/SymptomPopup";
 import VideoPlayer from "./components/VideoPlayer";
 
 const HomePage = async () => {

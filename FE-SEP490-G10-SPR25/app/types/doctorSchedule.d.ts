@@ -10,6 +10,7 @@ interface IDoctorSchedule {
   dayOfWeek: string;
   roomId: number;
   roomName: string;
+  location: string;
   slotId: number;
   slotStartTime: string;
   slotEndTime: string;

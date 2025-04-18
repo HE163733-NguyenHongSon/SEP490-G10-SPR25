@@ -31,6 +31,9 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.GuardianId, opt => opt.MapFrom(src => src.GuardianId))
                 .ReverseMap();
 
+            CreateMap<AddedPatientDTO,User>()
+                .ReverseMap();
+
         }
     }
 }

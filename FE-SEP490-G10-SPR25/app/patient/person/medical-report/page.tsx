@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { assets } from "@/public/images/assets";
-import MedicalRecordList from "@/patient/components/MedicalRecordList";
-import ExportButton from "@/patient/components/ExportButton";
+import MedicalRecordList from "@/patient/person/medical-report/components/MedicalRecordList";
+import ExportButton from "@/patient/person/medical-report/components/ExportButton";
 import { medicalReportService } from "@/services/medicalReportService";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingTable } from "@/components/LoadingTable";
@@ -15,11 +15,11 @@ import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 import Fuse from "fuse.js";
-import { DateRangeSelector } from "@/patient/components/DateRangeSelector";
+import { DateRangeSelector } from "@/patient/person/medical-report/components/DateRangeSelector";
 import { patientService } from "@/services/patientService";
-import SelectPatient from "@/patient/components/SelectPatient";
+import SelectPatient from "@/patient/person/medical-report/components/SelectPatient";
 import { getTimeAgo } from "@/utils/timeUtils";
-
+import { useUser } from "@/contexts/UserContext";
 import {
   ClipboardDocumentCheckIcon,
   UserGroupIcon,
@@ -42,23 +42,21 @@ const MedicalReportPage = () => {
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [selectedDependent, setSelectedDependent] = useState<IPatient>();
+  const { user } = useUser();
+
   // const [dependents, setDependents] = useState<IPatient[]>([]);
   // const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("currentUser");
-    if (storedUser) {
-      const user = JSON.parse(storedUser) as IPatient;
-      setPatient(user);
+    if (user) {
+      setPatient(user as IPatient);
     }
-  }, []);
+  }, [user]);
 
   const { data: patientList } = useQuery({
     queryKey: ["patients"],
     queryFn: async () => {
-      const pd = await patientService.getPatientDetailById(
-        patient?.userId 
-      );
+      const pd = await patientService.getPatientDetailById(patient?.userId);
       const dependents = pd?.dependents || [];
       pd.relationship =
         dependents.length > 0 ? "Người giám hộ" : "Bệnh nhân chính";
@@ -77,7 +75,7 @@ const MedicalReportPage = () => {
     queryKey: ["medicalReport", selectedDependent?.userId],
     queryFn: () =>
       medicalReportService.getMedicalReportByPatientId(
-        selectedDependent?.userId 
+        selectedDependent?.userId
       ),
     staleTime: 30000,
     enabled: !!selectedDependent?.userId,

@@ -110,7 +110,7 @@ const CancelReservationMessage: React.FC<MessengerProps> = ({ reservation }) => 
                     "vi-VN"
                   )
                 : "N/A"}
-              {reservation?.startTime && ` - ${reservation.startTime}`}
+              {reservation?.doctorSchedule.slotStartTime && ` - ${reservation.doctorSchedule.slotEndTime}`}
             </td>
           </tr>
           <tr style={{ borderBottom: "1px solid #e0f2fe" }}>
@@ -124,7 +124,7 @@ const CancelReservationMessage: React.FC<MessengerProps> = ({ reservation }) => 
               Bác sĩ:
             </td>
             <td style={{ padding: "12px", color: "#374151" }}>
-              {reservation?.doctorName || "N/A"}
+              {reservation?.doctorSchedule.doctorName || "N/A"}
             </td>
           </tr>
           <tr style={{ borderBottom: "1px solid #e0f2fe" }}>
@@ -138,7 +138,7 @@ const CancelReservationMessage: React.FC<MessengerProps> = ({ reservation }) => 
               Dịch vụ:
             </td>
             <td style={{ padding: "12px", color: "#374151" }}>
-              {reservation?.serviceName || "N/A"}
+              {reservation?.doctorSchedule.serviceName || "N/A"}
             </td>
           </tr>
           <tr>

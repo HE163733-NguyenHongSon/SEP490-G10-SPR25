@@ -16,6 +16,7 @@ namespace AppointmentSchedulingApp.Application.Profiles
             CreateMap<Specialty,SpecialtyDTO>()
             .ForMember(dest => dest.SpecialtyId, opt => opt.MapFrom(src => src.SpecialtyId))
             .ForMember(dest => dest.SpecialtyName, opt => opt.MapFrom(src => src.SpecialtyName))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.SpecialtyDescription))
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image)).ReverseMap();
             CreateMap<Specialty, SpecialtyDetailDTO>()
             .ForMember(dest => dest.SpecialtyDescription, opt => opt.MapFrom(src => src.SpecialtyDescription)).ReverseMap();

@@ -2,7 +2,7 @@ const WEBHOOK_URL = process.env.NEXT_PUBLIC_WEBHOOK_URL!;
 export const emailService = {
   async sendEmail(data: IIMailPayload): Promise<boolean> {
     try {
-      const res = await fetch(`${WEBHOOK_URL}/send-mail`, {
+      const res = await fetch(WEBHOOK_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

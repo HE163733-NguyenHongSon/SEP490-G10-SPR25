@@ -132,12 +132,12 @@ const SpecialtiesManagement = () => {
       width: "15%",
       render: (url: string) => <img src={url} alt="Specialty" className="h-12 w-auto" />,
     },
-    {
-      title: "Created At",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      width: "15%",
-    },
+    // {
+    //   title: "Created At",
+    //   dataIndex: "createdAt",
+    //   key: "createdAt",
+    //   width: "15%",
+    // },
     {
       title: "Actions",
       key: "actions",

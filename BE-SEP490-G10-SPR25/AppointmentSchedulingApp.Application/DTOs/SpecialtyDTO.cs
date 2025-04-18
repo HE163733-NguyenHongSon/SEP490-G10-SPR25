@@ -16,6 +16,8 @@ namespace AppointmentSchedulingApp.Application.DTOs
         [JsonPropertyOrder(2)]
         public string SpecialtyName { get; set; } = null!;
         [JsonPropertyOrder(3)]
+        public string? Description { get; set; }
+        [JsonPropertyOrder(4)]
         public string? Image { get; set; }
     }
 }

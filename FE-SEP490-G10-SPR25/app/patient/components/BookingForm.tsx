@@ -1,0 +1,451 @@
+interface BookingFormProps {
+    symptoms: string;
+    suggestionData?: string;
+    onClose: () => void;
+  }
+  
+  const BookingForm = ({ symptoms, suggestionData, onClose }: BookingFormProps) => {
+  return (
+    <form className="mt-28 mb-10 z-30">
+      <div className="bg-white rounded-3xl p-10 text-xl bg-opacity-95">
+        <div className="border-b-2 border-gray-300 pb-12">
+          <h2 className="text-xl font-semibold text-gray-600">
+            Thông tin bệnh nhân
+          </h2>
+          <p className="mt-1 text-lg text-gray-600">
+            Thông tin cung cấp tại đây sẽ được hiển thị công khai. Vui lòng chỉ
+            cung cấp những thông tin chính xác và phù hợp.
+          </p>
+
+          <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-2">
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="username"
+                className="block text-base font-medium text-gray-900"
+              >
+                Tên người dùng
+              </label>
+              <div className="mt-2">
+                <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                  <div className="shrink-0 select-none text-base text-gray-500">
+                    workcation.com/
+                  </div>
+                  <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    disabled
+                    className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0"
+                    placeholder="janesmith"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="sm:col-span-1 grid grid-cols-2 gap-x-6">
+              <div className="sm:col-span-1">
+                <label
+                  htmlFor="age"
+                  className="block text-base font-medium text-gray-900"
+                >
+                  Tuổi
+                </label>
+                <div className="mt-2">
+                  <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
+                    <input
+                      type="number"
+                      name="age"
+                      disabled
+                      id="age"
+                      className="block w-full grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0"
+                      min="0"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="sm:col-span-1">
+                <fieldset>
+                  <legend className="text-base col-span-1 font-semibold text-gray-900">
+                    Giới tính
+                  </legend>
+
+                  <div className="col-span-1 mt-3 flex items-center gap-x-6">
+                    <div className="flex items-center gap-x-3">
+                      <input
+                        id="gender_male"
+                        name="gender"
+                        type="radio"
+                        checked
+                        className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
+                      />
+                      <label
+                        htmlFor="gender_male"
+                        className="block text-base text-gray-500"
+                      >
+                        Nam
+                      </label>
+                    </div>
+
+                    <div className="flex items-center gap-x-3">
+                      <input
+                        id="gender_female"
+                        name="gender"
+                        type="radio"
+                        className="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
+                      />
+                      <label
+                        htmlFor="gender_female"
+                        className="block text-base text-gray-500"
+                      >
+                        Nữ
+                      </label>
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-2">
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="mail"
+                className="block text-base font-medium text-gray-900"
+              >
+                Email
+              </label>
+              <div className="mt-2 flex items-center gap-x-3">
+                <input
+                  type="text"
+                  name="mail"
+                  id="mail"
+                  autoComplete="family-mail"
+                  disabled
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                />
+                <button
+                  type="button"
+                  className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                >
+                  Thay đổi
+                </button>
+              </div>
+            </div>
+
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="phone"
+                className="block text-base font-medium text-gray-900"
+              >
+                Số điện thoại
+              </label>
+              <div className="mt-2 flex items-center gap-x-3">
+                <input
+                  type="tel"
+                  name="phone"
+                  id="phone"
+                  autoComplete="tel"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                  disabled
+                />
+                <button
+                  type="button"
+                  className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                >
+                  Thay đổi
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-2">
+            <div className="col-span-full">
+              <label
+                htmlFor="address"
+                className="block text-base font-medium text-gray-900"
+              >
+                Địa chỉ
+              </label>
+              <div className="mt-2">
+                <textarea
+                  name="address"
+                  id="address"
+                  rows={2}
+                  placeholder="Nhập đầy đủ địa chỉ của bạn"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-b-2 border-gray-300 py-12">
+          <h2 className="text-xl font-semibold text-gray-600">
+            Thông tin đặt lịch
+          </h2>
+          <p className="mt-1 text-lg text-gray-600">
+            Bạn có thể đặt lịch hẹn trực tuyến bằng cách chọn thời gian phù hợp
+            cho buổi tư vấn của mình.
+          </p>
+
+          <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-2">
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="specialty"
+                className="block text-base font-medium text-gray-900"
+              >
+                Chọn chuyên khoa
+              </label>
+              <div className="mt-2 grid grid-cols-1 relative">
+                <select
+                  id="specialty"
+                  name="specialty"
+                  autoComplete="specialty-name"
+                  className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                >
+                  <option>Tim mạch</option>
+                  <option>Thần kinh</option>
+                  <option>Chỉnh hình</option>
+                  <option>Nhi khoa</option>
+                  <option>Chẩn đoán hình ảnh</option>
+                </select>
+
+                <svg
+                  className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="medical-service"
+                className="block text-base font-medium text-gray-900"
+              >
+                Chọn dịch vụ y tế
+              </label>
+              <div className="mt-2 grid grid-cols-1 relative">
+                <select
+                  id="medical-service"
+                  name="medical-service"
+                  autoComplete="medical-service-name"
+                  className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                >
+                  <option>Khám tim mạch</option>
+                  <option>Khám thần kinh</option>
+                  <option>Khám chỉnh hình</option>
+                  <option>Khám nhi khoa</option>
+                  <option>Khám chẩn đoán hình ảnh</option>
+                </select>
+
+                <svg
+                  className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 gap-x-6 gap-y-8">
+            <label
+              htmlFor="appointment-type"
+              className="block text-base font-medium text-gray-900"
+            >
+              Chọn cách đặt lịch
+            </label>
+            <div className="mt-2 flex flex-row">
+              <button
+                type="button"
+                id="by-doctor"
+                className="w-full h-9 px-4 text-base font-medium text-gray-900 bg-white border rounded-l-md border-gray-300 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+              >
+                Theo bác sĩ
+              </button>
+              <button
+                type="button"
+                id="by-date"
+                className="w-full h-9 px-4 text-base font-medium text-gray-900 bg-white border rounded-r-md border-gray-300 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+              >
+                Theo ngày
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-2">
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="doctor"
+                className="block text-base font-medium text-gray-900"
+              >
+                Chọn bác sĩ
+              </label>
+              <div className="mt-2 grid grid-cols-1 relative">
+                <select
+                  id="doctor"
+                  name="doctor"
+                  autoComplete="doctor-name"
+                  className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                >
+                  <option>BS. John Doe (Tim mạch)</option>
+                  <option>BS. Jane Smith (Thần kinh)</option>
+                  <option>BS. Alice Johnson (Chỉnh hình)</option>
+                  <option>BS. Bob Brown (Nhi khoa)</option>
+                  <option>BS. Sarah White (Chẩn đoán hình ảnh)</option>
+                </select>
+
+                <svg
+                  className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="appointment-time"
+                className="block text-base font-medium text-gray-900"
+              >
+                Chọn Ngày và Giờ
+              </label>
+              <div className="mt-2 grid grid-cols-1 relative">
+                <select
+                  id="appointment-time"
+                  name="appointment-time"
+                  autoComplete="appointment-time"
+                  className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                >
+                  <option>20 tháng 1, 2025 - 10:00 sáng</option>
+                  <option>20 tháng 1, 2025 - 2:00 chiều</option>
+                  <option>21 tháng 1, 2025 - 9:00 sáng</option>
+                  <option>21 tháng 1, 2025 - 11:00 sáng</option>
+                  <option>22 tháng 1, 2025 - 1:00 chiều</option>
+                  <option>22 tháng 1, 2025 - 3:00 chiều</option>
+                </select>
+
+                <svg
+                  className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10">
+            <label
+              htmlFor="reason"
+              className="block text-base font-medium text-gray-900"
+            >
+              Lý do khám
+            </label>
+            <div className="mt-2">
+              <textarea
+                name="reason"
+                id="reason"
+                value={symptoms}
+                rows={5}
+                placeholder="Mô tả chi tiết lý do khám, triệu chứng hoặc mối quan tâm của bạn."
+                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+              />
+            </div>
+          </div>
+          <div className="mt-10">
+            <h3 className="text-base font-semibold text-gray-900 inline-flex">
+              Ảnh trước khi điều trị
+              <span className="block font-normal text-gray-400">(nếu có)</span>
+            </h3>
+
+            <div className="mt-4 flex justify-center rounded-lg border border-dashed border-gray-900/25 p-6">
+              <div className="text-center">
+                <svg
+                  className="mx-auto size-12 text-gray-300"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  data-slot="icon"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <div className="mt-4 flex text-base text-gray-600">
+                  <label
+                    htmlFor="before-treatment-photo-upload"
+                    className="relative cursor-pointer rounded-md bg-white font-semibold text-cyan-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                  >
+                    <span>Tải ảnh lên</span>
+                    <input
+                      id="before-treatment-photo-upload"
+                      name="before-treatment-photo-upload"
+                      type="file"
+                      accept="image/png, image/jpeg, image/gif"
+                      className="sr-only"
+                    />
+                  </label>
+                  <p className="pl-1">hoặc kéo thả</p>
+                </div>
+                <p className="text-xs/5 text-gray-600">
+                  PNG, JPG, GIF tối đa 10MB
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 flex items-center justify-end gap-x-6">
+          {/* <button
+              type="button"
+              className="text-base font-semibold text-gray-700"
+            >
+              Hủy
+            </button> */}
+          <button
+            onClick={onClose}
+            className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+          >
+            Đóng
+          </button>
+          <button
+            type="submit"
+            className="rounded-md bg-cyan-500 px-3 py-2 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Xác nhận đặt lịch
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+};
+
+export default BookingForm;

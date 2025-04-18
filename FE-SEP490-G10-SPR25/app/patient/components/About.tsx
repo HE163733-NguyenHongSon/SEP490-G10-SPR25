@@ -13,7 +13,7 @@ export const About = () => {
   const numberOfExaminedPatients = patientService.getNumberOfExaminedPatients();
   return (
     <div
-      className="mt-64 flex flex-col items-center justify-center container p-14 md:px-20 lg:px-32 w-full bg-white rounded-3xl"
+      className="my-16 flex flex-col items-center justify-center container p-14 md:px-20 lg:px-32 w-full bg-white rounded-3xl"
       id="About"
     >
       <h1 className="text-cyan-600 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2">

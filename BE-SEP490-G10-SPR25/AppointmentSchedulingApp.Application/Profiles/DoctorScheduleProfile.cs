@@ -10,7 +10,10 @@ namespace AppointmentSchedulingApp.Application.Profiles
         {
             CreateMap<DoctorSchedule, DoctorScheduleDTO>()
                 .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.DoctorNavigation.UserName)) 
+                .ForMember(dest => dest.DoctorImage, opt => opt.MapFrom(src => src.Doctor.DoctorNavigation.AvatarUrl)) 
                 .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Service.ServiceName))
+                .ForMember(dest => dest.ServiceImage, opt => opt.MapFrom(src => src.Service.Image))
+                .ForMember(dest => dest.ServicePrice, opt => opt.MapFrom(src => $"{src.Service.Price:N0} VNĐ"))
                 .ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.Room.RoomName))
                 .ForMember(dest => dest.SlotStartTime, opt => opt.MapFrom(src => src.Slot.SlotStartTime))             
                 .ForMember(dest => dest.SlotEndTime, opt => opt.MapFrom(src => src.Slot.SlotEndTime)).ReverseMap();

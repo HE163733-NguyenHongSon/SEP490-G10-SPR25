@@ -32,3 +32,14 @@ from  MedicalRecords mr inner join  Reservations r on mr.ReservationId=r.Reserva
     CancellationReason = N'Lý do hủy từ khách hàng'
      WHERE 
     ReservationId in (15,5,11);
+
+SELECT * FROM Reservations r WHERE r.DoctorScheduleId in (80, 40, 60, 20)
+
+-----get doctor schedule active---------------
+SELECT * 
+FROM Reservations 
+WHERE Status IN (N'Đang chờ', N'Xác nhận') and AppointmentDate>='2025-04-17' order by DoctorScheduleId
+
+select * from DoctorSchedules ds where ds.ServiceId=1
+
+

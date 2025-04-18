@@ -1,5 +1,5 @@
 "use client";
-import { Button, Space, Table, message } from "antd";
+import { Button, Form, Input, message, Modal, Space, Table } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -16,6 +16,9 @@ interface IReservation {
 }
 
 const Reservation = () => {
+  const [form] = Form.useForm();
+  const [selectedReservation, setSelectedReservation] = useState<IReservation | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [reservations, setReservations] = useState<IReservation[]>([]);
   useEffect(() => {
     const fetchReservations = async () => {
@@ -33,7 +36,13 @@ const Reservation = () => {
   const handleCancel = (record: IReservation) => {
     message.warning(`Cancelled reservation ID: ${record.reservationId}`);
   };
-
+  const handleViewDetail = (record: IReservation) => {
+    setSelectedReservation(record);
+    form.setFieldsValue(record); // Đặt giá trị vào form
+    setIsModalVisible(true);
+  };
+  
+  
   const columns = [
     {
       title: "ReservationId",
@@ -88,6 +97,9 @@ const Reservation = () => {
           <Button onClick={() => handleCancel(record)} danger size="small">
             Cancel
           </Button>
+          <Button onClick={() => handleViewDetail(record)} size="small">
+            Edit
+          </Button>
         </Space>
       ),
     },
@@ -104,12 +116,98 @@ const Reservation = () => {
         columns={columns}
         rowKey="reservationId"
         pagination={{
-          pageSize: 7,
+          pageSize: 10,
           position: ["bottomCenter"],
         }}
       />
+
+      <Modal
+        title="Edit Reservation"
+        open={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        onOk={() => form.submit()}
+        width={700}
+      >
+        <Form
+          layout="vertical"
+          form={form}
+          initialValues={selectedReservation || {}}
+          onFinish={(values) => {
+            console.log("Updated values:", values);
+            message.success("Reservation updated successfully!");
+            setIsModalVisible(false);
+          }}
+        >
+          <Form.Item label="Reservation ID" name="reservationId">
+            <Input disabled />
+          </Form.Item>
+
+          <Form.Item
+            label="Name"
+            name={["patient", "userName"]}
+            rules={[{ required: true, message: "Please enter name" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="CCCD"
+            name={["patient", "citizenId"]}
+            rules={[{ required: true, message: "Please enter CCCD" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Phone Number"
+            name={["patient", "phoneNumber"]}
+            rules={[{ required: true, message: "Please enter phone number" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Email"
+            name={["patient", "email"]}
+            rules={[{ required: true, message: "Please enter email" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Appointment Date"
+            name="appointmentDate"
+            rules={[{ required: true, message: "Please enter appointment date" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Updated Date"
+            name="updatedDate"
+            rules={[{ required: true, message: "Please enter updated date" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          {/* <Form.Item>
+            <div className="flex justify-end">
+              <Button onClick={() => setIsModalVisible(false)} style={{ marginRight: 8 }}>
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit">
+                Save Changes
+              </Button>
+            </div>
+          </Form.Item> */}
+        </Form>
+      </Modal>
+
+
     </div>
+    
   );
+  
 };
 
 export default Reservation;

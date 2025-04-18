@@ -1,4 +1,4 @@
-import { emailService } from "./emailService";
+const WEBHOOK_URL = process.env.NEXT_PUBLIC_WEBHOOK_URL!;
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const reservationService = {
@@ -24,7 +24,9 @@ const reservationService = {
     const data = await response.json();
     return { name: status, count: data };
   },
-  async getCancelledReservationsThisMonth(patientId?: string): Promise<IStatus> {
+  async getCancelledReservationsThisMonth(
+    patientId?: string
+  ): Promise<IStatus> {
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1; // JS: 0 = Jan
@@ -57,6 +59,47 @@ const reservationService = {
   //   return response.data;
   // },
 
+  async getBookingSuggestion(
+    patientId: string,
+    symptoms: string
+  ): Promise<{
+    patientId: string;
+    symptoms?: string;
+    doctorSchedules: { doctorScheduleId: string; appointmentDate: string }[];
+  } | null> {
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          patientId,
+          symptoms,
+        }),
+      });
+  
+      if (!res.ok) {
+        console.error("Gợi ý thất bại:", await res.text());
+        return null;
+      }
+  
+      const result = await res.json();
+  
+      if (!result.patientId || !Array.isArray(result.doctorSchedules)) {
+        console.error("Dữ liệu trả về không hợp lệ:", result);
+        return null;
+      }
+  
+      console.log("Gợi ý lịch hẹn:", result);
+      return result;
+    } catch (err) {
+      console.error("Lỗi lấy gợi ý lịch hẹn:", err);
+      return null;
+    }
+  },
+  
+
   async updateReservationStatus(rs: IReservationStatus) {
     const response = await fetch(
       `${apiUrl}/api/Reservations/UpdateReservationStatus`,
@@ -77,7 +120,6 @@ const reservationService = {
 
     return data;
   },
-  
 };
 
 export default reservationService;

@@ -110,6 +110,17 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
             }
         }
+        [HttpGet("GetActiveReservationsForThisWeek")]
+        public async Task<IActionResult> GetActiveReservationsForThisWeek()
+        {
+            var reservations = await reservationService.GetActiveReservationsForThisWeek();
 
+            if (reservations == null || !reservations.Any())
+            {
+                return NoContent();
+            }
+
+            return Ok(reservations);
+        }
     }
 }

@@ -104,5 +104,16 @@ namespace AppointmentSchedulingApp.Application.Services
                 throw;
             }
         }
+
+        public async Task<List<ReservationDTO>> GetActiveReservationsForThisWeek()
+        {
+            var startOfWeek = DateTime.UtcNow.AddHours(7);
+            var endOfWeek = startOfWeek.AddDays(7).AddMilliseconds(-1);
+
+            var query = unitOfWork.ReservationRepository.GetQueryable(r => r.AppointmentDate >= startOfWeek && r.AppointmentDate <= endOfWeek 
+                                                                              && (r.Status == "Đang chờ" || r.Status == "Xác nhận"));
+            return await query.ProjectTo<ReservationDTO>(mapper.ConfigurationProvider).ToListAsync();
+           
+        }
     }
 }

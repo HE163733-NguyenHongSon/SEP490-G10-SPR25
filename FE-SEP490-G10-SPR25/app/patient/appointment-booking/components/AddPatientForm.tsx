@@ -1,37 +1,64 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { useUser } from "@/contexts/UserContext";
+import { patientService } from "@/services/patientService";
+import { format } from "date-fns";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useBookingContext } from "@/patient/contexts/BookingContext";
 
 const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
-  const [fullName, setFullName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [dob, setDob] = useState("");
+  const [userName, setUserName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [dob, setDob] = useState<Date | null>(null);
   const [gender, setGender] = useState("Nam");
-  const [cccd, setCccd] = useState("");
+  const [citizenId, setCitizenId] = useState("");
   const [relationship, setRelationship] = useState("");
-  const [province, setProvince] = useState("");
-  const [district, setDistrict] = useState("");
-  const [ward, setWard] = useState("");
-  const [street, setStreet] = useState("");
+  const [address, setAddress] = useState("");
+  const { user } = useUser();
+  const { setPatients, addingPatient, setAddingPatient, patients } =
+    useBookingContext();
 
-  const getFullAddress = () => {
-    return [street, ward, district, province].filter(Boolean).join(", ");
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const patientData = {
-      fullName,
-      phoneNumber,
-      dob,
+    const addedPatient: IAddedPatient = {
+      userName,
+      phone,
+      dob: dob ? format(dob, "yyyy-MM-dd") : "",
       gender,
-      cccd,
+      citizenId,
       relationship,
-      address: getFullAddress(),
+      address,
+      guardianId: user?.userId,
     };
 
-    console.log("Tạo bệnh nhân:", patientData);
-    onClose();
+    const success = await patientService.addPatient(addedPatient);
+
+    if (success) {
+      toast.success("Thêm bệnh nhân thành công!");
+
+      setPatients([
+        ...patients,
+        {
+          userName,
+          phone,
+          dob: dob ? format(dob, "yyyy-MM-dd") : "",
+          gender,
+          citizenId,
+          relationship,
+          address,
+          guardianId: user?.userId,
+        },
+      ]);
+      setAddingPatient(true);
+      onClose();
+    } else {
+      setAddingPatient(false);
+      toast.error("Thêm thất bại hoặc bệnh nhân đã tồn tại!");
+    }
   };
 
   return (
@@ -50,8 +77,8 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
               type="text"
               placeholder="Nguyễn Văn A"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
               required
             />
           </div>
@@ -63,8 +90,8 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
               type="tel"
               placeholder="0123456789"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               required
             />
           </div>
@@ -76,12 +103,12 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
             <label className="block text-sm font-medium mb-1 text-start pl-2">
               Ngày sinh
             </label>
-            <input
-              type="date"
+            <DatePicker
+              selected={dob}
+              onChange={(date: Date | null) => setDob(date)}
+              dateFormat="dd/MM/yyyy"
+              placeholderText="dd/mm/yyyy"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none"
-              value={dob}
-              onChange={(e) => setDob(e.target.value)}
-              required
             />
           </div>
 
@@ -123,8 +150,8 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
               type="text"
               placeholder="123456789012"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none"
-              value={cccd}
-              onChange={(e) => setCccd(e.target.value)}
+              value={citizenId}
+              onChange={(e) => setCitizenId(e.target.value)}
               required
             />
           </div>
@@ -149,6 +176,8 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
           </label>
           <textarea
             name="address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
             id="address"
             rows={2}
             placeholder="Nhập đầy đủ địa chỉ của bạn"

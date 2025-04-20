@@ -16,6 +16,7 @@ interface ISpecialty {
 }
 
 const SpecialtiesManagement = () => {
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
   const [specialties, setSpecialties] = useState<ISpecialty[]>([]);
   useEffect(() => {
     const fetchSpecialties = async() => {
@@ -130,7 +131,7 @@ const SpecialtiesManagement = () => {
       dataIndex: "image",
       key: "image",
       width: "15%",
-      render: (url: string) => <img src={url} alt="Specialty" className="h-12 w-auto" />,
+      render: (url: string) => <img src={`${imgUrl}/${url}`} alt="Specialty" className="h-12 w-auto" />,
     },
     // {
     //   title: "Created At",

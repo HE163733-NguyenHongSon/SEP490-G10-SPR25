@@ -60,13 +60,9 @@ const reservationService = {
   // },
 
   async getBookingSuggestion(
-    patientId: string,
+    patientId: string | undefined,
     symptoms: string
-  ): Promise<{
-    patientId: string;
-    symptoms?: string;
-    doctorSchedules: { doctorScheduleId: string; appointmentDate: string }[];
-  } | null> {
+  ): Promise<IBookingSuggestion | null> {
     try {
       const res = await fetch(WEBHOOK_URL, {
         method: "POST",
@@ -78,27 +74,20 @@ const reservationService = {
           symptoms,
         }),
       });
-  
+      
       if (!res.ok) {
         console.error("Gợi ý thất bại:", await res.text());
         return null;
       }
-  
+      
       const result = await res.json();
-  
-      if (!result.patientId || !Array.isArray(result.doctorSchedules)) {
-        console.error("Dữ liệu trả về không hợp lệ:", result);
-        return null;
-      }
-  
-      console.log("Gợi ý lịch hẹn:", result);
       return result;
-    } catch (err) {
-      console.error("Lỗi lấy gợi ý lịch hẹn:", err);
+    }
+    catch (error) {
+      console.error("Error fetching booking suggestion:", error);
       return null;
     }
   },
-  
 
   async updateReservationStatus(rs: IReservationStatus) {
     const response = await fetch(

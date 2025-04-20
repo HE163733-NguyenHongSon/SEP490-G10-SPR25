@@ -28,7 +28,22 @@ export const doctorService = {
       return [];
     }
   },
-  
+  async getDoctorListByServiceId(serviceId:string | number): Promise<IDoctor[]> {
+    try {
+      const res = await fetch(`${apiUrl}/api/Doctors/GetDoctorListByServiceId/${serviceId}`)
+      if (!res.ok) {
+        console.error(`Error response: ${res.statusText}`);
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log(`Retrieved ${data.length} doctors from API`);
+      return data;
+    } catch (error) {
+      console.error('Error fetching doctor list:', error);
+      return [];
+    }
+  },
   async getNumberOfDoctors(): Promise<number> {
     try {
       const url = `${apiUrl}/odata/Doctors/$count`;
@@ -66,7 +81,7 @@ export const doctorService = {
         most_service: "numberOfService",
       };
       const doctors = (await this.getDoctorList()).filter((d) =>
-        idList.includes(d.userId.toString())
+        idList.includes((d.userId ?? '').toString())
       );
 
       const sortKey = sortOptions[sortBy];

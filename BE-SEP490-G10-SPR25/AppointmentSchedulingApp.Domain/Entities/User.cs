@@ -23,7 +23,7 @@ public partial class User
 
     public string Address { get; set; }
 
-    public string? AvatarUrl { get; set; }
+    public string AvatarUrl { get; set; } = "user.jpg";
 
     public bool IsVerify { get; set; } = false;
 

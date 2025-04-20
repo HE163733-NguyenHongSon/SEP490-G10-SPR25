@@ -18,7 +18,7 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
   const [relationship, setRelationship] = useState("");
   const [address, setAddress] = useState("");
   const { user } = useUser();
-  const { setPatients, addingPatient, setAddingPatient, patients } =
+  const { setPatients, setAddingPatient, patients } =
     useBookingContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,6 +43,7 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
       setPatients([
         ...patients,
         {
+        
           userName,
           phone,
           dob: dob ? format(dob, "yyyy-MM-dd") : "",

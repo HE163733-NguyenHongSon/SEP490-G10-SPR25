@@ -1,5 +1,6 @@
 ﻿using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
+using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -25,10 +26,16 @@ namespace AppointmentSchedulingApp.Application.Services
 
         public async Task<List<DoctorScheduleDTO>> GetDoctorScheduleListByServiceId(int serviceId)
         {
-            {
-                var query = unitOfWork.DoctorScheduleRepository.GetQueryable(ds => ds.ServiceId.Equals(serviceId));
-                return await query.ProjectTo<DoctorScheduleDTO>(mapper.ConfigurationProvider).ToListAsync();
-            }
+
+            var query = unitOfWork.DoctorScheduleRepository.GetQueryable(ds => ds.ServiceId.Equals(serviceId));
+            return await query.ProjectTo<DoctorScheduleDTO>(mapper.ConfigurationProvider).ToListAsync();
+
+        }
+
+        public async Task<List<DoctorScheduleDTO>> GetDoctorScheduleList()
+        {
+            var query = unitOfWork.DoctorScheduleRepository.GetQueryable();
+            return await query.ProjectTo<DoctorScheduleDTO>(mapper.ConfigurationProvider).ToListAsync();
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using AppointmentSchedulingApp.Application.IServices;
+using AppointmentSchedulingApp.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -15,7 +17,28 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
         public  IDoctorScheduleService doctorScheduleService { get; set; }
 
-        [HttpGet("{serviceId}")]
+        [HttpGet]
+        [EnableQuery]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                var doctorSchedules = await doctorScheduleService.GetDoctorScheduleList();
+
+                if ( doctorSchedules.IsNullOrEmpty())
+                {
+                      return NoContent();
+                }
+
+                return Ok(doctorSchedules);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+            [HttpGet("{serviceId}")]
         [EnableQuery]
         public async Task<IActionResult> GetDoctorScheduleListByServiceId(int serviceId)
         {

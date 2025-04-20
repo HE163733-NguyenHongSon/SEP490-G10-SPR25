@@ -13,7 +13,7 @@ const PatientInfor = () => {
     setCurrentStep,
   } = useBookingContext();
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
-  console.log("Patients:", patients);
+  
   return (
     <div className="p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-6">
@@ -26,7 +26,7 @@ const PatientInfor = () => {
           <div
             key={patient.userId}
             className={`bg-white rounded-lg shadow-lg p-6 cursor-pointer transition-all duration-300 ease-in-out transform border border-gray-300 hover:shadow-2xl hover:scale-105 ${
-              selectedPatient?.userId === patient.userId
+              selectedPatient?.phone === patient.phone
                 ? "ring-2 ring-cyan-500 border-cyan-500 scale-100"
                 : ""
             }`}
@@ -76,7 +76,7 @@ const PatientInfor = () => {
             </div>
 
             {/* Check Circle Icon moved to the right */}
-            {selectedPatient?.userId === patient.userId && (
+            {selectedPatient?.phone === patient.phone && (
               <div className="absolute top-12 right-12 bg-cyan-500 rounded-full p-2">
                 <CheckCircle className="h-5 w-5 text-white" />
               </div>

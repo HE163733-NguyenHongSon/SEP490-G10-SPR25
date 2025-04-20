@@ -36,6 +36,7 @@ namespace AppointmentSchedulingApp.Application.Services
             {
                 var patients = await unitOfWork.UserRepository.GetAll(u => u.Roles.Any(r => r.RoleId.Equals(2)));
                 return mapper.Map<List<PatientDTO>>(patients);
+
             }
             catch (Exception ex)
             {

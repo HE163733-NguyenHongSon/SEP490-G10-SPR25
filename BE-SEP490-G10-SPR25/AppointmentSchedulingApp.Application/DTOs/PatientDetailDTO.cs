@@ -16,6 +16,6 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public List<PatientDTO>? Dependents { get; set; }
 
         [JsonPropertyOrder(20)]
-        public List<MedicalRecordDTO> MedicalRecords { get; set; } = new List<MedicalRecordDTO>();
+        public List<MedicalRecordDTO>? MedicalRecords { get; set; } = new List<MedicalRecordDTO>();
     }
 }

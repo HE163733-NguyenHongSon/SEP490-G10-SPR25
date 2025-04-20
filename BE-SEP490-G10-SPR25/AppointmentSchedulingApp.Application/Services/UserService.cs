@@ -81,9 +81,9 @@ namespace AppointmentSchedulingApp.Application.Services
                 };
                 
                 // Add phone if available
-                if (!string.IsNullOrEmpty(userDTO.PhoneNumber))
+                if (!string.IsNullOrEmpty(userDTO.Phone))
                 {
-                    authClaims.Add(new Claim("PhoneNumber", userDTO.PhoneNumber));
+                    authClaims.Add(new Claim("Phone", userDTO.Phone));
                 }
                 
                 // Add DOB if available
@@ -242,7 +242,6 @@ namespace AppointmentSchedulingApp.Application.Services
                     UserId = user.UserId,
                     Email = user.Email,
                     UserName = user.UserName,
-                    PhoneNumber = user.Phone,
                     Phone = user.Phone,
                     Gender = user.Gender,
                     Dob = user.Dob.ToString("yyyy-MM-dd") ,
@@ -302,7 +301,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 {
                     return ResultDTO.Failure("Số điện thoại đã tồn tại", new Dictionary<string, string[]>
                     {
-                        { "PhoneNumber", new[] { "Số điện thoại đã được sử dụng bởi tài khoản khác" } }
+                        { "Phone", new[] { "Số điện thoại đã được sử dụng bởi tài khoản khác" } }
                     });
                 }
                 
@@ -460,11 +459,11 @@ namespace AppointmentSchedulingApp.Application.Services
             // Kiểm tra số điện thoại
             if (string.IsNullOrWhiteSpace(registrationDTO.PhoneNumber))
             {
-                errors.Add("PhoneNumber", new[] { "Số điện thoại không được để trống" });
+                errors.Add("Phone", new[] { "Số điện thoại không được để trống" });
             }
-            else if (!IsValidPhoneNumber(registrationDTO.PhoneNumber))
+            else if (!IsValidPhone(registrationDTO.PhoneNumber))
             {
-                errors.Add("PhoneNumber", new[] { "Số điện thoại không đúng định dạng" });
+                errors.Add("Phone", new[] { "Số điện thoại không đúng định dạng" });
             }
             
             // Kiểm tra CCCD/CMND
@@ -523,7 +522,7 @@ namespace AppointmentSchedulingApp.Application.Services
             }
         }
 
-        private bool IsValidPhoneNumber(string phone)
+        private bool IsValidPhone(string phone)
         {
             // Chấp nhận số điện thoại Việt Nam bắt đầu bằng 0 hoặc +84, tiếp theo là 9 chữ số
             var regex = new System.Text.RegularExpressions.Regex(@"^(0|\+84)([0-9]{9})$");
@@ -600,7 +599,7 @@ namespace AppointmentSchedulingApp.Application.Services
 
                 // Tạo số điện thoại tạm thời duy nhất cho tài khoản Google 
                 // Lưu ý: Người dùng sẽ cần cập nhật số điện thoại thật sau khi đăng nhập
-                string temporaryPhone = await GenerateUniquePhoneNumber();
+                string temporaryPhone = await GenerateUniquePhone();
 
                 var newUser = new User
                 {
@@ -649,7 +648,7 @@ namespace AppointmentSchedulingApp.Application.Services
         }
 
         // Hàm tạo số điện thoại tạm thời duy nhất
-        private async Task<string> GenerateUniquePhoneNumber()
+        private async Task<string> GenerateUniquePhone()
         {
             // Tiền tố cho số điện thoại tạm thời
             string prefix = "099";
@@ -682,7 +681,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 UserId = user.UserId,
                 Email = user.Email,
                 UserName = user.UserName,
-                PhoneNumber = user.Phone,
+                Phone = user.Phone,
                 Gender = user.Gender,
                 Roles = await _roleService.GetRoleDTOsByUserId(user.UserId.ToString())
             };

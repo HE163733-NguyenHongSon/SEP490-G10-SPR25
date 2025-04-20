@@ -1,26 +1,22 @@
-"use client";
+import React from "react";
 import { useBookingContext } from "@/patient/contexts/BookingContext";
-import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { FileText } from "lucide-react";
 
-const SymptomInput = ({ onSubmit }: { onSubmit: () => void }) => {
-  const { symptoms, setSymptoms, loading } = useBookingContext();
+const SymptomInput = () => {
+  const { symptoms } = useBookingContext();
 
   return (
-    <div className="relative w-full h-15">
-      <input
-        type="text"
-        placeholder="Nhập triệu chứng..."
-        value={symptoms}
-        onChange={(e) => setSymptoms(e.target.value)}
-        className="pl-4 pr-10 py-4 w-full h-full rounded bg-gray-100 text-gray-500 focus:outline-none"
+    <div className="space-y-2">
+      <label className="text-sm font-medium text-gray-700 flex items-center">
+        <FileText className="w-4 h-4 mr-2" />
+        Lý do khám / Triệu chứng
+      </label>
+      <textarea
+        rows={4}
+        defaultValue={symptoms}
+        placeholder="Mô tả chi tiết lý do khám, triệu chứng hoặc mối quan tâm của bạn."
+        className="w-full text-gray-700 rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 py-2 px-3 border"
       />
-      <button
-        onClick={onSubmit}
-        disabled={loading || symptoms.trim().length < 2}
-        className="absolute right-3 top-1/2 transform -translate-y-1/2"
-      >
-        <PaperAirplaneIcon className="w-6 h-6 text-cyan-500" />
-      </button>
     </div>
   );
 };

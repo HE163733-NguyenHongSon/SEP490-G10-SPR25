@@ -251,5 +251,15 @@ namespace AppointmentSchedulingApp.Application.Services
                 throw new Exception($"Lỗi khi xóa bác sĩ: {ex.Message}", ex);
             }
         }
+
+        public async Task<List<DoctorDTO>> GetDoctorListByServiceId(int serviceId)
+        {
+            var query = unitOfWork.DoctorRepository.GetQueryable(d =>
+                    d.DoctorNavigation.IsActive &&
+                    d.DoctorNavigation.Roles.Any(r => r.RoleId == 4) &&
+                    d.Services.Any(s => s.ServiceId == serviceId))
+                .Select(d => d.DoctorNavigation); 
+            return await query.ProjectTo<DoctorDTO>(mapper.ConfigurationProvider).ToListAsync();
+        }
     }
 }

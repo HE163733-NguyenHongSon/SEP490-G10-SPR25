@@ -4,92 +4,172 @@ import PatientInfor from "./PatientInfor";
 import BookingInfor from "./BookingInfor";
 import BookingConfirmation from "./BookingConfirmation";
 import BookingStepper from "./BookingStepper";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState, memo, useCallback } from "react";
+
+// Memoize các component con để tránh re-render không cần thiết
+const MemoizedPatientInfor = memo(PatientInfor);
+const MemoizedBookingInfor = memo(BookingInfor);
+const MemoizedBookingConfirmation = memo(BookingConfirmation);
 
 const BookingForm = () => {
-  const { showBookingForm, currentStep, closeBookingForm, prevStep, nextStep } =
-    useBookingContext();
+  const {
+    showBookingForm,
+    currentStep,
+    closeBookingForm,
+    prevStep,
+    nextStep,
+    setSuggestionData,
+    setSelectedPatient,
+    setServiceId,
+    setSpecialtyId,
+    setDoctorId,
+    setSelectedDate,
+    setSelectedTime,
+  } = useBookingContext();
 
   const formRef = useRef<HTMLDivElement | null>(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
+  // Chỉ chạy effect khi component mount
   useEffect(() => {
-    if (showBookingForm && formRef.current) {
-      formRef.current.scrollIntoView({ behavior: "smooth" });
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+
+  // Tối ưu scroll behavior
+  useEffect(() => {
+    if (!isMounted || !showBookingForm) return;
+    
+    const timer = setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [showBookingForm, isMounted]);
+
+  const handleOverlayClick = useCallback((e: React.MouseEvent) => {
+    if (formRef.current && !formRef.current.contains(e.target as Node)) {
+      setShowConfirmModal(true);
     }
-  }, [showBookingForm]);
+  }, []);
+
+  const handleBack = useCallback(() => {
+    if (currentStep === 1) {
+      setShowConfirmModal(true);
+    } else {
+      if (currentStep === 2) {
+        setSuggestionData(null);
+      }
+      prevStep();
+    }
+  }, [currentStep, prevStep, setSuggestionData]);
+
+  const confirmCancel = useCallback(() => {
+    setSelectedPatient(null);
+    setSuggestionData(null);
+    setServiceId(0);
+    setSpecialtyId(1);
+    setDoctorId(undefined);
+    setSelectedDate("");
+    setSelectedTime("");
+    closeBookingForm();
+    setShowConfirmModal(false);
+  }, [closeBookingForm, setSelectedPatient, setSuggestionData, setServiceId, 
+      setSpecialtyId, setDoctorId, setSelectedDate, setSelectedTime]);
 
   if (!showBookingForm) return null;
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center">
-      {/* Overlay */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Overlay với transition mượt hơn */}
       <div
-        className="absolute inset-0 bg-black bg-opacity-50"
-        onClick={closeBookingForm}
-      ></div>
+        className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+          isMounted ? 'opacity-100' : 'opacity-0'
+        }`}
+        onClick={handleOverlayClick}
+      />
 
-      {/* Form Container */}
+      {/* Form Container với transition tối ưu */}
       <div
         ref={formRef}
-        className="relative z-50 top-14 bg-white w-4/5 md:w-2/3 h-[90vh] rounded-lg shadow-xl p-6 overflow-y-auto"
+        className={`relative z-50 top-12 w-[90%] md:w-2/3 lg:w-1/2 h-[90vh] bg-white rounded-2xl shadow-2xl p-6 overflow-y-auto transition-all duration-300 ${
+          isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        }`}
       >
-        {/* Back Button */}
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            {/* Back Button */}
-            <button
-              onClick={currentStep !== 1 ? prevStep : closeBookingForm}
-              className="text-cyan-600 hover:underline font-medium flex items-center"
+        {/* Header Buttons */}
+        <div className="flex justify-between items-center mb-6">
+          <button
+            onClick={handleBack}
+            className="text-cyan-600 hover:text-cyan-800 font-semibold flex items-center"
+          >
+            <svg
+              className="w-5 h-5 mr-1"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
             >
-              <svg
-                className="w-5 h-5 mr-1"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-              Quay về trang trước
-            </button>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            Quay lại
+          </button>
 
-            {/* Next Button */}
+          {currentStep < 3 && (
             <button
               onClick={nextStep}
-              className="text-cyan-600 hover:underline font-medium flex items-center"
+              className="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700 transition-colors duration-200"
             >
               Tiếp theo
-              <svg
-                className="w-5 h-5 ml-1"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
             </button>
-          </div>
-
-          {/* Stepper */}
-          <BookingStepper currentStep={currentStep} />
+          )}
         </div>
 
-        {/* Step Components */}
-        {currentStep === 1 && <PatientInfor />}
-        {currentStep === 2 && <BookingInfor />}
-        {currentStep === 3 && <BookingConfirmation />}
+        {/* Stepper */}
+        <BookingStepper currentStep={currentStep} />
 
-       
+        {/* Form Content với các component đã memoize */}
+        <div className="mt-6">
+          {currentStep === 1 && <MemoizedPatientInfor />}
+          {currentStep === 2 && <MemoizedBookingInfor />}
+          {currentStep === 3 && <MemoizedBookingConfirmation />}
+        </div>
       </div>
+
+      {/* Confirm Modal với transition riêng */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div 
+            className="bg-white rounded-xl p-8 w-[90%] max-w-[550px] shadow-2xl transition-all duration-300"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-bold text-gray-800 mb-4">
+              Bạn có chắc chắn muốn hủy đặt lịch?
+            </h2>
+            <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+              Thao tác này sẽ xóa tất cả thông tin bạn đã nhập...
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:underline transition-colors duration-200"
+              >
+                Không
+              </button>
+              <button
+                onClick={confirmCancel}
+                className="bg-red-500 text-white px-5 py-2 rounded-md font-medium hover:bg-red-600 transition-colors duration-200"
+              >
+                Hủy đặt lịch
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

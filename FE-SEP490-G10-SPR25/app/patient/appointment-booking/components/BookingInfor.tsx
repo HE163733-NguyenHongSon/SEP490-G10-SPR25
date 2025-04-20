@@ -43,7 +43,6 @@ const BookingInfor = () => {
 
         localStorage.setItem("bookingSuggestion", JSON.stringify(data));
         setSuggestionData(suggestionData ?? data);
-
         setSpecialtyId(Number(data?.specialty?.specialtyId ?? specialtyId));
         setSpecialties(specialties);
       } catch (error) {
@@ -59,30 +58,42 @@ const BookingInfor = () => {
   }, [selectedPatient, symptoms]);
 
   return (
-    <div className="relative border-b-2 border-gray-200 py-8">
-      {/* Overlay khi loading */}
+    <div className="relative border-b border-gray-200 py-6 md:py-8 px-2 md:px-4 rounded-lg bg-white shadow-sm transition-all duration-300">
+      {/* Overlay loading */}
       {loading && (
-        <div className="absolute inset-0 bg-white/60 z-50 flex items-center justify-center">
-          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+        <div className="absolute inset-0 bg-white/80 z-20 flex items-center justify-center rounded-lg">
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
 
-      <div className={`space-y-8 ${loading ? "pointer-events-none opacity-50" : ""}`}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <SpecialtySelector />
-          <ServiceSelector />
+      <div className={`space-y-10 transition-opacity duration-300 ${loading ? "opacity-50 pointer-events-none" : "opacity-100"}`}>
+        {/* Chọn chuyên khoa và dịch vụ */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="w-full">
+            <SpecialtySelector />
+          </div>
+          <div className="w-full">
+            <ServiceSelector />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <DoctorSelector />
-          <DatetimeSelector />
+        {/* Chọn bác sĩ và thời gian */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="w-full">
+            <DoctorSelector />
+          </div>
+          <div className="w-full">
+            <DatetimeSelector />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-8">
+        {/* Triệu chứng */}
+        <div className="w-full">
           <SymptomInput />
         </div>
 
-        <div className="grid grid-cols-1 gap-8">
+        {/* Tệp đính kèm */}
+        <div className="w-full">
           <FileUpload />
         </div>
       </div>

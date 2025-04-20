@@ -33,7 +33,7 @@ export const patientService = {
       return 0; // Return 0 instead of throwing error
     }
   },
-  addPatient: async (patientData: IAddedPatient): Promise<boolean> => {
+  addPatient: async (patientData: IAddedPatient): Promise<IPatient> => {
     try {
       const response = await fetch(`${apiUrl}/api/Patients/AddPatient`, {
         method: "POST",

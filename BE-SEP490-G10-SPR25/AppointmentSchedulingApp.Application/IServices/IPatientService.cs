@@ -12,6 +12,6 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<bool> UpdatePatientInfor(PatientUpdateDTO patientUpdateDTO);
         Task<bool> UpdatePatientInFormation(PatientUpdateDTO patientUpdateDTO);
 
-        Task<bool> AddPatient(AddedPatientDTO patient);
+        Task<PatientDTO> AddPatient(AddedPatientDTO patient);
     }
 }

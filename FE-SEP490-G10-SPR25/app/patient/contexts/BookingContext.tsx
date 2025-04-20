@@ -218,9 +218,7 @@ export const BookingProvider: React.FC<BookingProviderProps> = ({
           selectedPatient?.userId,
           symptoms
         );
-        console.log("Gợi ý lịch khám:", data);
         const specialties = await specialtyService.getSpecialtyList();
-        console.log("Gợi ý chuyên khoa:", data?.specialty?.specialtyId);
         localStorage.setItem("bookingSuggestion", JSON.stringify(data));
         setSuggestionData(data);
 

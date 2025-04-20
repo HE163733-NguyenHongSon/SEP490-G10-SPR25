@@ -49,7 +49,9 @@ const DoctorSelector = () => {
         setDoctors(suggestedDoctors.length > 0 ? suggestedDoctors : doctorList);
         setDoctorId(suggestedDoctors[0]?.value ?? doctorList[0]?.value);
         setSelectedDate(
-          suggestionData?.availableSchedules[0]?.appointmentDate.split( "T" )[0] || ""
+          suggestionData?.availableSchedules[0]?.appointmentDate.split(
+            "T"
+          )[0] || ""
         );
         setSelectedTime(
           `${suggestionData?.availableSchedules[0]?.slotStartTime}-${suggestionData?.availableSchedules[0]?.slotEndTime}` ||

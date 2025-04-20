@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
 import { useBookingContext } from "@/patient/contexts/BookingContext";
 
-interface TimeOption {
+interface ITimeOption {
   value: string;
   label: string;
   slotId: string;
@@ -13,7 +13,6 @@ interface TimeOption {
 
 const DatetimeSelector = () => {
   const [availableDateObjects, setAvailableDateObjects] = useState<Date[]>([]);
-  const [timeOptions, setTimeOptions] = useState<TimeOption[]>([]);
 
   const {
     suggestionData,
@@ -28,12 +27,12 @@ const DatetimeSelector = () => {
     doctorId,
   } = useBookingContext();
 
-  // Memoized schedules data processing
+  // Xử lý danh sách lịch hẹn từ suggestionData
   const schedules = useMemo(() => {
     if (!suggestionData?.availableSchedules) return [];
-    
+
     return suggestionData.availableSchedules
-      .filter((schedule) => String(schedule.doctorId) === String(doctorId))
+      .filter((s) => String(s.doctorId) === String(doctorId))
       .reduce((acc: IAvailableDate[], schedule) => {
         const date = schedule.appointmentDate.split("T")[0];
         const slot = {
@@ -51,69 +50,64 @@ const DatetimeSelector = () => {
             times: [slot],
           });
         }
+
         return acc;
-      }, []);
-  }, [doctorId, suggestionData?.availableSchedules]);
+      }, []); //=> trả về dữ liệu lịch
+  }, [suggestionData?.availableSchedules, doctorId]);
 
-  // Memoized function to update time options
-  const updateTimeOptions = useCallback((date: string) => {
-    const selectedDay = availableDates.find((d) => d.date === date);
-    const options = selectedDay?.times.map((t) => ({
-      value: t.slotStartTime,
-      label: `${t.slotStartTime} - ${t.slotEndTime}`,
-      slotId: t.slotId,
-    })) || [];
-    
-    setTimeOptions(options);
-    
-    // Reset time selection if current selection is not available
-    const currentTimeAvailable = options.some(opt => opt.value === selectedTime);
-    if (!currentTimeAvailable && options.length > 0) {
-      setSelectedTime(options[0].value);
-      setSelectedSlotId(options[0].slotId);
-    } else if (options.length === 0) {
-      setSelectedTime("");
-      setSelectedSlotId("");
-    }
-  }, [availableDates, selectedTime, setSelectedTime, setSelectedSlotId]);
+  // Tính danh sách khung giờ dựa trên ngày đã chọn
+  const timeOptions: ITimeOption[] = useMemo(() => {
+    const selectedDay = availableDates.find((d) => d.date === selectedDate);
+    return (
+      selectedDay?.times.map((t) => ({
+        value: t.slotStartTime,
+        label: `${t.slotStartTime} - ${t.slotEndTime}`,
+        slotId: t.slotId,
+      })) || []
+    );
+  }, [availableDates, selectedDate]);
 
-  // Initialize available dates and times
+  // Cập nhật danh sách ngày và auto chọn ngày hợp lệ
   useEffect(() => {
     if (schedules.length > 0) {
-      const dates = schedules.map(d => new Date(d.date));
+      const dates = schedules.map((d) => new Date(d.date));
       setAvailableDates(schedules);
       setAvailableDateObjects(dates);
-      
-      // Auto-select first date if none selected or current selection is invalid
-      const firstDate = schedules[0].date;
-      const isValidDate = selectedDate && schedules.some(d => d.date === selectedDate);
-      
-      const dateToSet = isValidDate ? selectedDate : firstDate;
-      setSelectedDate(dateToSet);
-      updateTimeOptions(dateToSet);
+
+      const isValid = selectedDate && schedules.some((d) => d.date === selectedDate);
+      const defaultDate = isValid ? selectedDate : schedules[0].date;
+
+      setSelectedDate(defaultDate);
     } else {
       setAvailableDates([]);
       setAvailableDateObjects([]);
-      setTimeOptions([]);
+      setSelectedTime(""); // Reset time when no schedules
+      setSelectedSlotId(""); // Reset selected slotId
+    }
+  }, [schedules, selectedDate, setAvailableDates, setSelectedDate, setSelectedTime, setSelectedSlotId]);
+
+  // Reset thời gian nếu thời gian hiện tại không hợp lệ
+  useEffect(() => {
+    if (timeOptions.length === 0) {
       setSelectedTime("");
       setSelectedSlotId("");
+      return;
     }
-  }, [schedules, selectedDate, setSelectedDate, updateTimeOptions]);
 
-  // Update time options when selected date changes
-  useEffect(() => {
-    if (selectedDate) {
-      updateTimeOptions(selectedDate);
+    const isValid = timeOptions.some((t) => t.value === selectedTime);
+    if (!isValid) {
+      setSelectedTime(timeOptions[0].value);
+      setSelectedSlotId(timeOptions[0].slotId);
     }
-  }, [selectedDate, updateTimeOptions]);
+  }, [timeOptions, selectedTime, setSelectedTime, setSelectedSlotId]);
 
-  const handleDateChange = (date: Date | null) => {
+  const handleDateChange = useCallback((date: Date | null) => {
     if (!date) return;
     const isoDate = date.toISOString().split("T")[0];
     setSelectedDate(isoDate);
-  };
+  }, [setSelectedDate]);
 
-  const handleTimeChange = (option: TimeOption | null) => {
+  const handleTimeChange = useCallback((option: ITimeOption | null) => {
     if (option) {
       setSelectedTime(option.value);
       setSelectedSlotId(option.slotId);
@@ -121,15 +115,12 @@ const DatetimeSelector = () => {
       setSelectedTime("");
       setSelectedSlotId("");
     }
-  };
+  }, [setSelectedTime, setSelectedSlotId]);
 
-  const isDateAvailable = (date: Date) => {
-    return availableDateObjects.some(
-      (d) => d.toDateString() === date.toDateString()
-    );
-  };
+  const isDateAvailable = (date: Date) =>
+    availableDateObjects.some((d) => d.toDateString() === date.toDateString());
 
-  const selectedTimeOption = timeOptions.find(opt => opt.value === selectedTime) || null;
+  const selectedTimeOption = timeOptions.find((opt) => opt.value === selectedTime) || null;
 
   return (
     <div className="space-y-4 w-full">
@@ -165,7 +156,8 @@ const DatetimeSelector = () => {
 
       {selectedDate && (
         <div className="text-sm text-gray-600">
-          Ngày hẹn: {selectedDate} {selectedTime && `lúc ${selectedTime}`}
+          Ngày hẹn: {new Date(selectedDate).toLocaleDateString("vi-VN")}
+          {selectedTime && ` lúc ${selectedTime}`}
         </div>
       )}
 

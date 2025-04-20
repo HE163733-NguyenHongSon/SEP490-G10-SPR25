@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import Select from "react-select";
 import { Stethoscope as StethoscopeIcon, RefreshCw } from "lucide-react";
@@ -10,16 +10,16 @@ const SpecialtySelector = () => {
     specialtyId,
     customStyles,
     showRestoreSuggestion,
-    
     handleSpecialtyChange,
     restoreSuggestion,
   } = useBookingContext();
 
-  const currentSpecialty = specialties.find(s => Number(s.specialtyId) === specialtyId);
   const options = specialties.map(s => ({
     value: Number(s.specialtyId),
     label: s.specialtyName,
   }));
+
+  const currentSpecialty = options.find(opt => opt.value === specialtyId);
 
   return (
     <div className="space-y-2">
@@ -31,23 +31,19 @@ const SpecialtySelector = () => {
         {showRestoreSuggestion && (
           <button
             onClick={restoreSuggestion}
-            className="text-xs text-cyan-600 hover:text-cyan-700 flex items-center transition-colors"
-            aria-label="Khôi phục gợi ý"
+            className="text-xs text-cyan-600 hover:text-cyan-700 flex items-center"
           >
             <RefreshCw className="w-3 h-3 mr-1" />
             Khôi phục gợi ý
           </button>
-        )}  
+        )}
       </div>
       <Select
         styles={customStyles}
-        value={currentSpecialty ? {
-          value: specialtyId,
-          label: currentSpecialty.specialtyName,
-        } : null}
+        value={currentSpecialty || null}
         onChange={handleSpecialtyChange}
         options={options}
-        isDisabled={!specialties.length}
+        isDisabled={!options.length}
         placeholder="Chọn chuyên khoa"
         noOptionsMessage={() => "Không có chuyên khoa nào"}
       />

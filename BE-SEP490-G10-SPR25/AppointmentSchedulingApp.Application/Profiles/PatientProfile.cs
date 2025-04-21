@@ -23,12 +23,16 @@ namespace AppointmentSchedulingApp.Application.Profiles
             CreateMap<User, PatientDetailDTO>()
                 .IncludeBase<User, PatientDTO>()                
                 .ForMember(dest => dest.Guardian, opt => opt.MapFrom(src => src.Patient.Guardian))
-                .ForMember(dest => dest.Dependents, opt => opt.MapFrom(src => src.PatientGuardians.Select(pg=>pg.PatientNavigation)) )            
+                .ForMember(dest => dest.Dependents, opt => opt.MapFrom(src => src.PatientGuardians!=null? src.PatientGuardians.Select(pg=>pg.PatientNavigation):null))               
                 .ForMember(dest => dest.MedicalRecords, opt => opt.MapFrom(src => src.Patient.Reservations.Where(r=>r.Status.Equals("Hoàn thành")).Select(r => r.MedicalRecord)))
                 .ReverseMap();
 
+
             CreateMap<Patient, GuardianOfPatientDTO>()
                 .ForMember(dest => dest.GuardianId, opt => opt.MapFrom(src => src.GuardianId))
+                .ReverseMap();
+
+            CreateMap<AddedPatientDTO,User>()
                 .ReverseMap();
 
         }

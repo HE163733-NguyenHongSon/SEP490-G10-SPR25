@@ -23,7 +23,7 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.SpecialtyId, opt => opt.MapFrom(src => src.SpecialtyId))
                 .ForMember(dest => dest.EstimatedTime, opt => opt.MapFrom(src => src.EstimatedTime.ToString("HH:mm")))
                 .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating))
-                .ForMember(dest => dest.RatingCount, opt => opt.MapFrom(src => src.RatingCount));
+                .ForMember(dest => dest.RatingCount, opt => opt.MapFrom(src => src.RatingCount)).ReverseMap();
 
             CreateMap<ServiceDTO, Service>()
                 .ForMember(dest => dest.EstimatedTime, opt => opt.MapFrom((src, dest) => {

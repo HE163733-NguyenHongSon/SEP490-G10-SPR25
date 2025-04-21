@@ -30,7 +30,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
                 if (doctorSchedules == null || !doctorSchedules.Any())
                 {
-                    return NoContent();
+                      return NoContent();
                 }
 
                 return Ok(doctorSchedules);
@@ -78,7 +78,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 var isTrue = await _doctorScheduleService.UpdateDoctorSchedule(doctorScheduleUpdateDTO);
 
                 return Ok(isTrue);
-            }
+        }
             catch (Exception ex)
             {
                 return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
@@ -115,10 +115,10 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return Ok(doctorSchedules);
             }
             catch (Exception ex)
-            {
+                {
                 return StatusCode(500, ex.Message);
             }
-        }
+                }
 
         [HttpGet("search")]
         [EnableQuery]

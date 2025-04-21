@@ -112,7 +112,7 @@ namespace AppointmentSchedulingApp.Application.Services
 
                                         table.Cell().ColumnSpan(2).PaddingTop(3).Text($"Ngày sinh: {data.Patient.Dob}");
                                         table.Cell().ColumnSpan(2).PaddingTop(3).Text($"Giới tính: {data.Patient.Gender}");
-                                        table.Cell().ColumnSpan(2).PaddingTop(3).Text($"SĐT: {data.Patient.PhoneNumber}");
+                                        table.Cell().ColumnSpan(2).PaddingTop(3).Text($"SĐT: {data.Patient.Phone}");
                                         table.Cell().ColumnSpan(2).PaddingTop(3).Text($"Email: {data.Patient.Email}");
 
 

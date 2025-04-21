@@ -115,22 +115,22 @@ const MedicalRecordDetail: React.FC<MedicalRecordDetailProps> = ({
                   <div>
                     <p className="text-sm text-gray-500">Dịch vụ</p>
                     <p className="font-medium">
-                      {medicalRecordDetail?.reservation.serviceName}({" "}
-                      {medicalRecordDetail?.reservation.startTime} -{" "}
-                      {medicalRecordDetail?.reservation.endTime})
+                      {medicalRecordDetail?.reservation.doctorSchedule.serviceName}({" "}
+                      {medicalRecordDetail?.reservation.doctorSchedule.slotStartTime} -{" "}
+                      {medicalRecordDetail?.reservation.doctorSchedule.slotEndTime})
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Bác sĩ</p>
                     <p className="font-medium">
-                      {medicalRecordDetail?.reservation.doctorName}
+                      {medicalRecordDetail?.reservation.doctorSchedule.doctorName}
                     </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Phòng khám</p>
                     <p className="font-medium">
-                      {medicalRecordDetail?.reservation.roomName} -{" "}
-                      {medicalRecordDetail?.reservation.location}
+                      {medicalRecordDetail?.reservation.doctorSchedule.roomName} -{" "}
+                      {medicalRecordDetail?.reservation.doctorSchedule.location}
                     </p>
                   </div>
                   <div>

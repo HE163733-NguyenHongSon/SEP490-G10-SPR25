@@ -34,8 +34,9 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             try
             {
-                var patients = await unitOfWork.UserRepository.GetAll(u=>u.Roles.Any(r=>r.RoleId.Equals(2)));
+                var patients = await unitOfWork.UserRepository.GetAll(u => u.Roles.Any(r => r.RoleId.Equals(2)));
                 return mapper.Map<List<PatientDTO>>(patients);
+
             }
             catch (Exception ex)
             {
@@ -66,7 +67,7 @@ namespace AppointmentSchedulingApp.Application.Services
             try
             {
                 var patient = await unitOfWork.UserRepository.Get(p => p.UserId.Equals(patientUpdateDTO.UserId));
-                
+
                 if (patient == null)
                 {
                     return false;
@@ -135,5 +136,38 @@ namespace AppointmentSchedulingApp.Application.Services
 
         }
 
+        public async Task<PatientDTO> AddPatient(AddedPatientDTO patientDto)
+        {
+            try
+            {
+                var user = mapper.Map<User>(patientDto);
+
+                await unitOfWork.UserRepository.AddAsync(user);
+                await unitOfWork.CommitAsync();
+
+                var patient = new Patient
+                {
+                    PatientId = user.UserId,
+                    GuardianId = patientDto.GuardianId,
+                    Relationship = patientDto.Relationship,
+                };
+
+                await unitOfWork.PatientRepository.AddAsync(patient);
+                await unitOfWork.CommitAsync();
+
+                user.Patient = patient;
+
+                var result = mapper.Map<PatientDTO>(user);
+                return result;
+            }
+            catch (Exception e)
+            {
+                await unitOfWork.RollbackAsync();
+                Console.WriteLine("Lỗi khi thêm bệnh nhân: " + e.Message);
+                return null;
+            }
         }
+
+
+    }
 }

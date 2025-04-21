@@ -309,9 +309,7 @@ public partial class AppointmentSchedulingDbContext : DbContext
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.EndTime).HasColumnType("datetime");
             entity.Property(e => e.PriorExaminationImg).HasMaxLength(200);
-            entity.Property(e => e.StartTime).HasColumnType("datetime");
             entity.Property(e => e.Status).HasMaxLength(20);
             entity.Property(e => e.UpdatedDate)
                 .HasDefaultValueSql("(getdate())")

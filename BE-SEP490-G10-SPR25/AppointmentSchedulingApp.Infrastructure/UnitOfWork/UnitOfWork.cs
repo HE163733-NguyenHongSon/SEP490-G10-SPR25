@@ -52,17 +52,17 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
             _serviceRepository ??= new ServiceRepository(_dbContext);
 
         public ISpecialtyRepository SpecialtyRepository =>
-            _specialtyRepository ??= new SpecialtyRepository(_dbContext); 
-        
+            _specialtyRepository ??= new SpecialtyRepository(_dbContext);
+
         public IUserRepository UserRepository =>
             _userRepository ??= new UserRepository(_dbContext);
-        
+
         public IFeedbackRepository FeedbackRepository =>
             _feedbackRepository ??= new FeedbackRepository(_dbContext);
-        
+
         public IPostRepository PostRepository =>
             _postRepository ??= new PostRepository(_dbContext);
-            
+
         public IRoleRepository RoleRepository =>
             _roleRepository ??= new RoleRepository(_dbContext);
 
@@ -86,7 +86,7 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         public void Rollback() => _dbContext.Dispose();
 
         public async Task RollbackAsync() => await _dbContext.DisposeAsync();
-        
+
         public async Task BeginTransactionAsync()
         {
             _transaction = await _dbContext.Database.BeginTransactionAsync();

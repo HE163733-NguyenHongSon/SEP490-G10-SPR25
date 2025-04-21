@@ -12,16 +12,9 @@ namespace AppointmentSchedulingApp.Application.DTOs
     {
         [Key]
         public int ReservationId { get; set; }
-        public PatientDTO Patient { get;set; }
         public DateTime AppointmentDate { get; set; }
-        public string ServiceImage { get; set; } = null!;
-        public string ServiceName { get; set; } = null!;
-        public string ServicePrice { get; set; }
-        public string DoctorName { get; set; } = null!;
-        public string StartTime { get; set; }
-        public string EndTime { get; set; }
-        public string RoomName { get; set; } = null!;
-        public string Location { get; set; } = null!;
+        public PatientDTO Patient { get;set; }
+        public DoctorScheduleDTO DoctorSchedule { get; set; }
         public string? Reason { get; set; }
         public string? PriorExaminationImg { get; set; }
         public string Status { get; set; }

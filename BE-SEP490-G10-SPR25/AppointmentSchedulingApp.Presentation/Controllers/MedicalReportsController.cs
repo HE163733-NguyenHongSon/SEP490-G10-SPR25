@@ -1,6 +1,4 @@
 ﻿using AppointmentSchedulingApp.Application.IServices;
-using AppointmentSchedulingApp.Application.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 

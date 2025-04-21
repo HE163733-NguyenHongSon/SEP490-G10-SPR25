@@ -8,22 +8,66 @@ import { assets } from "@/public/images/assets";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getCurrentUser, logout, User } from "../../services/authService";
-
+import { specialtyService } from "@/services/specialtyService";
+import { doctorService } from "@/services/doctorService";
+import { serviceService } from "@/services/serviceService";
+import HomeSearch from "./HomeSearch";
 const Navbar: React.FC = () => {
   const [isShowMobileMenu, setIsShowMobileMenu] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const currentPath = usePathname();
-  
+  const [suggestedData, setSuggestedData] = useState<ISearchOption[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const specialties = await specialtyService.getSpecialtyList();
+        const doctors = await doctorService.getDoctorList();
+        const services = await serviceService.getAllServices();
+
+        const suggestedData = [
+          ...specialties.map((s: ISpecialty) => ({
+            label: s.specialtyName,
+            value: s.specialtyId,
+            image: s.image ,
+            type: "specialty" ,
+          })),
+          ...doctors.map((d: IDoctor) => ({
+            label: d.userName,
+            value: d.userId,
+            image: d.avatarUrl ,
+            type: "doctor",
+          })),
+          ...services.map((s: IService) => ({
+            label: s.serviceName,
+            value: s.serviceId,
+            image: s.image ,
+            type: "service",
+          })),
+        ];
+
+        setSuggestedData(suggestedData);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu gợi ý:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   // Kiểm tra xem có đang ở trang guest không
-  const isGuestPage = currentPath?.includes('/guest');
-  
+  const isGuestPage = currentPath?.includes("/guest");
+
   // Các route chính
-  const getHomeRoute = () => currentUser && !isGuestPage ? "/patient" : "/";
-  
+  const getHomeRoute = () => (currentUser && !isGuestPage ? "/patient" : "/");
+
   const routes = [
     { path: getHomeRoute(), name: "Trang chủ" },
     { path: "/patient/specialties", name: "Chuyên khoa" },
-    { path: "/patient/doctors?sortBy=highest_rated&displayView=grid", name: "Bác sĩ" },
+    {
+      path: "/patient/doctors?sortBy=highest_rated&displayView=grid",
+      name: "Bác sĩ",
+    },
     { path: "/patient/services", name: "Dịch vụ" },
     { path: "/patient/appointment-booking", name: "Hẹn lịch" },
     { path: "/patient/blogs", name: "Cẩm nang" },
@@ -39,19 +83,19 @@ const Navbar: React.FC = () => {
   ];
 
   // Chọn routes hiển thị dựa vào trạng thái đăng nhập và trang hiện tại
-  const displayRoutes = (currentUser && !isGuestPage) ? routes : publicRoutes;
+  const displayRoutes = currentUser && !isGuestPage ? routes : publicRoutes;
 
   const handleLogout = () => {
     logout();
     setCurrentUser(null);
-    toast.success("Đăng xuất thành công!", { 
+    toast.success("Đăng xuất thành công!", {
       position: "top-right",
       onClose: () => {
         // Chuyển hướng sau khi toast đóng hoặc sau thời gian ngắn
         setTimeout(() => {
-          window.location.href = '/auth/login';
+          window.location.href = "/auth/login";
         }, 1000); // Đợi 1 giây sau thông báo để người dùng thấy thông báo
-      }
+      },
     });
   };
 
@@ -65,8 +109,8 @@ const Navbar: React.FC = () => {
       setCurrentUser(getCurrentUser());
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   useEffect(() => {
@@ -78,15 +122,15 @@ const Navbar: React.FC = () => {
 
   return (
     <div className="fixed top-0 left-0 w-full z-30 bg-black bg-opacity-60 backdrop-blur-md shadow-md">
-      <div className="max-w-7xl mx-auto flex items-center justify-between py-3 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-screen-2xl mx-auto flex items-center justify-between py-3 px-4 sm:px-6 lg:px-8">
         {/* Logo & Brand */}
         <div className="flex items-center">
           <Link href={getHomeRoute()} className="flex items-center">
-            <Image 
-              width={40} 
-              height={40} 
-              src={assets.logo} 
-              alt="Logo" 
+            <Image
+              width={40}
+              height={40}
+              src={assets.logo}
+              alt="Logo"
               className="w-10 h-10 object-contain"
             />
             <span className="ml-2 text-white font-semibold text-lg hidden sm:block">
@@ -96,7 +140,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Navigation Links - Desktop */}
-        <nav className="hidden md:flex items-center justify-center flex-1 mx-10">
+        <nav className="hidden md:flex items-center justify-center flex-1 ">
           <ul className="flex items-center space-x-8">
             {displayRoutes.map((route) => (
               <li key={route.path}>
@@ -112,22 +156,48 @@ const Navbar: React.FC = () => {
                 </Link>
               </li>
             ))}
+            <li>
+              <HomeSearch
+                fields={[
+                  {
+                    label: "Tìm tất cả",
+                    value: "all",
+                    placeholder: "Tìm tất cả...",
+                  },
+                  {
+                    label: "Chuyên khoa",
+                    value: "specialty",
+                    placeholder: "Tìm chuyên khoa...",
+                  },
+                  {
+                    label: "Bác sĩ",
+                    value: "doctor",
+                    placeholder: "Tìm bác sĩ...",
+                  },
+                  {
+                    label: "Dịch vụ",
+                    value: "service",
+                    placeholder: "Tìm dịch vụ...",
+                  },
+                ]}
+                suggestedData={suggestedData}
+              />
+            </li>
           </ul>
         </nav>
-
         {/* Authentication - Desktop */}
         <div className="hidden md:flex items-center gap-6">
           {currentUser && !isGuestPage ? (
             <div className="flex items-center">
-              <div className="text-white mr-4 font-medium">
+              {/* <div className="text-white mr-4 font-medium">
                 Xin chào, {currentUser.userName}
-              </div>
+              </div> */}
               <div className="flex items-center gap-3">
-                <Link 
-                  href="/patient/person" 
+                <Link
+                  href="/patient/person"
                   className="text-white hover:text-cyan-400 transition-colors duration-200 text-sm font-medium"
                 >
-                  Thông tin cá nhân
+                 {currentUser.userName}
                 </Link>
                 <button
                   onClick={handleLogout}
@@ -161,12 +231,12 @@ const Navbar: React.FC = () => {
           className="md:hidden text-white p-2 rounded-md hover:bg-gray-700"
           aria-label="Menu"
         >
-          <Image 
-            width={24} 
-            height={24} 
-            className="w-6 h-6" 
-            src={assets.menu} 
-            alt="Menu" 
+          <Image
+            width={24}
+            height={24}
+            className="w-6 h-6"
+            src={assets.menu}
+            alt="Menu"
           />
         </button>
       </div>
@@ -175,13 +245,17 @@ const Navbar: React.FC = () => {
       {isShowMobileMenu && (
         <div className="fixed inset-0 bg-white z-50 flex flex-col overflow-y-auto">
           <div className="p-4 flex items-center justify-between border-b">
-            <Link href={getHomeRoute()} className="flex items-center" onClick={() => setIsShowMobileMenu(false)}>
-              <Image 
-                width={40} 
-                height={40} 
-                src={assets.logo} 
-                alt="Logo" 
-                className="w-8 h-8 object-contain" 
+            <Link
+              href={getHomeRoute()}
+              className="flex items-center"
+              onClick={() => setIsShowMobileMenu(false)}
+            >
+              <Image
+                width={40}
+                height={40}
+                src={assets.logo}
+                alt="Logo"
+                className="w-8 h-8 object-contain"
               />
               <span className="ml-2 font-semibold text-lg">Hospital App</span>
             </Link>
@@ -254,7 +328,7 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       <ToastContainer />
     </div>
   );

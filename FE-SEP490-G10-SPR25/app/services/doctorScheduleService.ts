@@ -4,7 +4,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 export const doctorScheduleService = {
  
   async getDoctorScheduleList(): Promise<IDoctorSchedule[]> {
-    try {
+    try {      
       const url = `${apiUrl}/api/DoctorSchedules`;
       console.log('Fetching DoctorSchedules list from:', url);
       
@@ -16,7 +16,7 @@ export const doctorScheduleService = {
         },
         cache: 'no-store'
       });
-      
+
       console.log('DoctorSchedules list response status:', res.status);
       
       if (!res.ok) {
@@ -185,8 +185,8 @@ export const doctorScheduleService = {
       const text = await res.text();
       if (!text) {
         console.warn('Empty response body received.');
-        return [];
-      }
+      return [];
+    }
   
       const data = JSON.parse(text);
       console.log('Successfully fetched filtered DoctorSchedules.');

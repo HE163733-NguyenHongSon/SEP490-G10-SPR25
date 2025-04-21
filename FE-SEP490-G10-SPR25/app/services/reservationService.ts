@@ -1,9 +1,9 @@
-import { emailService } from "./emailService";
+const WEBHOOK_URL = process.env.NEXT_PUBLIC_WEBHOOK_URL!;
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const reservationService = {
   async getListReservationByFilter(
-    patientId: string,
+    patientId: string | undefined,
     status: string,
     sortBy: string
   ) {
@@ -24,7 +24,9 @@ const reservationService = {
     const data = await response.json();
     return { name: status, count: data };
   },
-  async getCancelledReservationsThisMonth(patientId?: string): Promise<IStatus> {
+  async getCancelledReservationsThisMonth(
+    patientId?: string
+  ): Promise<IStatus> {
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1; // JS: 0 = Jan
@@ -57,6 +59,36 @@ const reservationService = {
   //   return response.data;
   // },
 
+  async getBookingSuggestion(
+    patientId: string | undefined,
+    symptoms: string
+  ): Promise<IBookingSuggestion | null> {
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          patientId,
+          symptoms,
+        }),
+      });
+      
+      if (!res.ok) {
+        console.error("Gợi ý thất bại:", await res.text());
+        return null;
+      }
+      
+      const result = await res.json();
+      return result;
+    }
+    catch (error) {
+      console.error("Error fetching booking suggestion:", error);
+      return null;
+    }
+  },
+
   async updateReservationStatus(rs: IReservationStatus) {
     const response = await fetch(
       `${apiUrl}/api/Reservations/UpdateReservationStatus`,
@@ -77,7 +109,6 @@ const reservationService = {
 
     return data;
   },
-  
 };
 
 export default reservationService;

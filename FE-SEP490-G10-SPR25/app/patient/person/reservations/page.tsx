@@ -2,9 +2,9 @@
 import FilterButtonList from "@/components/FilterButtonList";
 import reservationService from "@/services/reservationService";
 import PaginatedItems from "@/components/PaginatedItems";
-import ReservationList from "../../components/ReservationList";
+import ReservationList from "./components/ReservationList";
 import SelectSort from "@/components/SelectSort";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingTable } from "@/components/LoadingTable";
 import { useSearchParams } from "next/navigation";
@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useUser } from "@/contexts/UserContext";
 
 const ReservationPage = () => {
   const searchParams = useSearchParams();
@@ -20,14 +21,13 @@ const ReservationPage = () => {
   const sortBy = searchParams.get("sortBy") || "Cuộc hẹn gần đây";
   const [patientId, setPatientId] = useState<string>("1");
   const queryClient = useQueryClient();
+  const { user } = useUser(); 
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("currentUser");
-    if (storedUser) {
-      const user = JSON.parse(storedUser) as IUser;
+    if (user) {
       setPatientId(user?.userId);
     }
-  }, []);
+  }, [user]);
 
   const sortOptions: ISortOption[] = [
     { label: "Cuộc hẹn gần đây", value: "Cuộc hẹn gần đây" },
@@ -88,7 +88,7 @@ const ReservationPage = () => {
     staleTime: 30000,
   });
 
-  const handleCancelSuccess = async (reservationId: string) => {
+  const handleCancelSuccess = async () => {
     try {
       toast.success("Hủy đặt chỗ  thành công!", {
         position: "top-right",
@@ -102,12 +102,12 @@ const ReservationPage = () => {
         }),
         queryClient.invalidateQueries({ queryKey: ["statusList"] }),
       ]);
-    } catch (error) {
+    } catch {
       toast.error("Có lỗi khi cập nhật dữ liệu");
     }
   };
-  const handleCancelFailed = (error: any) => {
-    toast.error(error?.message , {
+  const handleCancelFailed = (error: { message: string }) => {
+    toast.error(error?.message, {
       position: "top-right",
       autoClose: 3000,
       style: { marginTop: "4rem" },

@@ -9,8 +9,13 @@ using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Application.Services
 {
@@ -213,7 +218,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 if (slotId.HasValue)
                 {
                     query = query.Where(ds => ds.SlotId == slotId.Value);
-                }
+        }
 
                 var doctorSchedules =  query.Include(d => d.Doctor)
                     .ThenInclude(u => u.DoctorNavigation)
@@ -238,7 +243,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 return await doctorSchedules;
             }
             catch (Exception ex)
-            {
+        {
                 throw;
             }
         }
@@ -257,10 +262,10 @@ namespace AppointmentSchedulingApp.Application.Services
             {
                 query = query.Where(ds =>
                     ds.Doctor.DoctorNavigation.UserName.Contains(doctorName));
-            }
+        }
 
             var doctorSchedules = await query.Select(d => new DoctorScheduleDTO
-            {
+        {
                 DoctorScheduleId = d.DoctorScheduleId,
                 DoctorId = d.DoctorId,
                 ServiceId = d.ServiceId,

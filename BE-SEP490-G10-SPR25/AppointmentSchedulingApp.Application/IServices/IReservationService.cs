@@ -17,5 +17,7 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<ReservationDTO> GetReservationById(int reservationId);
         Task<ReservationStatusDTO> ViewCancellationReason(int reservationId);
 
+        Task<List<ReservationDTO>> GetActiveReservationsForThisWeek();
+
     }
 }

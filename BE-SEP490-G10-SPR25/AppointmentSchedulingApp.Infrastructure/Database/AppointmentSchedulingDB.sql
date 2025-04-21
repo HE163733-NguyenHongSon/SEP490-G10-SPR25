@@ -40,7 +40,7 @@ INSERT INTO Users (CitizenId, Email, Password, UserName, Phone, Gender, Dob, Add
 VALUES
 -- id 1-10 Giám hộ ,1 số kiêm bệnh nhân---
 
-(035002001001, 'giamho.benhnhan.user1@example.com', 'password123', N'Văn An', '0901234567', N'Nam', '1980-01-01', N'12 Trần Phú, Quận 5, TP.HCM', 'giamho_1.jpg', 1),
+(035002001001, 'sonnhhe163733@fpt.edu.vn', 'password123', N'Văn An', '0901234567', N'Nam', '1980-01-01', N'12 Trần Phú, Quận 5, TP.HCM', 'giamho_1.jpg', 1),
 (035002001002, 'giamho.benhnhan.user2@example.com', 'password456', N'Thị Bé', '0902345678', N'Nữ', '1982-02-02', N'34 Nguyễn Trãi, Quận 1, TP.HCM', 'giamho_2.jpg', 1),
 (035002001003, 'giamho.user3@example.com', 'password789', N'Văn Ca', '0903456789', N'Nam', '1975-03-03', N'56 Lý Tự Trọng, Quận 1, TP.HCM', 'giamho_3.jpg', 1),
 (035002001004, 'giamho.user4@example.com', 'password000', N'Thị Duyên', '0904567890', N'Nữ', '1978-04-04', N'78 Cách Mạng Tháng 8, Quận 10, TP.HCM', 'giamho_4.jpg', 1),
@@ -631,7 +631,7 @@ INSERT INTO Slots (SlotId, SlotStartTime, SlotEndTime)
 VALUES
 ('1', '07:30:00', '08:30:00'),
 ('2', '08:40:00', '09:40:00'),
-('3', '09:50:00', '10:50:00'),
+('3', '09:50:00', '10:50:00'),     
 ('4', '11:00:00', '12:00:00'),
 ('5', '13:00:00', '14:00:00'),
 ('6', '14:10:00', '15:10:00'),
@@ -697,11 +697,12 @@ VALUES
   600000, '00:20:00', 0, 2, N'dichvu_1.jpg',4.6,12),
 
 
-(N'Khám răng',
-  N'Khám răng là quá trình kiểm tra tình trạng sức khỏe răng miệng, phát hiện các vấn đề như sâu răng, viêm nướu hoặc các bệnh lý liên quan khác. Khám răng định kỳ giúp duy trì sức khỏe răng miệng tốt.',
-  N'1. Kiểm tra răng miệng tổng quát.\n2. Đánh giá tình trạng nướu, men răng và các tổn thương khác.\n3. Chụp X-quang răng nếu cần thiết.\n4. Tư vấn về chăm sóc răng miệng và điều trị nếu có vấn đề.',
-  N'Sử dụng máy khoan răng, máy cạo vôi răng, dụng cụ vệ sinh răng miệng và máy chụp X-quang.',
-  700000, '00:05:00', 1, 12, N'dichvu_2.jpg',4.5,10),
+(N'Khám tai mũi họng tổng quát',
+ N'Dịch vụ khám tổng quát các cơ quan tai, mũi, họng nhằm phát hiện và điều trị sớm các bệnh lý như viêm mũi xoang, viêm tai giữa, viêm họng hoặc rối loạn giọng nói.',
+ N'1. Khai thác triệu chứng và tiền sử bệnh tai mũi họng.\n2. Soi tai, mũi, họng bằng dụng cụ chuyên dụng.\n3. Kiểm tra chức năng nghe, mũi và thanh quản nếu cần.\n4. Tư vấn điều trị và hướng dẫn chăm sóc.',
+ N'Đèn soi tai mũi họng, máy nội soi tai mũi họng, que đè lưỡi, máy đo thính lực.',
+ 700000, '00:20:00', 1, 12, N'dichvu_2.jpg',4.5,10),
+
 
 (N'Khám mắt',
  N'Khám mắt là quy trình kiểm tra chức năng thị lực và các bệnh lý về mắt như cận thị, loạn thị, viễn thị và các vấn đề khác về võng mạc.',
@@ -751,11 +752,12 @@ VALUES
  N'Máy đo chỉ số cơ thể, bảng phân tích dinh dưỡng...', 
  500000, '01:00:00', 0, 1, N'dichvu_10.jpg',4.7,23), 
 
-(N'Tiêm chủng', 
- N'Tiêm phòng định kỳ và du lịch nhằm bảo vệ sức khỏe...', 
- N'1. Tư vấn về các loại vắc-xin...\n2. Tiêm vắc-xin...',      
- N'Vắc-xin các loại, bộ tiêm chủng...', 
- 200000, '00:15:00', 1, 10, N'dichvu_11.jpg',4.3,12), 
+(N'Tiêm chủng cho trẻ em', 
+ N'Tiêm phòng định kỳ và du lịch dành riêng cho trẻ em nhằm bảo vệ sức khỏe, phòng ngừa các bệnh truyền nhiễm nguy hiểm cho trẻ em, đặc biệt là trong giai đoạn phát triển.',
+ N'1. Tư vấn về các loại vắc-xin dành cho trẻ em, bao gồm các vắc-xin phòng ngừa bệnh truyền nhiễm nguy hiểm.\n2. Tiêm các vắc-xin cho trẻ theo độ tuổi và lịch tiêm chủng.\n3. Đánh giá sức khỏe của trẻ trước và sau khi tiêm.\n4. Hướng dẫn phụ huynh về các biện pháp phòng ngừa và chăm sóc sau tiêm.',
+ N'Vắc-xin các loại, bộ tiêm chủng cho trẻ em, các thiết bị theo dõi sức khỏe.',
+ 200000, '00:15:00', 1, 10, N'dichvu_11.jpg', 4.3, 12),
+
 
 (N'Chiropractic', 
  N'Kiểm tra và nắn chỉnh cột sống...', 
@@ -763,17 +765,18 @@ VALUES
  N'Bàn nắn chỉnh cột sống, dụng cụ hỗ trợ...', 
  800000, '01:00:00', 0, 7, N'dichvu_12.jpg',4.6,34), 
 
-(N'Đo thính lực', 
- N'Đánh giá khả năng nghe và xác định...', 
- N'1. Khai thác tiền sử thính giác...\n2. Kiểm tra thính lực...', 
- N'Máy đo thính lực, máy trợ thính...', 
- 600000, '00:30:00', 0, 12, N'dichvu_13.jpg',5,34), 
+(N'Kiểm tra thính giác chuyên sâu', 
+ N'Dịch vụ kiểm tra thính lực giúp phát hiện sớm các vấn đề về khả năng nghe, phục vụ chẩn đoán và điều trị các bệnh liên quan đến tai.', 
+ N'1. Khai thác tiền sử nghe kém, ù tai.\n2. Đo thính lực bằng thiết bị chuyên dụng.\n3. Đánh giá kết quả và tư vấn điều trị nếu phát hiện bất thường.\n4. Hướng dẫn sử dụng máy trợ thính nếu cần.',
+ N'Máy đo thính lực, tai nghe kiểm tra, buồng cách âm.',
+ 600000, '00:30:00', 0, 12, N'dichvu_13.jpg',5.0,34),
 
-(N'Khám gan', 
- N'Kiểm tra chức năng và sức khỏe của gan...', 
- N'1. Khai thác bệnh sử liên quan đến gan...\n2. Siêu âm gan, xét nghiệm chức năng gan...', 
- N'Máy siêu âm, thiết bị xét nghiệm men gan...', 
- 900000, '00:45:00', 1, 2, N'dichvu_14.jpg',4.7,12),
+
+(N'Tư vấn dinh dưỡng tiêu hóa', 
+ N'Cung cấp lời khuyên chuyên sâu về chế độ ăn uống và lối sống giúp cải thiện chức năng tiêu hóa và phòng ngừa các bệnh về dạ dày, ruột.',
+ N'1. Đánh giá thói quen ăn uống và lối sống hiện tại.\n2. Tư vấn thực đơn phù hợp với từng tình trạng sức khỏe tiêu hóa.\n3. Hướng dẫn thay đổi thói quen sinh hoạt nhằm cải thiện hệ tiêu hóa.\n4. Theo dõi và đánh giá hiệu quả điều chỉnh sau một thời gian.',
+ N'Tài liệu hướng dẫn dinh dưỡng, bảng thực đơn mẫu, thiết bị phân tích thành phần cơ thể.', 
+ 750000, '00:45:00', 1, 4, N'dichvu_22.jpg', 4.6, 18),
 
 
 (N'Khám chỉnh hình', 
@@ -806,11 +809,12 @@ VALUES
  N'Máy nội soi dạ dày, máy nội soi đại tràng...', 
  1100000, '01:30:00', 1, 4, N'dichvu_19.jpg',4.4,24),
 
-(N'Khám thận',
-N'Kiểm tra và đánh giá chức năng thận để phát hiện sớm các vấn đề về tiết niệu.',
-N'1. Khai thác tiền sử bệnh lý liên quan đến thận.\n2. Xét nghiệm nước tiểu, máu để kiểm tra chức năng thận.\n3. Siêu âm thận và đường tiết niệu.\n4. Tư vấn chế độ ăn uống và sinh hoạt.',
-N'Máy siêu âm, máy xét nghiệm, thiết bị đo huyết áp.',
-900000, '00:45:00', 1, 2, N'dichvu_20.jpg',3.9,3);
+(N'Khám mạch vành',
+N'Kiểm tra và đánh giá chức năng của mạch vành để phát hiện các vấn đề liên quan đến tim mạch, bao gồm bệnh mạch vành, tắc nghẽn động mạch, và các bệnh lý tim mạch khác.',
+N'1. Khai thác tiền sử bệnh tim mạch, bệnh lý gia đình liên quan đến mạch vành.\n2. Đo các chỉ số sinh tồn: huyết áp, nhịp tim.\n3. Thực hiện các xét nghiệm như điện tâm đồ (ECG), siêu âm tim, chụp CT mạch vành hoặc chụp mạch máu qua catheter.\n4. Đánh giá tình trạng mạch vành và tư vấn điều trị nếu cần thiết.',
+N'Sử dụng máy đo huyết áp, máy điện tim (ECG), máy siêu âm tim Doppler, máy chụp CT mạch vành.',
+800000, '00:30:00', 1, 2, N'dichvu_21.jpg',4.5, 15);
+
 
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -830,46 +834,101 @@ CREATE TABLE DoctorSchedules (
 INSERT INTO DoctorSchedules (DoctorId, ServiceId, DayOfWeek, SlotId, RoomId)
 VALUES
 (33, 2, N'Thứ Hai', 1, 1),
-(34, 3, N'Thứ Hai', 1, 2),
-(35, 4, N'Thứ Hai', 1, 3),
-
-(33, 2, N'Thứ Tư', 1, 1),
-(34, 3, N'Thứ Tư', 1, 2),
-(35, 4, N'Thứ Tư', 1, 3),
-
-(33, 2, N'Thứ Sáu', 1, 1),
-(34, 3, N'Thứ Sáu', 1, 2),
-(35, 4, N'Thứ Sáu', 1, 3),
-
-
-(34, 6, N'Thứ Ba', 1, 1),
-(34, 7, N'Thứ Ba', 2, 1),
-(34, 8, N'Thứ Năm', 3, 1),
-
-(35, 9, N'Thứ Hai', 3, 1),
-(35, 10, N'Thứ Tư', 3, 2),
-(35, 11, N'Thứ Sáu', 2, 1),
-
-(36, 12, N'Thứ Ba', 3, 1),
-(36, 13, N'Thứ Năm', 2, 1),
-(36, 14, N'Thứ Sáu', 3, 2),
-
-(37, 15, N'Thứ Hai', 1, 3),
-(37, 16, N'Thứ Ba', 2, 3),
-(37, 17, N'Thứ Năm', 1, 3),
-(37, 18, N'Thứ Sáu', 3, 3),
-
-(38, 19, N'Thứ Hai', 2, 4),
-(38, 19, N'Thứ Ba', 2, 4),
-(38, 19, N'Thứ Tư', 2, 4),
-(38, 19, N'Thứ Năm', 2, 4),
-(38, 19, N'Thứ Sáu', 2, 4),
-
-(39, 4, N'Thứ Hai', 3, 5),
-(39, 5, N'Thứ Ba', 2, 5),
-(39, 6, N'Thứ Tư', 1, 5),
-(39, 7, N'Thứ Năm', 3, 5),
-(39, 8, N'Thứ Sáu', 2, 5);
+(33, 3, N'Thứ Hai', 2, 2),
+(33, 4, N'Thứ Hai', 3, 3),
+(33, 5, N'Thứ Hai', 4, 4),
+(33, 6, N'Thứ Hai', 5, 5),
+(34, 7, N'Thứ Hai', 6, 6),
+(34, 8, N'Thứ Hai', 7, 7),
+(34, 9, N'Thứ Hai', 8, 8),
+(34, 10, N'Thứ Ba', 1, 9),
+(34, 11, N'Thứ Ba', 2, 10),
+(35, 12, N'Thứ Ba', 3, 11),
+(35, 13, N'Thứ Ba', 4, 12),
+(35, 14, N'Thứ Ba', 5, 13),
+(35, 15, N'Thứ Ba', 6, 14),
+(36, 16, N'Thứ Ba', 7, 15),
+(36, 17, N'Thứ Ba', 8, 16),
+(36, 18, N'Thứ Tư', 1, 17),
+(36, 19, N'Thứ Tư', 2, 18),
+(37, 20, N'Thứ Tư', 3, 19),
+(37, 1, N'Thứ Tư', 4, 1),
+(37, 2, N'Thứ Tư', 5, 2),
+(37, 3, N'Thứ Tư', 6, 3),
+(38, 4, N'Thứ Tư', 7, 4),
+(38, 5, N'Thứ Tư', 8, 5),
+(38, 6, N'Thứ Năm', 1, 6),
+(38, 7, N'Thứ Năm', 2, 7),
+(39, 8, N'Thứ Năm', 3, 8),
+(39, 9, N'Thứ Năm', 4, 9),
+(39, 10, N'Thứ Năm', 5, 10),
+(39, 11, N'Thứ Năm', 6, 11),
+(40, 12, N'Thứ Năm', 7, 12),
+(40, 13, N'Thứ Năm', 8, 13),
+(40, 14, N'Thứ Sáu', 1, 14),
+(40, 15, N'Thứ Sáu', 2, 15),
+(41, 16, N'Thứ Sáu', 3, 16),
+(41, 17, N'Thứ Sáu', 4, 17),
+(41, 18, N'Thứ Sáu', 5, 18),
+(41, 19, N'Thứ Sáu', 6, 19),
+(42, 20, N'Thứ Sáu', 7, 1),
+(42, 1, N'Thứ Sáu', 8, 2),
+(42, 2, N'Thứ Bảy', 1, 3),
+(42, 3, N'Thứ Bảy', 2, 4),
+(43, 4, N'Thứ Bảy', 3, 5),
+(43, 5, N'Thứ Bảy', 4, 6),
+(43, 6, N'Thứ Bảy', 5, 7),
+(43, 7, N'Thứ Bảy', 6, 8),
+(44, 8, N'Thứ Bảy', 7, 9),
+(44, 9, N'Thứ Bảy', 8, 10),
+(44, 10, N'Thứ Hai', 1, 11),
+(44, 11, N'Thứ Hai', 2, 12),
+(45, 12, N'Thứ Hai', 3, 13),
+(45, 13, N'Thứ Hai', 4, 14),
+(45, 14, N'Thứ Hai', 5, 15),
+(45, 15, N'Thứ Hai', 6, 16),
+(46, 16, N'Thứ Hai', 7, 17),
+(46, 17, N'Thứ Hai', 8, 18),
+(46, 18, N'Thứ Ba', 1, 19),
+(46, 19, N'Thứ Ba', 2, 1),
+(47, 20, N'Thứ Ba', 3, 2),
+(47, 1, N'Thứ Ba', 4, 3),
+(47, 2, N'Thứ Ba', 5, 4),
+(47, 3, N'Thứ Ba', 6, 5),
+(48, 4, N'Thứ Ba', 7, 6),
+(48, 5, N'Thứ Ba', 8, 7),
+(48, 6, N'Thứ Tư', 1, 8),
+(48, 7, N'Thứ Tư', 2, 9),
+(49, 8, N'Thứ Tư', 3, 10),
+(49, 9, N'Thứ Tư', 4, 11),
+(49, 10, N'Thứ Tư', 5, 12),
+(49, 11, N'Thứ Tư', 6, 13),
+(50, 12, N'Thứ Tư', 7, 14),
+(50, 13, N'Thứ Tư', 8, 15),
+(50, 14, N'Thứ Năm', 1, 16),
+(50, 15, N'Thứ Năm', 2, 17),
+(51, 16, N'Thứ Năm', 3, 18),
+(51, 17, N'Thứ Năm', 4, 19),
+(51, 18, N'Thứ Năm', 5, 1),
+(51, 19, N'Thứ Năm', 6, 2),
+(52, 20, N'Thứ Năm', 7, 3),
+(52, 1, N'Thứ Năm', 8, 4),
+(52, 2, N'Thứ Sáu', 1, 5),
+(52, 3, N'Thứ Sáu', 2, 6),
+(33, 4, N'Thứ Sáu', 3, 7),
+(33, 5, N'Thứ Sáu', 4, 8),
+(34, 6, N'Thứ Sáu', 5, 9),
+(34, 7, N'Thứ Sáu', 6, 10),
+(35, 8, N'Thứ Sáu', 7, 11),
+(35, 9, N'Thứ Sáu', 8, 12),
+(36, 10, N'Thứ Bảy', 1, 13),
+(36, 11, N'Thứ Bảy', 2, 14),
+(37, 12, N'Thứ Bảy', 3, 15),
+(37, 13, N'Thứ Bảy', 4, 16),
+(38, 14, N'Thứ Bảy', 5, 17),
+(38, 15, N'Thứ Bảy', 6, 18),
+(39, 16, N'Thứ Bảy', 7, 19),
+(39, 17, N'Thứ Bảy', 8, 1);
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -880,8 +939,6 @@ CREATE TABLE Reservations (
   Reason nvarchar(max),
   PriorExaminationImg nvarchar(200) NULL,
   AppointmentDate datetime NOT NULL,
-  StartTime datetime NOT NULL,
-  EndTime datetime NOT NULL,
   Status nvarchar(20) NOT NULL,
   CancellationReason nvarchar(255) NULL,
   CreatedDate datetime NOT NULL DEFAULT GETDATE(),
@@ -895,127 +952,127 @@ CREATE TABLE Reservations (
   CONSTRAINT UpdatedByUser_FK FOREIGN KEY (UpdatedByUserId) REFERENCES Users(UserId)
 );
 
-INSERT INTO Reservations (PatientId, DoctorScheduleId, Reason, PriorExaminationImg, AppointmentDate, StartTime, EndTime, Status, CancellationReason,CreatedByUserId, UpdatedByUserId
+INSERT INTO Reservations (PatientId, DoctorScheduleId, Reason, PriorExaminationImg, AppointmentDate, Status, CancellationReason,CreatedByUserId, UpdatedByUserId
 )
 VALUES
-(1, 1, N'Muốn khám', N'lichhen1_benhnhan1_phacdotruoc.jpg', '2025-01-10', '09:15:00', '09:45:00', N'Hoàn thành', NULL, 1, 31),
-(1, 2, N'Tái khám', N'lichhen2_benhnhan1_phacdotruoc.jpg', '2025-01-15', '09:00:00', '09:30:00', N'Hoàn thành', NULL, 1, 32),
-(1, 3, N'Muốn khám', NULL, '2025-01-20', '10:00:00', '10:30:00', N'Đang chờ', NULL, 1, 31),
-(1, 4, N'Không khỏe', NULL, '2025-01-19', '11:00:00', '11:45:00', N'Xác nhận', NULL, 1, 32),
-(1, 5, N'Cần kiểm tra sức khỏe', NULL, '2025-01-27', '14:00:00', '14:45:00', N'Xác nhận', NULL, 1, 31),
-(1, 6, N'Cần tư vấn', NULL, '2025-01-23', '09:30:00', '10:00:00', N'Xác nhận', NULL, 1, 32),
-(1, 7, N'Tái khám', NULL, '2025-01-17', '14:30:00', '15:00:00', N'Xác nhận', NULL, 1, 31),
-(1, 8, N'Muốn khám', NULL, '2025-01-18', '08:30:00', '09:15:00', N'Đã hủy', N'Bệnh nhân hủy', 1, 32),
-(1, 9, N'Cần tư vấn', NULL, '2025-01-20', '13:00:00', '13:45:00', N'Không đến', NULL, 1, 31),
-(1, 10, N'Muốn khám', NULL, '2025-01-21', '15:00:00', '15:30:00', N'Xác nhận', NULL, 1, 32),
-(1, 11, N'Không khỏe', NULL, '2025-01-22', '16:30:00', '17:00:00', N'Đang chờ', NULL, 1, 31),
-(1, 12, N'Muốn khám', NULL, '2025-01-24', '10:45:00', '11:15:00', N'Đã hủy', N'Bệnh nhân hủy', 1, 32),
-(1, 13, N'Cần kiểm tra sức khỏe', NULL, '2025-01-25', '12:00:00', '12:30:00', N'Hoàn thành', NULL, 1, 31),
-(1, 14, N'Không khỏe', NULL, '2025-01-26', '11:00:00', '11:45:00', N'Không đến', NULL, 1, 32),
-(1, 15, N'Muốn khám', NULL, '2025-01-28', '08:00:00', '08:45:00', N'Xác nhận', NULL, 1, 31),
+(1, 1, N'Muốn khám', N'lichhen1_benhnhan1_phacdotruoc.jpg', '2025-01-10', N'Hoàn thành', NULL, 1, 31),
+(1, 2, N'Tái khám', N'lichhen2_benhnhan1_phacdotruoc.jpg', '2025-01-15',  N'Hoàn thành', NULL, 1, 32),
+(1, 3, N'Muốn khám', NULL, '2025-08-20',  N'Đang chờ', NULL, 1, 31),
+(1, 4, N'Không khỏe', NULL, '2025-01-19',  N'Xác nhận', NULL, 1, 32),
+(1, 5, N'Cần kiểm tra sức khỏe', NULL, '2025-08-27',  N'Đang chờ', NULL, 1, 31),
+(1, 6, N'Cần tư vấn', NULL, '2025-01-23',  N'Xác nhận', NULL, 1, 32),
+(1, 7, N'Tái khám', NULL, '2025-01-17',  N'Xác nhận', NULL, 1, 31),
+(1, 8, N'Muốn khám', NULL, '2025-01-18',  N'Đã hủy', N'Bệnh nhân hủy', 1, 32),
+(1, 9, N'Cần tư vấn', NULL, '2025-01-20',  N'Không đến', NULL, 1, 31),
+(1, 10, N'Muốn khám', NULL, '2025-01-21',  N'Xác nhận', NULL, 1, 32),
+(1, 11, N'Không khỏe', NULL, '2025-08-22',  N'Đang chờ', NULL, 1, 31),
+(1, 12, N'Muốn khám', NULL, '2025-01-24',  N'Đã hủy', N'Bệnh nhân hủy', 1, 32),
+(1, 13, N'Cần kiểm tra sức khỏe', NULL, '2025-01-25',  N'Hoàn thành', NULL, 1, 31),
+(1, 14, N'Không khỏe', NULL, '2025-01-26', N'Không đến', NULL, 1, 32),
+(1, 15, N'Muốn khám', NULL, '2025-08-28',  N'Đang chờ', NULL, 1, 31),
 
 -- Patient 11 (do bệnh nhân tự đặt lịch)
-(11, 21, N'Muốn khám', NULL, '2025-02-05', '09:00:00', '09:30:00', N'Xác nhận', NULL, 11, 11),
-(11, 22, N'Cần kiểm tra', NULL, '2025-02-06', '10:15:00', '10:45:00', N'Hoàn thành', NULL, 11, 11),
-(11, 23, N'Cần tư vấn', NULL, '2025-02-07', '14:00:00', '14:30:00', N'Đang chờ', NULL, 11, 11),
+(11, 21, N'Muốn khám', NULL, '2025-02-05',  N'Xác nhận', NULL, 11, 11),
+(11, 22, N'Cần kiểm tra', NULL, '2025-02-06',  N'Hoàn thành', NULL, 11, 11),
+(11, 23, N'Cần tư vấn', NULL, '2025-02-07',  N'Đang chờ', NULL, 11, 11),
 
 -- Patient 12 (do tiếp tân đặt - id 31)
-(12, 24, N'Thấy không ổn', NULL, '2025-02-08', '11:30:00', '12:00:00', N'Xác nhận', NULL, 31, 31),
-(12, 25, N'Kiểm tra định kỳ', NULL, '2025-02-09', '15:00:00', '15:45:00', N'Đã hủy', N'Bệnh nhân bận đột xuất', 31, 31),
-(12, 26, N'Cần gặp bác sĩ', NULL, '2025-02-10', '16:30:00', '17:15:00', N'Không đến', NULL, 31, 31),
+(12, 24, N'Thấy không ổn', NULL, '2025-02-08',  N'Xác nhận', NULL, 31, 31),
+(12, 25, N'Kiểm tra định kỳ', NULL, '2025-02-09',  N'Đã hủy', N'Bệnh nhân bận đột xuất', 31, 31),
+(12, 26, N'Cần gặp bác sĩ', NULL, '2025-02-10',  N'Không đến', NULL, 31, 31),
 
 -- Patient 13 (do bệnh nhân tự đặt lịch)
-(13, 27, N'Khám sức khỏe', NULL, '2025-02-11', '08:00:00', '08:45:00', N'Hoàn thành', NULL, 13, 13),
-(13, 28, N'Làm xét nghiệm', NULL, '2025-02-12', '09:30:00', '10:00:00', N'Xác nhận', NULL, 13, 13),
-(13, 29, N'Cảm thấy khó chịu', NULL, '2025-02-13', '14:15:00', '14:45:00', N'Đang chờ', NULL, 13, 13),
+(13, 27, N'Khám sức khỏe', NULL, '2025-02-11',  N'Hoàn thành', NULL, 13, 13),
+(13, 28, N'Làm xét nghiệm', NULL, '2025-02-12',  N'Xác nhận', NULL, 13, 13),
+(13, 29, N'Cảm thấy khó chịu', NULL, '2025-02-13',  N'Đang chờ', NULL, 13, 13),
 
 -- Patient 14 (do tiếp tân đặt - id 32)
-(14, 30, N'Muốn kiểm tra', NULL, '2025-02-14', '10:45:00', '11:15:00', N'Xác nhận', NULL, 32, 32),
-(14, 1, N'Cần tư vấn', NULL, '2025-02-15', '13:00:00', '13:30:00', N'Hoàn thành', NULL, 32, 32),
-(14, 2, N'Khám định kỳ', NULL, '2025-02-16', '15:30:00', '16:00:00', N'Đã hủy', N'Bác sĩ nghỉ đột xuất', 32, 32),
+(14, 30, N'Muốn kiểm tra', NULL, '2025-02-14',  N'Xác nhận', NULL, 32, 32),
+(14, 1, N'Cần tư vấn', NULL, '2025-02-15',  N'Hoàn thành', NULL, 32, 32),
+(14, 2, N'Khám định kỳ', NULL, '2025-02-16',  N'Đã hủy', N'Bác sĩ nghỉ đột xuất', 32, 32),
 
 -- Patient 15
-(15, 3, N'Muốn kiểm tra', NULL, '2025-02-17', '09:15:00', '09:45:00', N'Xác nhận', NULL, 15, 31),
-(15, 4, N'Kiểm tra thính lực', NULL, '2025-02-18', '11:00:00', '11:30:00', N'Không đến', NULL, 15, 32),
-(15, 5, N'Tư vấn sức khỏe', NULL, '2025-02-19', '14:00:00', '14:45:00', N'Đang chờ', NULL, 15, 31),
+(15, 3, N'Muốn kiểm tra', NULL, '2025-02-17',  N'Xác nhận', NULL, 15, 31),
+(15, 4, N'Kiểm tra thính lực', NULL, '2025-02-18',  N'Không đến', NULL, 15, 32),
+(15, 5, N'Tư vấn sức khỏe', NULL, '2025-02-19',  N'Đang chờ', NULL, 15, 31),
 
 -- Patient 16
-(16, 6, N'Muốn kiểm tra sức khỏe', NULL, '2025-02-20', '08:30:00', '09:00:00', N'Xác nhận', NULL, 16, 32),
-(16, 7, N'Cảm thấy không ổn', NULL, '2025-02-21', '10:15:00', '10:45:00', N'Hoàn thành', NULL, 16, 31),
-(16, 8, N'Cần tư vấn sức khỏe', NULL, '2025-02-22', '13:30:00', '14:00:00', N'Đã hủy', N'Bệnh nhân chuyển lịch', 16, 32),
+(16, 6, N'Muốn kiểm tra sức khỏe', NULL, '2025-02-20',  N'Xác nhận', NULL, 16, 32),
+(16, 7, N'Cảm thấy không ổn', NULL, '2025-02-21',  N'Hoàn thành', NULL, 16, 31),
+(16, 8, N'Cần tư vấn sức khỏe', NULL, '2025-02-22',  N'Đã hủy', N'Bệnh nhân chuyển lịch', 16, 32),
 
 -- Patient 17
-(17, 9, N'Muốn khám tổng quát', NULL, '2025-02-23', '15:00:00', '15:30:00', N'Xác nhận', NULL, 17, 31),
-(17, 10, N'Đi kiểm tra định kỳ', NULL, '2025-02-24', '16:45:00', '17:15:00', N'Không đến', NULL, 17, 32),
-(17, 11, N'Không rõ triệu chứng, muốn kiểm tra', NULL, '2025-02-25', '09:30:00', '10:00:00', N'Đang chờ', NULL, 17, 31),
+(17, 9, N'Muốn khám tổng quát', NULL, '2025-02-23',  N'Xác nhận', NULL, 17, 31),
+(17, 10, N'Đi kiểm tra định kỳ', NULL, '2025-02-24',  N'Không đến', NULL, 17, 32),
+(17, 11, N'Không rõ triệu chứng, muốn kiểm tra', NULL, '2025-02-25',  N'Đang chờ', NULL, 17, 31),
 
 -- Patient 18
-(18, 12, N'Cảm thấy mệt mỏi', NULL, '2025-02-26', '11:00:00', '11:45:00', N'Xác nhận', NULL, 18, 32),
-(18, 13, N'Muốn kiểm tra để yên tâm', NULL, '2025-02-27', '14:15:00', '14:45:00', N'Hoàn thành', NULL, 18, 31),
-(18, 14, N'Cần tư vấn thêm', NULL, '2025-02-28', '16:30:00', '17:00:00', N'Đã hủy', N'Bệnh nhân khỏi bệnh', 18, 32),
+(18, 12, N'Cảm thấy mệt mỏi', NULL, '2025-02-26',  N'Xác nhận', NULL, 18, 32),
+(18, 13, N'Muốn kiểm tra để yên tâm', NULL, '2025-02-27',  N'Hoàn thành', NULL, 18, 31),
+(18, 14, N'Cần tư vấn thêm', NULL, '2025-02-28',  N'Đã hủy', N'Bệnh nhân khỏi bệnh', 18, 32),
 
 
 -- Patient 19
-(19, 15, N'Muốn kiểm tra tổng quát', NULL, '2025-03-01', '08:00:00', '08:30:00', N'Xác nhận', NULL, 19, 31),
-(19, 16, N'Cảm thấy không khỏe', NULL, '2025-03-02', '10:45:00', '11:15:00', N'Không đến', NULL, 19, 32),
-(19, 17, N'Khó chịu trong người', NULL, '2025-03-03', '13:00:00', '13:30:00', N'Đang chờ', NULL, 19, 31),
+(19, 15, N'Muốn kiểm tra tổng quát', NULL, '2025-03-01',  N'Xác nhận', NULL, 19, 31),
+(19, 16, N'Cảm thấy không khỏe', NULL, '2025-03-02',  N'Không đến', NULL, 19, 32),
+(19, 17, N'Khó chịu trong người', NULL, '2025-03-03',  N'Đang chờ', NULL, 19, 31),
 
 -- Patient 20
-(20, 18, N'Muốn kiểm tra sức khỏe', NULL, '2025-03-04', '15:30:00', '16:00:00', N'Xác nhận', NULL, 20, 32),
-(20, 19, N'Muốn khám để yên tâm', NULL, '2025-03-05', '09:15:00', '09:45:00', N'Hoàn thành', NULL, 20, 31),
-(20, 20, N'Cần khám lại', NULL, '2025-03-06', '11:30:00', '12:00:00', N'Đã hủy', N'Bệnh nhân nhập viện', 20, 32),
+(20, 18, N'Muốn kiểm tra sức khỏe', NULL, '2025-03-04',  N'Xác nhận', NULL, 20, 32),
+(20, 19, N'Muốn khám để yên tâm', NULL, '2025-03-05', N'Hoàn thành', NULL, 20, 31),
+(20, 20, N'Cần khám lại', NULL, '2025-03-06',  N'Đã hủy', N'Bệnh nhân nhập viện', 20, 32),
 
 -- Bệnh nhân 21
-(21, 1, N'Muốn khám', NULL, '2025-03-07', '08:30:00', '09:00:00', N'Hoàn thành', NULL, 21, 31),
-(21, 3, N'Cần kiểm tra', NULL, '2025-03-10', '14:15:00', '14:45:00', N'Xác nhận', NULL, 21, 32),
-(21, 5, N'Cần tư vấn', NULL, '2025-03-15', '10:00:00', '10:30:00', N'Đang chờ', NULL, 21, 31),
+(21, 1, N'Muốn khám', NULL, '2025-03-07',  N'Hoàn thành', NULL, 21, 31),
+(21, 3, N'Cần kiểm tra', NULL, '2025-03-10',  N'Xác nhận', NULL, 21, 32),
+(21, 5, N'Cần tư vấn', NULL, '2025-03-15',  N'Đang chờ', NULL, 21, 31),
 
 -- Bệnh nhân 22
-(22, 7, N'Thấy không ổn', NULL, '2025-03-08', '11:30:00', '12:00:00', N'Xác nhận', NULL, 22, 31),
-(22, 9, N'Kiểm tra định kỳ', NULL, '2025-03-12', '15:45:00', '16:15:00', N'Đã hủy', N'Bệnh nhân đi công tác', 22, 32),
-(22, 11, N'Cần gặp bác sĩ', NULL, '2025-03-18', '09:30:00', '10:00:00', N'Không đến', NULL, 22, 31),
+(22, 7, N'Thấy không ổn', NULL, '2025-03-08',  N'Xác nhận', NULL, 22, 31),
+(22, 9, N'Kiểm tra định kỳ', NULL, '2025-03-12',  N'Đã hủy', N'Bệnh nhân đi công tác', 22, 32),
+(22, 11, N'Cần gặp bác sĩ', NULL, '2025-03-18', N'Không đến', NULL, 22, 31),
 
 -- Bệnh nhân 23
-(23, 16, N'Muốn khám', NULL, '2025-01-29', '13:30:00', '14:00:00', N'Không đến', NULL, 23, 31),
-(23, 17, N'Cần tư vấn', NULL, '2025-01-30', '15:00:00', '15:30:00', N'Xác nhận', NULL, 23, 32),
-(23, 18, N'Khám sức khỏe', NULL, '2025-02-02', '11:30:00', '12:00:00', N'Đã hủy', N'Bệnh nhân hủy', 23, 31),
-(23, 19, N'Cảm thấy mệt', NULL, '2025-02-03', '14:45:00', '15:15:00', N'Không đến', NULL, 23, 32),
-(23, 20, N'Cần kiểm tra', NULL, '2025-02-04', '08:30:00', '09:00:00', N'Xác nhận', NULL, 23, 31),
+(23, 16, N'Muốn khám', NULL, '2025-01-29',  N'Không đến', NULL, 23, 31),
+(23, 17, N'Cần tư vấn', NULL, '2025-01-30',  N'Xác nhận', NULL, 23, 32),
+(23, 18, N'Khám sức khỏe', NULL, '2025-02-02',  N'Đã hủy', N'Bệnh nhân hủy', 23, 31),
+(23, 19, N'Cảm thấy mệt', NULL, '2025-02-03',  N'Không đến', NULL, 23, 32),
+(23, 20, N'Cần kiểm tra', NULL, '2025-02-04',  N'Xác nhận', NULL, 23, 31),
 
 -- Bệnh nhân 24
-(24, 13, N'Khám tổng quát', NULL, '2025-03-09', '13:00:00', '13:45:00', N'Hoàn thành', NULL, 24, 32),
-(24, 15, N'Làm xét nghiệm', NULL, '2025-03-14', '16:30:00', '17:00:00', N'Xác nhận', NULL, 24, 31),
-(24, 17, N'Cần kiểm tra', NULL, '2025-03-20', '08:15:00', '08:45:00', N'Đang chờ', NULL, 24, 32),
+(24, 13, N'Khám tổng quát', NULL, '2025-03-09',  N'Hoàn thành', NULL, 24, 32),
+(24, 15, N'Làm xét nghiệm', NULL, '2025-03-14',  N'Xác nhận', NULL, 24, 31),
+(24, 17, N'Cần kiểm tra', NULL, '2025-03-20',  N'Đang chờ', NULL, 24, 32),
 
 -- Bệnh nhân 25
-(25, 19, N'Muốn khám', NULL, '2025-03-11', '10:45:00', '11:15:00', N'Xác nhận', NULL, 25, 31),
-(25, 21, N'Cần tư vấn', NULL, '2025-03-16', '14:00:00', '14:30:00', N'Hoàn thành', NULL, 25, 32),
-(25, 23, N'Khám định kỳ', NULL, '2025-03-22', '11:30:00', '12:00:00', N'Đã hủy', N'Bác sĩ nghỉ ốm', 25, 31),
+(25, 19, N'Muốn khám', NULL, '2025-03-11', N'Xác nhận', NULL, 25, 31),
+(25, 21, N'Cần tư vấn', NULL, '2025-03-16', N'Hoàn thành', NULL, 25, 32),
+(25, 23, N'Khám định kỳ', NULL, '2025-03-22',  N'Đã hủy', N'Bác sĩ nghỉ ốm', 25, 31),
 
 -- Bệnh nhân 26
-(26, 25, N'Khám phụ khoa', NULL, '2025-03-13', '09:15:00', '09:45:00', N'Xác nhận', NULL, 26, 32),
-(26, 27, N'Kiểm tra', NULL, '2025-03-17', '15:00:00', '15:30:00', N'Không đến', NULL, 26, 31),
-(26, 29, N'Tư vấn sức khỏe', NULL, '2025-03-24', '13:45:00', '14:15:00', N'Đang chờ', NULL, 26, 32),
+(26, 25, N'Khám phụ khoa', NULL, '2025-03-13',  N'Xác nhận', NULL, 26, 32),
+(26, 27, N'Kiểm tra', NULL, '2025-03-17', N'Không đến', NULL, 26, 31),
+(26, 29, N'Tư vấn sức khỏe', NULL, '2025-03-24',  N'Đang chờ', NULL, 26, 32),
 
 -- Bệnh nhân 27
-(27, 2, N'Muốn khám', NULL, '2025-03-19', '08:30:00', '09:00:00', N'Xác nhận', NULL, 27, 31),
-(27, 4, N'Cần chụp chiếu', NULL, '2025-03-23', '10:15:00', '10:45:00', N'Hoàn thành', NULL, 27, 32),
-(27, 6, N'Cần tư vấn', NULL, '2025-03-27', '16:00:00', '16:30:00', N'Đã hủy', N'Bệnh nhân chuyển viện', 27, 31),
+(27, 2, N'Muốn khám', NULL, '2025-03-19',  N'Xác nhận', NULL, 27, 31),
+(27, 4, N'Cần chụp chiếu', NULL, '2025-03-23',  N'Hoàn thành', NULL, 27, 32),
+(27, 6, N'Cần tư vấn', NULL, '2025-03-27',  N'Đã hủy', N'Bệnh nhân chuyển viện', 27, 31),
 
 -- Bệnh nhân 28
-(28, 8, N'Khám mắt', NULL, '2025-03-21', '14:30:00', '15:00:00', N'Xác nhận', NULL, 28, 32),
-(28, 10, N'Kiểm tra', NULL, '2025-03-25', '09:45:00', '10:15:00', N'Không đến', NULL, 28, 31),
-(28, 12, N'Tư vấn', NULL, '2025-03-29', '11:00:00', '11:30:00', N'Đang chờ', NULL, 28, 32),
+(28, 8, N'Khám mắt', NULL, '2025-03-21',  N'Xác nhận', NULL, 28, 32),
+(28, 10, N'Kiểm tra', NULL, '2025-03-25',  N'Không đến', NULL, 28, 31),
+(28, 12, N'Tư vấn', NULL, '2025-03-29',  N'Đang chờ', NULL, 28, 32),
 
 -- Bệnh nhân 29
-(29, 14, N'Khám tổng quát', NULL, '2025-03-26', '13:15:00', '13:45:00', N'Xác nhận', NULL, 29, 31),
-(29, 16, N'Làm xét nghiệm', NULL, '2025-03-30', '15:30:00', '16:00:00', N'Hoàn thành', NULL, 29, 32),
-(29, 18, N'Cần tư vấn', NULL, '2025-04-02', '10:00:00', '10:30:00', N'Đã hủy', N'Bệnh nhân hết bệnh', 29, 31),
+(29, 14, N'Khám tổng quát', NULL, '2025-03-26',  N'Xác nhận', NULL, 29, 31),
+(29, 16, N'Làm xét nghiệm', NULL, '2025-03-30',  N'Hoàn thành', NULL, 29, 32),
+(29, 18, N'Cần tư vấn', NULL, '2025-04-02',  N'Đã hủy', N'Bệnh nhân hết bệnh', 29, 31),
 
 -- Bệnh nhân 30
-(30, 20, N'Muốn khám', NULL, '2025-03-28', '08:00:00', '08:30:00', N'Xác nhận', NULL, 30, 32),
-(30, 22, N'Cần kiểm tra', NULL, '2025-04-01', '11:45:00', '12:15:00', N'Không đến', NULL, 30, 31),
-(30, 24, N'Tư vấn', NULL, '2025-04-03', '14:00:00', '14:30:00', N'Đang chờ', NULL, 30, 32);
+(30, 20, N'Muốn khám', NULL, '2025-03-28',  N'Xác nhận', NULL, 30, 32),
+(30, 22, N'Cần kiểm tra', NULL, '2025-04-01',  N'Không đến', NULL, 30, 31),
+(30, 24, N'Tư vấn', NULL, '2025-04-03',  N'Đang chờ', NULL, 30, 32);
 
 
 -----------------------------------------------------------------------------------------------------------------------------------

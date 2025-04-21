@@ -8,7 +8,7 @@ interface IService {
   estimatedTime?: string;
   isPrepayment?: boolean;
   specialtyId: number;
-  image?: string;
+  image: string;
   rating?: number;
   ratingCount?: number;
 }

@@ -30,7 +30,7 @@ interface PostDetail {
   postImageUrl?: string;
   postCategory?: string;
   authorName?: string;
-  sections: PostSection[];
+  postSections: PostSection[];
   comments: Comment[];
 }
 
@@ -155,13 +155,13 @@ const PatientBlogDetailPage = () => {
           {new Date(post.postCreatedDate).toLocaleDateString("vi-VN")} - {post.authorName ?? "Ẩn danh"}
         </p>
 
-        {post.postImageUrl && (
+        {/* {post.postImageUrl && (
           <img
             src={`${process.env.NEXT_PUBLIC_S3_BASE_URL}/${post.postImageUrl}`}
             alt="Post Cover"
             className="w-full h-64 object-cover rounded-lg mb-6"
           />
-        )}
+        )} */}
 
         <p className="text-base text-gray-700 mb-6">{post.postDescription}</p>
 
@@ -173,7 +173,7 @@ const PatientBlogDetailPage = () => {
           </p>
         )}
 
-        {post.sections?.sort((a, b) => a.sectionIndex - b.sectionIndex).map((section, idx) => (
+        {post.postSections?.sort((a, b) => a.sectionIndex - b.sectionIndex).map((section, idx) => (
           <div key={idx} className="mb-10">
             <h2 className="text-xl font-semibold mb-2">{section.sectionTitle}</h2>
             {section.postImageUrl && (

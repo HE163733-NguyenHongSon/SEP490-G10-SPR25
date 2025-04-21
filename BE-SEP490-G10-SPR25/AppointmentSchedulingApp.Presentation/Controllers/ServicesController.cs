@@ -48,6 +48,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         }
 
         [HttpGet("specialty/{specialtyId}")]
+        [EnableQuery]
         public async Task<IActionResult> GetServicesBySpecialty(int specialtyId)
         {
             var services = await _serviceService.GetServicesBySpecialty(specialtyId);

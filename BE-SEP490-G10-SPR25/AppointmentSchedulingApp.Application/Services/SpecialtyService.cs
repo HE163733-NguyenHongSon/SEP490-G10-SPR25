@@ -4,6 +4,7 @@ using AppointmentSchedulingApp.Application.IServices;
 using AutoMapper;
 using AppointmentSchedulingApp.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentSchedulingApp.Application.Services
 {
@@ -26,8 +27,48 @@ namespace AppointmentSchedulingApp.Application.Services
 
         public async Task<SpecialtyDetailDTO> GetSpecialtyDetailById(int id)
         {
-            var specialty = await unitOfWork.SpecialtyRepository.Get(s => s.SpecialtyId == id);
-            return mapper.Map<SpecialtyDetailDTO>(specialty);
+            try
+            {
+                // Lấy thông tin chuyên khoa với id tương ứng, bao gồm cả Services và Doctors
+                var specialty = await unitOfWork.SpecialtyRepository.GetQueryable(s => s.SpecialtyId == id)
+                    .Include(s => s.Services)
+                        .ThenInclude(s => s.Devices)
+                    .Include(s => s.Doctors)
+                        .ThenInclude(d => d.DoctorNavigation)
+                    .FirstOrDefaultAsync();
+                
+                if (specialty == null)
+                {
+                    throw new ValidationException($"Specialty with ID {id} not found");
+                }
+
+                // Map specialty sang SpecialtyDetailDTO
+                var specialtyDetail = mapper.Map<SpecialtyDetailDTO>(specialty);
+
+                // Lấy danh sách tên thiết bị từ các dịch vụ của chuyên khoa
+                var deviceNames = specialty.Services
+                    .SelectMany(s => s.Devices)
+                    .Select(d => d.Name)
+                    .Distinct()
+                    .ToList();
+                specialtyDetail.Devices = deviceNames;
+
+                // Map các dịch vụ liên quan
+                specialtyDetail.Services = mapper.Map<List<ServiceDTO>>(specialty.Services);
+                
+                // Map các bác sĩ liên quan
+                specialtyDetail.Doctors = mapper.Map<List<DoctorDTO>>(specialty.Doctors);
+
+                return specialtyDetail;
+            }
+            catch (ValidationException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving specialty detail: {ex.Message}", ex);
+            }
         }
 
         public async Task AddSpecialty(SpecialtyDTO specialtyDto)

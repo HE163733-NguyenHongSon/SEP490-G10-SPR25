@@ -98,5 +98,9 @@ namespace AppointmentSchedulingApp.Application.Services
             await unitOfWork.CommitAsync();
             return true;
         }
+        public Task<int> GetPostSectionsCountAsync()
+        {
+            return _postRepository.GetPostSectionsCountAsync();
+        }
     }
 }

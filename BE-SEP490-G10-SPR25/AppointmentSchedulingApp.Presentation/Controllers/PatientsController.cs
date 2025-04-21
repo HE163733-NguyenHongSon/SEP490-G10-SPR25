@@ -1,10 +1,7 @@
 ﻿using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
-using AppointmentSchedulingApp.Application.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
-using Microsoft.Extensions.Logging;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -20,6 +17,17 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             _patientService = patientService;
 
         }
+        [HttpPost("AddPatient")]
+        public async Task<IActionResult> AddPatient([FromBody] AddedPatientDTO patientDTO)
+        {
+           PatientDTO result = await _patientService.AddPatient(patientDTO);
+
+            if (result !=null)
+                return Ok(result);
+            else
+                return BadRequest(new { success = false, message = "Bệnh nhân đã tồn tại" });
+        }
+
 
         [HttpGet]
         [EnableQuery]
@@ -59,7 +67,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+                return StatusCode(500, ex.Message);
             }
         }
 

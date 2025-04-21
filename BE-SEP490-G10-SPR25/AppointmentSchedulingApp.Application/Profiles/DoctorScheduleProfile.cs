@@ -9,19 +9,17 @@ namespace AppointmentSchedulingApp.Application.Profiles
         public DoctorScheduleProfile()
         {
             CreateMap<DoctorSchedule, DoctorScheduleDTO>()
-                //.ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.DoctorNavigation.UserName)) 
-                //.ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Service.ServiceName))
-                //.ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.Room.RoomName))
-                //.ForMember(dest => dest.SlotStartTime, opt => opt.MapFrom(src => src.Slot.SlotStartTime))             
-                //.ForMember(dest => dest.SlotEndTime, opt => opt.MapFrom(src => src.Slot.SlotEndTime))
-
-                .ForMember(dest => dest.DoctorScheduleId, opt => opt.MapFrom(src => src.DoctorScheduleId))
-                .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.DoctorId))
-                .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.ServiceId))
-                .ForMember(dest => dest.DayOfWeek, opt => opt.MapFrom(src => src.DayOfWeek))
-                .ForMember(dest => dest.RoomId, opt => opt.MapFrom(src => src.RoomId))
-                .ForMember(dest => dest.SlotId, opt => opt.MapFrom(src => src.SlotId))
-                .ReverseMap();
+                .ForMember(dest => dest.DoctorName, opt => opt.MapFrom(src => src.Doctor.DoctorNavigation.UserName))
+                .ForMember(dest => dest.DoctorImage, opt => opt.MapFrom(src => src.Doctor.DoctorNavigation.AvatarUrl))
+                .ForMember(dest => dest.Degree, opt => opt.MapFrom(src => src.Doctor.Degree))
+                .ForMember(dest => dest.AcademicTitle, opt => opt.MapFrom(src => src.Doctor.AcademicTitle))
+                .ForMember(dest => dest.ServiceName, opt => opt.MapFrom(src => src.Service.ServiceName))
+                .ForMember(dest => dest.ServiceImage, opt => opt.MapFrom(src => src.Service.Image))
+                .ForMember(dest => dest.ServicePrice, opt => opt.MapFrom(src => $"{src.Service.Price:N0} VNĐ"))
+                .ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.Room.RoomName))
+                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => src.Room.Location))
+                .ForMember(dest => dest.SlotStartTime, opt => opt.MapFrom(src => src.Slot.SlotStartTime))
+                .ForMember(dest => dest.SlotEndTime, opt => opt.MapFrom(src => src.Slot.SlotEndTime)).ReverseMap();
         }
     }
 }

@@ -53,10 +53,12 @@ const DoctorsPage = async ({
   }
   const searchOptions: ISearchOption[] = (
     await doctorService.getDoctorList()
-  ).map((d:IDoctor) => ({
-    label: d.userName,
-    value: d.userId,
-  }));
+  )
+    .map((d: IDoctor) => ({
+      label: d.userName,
+      value: d.userId,
+    }))
+    .filter((option) => option.value !== undefined) as ISearchOption[];
   return (
     <div className="flex flex-col h-screen mt-10 gap-5 ">
       <div className="flex flex-row flex-wrap items-center justify-center gap-5">

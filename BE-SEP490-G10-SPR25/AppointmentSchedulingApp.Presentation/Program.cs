@@ -3,21 +3,20 @@ using AppointmentSchedulingApp.Domain.IRepositories;
 using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AppointmentSchedulingApp.Infrastructure;
 using AppointmentSchedulingApp.Infrastructure.Database;
-using AppointmentSchedulingApp.Infrastructure.Repositories;
 using AppointmentSchedulingApp.Infrastructure.UnitOfWork;
 using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Infrastructure.Helper;
 using AppointmentSchedulingApp.Application.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using AppointmentSchedulingApp.Application.IServices;
 using System.Security.Claims;
 using AppointmentSchedulingApp.Presentation.Hubs;
+using Microsoft.AspNetCore.OData;
+using Microsoft.OData.ModelBuilder;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -27,14 +26,13 @@ var configuration = builder.Configuration;
 builder.Services.AddControllers();
 ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
 modelBuilder.EntitySet<ReservationDTO>("Reservations");
-//modelBuilder.EntityType<ReservationDTO>().Property(r => r.AppointmentDate).AsDate(); 
-modelBuilder.EntitySet<MedicalRecordDTO>("MedicalRecords");
 modelBuilder.EntitySet<DoctorDTO>("Doctors");
 modelBuilder.EntitySet<PatientDTO>("Patients");
 modelBuilder.EntitySet<SpecialtyDTO>("Specialties");
 modelBuilder.EntitySet<ServiceDTO>("Services");
 modelBuilder.EntitySet<FeedbackDTO>("Feedbacks");
 modelBuilder.EntitySet<UserDTO>("Users");
+modelBuilder.EntitySet<DoctorScheduleDTO>("DoctorSchedules");
 
 
 var provider = builder.Services.BuildServiceProvider();
@@ -217,6 +215,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//Tự tìm mapper trong phạm vi  solution với các project đã tham chiếu với nhau

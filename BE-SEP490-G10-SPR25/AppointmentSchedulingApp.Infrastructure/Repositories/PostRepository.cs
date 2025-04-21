@@ -57,5 +57,9 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<int> GetPostSectionsCountAsync()
+        {
+            return await _context.PostSections.CountAsync();
+        }
     }
 }

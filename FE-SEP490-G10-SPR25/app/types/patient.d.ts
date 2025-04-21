@@ -1,4 +1,4 @@
-interface IPatient extends IUser {
+interface IPatient extends Partial<IUser> {
   relationship: string;
   mainCondition?: string;
   rank?: string;

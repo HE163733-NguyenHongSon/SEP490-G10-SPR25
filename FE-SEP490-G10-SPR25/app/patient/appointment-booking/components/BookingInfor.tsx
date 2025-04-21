@@ -36,7 +36,6 @@ const BookingInfor = () => {
       setLoading(true);
       try {
         const data = await reservationService.getBookingSuggestion(
-          selectedPatient?.userId,
           symptoms
         );
         const specialties = await specialtyService.getSpecialtyList();

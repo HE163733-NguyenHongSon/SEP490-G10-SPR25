@@ -10,6 +10,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
     {
         public string Time { get; set; } 
         public int AppointmentCount { get; set; }
+        public int Year { get; set; }
         public decimal Revenue { get; set; }
     }
 }

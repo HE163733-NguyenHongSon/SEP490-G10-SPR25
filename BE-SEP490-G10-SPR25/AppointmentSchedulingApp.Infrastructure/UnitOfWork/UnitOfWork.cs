@@ -24,6 +24,13 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         private ICommentRepository _commentRepository;
         private IDoctorScheduleRepository _doctorScheduleRepository;
 
+        private IRoomRepository _roomRepository;
+        private ISlotRepository _slotRepository;
+
+
+
+
+
         public UnitOfWork(AppointmentSchedulingDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -62,9 +69,16 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         public ICommentRepository CommentRepository =>
             _commentRepository ??= new CommentRepository(_dbContext);
 
-
         public IDoctorScheduleRepository DoctorScheduleRepository =>
-            _doctorScheduleRepository ?? new DoctorScheduleRepository(_dbContext);
+            _doctorScheduleRepository ??= new DoctorScheduleRepository(_dbContext);
+
+
+        public IRoomRepository RoomRepository =>
+           _roomRepository ??= new RoomRepository(_dbContext);
+
+        public ISlotRepository SlotRepository =>
+            _slotRepository ??= new SlotRepository(_dbContext);
+
         public void Commit() => _dbContext.SaveChanges();
 
         public async Task CommitAsync() => await _dbContext.SaveChangesAsync();

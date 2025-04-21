@@ -264,5 +264,256 @@ export const doctorService = {
       console.error('Error filtering and sorting doctors:', error);
       throw error;
     }
+  },
+
+  // New methods for doctors
+  async getDoctorAppointments(doctorId: number, status: string = "Xác nhận"): Promise<IReservation[]> {
+    try {
+      // Properly encode the status parameter
+      const encodedStatus = encodeURIComponent(status);
+      const url = `${apiUrl}/api/Doctors/${doctorId}/appointments?status=${encodedStatus}`;
+      
+      console.log(`Fetching doctor appointments from: ${url}`);
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        cache: 'no-store'
+      });
+      
+      // Get response as text first
+      const text = await res.text();
+      
+      // Log raw response for debugging
+      console.log('Raw API response:', text);
+      
+      if (!res.ok) {
+        console.error(`Error response: ${res.status} ${res.statusText}`, text);
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+
+      // If response is empty, return empty array
+      if (!text || text.trim() === '') {
+        console.log('Empty response received, returning empty array');
+        return [];
+      }
+
+      // Try to parse as JSON
+      try {
+        const data = JSON.parse(text);
+        console.log(`Successfully parsed JSON, found ${Array.isArray(data) ? data.length : 0} appointments`);
+        console.log("Parsed data structure:", JSON.stringify(data, null, 2).substring(0, 500) + "...");
+        
+        // Check if data is actually an array
+        if (!Array.isArray(data)) {
+          console.warn("API response is not an array as expected. Actual type:", typeof data);
+          // If it's an object with data property, try to extract it
+          if (data && typeof data === 'object' && 'data' in data && Array.isArray(data.data)) {
+            console.log("Found data property that is an array, using that instead");
+            return data.data;
+          }
+          return [];
+        }
+        
+        // Check if we have any items and log the structure of the first one
+        if (data.length > 0) {
+          console.log("First appointment structure:", JSON.stringify(data[0], null, 2));
+        }
+        
+        return data;
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError, 'Raw response:', text);
+        return [];
+      }
+    } catch (error) {
+      console.error('Error fetching doctor appointments:', error);
+      return [];
+    }
+  },
+
+  async cancelAppointment(reservationId: number, cancellationReason: string): Promise<boolean> {
+    try {
+      console.log(`Cancelling appointment with ID ${reservationId}`);
+      
+      const cancelData: IReservationStatus = {
+        reservationId: reservationId.toString(),
+        status: "Hủy",
+        cancellationReason: cancellationReason
+      };
+      
+      const res = await fetch(`${apiUrl}/api/Doctors/appointments/${reservationId}/cancel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(cancelData)
+      });
+      
+      // Get response as text first
+      const text = await res.text();
+      
+      // Log raw response for debugging
+      console.log('Raw API response:', text);
+      
+      if (!res.ok) {
+        console.error(`Error cancelling appointment: ${res.status} ${res.statusText}`, text);
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      
+      // We don't need to parse the response for cancel operation
+      // Just return true for successful operation
+      return true;
+    } catch (error) {
+      console.error(`Error cancelling appointment with ID ${reservationId}:`, error);
+      throw error;
+    }
+  },
+
+  async createMedicalRecord(reservationId: number, medicalRecord: IMedicalRecord): Promise<IMedicalRecord> {
+    try {
+      console.log(`Creating medical record for reservation ${reservationId}`);
+      
+      // Sửa API endpoint đúng của DoctorsController
+      const url = `${apiUrl}/api/Doctors/appointments/${reservationId}/medicalrecord`;
+      
+      // Không cần bọc trong đối tượng khác - gửi đúng như định dạng trong controller
+      const payload = {
+        reservationId: reservationId.toString(), // Đảm bảo là string như trong MedicalRecordDTO
+        appointmentDate: medicalRecord.appointmentDate,
+        symptoms: medicalRecord.symptoms,
+        diagnosis: medicalRecord.diagnosis,
+        treatmentPlan: medicalRecord.treatmentPlan,
+        followUpDate: medicalRecord.followUpDate,
+        notes: medicalRecord.notes
+      };
+      
+      console.log("Medical record data being sent:", JSON.stringify(payload, null, 2));
+      
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      // Get response as text first
+      const text = await res.text();
+      
+      // Log raw response for debugging
+      console.log('Raw API response:', text);
+      
+      if (!res.ok) {
+        console.error(`Error creating medical record: ${res.status} ${res.statusText}`, text);
+        throw new Error(`HTTP error! Status: ${res.status}, Details: ${text}`);
+      }
+      
+      // If response is empty, return the input record
+      if (!text || text.trim() === '') {
+        console.log('Empty response received, returning input record');
+        return medicalRecord;
+      }
+      
+      // Try to parse as JSON
+      try {
+        return JSON.parse(text);
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError, 'Raw response:', text);
+        // Return the original record if parsing fails
+        return medicalRecord;
+      }
+    } catch (error) {
+      console.error(`Error creating medical record for reservation ${reservationId}:`, error);
+      throw error;
+    }
+  },
+
+  async isFirstTimePatient(patientId: number): Promise<boolean> {
+    try {
+      console.log(`Checking if patient ${patientId} is first time patient`);
+      
+      const res = await fetch(`${apiUrl}/api/Doctors/patients/${patientId}/isfirsttime`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      
+      // Get response as text first
+      const text = await res.text();
+      
+      // Log raw response for debugging
+      console.log('Raw API response:', text);
+      
+      if (!res.ok) {
+        console.error(`Error checking first time patient: ${res.status} ${res.statusText}`, text);
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      
+      // If response is empty, assume it's a first-time patient
+      if (!text || text.trim() === '') {
+        console.log('Empty response received, assuming first-time patient');
+        return true;
+      }
+      
+      // Try to parse as JSON
+      try {
+        return JSON.parse(text);
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError, 'Raw response:', text);
+        // Default to true (first-time patient) if parsing fails
+        return true;
+      }
+    } catch (error) {
+      console.error(`Error checking if patient ${patientId} is first time patient:`, error);
+      // Default to true (first-time patient) if an error occurs
+      return true;
+    }
+  },
+
+  async getPatientMedicalHistory(patientId: number): Promise<IMedicalRecord[]> {
+    try {
+      console.log(`Fetching medical history for patient ${patientId}`);
+      
+      const res = await fetch(`${apiUrl}/api/Doctors/patients/${patientId}/medicalrecords`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      
+      // Get response as text first
+      const text = await res.text();
+      
+      // Log raw response for debugging
+      console.log('Raw API response:', text);
+      
+      if (!res.ok) {
+        console.error(`Error fetching patient medical history: ${res.status} ${res.statusText}`, text);
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      
+      // If response is empty, return empty array
+      if (!text || text.trim() === '') {
+        console.log('Empty response received, returning empty array');
+        return [];
+      }
+      
+      // Try to parse as JSON
+      try {
+        const data = JSON.parse(text);
+        return Array.isArray(data) ? data : [];
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError, 'Raw response:', text);
+        return [];
+      }
+    } catch (error) {
+      console.error(`Error fetching medical history for patient ${patientId}:`, error);
+      return [];
+    }
   }
 };

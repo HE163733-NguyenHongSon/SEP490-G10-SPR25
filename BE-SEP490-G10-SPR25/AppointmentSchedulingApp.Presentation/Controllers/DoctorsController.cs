@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using AppointmentSchedulingApp.Application.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -112,6 +113,111 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Đã xảy ra lỗi khi xóa bác sĩ: {ex.Message}");
+            }
+        }
+
+        [HttpGet("{doctorId}/appointments")]
+        //[Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> GetDoctorAppointments(int doctorId, [FromQuery] string status = "Xác nhận")
+        {
+            try
+            {
+                var appointments = await _doctorService.GetDoctorAppointments(doctorId, status);
+                
+                if (appointments == null || !appointments.Any())
+                {
+                    return NoContent();
+                }
+                
+                return Ok(appointments);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi khi lấy danh sách lịch hẹn: {ex.Message}");
+            }
+        }
+
+        [HttpPost("appointments/{reservationId}/cancel")]
+        //[Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> CancelAppointment(int reservationId, [FromBody] ReservationStatusDTO cancellationInfo)
+        {
+            try
+            {
+                if (reservationId != cancellationInfo.ReservationId)
+                {
+                    return BadRequest("ID lịch hẹn không khớp");
+                }
+
+                var result = await _doctorService.CancelAppointment(reservationId, cancellationInfo.CancellationReason);
+                
+                if (result)
+                {
+                    return Ok("Đã hủy lịch hẹn thành công");
+                }
+                
+                return NotFound($"Không tìm thấy lịch hẹn với ID={reservationId}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi khi hủy lịch hẹn: {ex.Message}");
+            }
+        }
+
+        [HttpPost("appointments/{reservationId}/medicalrecord")]
+        //[Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> CreateMedicalRecord(int reservationId, [FromBody] MedicalRecordDTO medicalRecordDTO)
+        {
+            try
+            {
+                if (medicalRecordDTO.ReservationId != reservationId.ToString())
+                {
+                    return BadRequest("ID lịch hẹn không khớp");
+                }
+
+                var result = await _doctorService.CreateMedicalRecord(reservationId, medicalRecordDTO);
+                
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi khi tạo bệnh án: {ex.Message}");
+            }
+        }
+
+        [HttpGet("patients/{patientId}/isfirsttime")]
+        //[Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> IsFirstTimePatient(int patientId)
+        {
+            try
+            {
+                var isFirstTime = await _doctorService.IsFirstTimePatient(patientId);
+                
+                return Ok(isFirstTime);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi khi kiểm tra bệnh nhân: {ex.Message}");
+            }
+        }
+
+        [HttpGet("patients/{patientId}/medicalrecords")]
+        //[Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> GetPatientMedicalHistory(int patientId)
+        {
+            try
+            {
+                var medicalRecords = await _doctorService.GetPatientPreviousMedicalRecords(patientId);
+                
+                if (medicalRecords == null || !medicalRecords.Any())
+                {
+                    return NoContent();
+                }
+                
+                return Ok(medicalRecords);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi khi lấy lịch sử khám bệnh: {ex.Message}");
             }
         }
     }

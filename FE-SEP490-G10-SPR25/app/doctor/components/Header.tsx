@@ -5,18 +5,19 @@ import { useSidebar } from '@/contexts/SidebarContext';
 import { Menu, Bell, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-
+import { useUser } from '@/contexts/UserContext';
 export default function Header() {
   const { toggleMobileSidebar } = useSidebar();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
+  const { user } = useUser()
   
   // Mock session data
   const session = {
     user: {
-      name: 'Bs. Nguyễn Văn A',
+      name: user?.userName,
       image: null
     }
   };

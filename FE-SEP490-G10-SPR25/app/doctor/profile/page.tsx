@@ -4,7 +4,8 @@ import type { Metadata } from "next";
 import { Mail, Phone, Calendar, MapPin, Globe, Award, Bookmark, Edit } from 'lucide-react';
 import Link from 'next/link';
 import axios from 'axios';
-
+import { useUser } from '@/contexts/UserContext';
+import { Image } from 'antd';
 // export const metadata: Metadata = {
 //   title: "Hồ Sơ Bác Sĩ",
 //   description: "Xem và chỉnh sửa thông tin hồ sơ của bạn",
@@ -24,10 +25,12 @@ interface IDoctor{
 }
 const DoctorProfilePage = () => {
   const [doctorData, setDoctorData] = useState<IDoctor | null>(null);
+  const { user } = useUser()
+  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const response = await axios.get("http://localhost:5220/api/Doctors/33");
+        const response = await axios.get(`http://localhost:5220/api/Doctors/${user?.userId}`);
         setDoctorData(response.data);
         console.log("Doctor Data:", response.data);
       } catch (error) {
@@ -55,8 +58,14 @@ const DoctorProfilePage = () => {
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="p-6">
             <div className="flex flex-col items-center text-center mb-6">
-              <div className="h-32 w-32 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-4xl font-bold mb-4">
-                {doctorData?.userName.charAt(0)}
+              <div className="h-32 w-32 rounded-full bg-indigo-100 flex items-center justify-center text-4xl font-bold mb-4">
+                <Image
+                  src={`${imgUrl}/${doctorData?.avatarUrl}`}
+                  alt="Doctor"
+                  width={256}
+                  className="w-full h-full object-cover rounded-lg shadow"
+                  style={{ borderRadius: '50%'}}
+                />
               </div>
               <h2 className="text-xl font-semibold">{doctorData?.userName}</h2>
               <p className="text-indigo-600 font-medium">{doctorData?.currentWork}</p>
@@ -81,7 +90,7 @@ const DoctorProfilePage = () => {
                   <Phone className="h-5 w-5 text-gray-500 mr-3 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium">Điện thoại</p>
-                    <p className="text-sm text-gray-600">{doctorData?.phoneNumber}</p>
+                    <p className="text-sm text-gray-600">{doctorData?.phone}</p>
                   </div>
                 </div>
                 <div className="flex items-start">

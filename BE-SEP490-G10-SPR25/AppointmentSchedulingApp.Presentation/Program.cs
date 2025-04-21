@@ -208,6 +208,9 @@ builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IStorageService, StorageService >();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
+builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<ISlotService, SlotService>();
 
 // Đăng ký các dịch vụ liên quan đến người dùng
 builder.Services.AddScoped<IUserService, UserService>();

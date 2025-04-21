@@ -24,12 +24,12 @@ const PatientInfor = () => {
       <div className="space-y-8">
         {patients.map((patient) => (
           <div
-            key={patient.userId}
-            className={`bg-white rounded-lg shadow-lg p-6 cursor-pointer transition-all duration-300 ease-in-out transform border border-gray-300 hover:shadow-2xl hover:scale-105 ${
-              selectedPatient?.phone === patient.phone
-                ? "ring-2 ring-cyan-500 border-cyan-500 scale-100"
-                : ""
-            }`}
+          key={patient.userId}
+          className={`bg-white rounded-lg shadow-lg p-6 cursor-pointer transition-all duration-300 ease-in-out transform border border-gray-300 hover:shadow-2xl hover:scale-105 ${
+            selectedPatient?.phone === patient.phone
+              ? "ring-2 ring-cyan-500 border-cyan-500 scale-100"
+              : ""
+          }`}
             onClick={() => {
               setSelectedPatient(patient);
               setCurrentStep(2);

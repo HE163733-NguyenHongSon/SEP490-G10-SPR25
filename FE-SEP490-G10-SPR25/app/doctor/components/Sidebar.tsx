@@ -22,7 +22,7 @@ import {
   Users,
   FileBox
 } from 'lucide-react';
-
+import { useUser } from '@/contexts/UserContext'; 
 const cn = (...classes: string[]) => classes.filter(Boolean).join(' ');
 
 interface NavItemProps {
@@ -35,7 +35,6 @@ interface NavItemProps {
 function NavItem({ href, icon, label, isActive }: NavItemProps) {
   const { isExpanded, isHovered } = useSidebar();
   const showLabels = isExpanded || isHovered;
-
   return (
     <Link href={href} className={`
       flex items-center px-3 py-2 rounded-md transition-colors
@@ -68,7 +67,7 @@ export default function Sidebar({ setSidebarOpen }: SidebarProps) {
   const { isExpanded, isHovered, isMobileOpen, toggleSidebar, toggleMobileSidebar, setIsHovered } = useSidebar();
   const { theme } = useTheme();
   const showLabels = isExpanded || isHovered;
-
+  const { user } = useUser()
   const navigation = [
     { name: 'Trang chủ', href: '/doctor', icon: <Home className="h-5 w-5" /> },
     { name: 'Danh sách lịch hẹn', href: '/doctor/appointments', icon: <Calendar className="h-5 w-5" /> },
@@ -131,7 +130,7 @@ export default function Sidebar({ setSidebarOpen }: SidebarProps) {
             </div>
             {(isExpanded || isHovered) && (
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-900">Bác sĩ User</p>
+                <p className="text-sm font-medium text-gray-900">{user?.userName}</p>
                 <p className="text-xs text-blue-600">Chuyên khoa Tim mạch</p>
               </div>
             )}

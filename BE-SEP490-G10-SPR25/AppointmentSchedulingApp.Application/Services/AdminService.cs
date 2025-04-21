@@ -623,7 +623,7 @@ namespace AppointmentSchedulingApp.Application.Services
         }
 
         // Manh lam dashboard o duoi
-        public DashboardDTO DashboardAdmin()
+        public DashboardAdminDTO DashboardAdmin()
         {
             var totalAppointmentSchedule = TotalAppointmentScheduleDashboard();
             var totalPatient = TotalPatientDashboard();
@@ -639,7 +639,7 @@ namespace AppointmentSchedulingApp.Application.Services
             var target = 50000000; // Giá trị mục tiêu
 
 
-            return new DashboardDTO
+            return new DashboardAdminDTO
             {
                 TotalAppointmentSchedule = totalAppointmentSchedule,
                 TotalPatient = totalPatient,
@@ -757,7 +757,8 @@ namespace AppointmentSchedulingApp.Application.Services
             var todayTotal = await _dbContext.Payments
                 .Where(p => p.PaymentDate.HasValue && p.PaymentDate.Value.Date == today && p.PaymentStatus == "Đã thanh toán")
                 .SumAsync(p => (decimal?)p.Amount) ?? 0;
-
+            // doanh thu = 20% tổng chi phí
+            todayTotal = todayTotal * 0.2m;
             // Chuyển từ decimal sang double
             return Convert.ToDouble(todayTotal);
         }
@@ -769,6 +770,9 @@ namespace AppointmentSchedulingApp.Application.Services
             var thisMonthTotal = await _dbContext.Payments
                 .Where(p => p.PaymentDate.HasValue && p.PaymentDate.Value.Month == today.Month && p.PaymentDate.Value.Year == today.Year && p.PaymentStatus == "Đã thanh toán")
                 .SumAsync(p => (decimal?)p.Amount) ?? 0;
+            // doanh thu = 20% tổng chi phí
+            thisMonthTotal = thisMonthTotal * 0.2m;
+
             // Chuyển từ decimal sang double
             return Convert.ToDouble(thisMonthTotal);
         }
@@ -780,6 +784,9 @@ namespace AppointmentSchedulingApp.Application.Services
             var lastMonthTotal = await _dbContext.Payments
                 .Where(p => p.PaymentDate.HasValue && p.PaymentDate.Value.Month == today.AddMonths(-1).Month && p.PaymentDate.Value.Year == today.AddMonths(-1).Year && p.PaymentStatus == "Đã thanh toán")
                 .SumAsync(p => (decimal?)p.Amount) ?? 0;
+            // doanh thu = 20% tổng chi phí
+            lastMonthTotal = lastMonthTotal * 0.2m;
+
             // Chuyển từ decimal sang double
             return Convert.ToDouble(lastMonthTotal);
         }
@@ -813,6 +820,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 {
                     Time = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(g.Key.Month) + " " + g.Key.Year,
                     AppointmentCount = g.Count(p =>p.Status == "Hoàn thành"),
+                    Year = g.Key.Year,
                     Revenue = g.SelectMany(r => r.Payments)
                                .Where(p => p.PaymentStatus == "Đã thanh toán")
                                .Sum(p => p.Amount)

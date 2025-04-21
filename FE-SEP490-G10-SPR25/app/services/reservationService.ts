@@ -60,7 +60,6 @@ const reservationService = {
   // },
 
   async getBookingSuggestion(
-    patientId: string | undefined,
     symptoms: string
   ): Promise<IBookingSuggestion | null> {
     try {
@@ -70,20 +69,18 @@ const reservationService = {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          patientId,
           symptoms,
         }),
       });
-      
+
       if (!res.ok) {
         console.error("Gợi ý thất bại:", await res.text());
         return null;
       }
-      
+
       const result = await res.json();
       return result;
-    }
-    catch (error) {
+    } catch (error) {
       console.error("Error fetching booking suggestion:", error);
       return null;
     }

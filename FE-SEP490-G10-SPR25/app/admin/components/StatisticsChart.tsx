@@ -26,33 +26,58 @@ ChartJS.register(
   Filler
 );
 
+interface IDashboardAdminStatistic {
+  time: string;
+  revenue: number;
+  year: number;
+}
+
 interface StatisticsChartProps {
   items: IDashboardAdminStatistic[];
 }
 
+
 const StatisticsChart: React.FC<StatisticsChartProps> = ({ items }) => {
-  const labels = items.map((item) => item.time);
-  const appointmentData = items.map((item) => item.appointmentCount);
-  const revenueData = items.map((item) => item.revenue);
+  // Tạo mảng 12 tháng bằng tiếng Việt
+  const months = [
+    "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", 
+    "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8",
+    "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"
+  ];
+
+  // Tách dữ liệu theo năm
+  const currentYear = new Date().getFullYear();
+  const currentYearData = items.filter(item => item.year === currentYear);
+  const lastYearData = items.filter(item => item.year === currentYear - 1);
+
+  // Tạo dữ liệu cho các dataset
+  const createDataset = (yearData: IDashboardAdminStatistic[]) => {
+    return months.map((_, index) => {
+      const monthData = yearData.find(item => 
+        new Date(item.time).getMonth() === index
+      );
+      return monthData ? monthData.revenue : 0;
+    });
+  };
 
   const data: ChartData<"line"> = {
-    labels: labels,
+    labels: months,
     datasets: [
       {
-        label: "Lịch hẹn",
-        data: appointmentData,
-        fill: true,
-        backgroundColor: "rgba(70, 95, 255, 0.2)",
-        borderColor: "#0891b2",
+        label: `Năm trước (${currentYear - 1})`,
+        data: createDataset(lastYearData),
+        fill: false,
+        borderColor: "#FF6384",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
         borderWidth: 2,
         tension: 0.4,
       },
       {
-        label: "Doanh thu",
-        data: revenueData,
-        fill: true,
-        backgroundColor: "rgba(156, 185, 255, 0.2)",
-        borderColor: "#9CB9FF",
+        label: `Năm nay (${currentYear})`,
+        data: createDataset(currentYearData),
+        fill: false,
+        borderColor: "#36A2EB",
+        backgroundColor: "rgba(54, 162, 235, 0.5)",
         borderWidth: 2,
         tension: 0.4,
       },
@@ -63,19 +88,31 @@ const StatisticsChart: React.FC<StatisticsChartProps> = ({ items }) => {
     responsive: true,
     plugins: {
       legend: {
-        display: false,
+        display: true,
         position: "top",
         align: "start",
+        labels: {
+          color: "#6B7280",
+        }
       },
       tooltip: {
-        enabled: true,
-      },
+        callbacks: {
+          label: (context) => {
+            const label = context.dataset.label || '';
+            const value = context.parsed.y || 0;
+            return `${label}: ${value.toLocaleString()} VND`;
+          }
+        }
+      }
     },
     scales: {
       x: {
         grid: {
           display: false,
         },
+        ticks: {
+          color: "#6B7280",
+        }
       },
       y: {
         grid: {
@@ -87,6 +124,7 @@ const StatisticsChart: React.FC<StatisticsChartProps> = ({ items }) => {
           font: {
             size: 12,
           },
+          callback: (value) => `${Number(value).toLocaleString()} VND`,
         },
       },
     },
@@ -97,14 +135,11 @@ const StatisticsChart: React.FC<StatisticsChartProps> = ({ items }) => {
       <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
         <div className="w-full">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Thống kê lịch khám
+            Thống kê doanh thu
           </h3>
           <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-            Số lượng lịch khám và doanh thu theo từng tháng trong năm        
+            So sánh doanh thu giữa năm nay và năm trước
           </p>
-        </div>
-        <div className="flex items-start w-full gap-3 sm:justify-end">
-          {/* <ChartTab /> */}
         </div>
       </div>
 

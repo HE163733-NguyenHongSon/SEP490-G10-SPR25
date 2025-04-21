@@ -26,11 +26,13 @@ const ServiceSelector = () => {
       };
     }
 
-    const selected = services.find(s => s.serviceId.toString() === serviceId);
+    const selected = services.find((s) => s.serviceId.toString() === serviceId);
     return selected
       ? {
           value: selected.serviceId,
-          label: `${selected.serviceName} - ${Number(selected.price).toLocaleString("vi-VN")} VND`,
+          label: `${selected.serviceName} - ${Number(
+            selected.price
+          ).toLocaleString("vi-VN")} VND`,
         }
       : null;
   };
@@ -41,7 +43,6 @@ const ServiceSelector = () => {
       try {
         const data = await serviceService.getServicesBySpecialty(specialtyId);
         setServices(data);
-        setServiceId(data.length ? data[0].serviceId.toString() : "");
       } catch (error) {
         console.error("Error fetching services:", error);
       } finally {
@@ -49,12 +50,12 @@ const ServiceSelector = () => {
       }
     };
 
-    if (specialtyId && !suggestionData?.service?.serviceId) {
+    if (specialtyId) {
       fetchServices();
     }
   }, [specialtyId]);
 
-  const options = services.map(s => ({
+  const options = services.map((s) => ({
     value: s.serviceId,
     label: `${s.serviceName} - ${Number(s.price).toLocaleString("vi-VN")} VND`,
   }));
@@ -68,7 +69,7 @@ const ServiceSelector = () => {
       <Select
         styles={customStyles}
         value={getSelectedOption()}
-        onChange={opt => setServiceId(opt?.value?.toString() ?? "")}
+        onChange={(opt) => setServiceId(opt?.value?.toString() ?? "")}
         options={options}
         isClearable
         isDisabled={!options.length}

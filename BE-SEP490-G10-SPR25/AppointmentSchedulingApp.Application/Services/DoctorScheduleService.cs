@@ -31,73 +31,53 @@ namespace AppointmentSchedulingApp.Application.Services
             this.unitOfWork = unitOfWork;
             _dbcontext = dbcontext;
         }
+        public async Task<List<DoctorScheduleDTO>> GetDoctorScheduleListByServiceId(int serviceId)
+        {
 
+            var query = unitOfWork.DoctorScheduleRepository.GetQueryable(ds => ds.ServiceId.Equals(serviceId));
+            return await query.ProjectTo<DoctorScheduleDTO>(mapper.ConfigurationProvider).ToListAsync();
+
+        }
+
+        public async Task<List<DoctorScheduleDTO>> GetDoctorScheduleList()
+        {
+            var query = unitOfWork.DoctorScheduleRepository.GetQueryable();
+            return await query.ProjectTo<DoctorScheduleDTO>(mapper.ConfigurationProvider).ToListAsync();
+        }
 
         //public async Task<List<DoctorScheduleDTO>> GetDoctorScheduleList()
         //{
         //    try
         //    {
-        //        var doctorSchedule = await unitOfWork.UserRepository.GetAll(u => u.Roles.Any(r => r.RoleId.Equals(4)));
-        //        return mapper.Map<List<DoctorScheduleDTO>>(doctorSchedule);
+        //        var doctorSchedule = await _dbcontext.DoctorSchedules.Include(d => d.Doctor)
+        //            .ThenInclude(u => u.DoctorNavigation)
+        //            .Include(d => d.Slot)
+        //            .Include(d => d.Service)
+        //            .Include(d => d.Room)
+        //            .Where(d => d.Doctor.DoctorNavigation.Roles.Any(r => r.RoleId.Equals(4)))
+        //            .Select(d => new DoctorScheduleDTO
+        //            {
+        //                DoctorScheduleId = d.DoctorScheduleId,
+        //                DoctorId = d.DoctorId,
+        //                ServiceId = d.ServiceId,
+        //                DayOfWeek = d.DayOfWeek,
+        //                RoomId = d.RoomId,
+        //                SlotId = d.SlotId,
+        //                DoctorName = d.Doctor.DoctorNavigation.UserName,
+        //                ServiceName = d.Service.ServiceName,
+        //                RoomName = d.Room.RoomName,
+        //                SlotStartTime = d.Slot.SlotStartTime,
+        //                SlotEndTime = d.Slot.SlotEndTime
+        //            })
+        //            .ToListAsync();
+
+        //        return doctorSchedule;
         //    }
         //    catch (Exception ex)
         //    {
         //        throw;
         //    }
         //}
-
-        //public async Task<DoctorScheduleDTO> GetDoctorScheduleDetailById(int doctorScheduleId)
-        //{
-        //    try
-        //    {
-        //        var doctorSchedule = await unitOfWork.UserRepository.Get(p => p.UserId.Equals(doctorScheduleId));
-
-        //        if (doctorSchedule == null)
-        //        {
-        //            return null;
-        //        }
-
-        //        return mapper.Map<DoctorScheduleDTO>(doctorSchedule);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
-        //}
-
-        public async Task<List<DoctorScheduleDTO>> GetDoctorScheduleList()
-        {
-            try
-            {
-                var doctorSchedule = await _dbcontext.DoctorSchedules.Include(d => d.Doctor)
-                    .ThenInclude(u => u.DoctorNavigation)
-                    .Include(d => d.Slot)
-                    .Include(d => d.Service)
-                    .Include(d => d.Room)
-                    .Where(d => d.Doctor.DoctorNavigation.Roles.Any(r => r.RoleId.Equals(4)))
-                    .Select(d => new DoctorScheduleDTO
-                    {
-                        DoctorScheduleId = d.DoctorScheduleId,
-                        DoctorId = d.DoctorId,
-                        ServiceId = d.ServiceId,
-                        DayOfWeek = d.DayOfWeek,
-                        RoomId = d.RoomId,
-                        SlotId = d.SlotId,
-                        DoctorName = d.Doctor.DoctorNavigation.UserName,
-                        ServiceName = d.Service.ServiceName,
-                        RoomName = d.Room.RoomName,
-                        SlotStartTime = d.Slot.SlotStartTime,
-                        SlotEndTime = d.Slot.SlotEndTime
-                    })
-                    .ToListAsync();
-
-                return doctorSchedule;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
 
         public async Task<DoctorScheduleDTO> GetDoctorScheduleDetailById(int doctorScheduleId)
         {

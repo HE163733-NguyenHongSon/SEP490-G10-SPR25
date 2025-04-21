@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format, parse } from 'date-fns';
 import Image from "next/image";
+import Link from 'next/link';
 
 
 export default function EditPatientPage({ params }: { params: { patientId: string } }) {
@@ -65,7 +66,7 @@ export default function EditPatientPage({ params }: { params: { patientId: strin
                     avatarUrl: patientData.avatarUrl || '',
                     userId: String(parseInt(params.patientId, 10)),
                     userName: patientData.userName || patientData.userName || '', // Xử lý cả username và userName
-                    phone: patientData.phone || patientData.phoneNumber || '', // Xử lý cả phone và phoneNumber
+                    phone: patientData.phone || patientData.phone || '', // Xử lý cả phone và phoneNumber
                     gender: patientData.gender || 'Nam',
                     dob: formatDobForState(dobDate),
                     address: patientData.address || '',
@@ -95,28 +96,28 @@ export default function EditPatientPage({ params }: { params: { patientId: strin
         try {
             // Gọi API cập nhật thông tin cá nhân
             await patientService.updatePatientContact({
-              ...formData,
-              userId: String(parseInt(params.patientId, 10))
+                ...formData,
+                userId: String(parseInt(params.patientId, 10))
             } as IUser);
             console.log('Cập nhật thông tin thành công');
-          
+
             // Gọi API cập nhật giám hộ
             if (searchId) {
-              const guardianId = parseInt(searchId, 10);
-              await patientService.updateGuardianOfPatient({
-                patientId: parseInt(params.patientId, 10),
-                guardianId: guardianId
-              });
-              console.log('Cập nhật giám hộ thành công', guardianId, params.patientId);
+                const guardianId = parseInt(searchId, 10);
+                await patientService.updateGuardianOfPatient({
+                    patientId: parseInt(params.patientId, 10),
+                    guardianId: guardianId
+                });
+                console.log('Cập nhật giám hộ thành công', guardianId, params.patientId);
             } else {
-              console.log('Không có giám hộ để cập nhật');
+                console.log('Không có giám hộ để cập nhật');
             }
-          
+
             router.push(`/receptionist/patient-detail/${params.patientId}`);
-          } catch (err) {
+        } catch (err) {
             console.error('Lỗi khi cập nhật:', err);
             setError(err instanceof Error ? err.message : 'Lỗi không xác định');
-          } finally {
+        } finally {
             setLoading(prev => ({ ...prev, submit: false }));
         }
     };
@@ -147,6 +148,12 @@ export default function EditPatientPage({ params }: { params: { patientId: strin
         <>
             <div className="p-8 max-w-4xl mx-auto">
                 <h1 className="text-2xl font-bold mb-6">Chỉnh sửa hồ sơ bệnh nhân</h1>
+                <Link
+                    href={`/receptionist/patient-detail/${formData.userId}`}
+                    className="inline-flex items-center text-blue-600 hover:underline"
+                >
+                    ← Quay lại chi tiết bệnh nhân
+                </Link>
 
                 {error && (
                     <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">

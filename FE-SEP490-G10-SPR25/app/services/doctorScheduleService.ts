@@ -3,39 +3,67 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const doctorScheduleService = {
  
-  async getDoctorScheduleList(): Promise<IDoctorSchedule[]> {
-    try {      
-      const url = `${apiUrl}/api/DoctorSchedules`;
-      console.log('Fetching DoctorSchedules list from:', url);
+  // async getDoctorScheduleList(): Promise<IDoctorSchedule[]> {
+  //   try {      
+  //     const url = `${apiUrl}/api/DoctorSchedules`;
+  //     console.log('Fetching DoctorSchedules list from:', url);
       
-      const res = await fetch(url, {
-        method: 'GET',
+  //     const res = await fetch(url, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Accept': 'application/json',
+  //         'Content-Type': 'application/json'
+  //       },
+  //       cache: 'no-store'
+  //     });
+
+  //     console.log('DoctorSchedules list response status:', res.status);
+      
+  //     if (!res.ok) {
+  //       console.error(`Error response for DoctorSchedules list: ${res.statusText}`);
+  //       throw new Error(`HTTP error! Status: ${res.status}`);
+  //     }
+  
+  //     const data = await res.json();
+  //     console.log(`Retrieved ${data.length} DoctorSchedules`);
+  //     return data;
+  //   } catch (error) {
+  //     console.error('Error fetching DoctorSchedules list:', error);
+  //     return []; // Return empty array instead of throwing
+  //   }
+  // },
+
+  async getDoctorScheduleList(doctorId: string): Promise<IDoctorSchedule[]> {
+    try {      
+      const res = await fetch(`${apiUrl}/api/DoctorSchedules`, {
+        method: "GET",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
-        cache: 'no-store'
+        cache: "no-store",
       });
 
-      console.log('DoctorSchedules list response status:', res.status);
-      
       if (!res.ok) {
-        console.error(`Error response for DoctorSchedules list: ${res.statusText}`);
+        console.error(`Error response: ${res.statusText}`);
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
-  
       const data = await res.json();
-      console.log(`Retrieved ${data.length} DoctorSchedules`);
+      console.log(`Retrieved ${data.length} schedules for doctor ${doctorId}`);
       return data;
     } catch (error) {
-      console.error('Error fetching DoctorSchedules list:', error);
-      return []; // Return empty array instead of throwing
+      console.error(
+        `Error fetching schedule list for doctor ${doctorId}:`,
+        error
+      );
+      return [];
     }
   },
+  
 
   async getDoctorScheduleDetailById(doctorScheduleId?: string | number  ): Promise<IDoctorSchedule> {
     try {
-      const url = `${apiUrl}/api/DoctorSchedules/${doctorScheduleId}`;
+      const url = `${apiUrl}/api/DoctorSchedules/GetDoctorScheduleDetailById/${doctorScheduleId}`;
       console.log(`Fetching DoctorSchedule detail from: ${url}`);
       
       const res = await fetch(url, {

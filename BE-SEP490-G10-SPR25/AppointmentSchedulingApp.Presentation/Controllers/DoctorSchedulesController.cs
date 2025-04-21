@@ -4,6 +4,7 @@ using AppointmentSchedulingApp.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -20,6 +21,30 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
         }
 
+        //[HttpGet]
+        //[EnableQuery]
+        //public async Task<IActionResult> Get()
+        //{
+        //    try
+        //    {
+        //        var doctorSchedules = await _doctorScheduleService.GetDoctorScheduleList();
+
+        //        if (doctorSchedules == null || !doctorSchedules.Any())
+        //        {
+        //              return NoContent();
+        //        }
+
+        //        return Ok(doctorSchedules);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
+
+        
+
+
         [HttpGet]
         [EnableQuery]
         public async Task<IActionResult> Get()
@@ -28,9 +53,29 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             {
                 var doctorSchedules = await _doctorScheduleService.GetDoctorScheduleList();
 
-                if (doctorSchedules == null || !doctorSchedules.Any())
+                if (doctorSchedules.IsNullOrEmpty())
                 {
-                      return NoContent();
+                    return NoContent();
+                }
+
+                return Ok(doctorSchedules);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpGet("{serviceId}")]
+        [EnableQuery]
+        public async Task<IActionResult> GetDoctorScheduleListByServiceId(int serviceId)
+        {
+            try
+            {
+                var doctorSchedules = await _doctorScheduleService.GetDoctorScheduleListByServiceId(serviceId);
+
+                if (doctorSchedules == null)
+                {
+                    return NotFound($"Dịch vụ với ID={serviceId} không tồn tại!");
                 }
 
                 return Ok(doctorSchedules);
@@ -41,7 +86,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             }
         }
 
-        [HttpGet("{doctorScheduleId}")]
+        [HttpGet("GetDoctorScheduleDetailById/{doctorScheduleId}")]
         [EnableQuery]
         public async Task<IActionResult> GetDoctorScheduleDetailById(int doctorScheduleId)
         {

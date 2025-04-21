@@ -3,7 +3,7 @@
 public class DoctorScheduleDTO
 {
     [Key]
-    public string DoctorScheduleId { get; set; }
+    public int DoctorScheduleId { get; set; }
 
     public int DoctorId { get; set; }
     public string DoctorName { get; set; }
@@ -24,7 +24,7 @@ public class DoctorScheduleDTO
 
     public int SlotId { get; set; }
 
-    public TimeOnly SlotStartTime { get; set; }
+    public TimeOnly? SlotStartTime { get; set; }
 
-    public TimeOnly SlotEndTime { get; set; }
+    public TimeOnly? SlotEndTime { get; set; }
 }

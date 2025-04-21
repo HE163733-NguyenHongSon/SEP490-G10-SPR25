@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Application.DTOs
 {
-    public class DashboardDTO
+    public class DashboardReceptionistDTO
     {
-        public int TotalAppointmentSchedule { get; set; }
-        public int TotalPatient { get; set; }
+        public int TotalReservationtoday { get; set; }
+        public int ReservationChangePercent { get; set; }
         public int TotalDoctor { get; set; }
         public int TotalService { get; set; }
         public double AppointmentScheduleChangePercent { get; set; }
@@ -21,8 +21,6 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public double lastMonthTotal { get; set; }
         public double percentChange { get; set; }
         public double target { get; set; }
-
-
 
     }
 }

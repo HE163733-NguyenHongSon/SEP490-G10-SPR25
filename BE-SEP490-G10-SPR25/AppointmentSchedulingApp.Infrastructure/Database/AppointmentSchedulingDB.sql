@@ -1754,10 +1754,60 @@ VALUES
 (24, 4, '2025-03-04 11:45:00', 32, N'Thẻ ghi nợ', N'Đã thanh toán', N'TXN12348', 820000),
 (5, 5, '2025-03-05 13:30:00', 32, N'Tiền mặt', N'Đang xử lý', NULL, 400000),
 (6, 6, '2025-03-06 15:00:00', 32, N'Ví điện tử VNPay', N'Chưa thanh toán', NULL, 300000);
+-----------------
+--  thêm data   |
+-----------------
+-- Thêm 30 Reservations từ tháng 1/2024 đến 3/2024
+INSERT INTO Reservations (PatientId, DoctorScheduleId, Reason, PriorExaminationImg, AppointmentDate, Status, CancellationReason, CreatedByUserId, UpdatedByUserId)
+VALUES
+(11, 21, N'Khám tổng quát', NULL, '2024-01-05', N'Hoàn thành', NULL, 11, 31),
+(12, 22, N'Đau đầu', NULL, '2024-02-07', N'Hoàn thành', NULL, 12, 32),
+(13, 23, N'Kiểm tra huyết áp', NULL, '2024-03-10', N'Hoàn thành', NULL, 31, 31),
+(14, 24, N'Tái khám tiểu đường', NULL, '2024-04-12', N'Hoàn thành', NULL, 32, 32),
+(15, 25, N'Khám da liễu', NULL, '2024-05-15',  N'Hoàn thành', NULL, 15, 31),
+(16, 26, N'Kiểm tra sau sinh', NULL, '2024-06-02', N'Hoàn thành', NULL, 16, 32),
+(17, 27, N'Đau dạ dày', NULL, '2024-07-05', N'Hoàn thành', NULL, 17, 31),
+(18, 28, N'Chích ngừa cúm', NULL, '2024-08-09', N'Hoàn thành', NULL, 32, 32),
+(19, 29, N'Khám mắt', NULL, '2024-09-14', N'Hoàn thành', NULL, 19, 31),
+(20, 30, N'Tư vấn dinh dưỡng', NULL, '2024-10-18', N'Hoàn thành', NULL, 20, 32),
+(21, 1, N'Khám răng', NULL, '2024-11-01', N'Hoàn thành', NULL, 21, 31),
+(22, 2, N'Xét nghiệm máu', NULL, '2024-12-04', N'Hoàn thành', NULL, 22, 32),
+(23, 3, N'Chụp X-quang', NULL, '2024-01-07', N'Hoàn thành', NULL, 31, 31),
+(24, 4, N'Vật lý trị liệu', NULL, '2024-02-10', N'Hoàn thành', NULL, 24, 32),
+(25, 5, N'Khám tai mũi họng', NULL, '2024-03-12', N'Hoàn thành', NULL, 25, 31),
+(26, 6, N'Kiểm tra thai kỳ', NULL, '2024-04-15', N'Hoàn thành', NULL, 32, 32),
+(27, 7, N'Khám nội tổng quát', NULL, '2024-05-18', N'Hoàn thành', NULL, 27, 31),
+(28, 8, N'Tư vấn tâm lý', NULL, '2024-06-20', N'Hoàn thành', NULL, 28, 32),
+(29, 9, N'Khám nhi', NULL, '2024-07-22', N'Hoàn thành', NULL, 31, 31),
+(30, 10, N'Xét nghiệm nước tiểu', NULL, '2024-08-25', N'Hoàn thành', NULL, 30, 32),
+(1, 11, N'Khám xương khớp', NULL, '2024-09-27', N'Hoàn thành', NULL, 1, 31),
+(2, 12, N'Kiểm tra mỡ máu', NULL, '2024-10-29', N'Hoàn thành', NULL, 2, 32);
 
-
-
-
+-- Thêm 30 Payments tương ứng
+INSERT INTO Payments (PayerId, ReservationId, PaymentDate, ReceptionistId, PaymentMethod, PaymentStatus, TransactionId, Amount)
+VALUES
+(11, 78, '2024-01-05 09:15:00', 31, N'Thẻ tín dụng', N'Đã thanh toán', 'TXN202401001', 450000),
+(12, 79, '2024-02-07 10:00:00', 32, N'Ví điện tử', N'Đã thanh toán', 'TXN202401002', 620000),
+(13, 80, '2024-03-10 10:45:00', 31, N'Tiền mặt', N'Đã thanh toán', 'TXN202401003', 380000),
+(14, 81, '2024-04-12 15:00:00', 32, N'Chuyển khoản', N'Đã thanh toán', 'TXN202401004', 750000),
+(15, 82, '2024-05-15 12:30:00', 31, N'Thẻ ghi nợ', N'Đã thanh toán', 'TXN202401005', 550000),
+(16, 83, '2024-06-02 14:00:00', 32, N'Tiền mặt', N'Đã thanh toán', 'TXN202402001', 420000),
+(17, 84, '2024-07-05 16:15:00', 31, N'Ví điện tử', N'Đã thanh toán', 'TXN202402002', 680000),
+(18, 85, '2024-08-09 09:30:00', 32, N'Thẻ tín dụng', N'Đã thanh toán', 'TXN202402003', 530000),
+(19, 86, '2024-09-14 11:15:00', 31, N'Chuyển khoản', N'Đã thanh toán', 'TXN202402004', 710000),
+(20, 87, '2024-10-18 17:00:00', 32, N'Thẻ ghi nợ', N'Đã thanh toán', 'TXN202402005', 490000),
+(21, 88, '2024-11-01 08:45:00', 31, N'Tiền mặt', N'Đã thanh toán', 'TXN202403001', 580000),
+(22, 89, '2024-12-04 12:45:00', 32, N'Ví điện tử', N'Đã thanh toán', 'TXN202403002', 640000),
+(23, 90, '2024-01-07 15:30:00', 31, N'Thẻ tín dụng', N'Đã thanh toán', 'TXN202403003', 720000),
+(24, 91, '2024-02-10 10:15:00', 32, N'Chuyển khoản', N'Đã thanh toán', 'TXN202403004', 390000),
+(25, 92, '2024-03-12 12:00:00', 31, N'Thẻ ghi nợ', N'Đã thanh toán', 'TXN202403005', 670000),
+(26, 93, '2024-04-15 13:45:00', 32, N'Tiền mặt', N'Đã thanh toán', 'TXN202403006', 540000),
+(27, 94, '2024-05-18 16:30:00', 31, N'Ví điện tử', N'Đã thanh toán', 'TXN202403007', 480000),
+(28, 95, '2024-06-20 09:00:00', 32, N'Thẻ tín dụng', N'Đã thanh toán', 'TXN202403008', 830000),
+(29, 96, '2024-07-22 10:45:00', 31, N'Chuyển khoản', N'Đã thanh toán', 'TXN202403009', 620000),
+(30, 97, '2024-08-25 13:15:00', 32, N'Thẻ ghi nợ', N'Đã thanh toán', 'TXN202403010', 710000),
+(1, 98, '2024-09-27 15:00:00', 31, N'Tiền mặt', N'Đã thanh toán', 'TXN202403011', 590000),
+(2, 99, '2024-10-29 17:15:00', 32, N'Ví điện tử', N'Đã thanh toán', 'TXN202403012', 680000);
 
 
 

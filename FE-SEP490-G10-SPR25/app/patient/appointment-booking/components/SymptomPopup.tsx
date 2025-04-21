@@ -1,18 +1,19 @@
 "use client";
-import { useEffect } from "react";
 import { useUser } from "@/contexts/UserContext";
 import { patientService } from "@/services/patientService";
 import { useQuery } from "@tanstack/react-query";
-import SymptomInput from "./SymptomInput";
 import BookingForm from "./BookingForm";
-import { BookingProvider, useBookingContext } from "@/patient/contexts/BookingContext";
-
+import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import {
+  BookingProvider,
+  useBookingContext,
+} from "@/patient/contexts/BookingContext";
 const PopupBody = () => {
   const { user } = useUser();
   const {
     symptoms,
     setSymptoms,
-    setSuggestionData,
+    loading,
     setLoading,
     setShowBookingForm,
     setPatients,
@@ -22,7 +23,6 @@ const PopupBody = () => {
     queryKey: ["patientDetail", user],
     queryFn: async () => {
       const data = await patientService.getPatientDetailById(user?.userId);
-      setPatients(data?.dependents || []);
       return data;
     },
     enabled: !!user,
@@ -31,23 +31,31 @@ const PopupBody = () => {
 
   const handleSubmit = async () => {
     if (symptoms.trim().length > 2) {
+      setSymptoms(symptoms.trim());
+      setPatients([user as IPatient, ...(patientDetail?.dependents || [])]);
       setLoading(true);
       setShowBookingForm(true);
-      try {
-        const res = await fetch(`/api/suggestions?symptom=${symptoms}`);
-        const data = await res.json();
-        setSuggestionData(data);
-      } catch (error) {
-        console.error("Lỗi khi lấy gợi ý:", error);
-      } finally {
-        setLoading(false);
-      }
     }
   };
 
   return (
     <div className="relative w-full max-w-full p-4">
-      <SymptomInput onSubmit={handleSubmit} />
+      <div className="relative w-full h-15">
+        <input
+          type="text"
+          placeholder="Nhập triệu chứng..."
+          value={symptoms}
+          onChange={(e) => setSymptoms(e.target.value)}
+          className="pl-4 pr-10 py-4 w-full h-full rounded bg-gray-100 text-gray-500 focus:outline-none"
+        />
+        <button
+          onClick={handleSubmit}
+          disabled={loading || symptoms.trim().length < 2}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2"
+        >
+          <PaperAirplaneIcon className="w-6 h-6 text-cyan-500" />
+        </button>
+      </div>
       <BookingForm />
     </div>
   );

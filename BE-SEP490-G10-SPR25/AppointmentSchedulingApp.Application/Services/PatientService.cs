@@ -36,6 +36,7 @@ namespace AppointmentSchedulingApp.Application.Services
             {
                 var patients = await unitOfWork.UserRepository.GetAll(u => u.Roles.Any(r => r.RoleId.Equals(2)));
                 return mapper.Map<List<PatientDTO>>(patients);
+
             }
             catch (Exception ex)
             {
@@ -135,11 +136,10 @@ namespace AppointmentSchedulingApp.Application.Services
 
         }
 
-        public async Task<bool> AddPatient(AddedPatientDTO patientDto)
+        public async Task<PatientDTO> AddPatient(AddedPatientDTO patientDto)
         {
             try
             {
-
                 var user = mapper.Map<User>(patientDto);
 
                 await unitOfWork.UserRepository.AddAsync(user);
@@ -150,21 +150,24 @@ namespace AppointmentSchedulingApp.Application.Services
                     PatientId = user.UserId,
                     GuardianId = patientDto.GuardianId,
                     Relationship = patientDto.Relationship,
-
                 };
 
                 await unitOfWork.PatientRepository.AddAsync(patient);
                 await unitOfWork.CommitAsync();
-                return true;
 
+                user.Patient = patient;
+
+                var result = mapper.Map<PatientDTO>(user);
+                return result;
             }
             catch (Exception e)
             {
-               await unitOfWork.RollbackAsync();
+                await unitOfWork.RollbackAsync();
+                Console.WriteLine("Lỗi khi thêm bệnh nhân: " + e.Message);
+                return null;
             }
-
-            return false;
         }
+
 
     }
 }

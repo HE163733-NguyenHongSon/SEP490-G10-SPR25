@@ -12,7 +12,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string? MainCondition { get; set; }
 
         [JsonPropertyOrder(17)]
-        public string Rank { get; set; }
+        public string? Rank { get; set; }
 
        
     }

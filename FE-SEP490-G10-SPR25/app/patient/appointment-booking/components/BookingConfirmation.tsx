@@ -1,4 +1,3 @@
-import BookingForm from "./BookingForm";
 const BookingConfirmation = () => {
   return (
     <div className="relative min-h-screen w-full  flex flex-col items-center justify-center z-10">

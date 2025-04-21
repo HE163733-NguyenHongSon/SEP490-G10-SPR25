@@ -20,10 +20,10 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         [HttpPost("AddPatient")]
         public async Task<IActionResult> AddPatient([FromBody] AddedPatientDTO patientDTO)
         {
-            bool result = await _patientService.AddPatient(patientDTO);
+           PatientDTO result = await _patientService.AddPatient(patientDTO);
 
-            if (result)
-                return Ok(new { success = true, message = "Thêm bệnh nhân thành công" });
+            if (result !=null)
+                return Ok(result);
             else
                 return BadRequest(new { success = false, message = "Bệnh nhân đã tồn tại" });
         }
@@ -67,7 +67,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+                return StatusCode(500, ex.Message);
             }
         }
 

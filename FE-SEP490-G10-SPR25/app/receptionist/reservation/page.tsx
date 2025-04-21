@@ -1,16 +1,28 @@
 "use client";
-import { Button, Form, Input, message, Modal, Space, Table } from "antd";
+import { Button, Col, Form, Input, message, Modal, Row, Space, Table } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useUser } from "@/contexts/UserContext";
 
 interface IReservation {
   reservationId: number;
   patient: {
     userName: string;
-    phoneNumber: string;
+    phone: string;
     email: string;
     citizenId: string;
   };
+  doctorSchedule: {
+    doctorName: string;
+    degree: string;
+    roomName: string;
+    location: string;
+    serviceName: string;
+    servicePrice: string;
+    dayOfWeek: string;
+    slotStartTime: string;
+    slotEndTime: string;
+  }
   appointmentDate: string;
   updatedDate: string;
 }
@@ -20,21 +32,43 @@ const Reservation = () => {
   const [selectedReservation, setSelectedReservation] = useState<IReservation | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [reservations, setReservations] = useState<IReservation[]>([]);
+  const { user } = useUser()
   useEffect(() => {
     const fetchReservations = async () => {
       const response = await axios.get("http://localhost:5220/api/Reservations")
       setReservations(response.data)
-
-      console.log(response.data)
     }
     fetchReservations()
   }, [])
-  const handleConfirm = (record: IReservation) => {
-    message.success(`Confirmed reservation ID: ${record.reservationId}`);
+  const handleConfirm = async (record: IReservation) => {
+    try {
+      await axios.put("http://localhost:5220/api/Reservations/UpdateReservationStatus", {
+        reservationId: record.reservationId,
+        cancellationReason: "", 
+        status: "Xác nhận",
+        updatedByUserId: user?.userId, 
+        updatedDate: new Date().toISOString(),
+      });
+      message.success(`Confirmed reservation ID: ${record.reservationId}`);
+    } catch (error) {
+      message.error("Failed to confirm reservation");
+    }
   };
 
-  const handleCancel = (record: IReservation) => {
-    message.warning(`Cancelled reservation ID: ${record.reservationId}`);
+  const handleCancel = async (record: IReservation) => {
+    try {
+      await axios.put("http://localhost:5220/api/Reservations/UpdateReservationStatus", {
+        reservationId: record.reservationId,
+        cancellationReason: "", 
+        status: "Đã hủy",
+        updatedByUserId: user?.userId, 
+        updatedDate: new Date().toISOString(),
+      });
+      message.warning(`Cancelled reservation ID: ${record.reservationId}`);
+    } catch (error) {
+      message.error("Failed to cancel reservation");
+    }
+    
   };
   const handleViewDetail = (record: IReservation) => {
     setSelectedReservation(record);
@@ -64,8 +98,8 @@ const Reservation = () => {
     },
     {
       title: "Phone number",
-      key: "phoneNumber",
-      render: (_: any, record: IReservation) => record.patient.phoneNumber,
+      key: "phone",
+      render: (_: any, record: IReservation) => record.patient.phone,
     },
     {
       title: "Email",
@@ -138,57 +172,119 @@ const Reservation = () => {
             setIsModalVisible(false);
           }}
         >
-          <Form.Item label="Reservation ID" name="reservationId">
-            <Input disabled />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Name"
+                name={["patient", "userName"]}
+                rules={[{ required: true, message: "Please enter name" }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="CCCD"
+                name={["patient", "citizenId"]}
+                rules={[{ required: true, message: "Please enter CCCD" }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Phone Number"
+                name={["patient", "phone"]}
+                rules={[{ required: true, message: "Please enter phone number" }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Email"
+                name={["patient", "email"]}
+                rules={[{ required: true, message: "Please enter email" }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
 
           <Form.Item
-            label="Name"
-            name={["patient", "userName"]}
-            rules={[{ required: true, message: "Please enter name" }]}
+            label="Doctor Name"
+            name={["doctorSchedule", "doctorName"]}
+            rules={[{ required: true, message: "Please enter doctor name" }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="CCCD"
-            name={["patient", "citizenId"]}
-            rules={[{ required: true, message: "Please enter CCCD" }]}
+            label="Degree"
+            name={["doctorSchedule", "degree"]}
+            rules={[{ required: true, message: "Please enter degree" }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="Phone Number"
-            name={["patient", "phoneNumber"]}
-            rules={[{ required: true, message: "Please enter phone number" }]}
+            label="Degree"
+            name={["doctorSchedule", "roomName"]}
+            rules={[{ required: true, message: "Please enter degree" }]}
           >
             <Input />
           </Form.Item>
-
+          
           <Form.Item
-            label="Email"
-            name={["patient", "email"]}
-            rules={[{ required: true, message: "Please enter email" }]}
+            label="Degree"
+            name={["doctorSchedule", "location"]}
+            rules={[{ required: true, message: "Please enter degree" }]}
           >
             <Input />
           </Form.Item>
-
           <Form.Item
-            label="Appointment Date"
-            name="appointmentDate"
-            rules={[{ required: true, message: "Please enter appointment date" }]}
+            label="Degree"
+            name={["doctorSchedule", "serviceName"]}
+            rules={[{ required: true, message: "Please enter degree" }]}
           >
             <Input />
           </Form.Item>
-
           <Form.Item
-            label="Updated Date"
-            name="updatedDate"
-            rules={[{ required: true, message: "Please enter updated date" }]}
+            label="Degree"
+            name={["doctorSchedule", "servicePrice"]}
+            rules={[{ required: true, message: "Please enter degree" }]}
           >
             <Input />
           </Form.Item>
+          <Form.Item
+            label="Degree"
+            name={["doctorSchedule", "dayOfWeek"]}
+            rules={[{ required: true, message: "Please enter degree" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Start Time"
+                name={["doctorSchedule", "slotStartTime"]}
+                rules={[{ required: true, message: "Please enter start time" }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="End Time"
+                name={["doctorSchedule", "slotEndTime"]}
+                rules={[{ required: true, message: "Please enter end time" }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
 
           {/* <Form.Item>
             <div className="flex justify-end">

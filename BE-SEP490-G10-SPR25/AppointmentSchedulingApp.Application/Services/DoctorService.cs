@@ -8,6 +8,8 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.ComponentModel.DataAnnotations;
 using AppointmentSchedulingApp.Infrastructure.Database;
 using Microsoft.IdentityModel.Tokens;
+using AppointmentSchedulingApp.Domain.Entities;
+using AppointmentSchedulingApp.Application.Services;
 
 namespace AppointmentSchedulingApp.Application.Services
 {
@@ -16,11 +18,17 @@ namespace AppointmentSchedulingApp.Application.Services
         private readonly IMapper mapper;
         public IUnitOfWork unitOfWork { get; set; }
         private readonly AppointmentSchedulingDbContext dbContext;
-        public DoctorService(IMapper mapper, IUnitOfWork unitOfWork, AppointmentSchedulingDbContext dbContext)
+        private readonly IMedicalRecordService _medicalRecordService;
+        private readonly IEmailService _emailService;
+
+        public DoctorService(IMapper mapper, IUnitOfWork unitOfWork, AppointmentSchedulingDbContext dbContext, 
+            IMedicalRecordService medicalRecordService, IEmailService emailService)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.dbContext = dbContext;
+            _medicalRecordService = medicalRecordService;
+            _emailService = emailService;
         }
 
         public async Task<List<DoctorDTO>> GetDoctorList()
@@ -252,14 +260,129 @@ namespace AppointmentSchedulingApp.Application.Services
             }
         }
 
-        public async Task<List<DoctorDTO>> GetDoctorListByServiceId(int serviceId)
+        // New methods for doctors
+        public async Task<List<ReservationDTO>> GetDoctorAppointments(int doctorId, string status = "Xác nhận")
         {
-            var query = unitOfWork.DoctorRepository.GetQueryable(d =>
-                    d.DoctorNavigation.IsActive &&
-                    d.DoctorNavigation.Roles.Any(r => r.RoleId == 4) &&
-                    d.Services.Any(s => s.ServiceId == serviceId))
-                .Select(d => d.DoctorNavigation); 
-            return await query.ProjectTo<DoctorDTO>(mapper.ConfigurationProvider).ToListAsync();
+            // Get doctor schedules
+            var doctorSchedules = await unitOfWork.DoctorScheduleRepository.GetAll(ds => ds.DoctorId == doctorId);
+            if (!doctorSchedules.Any())
+            {
+                return new List<ReservationDTO>();
+            }
+
+            var scheduleIds = doctorSchedules.Select(ds => ds.DoctorScheduleId).ToList();
+
+            // Get relevant reservations
+            var reservations = await unitOfWork.ReservationRepository.GetAll(
+                r => scheduleIds.Contains(r.DoctorScheduleId) && r.Status == status);
+
+            return mapper.Map<List<ReservationDTO>>(reservations);
+        }
+
+        public async Task<bool> CancelAppointment(int reservationId, string cancellationReason)
+        {
+            try
+            {
+                await unitOfWork.BeginTransactionAsync();
+
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId == reservationId);
+                if (reservation == null)
+                {
+                    throw new ValidationException("Lịch hẹn không tồn tại");
+                }
+
+                if (reservation.Status == "Hoàn thành" || reservation.Status == "Hủy")
+                {
+                    throw new ValidationException("Không thể hủy lịch hẹn đã hoàn thành hoặc đã hủy");
+                }
+
+                // Update reservation status
+                reservation.Status = "Hủy";
+                reservation.CancellationReason = cancellationReason;
+                reservation.UpdatedDate = DateTime.Now;
+
+                unitOfWork.ReservationRepository.Update(reservation);
+                await unitOfWork.CommitAsync();
+
+                // Get patient information for notification
+                var patient = await unitOfWork.PatientRepository.Get(p => p.PatientId == reservation.PatientId);
+                if (patient != null)
+                {
+                    var user = await unitOfWork.UserRepository.Get(u => u.UserId == patient.PatientId);
+                    if (user != null && !string.IsNullOrEmpty(user.Email))
+                    {
+                        // Get doctor information
+                        var doctorSchedule = await unitOfWork.DoctorScheduleRepository.Get(
+                            ds => ds.DoctorScheduleId == reservation.DoctorScheduleId);
+                        var doctor = await unitOfWork.UserRepository.Get(u => u.UserId == doctorSchedule.DoctorId);
+
+                        // Send email notification
+                        string subject = "Thông báo hủy lịch khám";
+                        string body = $"Xin chào {user.UserName},\n\n" +
+                            $"Bác sĩ {doctor.UserName} đã hủy lịch khám của bạn vào ngày {reservation.AppointmentDate.ToString("dd/MM/yyyy")}.\n" +
+                            $"Lý do: {cancellationReason}\n\n" +
+                            $"Vui lòng đặt lịch khám mới.\n\n" +
+                            $"Trân trọng,\nPhòng khám";
+
+                        // Create message object for email service with correct constructor
+                        var emailTo = new List<string> { user.Email };
+                        var message = new Message(emailTo, subject, body);
+
+                        _emailService.SendEmail(message);
+                    }
+                }
+
+                await unitOfWork.CommitTransactionAsync();
+                return true;
+            }
+            catch (ValidationException)
+            {
+                await unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
+            catch (Exception ex)
+            {
+                await unitOfWork.RollbackAsync();
+                await unitOfWork.RollbackTransactionAsync();
+                throw new Exception($"Lỗi khi hủy lịch hẹn: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<MedicalRecordDTO> CreateMedicalRecord(int reservationId, MedicalRecordDTO medicalRecordDTO)
+        {
+            var createDTO = new MedicalRecordCreateDTO
+            {
+                ReservationId = reservationId,
+                Symptoms = medicalRecordDTO.Symptoms,
+                Diagnosis = medicalRecordDTO.Diagnosis,
+                TreatmentPlan = medicalRecordDTO.TreatmentPlan,
+                FollowUpDate = medicalRecordDTO.FollowUpDate,
+                Notes = medicalRecordDTO.Notes
+            };
+
+            return await _medicalRecordService.CreateMedicalRecord(createDTO);
+        }
+
+        public async Task<bool> IsFirstTimePatient(int patientId)
+        {
+            return !(await _medicalRecordService.CheckIfPatientHasPreviousMedicalRecords(patientId));
+        }
+
+        public async Task<List<MedicalRecordDTO>> GetPatientPreviousMedicalRecords(int patientId)
+        {
+            return await _medicalRecordService.GetPatientMedicalHistoryByPatientId(patientId);
+        }
+
+        public async Task<IEnumerable<DoctorDTO>> GetDoctorListByServiceId(int serviceId)
+        {
+            var doctors = await dbContext.Doctors
+                .Include(d => d.Services)
+                .Include(d => d.DoctorNavigation)
+                .Where(d => d.Services.Any(s => s.ServiceId == serviceId) && d.DoctorNavigation.IsActive)
+                .Select(d => mapper.Map<DoctorDTO>(d.DoctorNavigation))
+                .ToListAsync();
+
+            return doctors;
         }
     }
 }

@@ -13,6 +13,10 @@ namespace AppointmentSchedulingApp.Application.IServices
 
         Task<List<MedicalRecordDTO>> GetAllMedicalRecordByPatientId(int patientId);
         Task<MedicalRecordDetailDTO> GetMedicalRecordDetailById(int Id);
-
+        
+        // New methods
+        Task<MedicalRecordDTO> CreateMedicalRecord(MedicalRecordCreateDTO medicalRecordDTO);
+        Task<bool> CheckIfPatientHasPreviousMedicalRecords(int patientId);
+        Task<List<MedicalRecordDTO>> GetPatientMedicalHistoryByPatientId(int patientId);
     }
 }

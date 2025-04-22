@@ -71,7 +71,6 @@ export default function Sidebar({ setSidebarOpen }: SidebarProps) {
   const navigation = [
     { name: 'Trang chủ', href: '/doctor', icon: <Home className="h-5 w-5" /> },
     { name: 'Danh sách lịch hẹn', href: '/doctor/appointments', icon: <Calendar className="h-5 w-5" /> },
-    { name: 'Bệnh nhân', href: '/doctor/patients', icon: <Users className="h-5 w-5" /> },
     { name: 'Hồ sơ y tế', href: '/doctor/medical-records', icon: <FileBox className="h-5 w-5" /> },
     { name: 'Cẩm nang', href: '/doctor/blogs', icon: <FileText className="h-5 w-5" /> },
     { name: 'Hồ sơ cá nhân', href: '/doctor/profile', icon: <Settings className="h-5 w-5" /> },

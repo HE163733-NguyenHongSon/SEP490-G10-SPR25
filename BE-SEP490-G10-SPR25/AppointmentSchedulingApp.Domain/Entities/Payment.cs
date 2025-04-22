@@ -11,7 +11,7 @@ public partial class Payment
 
     public int ReservationId { get; set; }
 
-    public DateTime? PaymentDate { get; set; }
+    public DateTime? PaymentDate { get; set; }= DateTime.Now;   
 
     public int? ReceptionistId { get; set; }
 

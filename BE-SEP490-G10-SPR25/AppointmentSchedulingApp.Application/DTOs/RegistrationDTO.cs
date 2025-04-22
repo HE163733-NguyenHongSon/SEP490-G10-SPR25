@@ -10,11 +10,6 @@ namespace AppointmentSchedulingApp.Application.DTOs
 {
     public class RegistrationDTO
     {
-        //[Key]
-        //public int UserId { get; set; }
-
-        [Required]
-        public string Name { get; set; }
         [Required]
         public string UserName { get; set; }
 

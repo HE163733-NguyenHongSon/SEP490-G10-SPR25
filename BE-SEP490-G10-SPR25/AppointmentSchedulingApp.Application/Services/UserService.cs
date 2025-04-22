@@ -275,16 +275,6 @@ namespace AppointmentSchedulingApp.Application.Services
                     return validationResult;
                 }
                 
-                // Check if username already exists
-                var existingUserName = await _userRepository.Get(u => u.UserName == registrationDTO.UserName);
-                if (existingUserName != null)
-                {
-                    return ResultDTO.Failure("Tên đăng nhập đã tồn tại", new Dictionary<string, string[]>
-                    {
-                        { "UserName", new[] { "Tên đăng nhập đã được sử dụng" } }
-                    });
-                }
-                
                 // Check if email already exists
                 var existingEmail = await _userRepository.Get(u => u.Email == registrationDTO.Email);
                 if (existingEmail != null)
@@ -332,7 +322,6 @@ namespace AppointmentSchedulingApp.Application.Services
                     IsActive = true,
                 };
 
-                // Save to database
                 _userRepository.Add(user);
                 
                 try 
@@ -415,7 +404,7 @@ namespace AppointmentSchedulingApp.Application.Services
         private ResultDTO ValidateRegistrationDTO(RegistrationDTO registrationDTO)
         {
             var errors = new Dictionary<string, string[]>();
-            
+
             // Kiểm tra tên người dùng
             if (string.IsNullOrWhiteSpace(registrationDTO.UserName))
             {
@@ -473,7 +462,7 @@ namespace AppointmentSchedulingApp.Application.Services
             }
             else if (!IsValidCitizenId(registrationDTO.CitizenId))
             {
-                errors.Add("CitizenId", new[] { "Số CCCD/CMND không hợp lệ (phải có 9 hoặc 12 chữ số)" });
+                errors.Add("CitizenId", new[] { "Số CCCD/CMND không hợp lệ (phải có 9 hoặc 12 chữ số và không bắt đầu bằng số '0')" });
             }
             
             // Kiểm tra ngày sinh
@@ -496,9 +485,9 @@ namespace AppointmentSchedulingApp.Application.Services
             {
                 errors.Add("Gender", new[] { "Giới tính không được để trống" });
             }
-            else if (registrationDTO.Gender.ToLower() != "male" && registrationDTO.Gender.ToLower() != "female")
+            else if (registrationDTO.Gender.ToLower() != "nam" && registrationDTO.Gender.ToLower() != "nữ")
             {
-                errors.Add("Gender", new[] { "Giới tính không hợp lệ (phải là 'male' hoặc 'female')" });
+                errors.Add("Gender", new[] { "Giới tính không hợp lệ (phải là 'Nam' hoặc 'Nữ')" });
             }
             
             if (errors.Count > 0)

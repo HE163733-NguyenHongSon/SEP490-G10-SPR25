@@ -20,5 +20,6 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<MedicalRecordDTO> CreateMedicalRecord(int reservationId, MedicalRecordDTO medicalRecordDTO);
         Task<bool> IsFirstTimePatient(int patientId);
         Task<List<MedicalRecordDTO>> GetPatientPreviousMedicalRecords(int patientId);
+        Task<IEnumerable<DoctorDTO>> GetDoctorListByServiceId(int serviceId);
     }
 }

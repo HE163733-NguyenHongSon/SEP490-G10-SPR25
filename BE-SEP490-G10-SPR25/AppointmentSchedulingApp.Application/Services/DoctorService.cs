@@ -372,5 +372,17 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             return await _medicalRecordService.GetPatientMedicalHistoryByPatientId(patientId);
         }
+
+        public async Task<IEnumerable<DoctorDTO>> GetDoctorListByServiceId(int serviceId)
+        {
+            var doctors = await dbContext.Doctors
+                .Include(d => d.Services)
+                .Include(d => d.DoctorNavigation)
+                .Where(d => d.Services.Any(s => s.ServiceId == serviceId) && d.DoctorNavigation.IsActive)
+                .Select(d => mapper.Map<DoctorDTO>(d.DoctorNavigation))
+                .ToListAsync();
+
+            return doctors;
+        }
     }
 }

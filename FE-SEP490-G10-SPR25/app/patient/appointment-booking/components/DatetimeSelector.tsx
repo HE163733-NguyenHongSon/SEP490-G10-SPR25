@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
 import { useBookingContext } from "@/patient/contexts/BookingContext";
 import { doctorScheduleService } from "@/services/doctorScheduleService";
+import { Calendar, Clock } from "lucide-react";
 
 interface ITimeOption {
   value: string;
@@ -29,9 +30,9 @@ const DatetimeSelector = () => {
     serviceId,
   } = useBookingContext();
 
-  // Lấy dữ liệu từ suggestion hoặc API
   const [schedules, setSchedules] = useState<IAvailableDate[]>([]);
 
+  // Fetch schedules data from API or suggestion data
   useEffect(() => {
     const fetchSchedules = async () => {
       setLoading(true);
@@ -48,9 +49,7 @@ const DatetimeSelector = () => {
         }
 
         const filteredSchedules = rawSchedules
-          .filter(
-            (s: IAvailableSchedules) => String(s.doctorId) === String(doctorId)
-          )
+          .filter((s: IAvailableSchedules) => String(s.doctorId) === String(doctorId))
           .reduce((acc: IAvailableDate[], schedule: IAvailableSchedules) => {
             const date = schedule.appointmentDate.split("T")[0];
             const slot = {
@@ -81,10 +80,12 @@ const DatetimeSelector = () => {
       }
     };
 
-    fetchSchedules();
+    if (doctorId && serviceId) {
+      fetchSchedules();
+    }
   }, [suggestionData, doctorId, serviceId]);
 
-  // Danh sách khung giờ dựa trên ngày đã chọn
+  // Prepare time options based on selected date
   const timeOptions: ITimeOption[] = useMemo(() => {
     const selectedDay = schedules.find((d) => d.date === selectedDate);
     return (
@@ -96,10 +97,14 @@ const DatetimeSelector = () => {
     );
   }, [schedules, selectedDate]);
 
-  // Cập nhật danh sách ngày và auto chọn nếu là từ suggestion
+  // Update available dates and set default selections if available
   useEffect(() => {
     if (schedules.length > 0) {
-      const dates = schedules.map((d) => new Date(d.date));
+      const dates = schedules.map((d) => {
+        const [year, month, day] = d.date.split("-").map(Number);
+        return new Date(year, month - 1, day); // Fix lệch timezone
+      });
+
       setAvailableDates(schedules);
       setAvailableDateObjects(dates);
 
@@ -119,6 +124,7 @@ const DatetimeSelector = () => {
       setAvailableDateObjects([]);
       setSelectedTime("");
       setSelectedSlotId("");
+      setSelectedDate("");
     }
   }, [
     schedules,
@@ -129,7 +135,7 @@ const DatetimeSelector = () => {
     setSelectedSlotId,
   ]);
 
-  // Nếu giờ hiện tại không hợp lệ -> reset hoặc chọn mặc định
+  // Ensure the selected time is valid
   useEffect(() => {
     if (timeOptions.length === 0) {
       setSelectedTime("");
@@ -144,6 +150,7 @@ const DatetimeSelector = () => {
     }
   }, [timeOptions, selectedTime, setSelectedTime, setSelectedSlotId]);
 
+  // Handle date change
   const handleDateChange = useCallback(
     (date: Date | null) => {
       if (!date) return;
@@ -153,6 +160,7 @@ const DatetimeSelector = () => {
     [setSelectedDate]
   );
 
+  // Handle time selection change
   const handleTimeChange = useCallback(
     (option: ITimeOption | null) => {
       if (option) {
@@ -166,17 +174,23 @@ const DatetimeSelector = () => {
     [setSelectedTime, setSelectedSlotId]
   );
 
+  // Check if the selected date is available
   const isDateAvailable = (date: Date) =>
     availableDateObjects.some((d) => d.toDateString() === date.toDateString());
 
+  // Find the selected time option from the list
   const selectedTimeOption =
     timeOptions.find((opt) => opt.value === selectedTime) || null;
 
   return (
     <div className="space-y-4 w-full">
       <div className="flex flex-col md:flex-row gap-4 w-full">
+        {/* Date Picker */}
         <div className="w-full md:w-1/2">
-          <label className="text-sm font-medium mb-1">Chọn ngày</label>
+          <label className="text-sm font-medium mb-1 flex items-center gap-1 text-gray-700">
+            <Calendar className="w-4 h-4" />
+            Chọn ngày
+          </label>
           <DatePicker
             selected={selectedDate ? new Date(selectedDate) : null}
             onChange={handleDateChange}
@@ -188,8 +202,12 @@ const DatetimeSelector = () => {
           />
         </div>
 
+        {/* Time Selector */}
         <div className="w-full md:w-1/2">
-          <label className="text-sm font-medium mb-1">Chọn giờ</label>
+          <label className="text-sm font-medium mb-1 flex items-center gap-1 text-gray-700">
+            <Clock className="w-4 h-4" />
+            Chọn giờ
+          </label>
           <Select
             value={selectedTimeOption}
             onChange={handleTimeChange}
@@ -202,6 +220,7 @@ const DatetimeSelector = () => {
         </div>
       </div>
 
+      {/* Selected Date and Time */}
       {selectedDate && (
         <div className="text-sm text-gray-600">
           Ngày hẹn: {new Date(selectedDate).toLocaleDateString("vi-VN")}
@@ -209,6 +228,7 @@ const DatetimeSelector = () => {
         </div>
       )}
 
+      {/* Error Message */}
       {availableDates.length === 0 && !loading && (
         <div className="text-sm text-red-500">Không có lịch khả dụng.</div>
       )}

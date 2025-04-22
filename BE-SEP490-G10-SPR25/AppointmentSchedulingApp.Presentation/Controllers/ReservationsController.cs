@@ -22,6 +22,23 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         {
             return Ok(await reservationService.GetListReservation());
         }
+        [HttpPost("AddReservation")]
+        public async Task<IActionResult> AddReservation([FromBody] AddedReservationDTO reservationDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await reservationService.AddReservation(reservationDto);
+
+            if (result == null)
+            {
+                return BadRequest("Không thể tạo lịch hẹn.");
+            }
+
+            return Ok(result);
+        }
 
         [HttpGet("{patientId}/{status}/{sortBy}")]
         public async Task<IActionResult> GetListReservationByFilter(int patientId, string? status = "Đang chờ", string? sortBy = "Giá dịch vụ tăng dần")

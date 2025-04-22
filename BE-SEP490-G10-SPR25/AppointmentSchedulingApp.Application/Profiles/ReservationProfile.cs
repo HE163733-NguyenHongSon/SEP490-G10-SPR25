@@ -29,6 +29,11 @@ namespace AppointmentSchedulingApp.Application.Profiles
              .ForMember(dest => dest.CancellationReason, opt => opt.MapFrom(src => src.CancellationReason))
              .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
              .ReverseMap();
+
+            CreateMap<AddedReservationDTO, Reservation>().ReverseMap();
+
+
+
         }
     }
 }

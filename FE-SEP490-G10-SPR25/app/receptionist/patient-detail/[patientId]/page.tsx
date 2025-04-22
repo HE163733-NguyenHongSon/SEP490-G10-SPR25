@@ -260,7 +260,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
 }
 
 // Helper component
-const InfoItem = ({ label, value, highlight }: { label: string; value: string | number; highlight?: boolean }) => (
+const InfoItem = ({ label, value, highlight }: { label: string; value: string | number | undefined; highlight?: boolean }) => (
   <div className={`flex justify-between items-center ${highlight ? 'bg-cyan-50 px-4 py-2 rounded-lg' : ''}`}>
     <dt className="text-gray-600">{label}:</dt>
     <dd className={`font-medium ${highlight ? 'text-cyan-700' : 'text-gray-900'}`}>

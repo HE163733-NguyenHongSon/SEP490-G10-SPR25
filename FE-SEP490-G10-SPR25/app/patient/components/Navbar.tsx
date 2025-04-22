@@ -28,23 +28,23 @@ const Navbar: React.FC = () => {
         const suggestedData = [
           ...specialties.map((s: ISpecialty) => ({
             label: s.specialtyName,
-            value: s.specialtyId,
-            image: s.image ,
+            value: s.specialtyId?.toString() || "",
+            image: s.image || "",
             type: "specialty" ,
           })),
           ...doctors.map((d: IDoctor) => ({
             label: d.userName,
-            value: d.userId,
-            image: d.avatarUrl ,
+            value: d.userId?.toString() || "",
+            image: d.avatarUrl || "",
             type: "doctor",
           })),
-          ...services.map((s: IService) => ({
+          ...services.map((s) => ({
             label: s.serviceName,
-            value: s.serviceId,
-            image: s.image ,
+            value: String(s.serviceId) || "",
+            image: s.image || "",
             type: "service",
           })),
-        ];
+        ].filter(item => item.value !== "");
 
         setSuggestedData(suggestedData);
       } catch (error) {

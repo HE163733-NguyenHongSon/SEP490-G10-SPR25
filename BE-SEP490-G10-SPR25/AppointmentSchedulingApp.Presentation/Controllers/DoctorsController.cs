@@ -154,6 +154,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500, $"Lỗi khi lấy danh sách lịch hẹn: {ex.Message}");
             }
         }
+        
 
         [HttpPost("appointments/{reservationId}/cancel")]
         //[Authorize(Roles = "Doctor")]

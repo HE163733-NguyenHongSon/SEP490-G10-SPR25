@@ -20,6 +20,8 @@ namespace AppointmentSchedulingApp.Domain.IUnitOfWork
 
         IRoomRepository RoomRepository { get; }
         ISlotRepository SlotRepository { get; }
+
+        IPaymentRepository PaymentRepository { get; }
         void Commit();
 
         void Rollback();
@@ -32,5 +34,6 @@ namespace AppointmentSchedulingApp.Domain.IUnitOfWork
         Task BeginTransactionAsync();
         Task CommitTransactionAsync();
         Task RollbackTransactionAsync();
+        Task<int> SaveAsync();
     }
 }

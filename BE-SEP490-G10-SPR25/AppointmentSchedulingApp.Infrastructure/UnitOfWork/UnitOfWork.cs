@@ -27,7 +27,7 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
         private IRoomRepository _roomRepository;
         private ISlotRepository _slotRepository;
 
-
+        private IPaymentRepository _paymentRepository; 
 
 
 
@@ -77,7 +77,11 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
            _roomRepository ??= new RoomRepository(_dbContext);
 
         public ISlotRepository SlotRepository =>
-            _slotRepository ??= new SlotRepository(_dbContext);
+            _slotRepository ??= new SlotRepository(_dbContext); 
+        
+        
+        public IPaymentRepository PaymentRepository =>
+            _paymentRepository ??= new PaymentRepository(_dbContext);
 
         public void Commit() => _dbContext.SaveChanges();
 
@@ -104,6 +108,11 @@ namespace AppointmentSchedulingApp.Infrastructure.UnitOfWork
                 await _transaction.RollbackAsync();
                 _transaction.Dispose();
             }
+        }
+
+        public Task<int> SaveAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

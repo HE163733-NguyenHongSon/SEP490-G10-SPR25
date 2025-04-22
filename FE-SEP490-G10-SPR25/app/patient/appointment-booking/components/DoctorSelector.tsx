@@ -4,8 +4,7 @@ import Select from "react-select";
 import { User as UserIcon } from "lucide-react";
 import { useBookingContext } from "@/patient/contexts/BookingContext";
 import type { SingleValue } from "react-select";
-import { doctorService } from "@/services/doctorService";
-import { set, setDate } from "date-fns";
+import { doctorScheduleService } from "@/services/doctorScheduleService";
 
 const DoctorSelector = () => {
   const {
@@ -26,12 +25,12 @@ const DoctorSelector = () => {
       setLoading(true);
       try {
         const doctorList = (
-          await doctorService.getDoctorListByServiceId(serviceId)
+          await doctorScheduleService.getAvailableSchedulesByServiceId(serviceId)
         ).map((ds) => ({
-          value: String(ds.userId ?? ""),
-          label: ds.userName,
+          value: String(ds.doctorId ?? ""),
+          label: ds.doctorName ?? "Unknown Doctor",
         }));
-
+  
         const suggestedDoctors: IDoctorOption[] = [
           ...new Map(
             (suggestionData?.availableSchedules ?? []).map(
@@ -45,29 +44,36 @@ const DoctorSelector = () => {
             )
           ).values(),
         ];
-
-        setDoctors(suggestedDoctors.length > 0 ? suggestedDoctors : doctorList);
-        setDoctorId(suggestedDoctors[0]?.value ?? doctorList[0]?.value);
-        setSelectedDate(
-          suggestionData?.availableSchedules[0]?.appointmentDate.split(
-            "T"
-          )[0] || ""
-        );
-        setSelectedTime(
-          `${suggestionData?.availableSchedules[0]?.slotStartTime}-${suggestionData?.availableSchedules[0]?.slotEndTime}` ||
-            ""
-        );
+  
+        const hasSuggestions = Array.isArray(suggestionData?.availableSchedules) && suggestionData.availableSchedules.length > 0;
+  
+        setDoctors(hasSuggestions ? suggestedDoctors : doctorList);
+  
+        if (hasSuggestions) {
+          setDoctorId(suggestedDoctors[0]?.value ?? "");
+          setSelectedDate(
+            suggestionData.availableSchedules[0]?.appointmentDate?.split("T")[0] ?? ""
+          );
+          setSelectedTime(
+            `${suggestionData.availableSchedules[0]?.slotStartTime}-${suggestionData.availableSchedules[0]?.slotEndTime}`
+          );
+        } else {
+          setDoctorId("");
+          setSelectedDate("");
+          setSelectedTime("");
+        }
       } catch (error) {
         console.error("Error fetching doctors:", error);
       } finally {
         setLoading(false);
       }
     };
-
+  
     if (serviceId) {
       fetchDoctors();
     }
   }, [serviceId, suggestionData?.availableSchedules]);
+  
 
   const currentDoctor =
     doctors.find((d) => String(d.value) === String(doctorId)) || null;

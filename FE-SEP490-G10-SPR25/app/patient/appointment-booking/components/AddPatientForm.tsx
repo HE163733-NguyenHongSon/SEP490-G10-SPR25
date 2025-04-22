@@ -18,53 +18,50 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
   const [relationship, setRelationship] = useState("");
   const [address, setAddress] = useState("");
   const { user } = useUser();
-  const { setPatients, setAddingPatient, patients } =
+  const { setPatients, setAddingPatient, setSelectedPatient, patients } =
     useBookingContext();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-    
-      const addedPatient: IAddedPatient = {
-        userName,
-        phone,
-        dob: dob ? format(dob, "yyyy-MM-dd") : "",
-        gender,
-        citizenId,
-        relationship,
-        address,
-        guardianId: user?.userId,
-      };
-    
-      // Gọi API để thêm bệnh nhân
-      const newPatient = await patientService.addPatient(addedPatient);
-    
-      if (newPatient) {
-        toast.success("Thêm bệnh nhân thành công!");
-    
-        // Cập nhật lại danh sách bệnh nhân với dữ liệu mới, bao gồm ID
-        setPatients([
-          ...patients,
-          {
-            ...newPatient,  // Sử dụng dữ liệu bệnh nhân mới từ API, bao gồm cả ID
-            userName,
-            phone,
-            dob: dob ? format(dob, "yyyy-MM-dd") : "",
-            gender,
-            citizenId,
-            relationship,
-            address,
-            guardianId: user?.userId,
-          },
-        ]);
-        setAddingPatient(true);
-        setSelectedPatient(newPatient);  // Chọn bệnh nhân vừa thêm
-        onClose();  // Đóng form sau khi thêm
-      } else {
-        setAddingPatient(false);
-        toast.error("Thêm thất bại hoặc bệnh nhân đã tồn tại!");
-      }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const addedPatient: IAddedPatient = {
+      userName,
+      phone,
+      dob: dob ? format(dob, "yyyy-MM-dd") : "",
+      gender,
+      citizenId,
+      relationship,
+      address,
+      guardianId: user?.userId,
     };
-    
+
+    // Gọi API để thêm bệnh nhân
+    const newPatient = await patientService.addPatient(addedPatient);
+
+    if (newPatient) {
+      toast.success("Thêm bệnh nhân thành công!");
+
+      setPatients([
+        ...patients,
+        {
+          ...newPatient,
+          userName,
+          phone,
+          dob: dob ? format(dob, "yyyy-MM-dd") : "",
+          gender,
+          citizenId,
+          relationship,
+          address,
+          guardianId: user?.userId,
+        },
+      ]);
+      setAddingPatient(true);
+      setSelectedPatient(newPatient);
+    } else {
+      setAddingPatient(false);
+      toast.error("Thêm thất bại hoặc bệnh nhân đã tồn tại!");
+    }
+  };
 
   return (
     <div className="p-6 bg-white rounded-2xl shadow-2xl text-gray-800 w-full max-w-3xl">

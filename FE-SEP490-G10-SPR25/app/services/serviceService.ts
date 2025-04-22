@@ -1,5 +1,17 @@
 import axios from "axios";
 
+export interface IService {
+  serviceId: number;
+  serviceName: string;
+  price: number;
+  image?: string;
+  overview?: string;
+  estimatedTime?: string;
+  rating?: number;
+  ratingCount?: number;
+  specialtyId?: number;
+}
+
 export interface ServiceCreateDTO {
   serviceName: string;
   overview: string;

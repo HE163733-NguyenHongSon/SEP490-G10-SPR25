@@ -129,6 +129,15 @@ const BookingForm = () => {
               Tiếp theo
             </button>
           )}
+
+          {currentStep === 3 && (
+            <button
+              type="submit"
+              className="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700 transition"
+            >
+              Xác nhận đặt lịch
+            </button>
+          )}
         </div>
 
         {/* Stepper */}

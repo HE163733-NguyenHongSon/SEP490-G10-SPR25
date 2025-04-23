@@ -38,32 +38,33 @@ export const doctorScheduleService = {
     serviceId: string | number
   ): Promise<IAvailableSchedules[]> {
     try {
-      const res = await fetch(WEBHOOK_URL, {
-        method: "POST",
+      const url = `${apiUrl}/api/DoctorSchedules/available/${serviceId}`;
+      console.log(`Fetching available schedules from: ${url}`);
+
+      const res = await fetch(url, {
+        method: "GET",
         headers: {
-          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          serviceId,
-        }),
+        cache: "no-store"
       });
 
       if (!res.ok) {
-        console.error("Gợi ý thất bại:", await res.text());
-        return [];
+        const errorText = await res.text();
+        console.error("Failed to fetch schedules:", errorText);
+        throw new Error(`Failed to fetch schedules: ${res.status}`);
       }
 
       const result = await res.json();
-      console.log(
-        `Retrieved ${result} available schedules for service ${serviceId}`
-      );
+      console.log(`Retrieved schedules for service ${serviceId}:`, result);
       return result;
     } catch (error) {
       console.error(
         `Error fetching available schedule list for service ${serviceId}:`,
         error
       );
-      return [];
+      throw error;
     }
   },
 

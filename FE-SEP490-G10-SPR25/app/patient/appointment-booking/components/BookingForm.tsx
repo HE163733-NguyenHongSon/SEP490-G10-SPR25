@@ -1,24 +1,16 @@
 // BookingForm.tsx
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { RootState } from "../store";
 import { useEffect, useCallback, useState } from "react";
 import {
   setShowBookingForm,
   setCurrentStep,
+  
   setServices,
-  setServiceId,
+ 
   setIsSubmitting,
   setShowConfirmModal,
-  setSpecialties,
-  setSpecialtyId,
-  setDoctors,
-  setDoctorId,
-  setSelectedDate,
-  setSelectedTime,
-  setSelectedPatient,
-  setSuggestionData,
-  setIsShowRestoreSuggestion,
-} from "../redux/bookingSlice";
+} from "../bookingSlice";
 import PatientInfor from "./PatientInfor";
 import BookingInfor from "./BookingInfor";
 import BookingConfirmation from "./BookingConfirmation";
@@ -29,9 +21,10 @@ import { handleVNPayPayment } from "@/services/vnPayService";
 const BookingForm = () => {
   const dispatch = useDispatch();
   const [isMounted, setIsMounted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {
-    isShowBookingForm,
+    showBookingForm,
     currentStep,
     selectedPatient,
     selectedDate,
@@ -42,75 +35,106 @@ const BookingForm = () => {
     serviceId,
     doctorId,
     isSubmitting,
-    isShowConfirmModal,
+    showConfirmModal,
   } = useSelector((state: RootState) => state.booking);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      dispatch(setIsSubmitting(true));
+  const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+    dispatch(setIsSubmitting(true));
+
+    try {
+      // Validate required fields
+      if (!selectedPatient?.userId) {
+        throw new Error("Vui lòng chọn bệnh nhân");
+      }
+      if (!serviceId) {
+        throw new Error("Vui lòng chọn dịch vụ");
+      }
+      if (!doctorId) {
+        throw new Error("Vui lòng chọn bác sĩ");
+      }
+      if (!selectedDate || !selectedTime) {
+        throw new Error("Vui lòng chọn thời gian khám");
+      }
+
+      console.log("Fetching schedules for service:", serviceId);
+      
+      // Get available schedules
+      let schedules;
+      try {
+        schedules = await doctorScheduleService.getAvailableSchedulesByServiceId(serviceId);
+        console.log("Retrieved schedules:", schedules);
+      } catch (scheduleError) {
+        console.error("Schedule fetch error:", scheduleError);
+        throw new Error("Không thể lấy thông tin lịch khám. Vui lòng thử lại sau.");
+      }
+
+      const matchedSchedule = schedules?.find(
+        (s) => {
+          const scheduleDateTime = `${selectedDate}T${selectedTime}`;
+          console.log("Comparing:", {
+            scheduleDoctorId: s.doctorId?.toString(),
+            selectedDoctorId: doctorId,
+            scheduleDateTime: s.appointmentDate,
+            selectedDateTime: scheduleDateTime
+          });
+          return s.doctorId?.toString() === doctorId && 
+                 s.appointmentDate === scheduleDateTime;
+        }
+      );
+
+      console.log("Matched schedule:", matchedSchedule);
+
+      if (!matchedSchedule) {
+        throw new Error("Lịch khám này không còn trống hoặc đã được đặt. Vui lòng chọn thời gian khác.");
+      }
+
+      const service = services.find((s) => s.serviceId === serviceId);
+      if (!service?.price) {
+        throw new Error("Không tìm thấy thông tin giá dịch vụ. Vui lòng thử lại.");
+      }
+
+      const bookingPayload = {
+        paymentId: 0,
+        payerId: selectedPatient.userId,
+        reservation: {
+          patientId: selectedPatient.userId,
+          doctorScheduleId: matchedSchedule.doctorScheduleId?.toString(),
+          reason: symptoms || "",
+          priorExaminationImg: priorExaminationImg || "",
+          appointmentDate: matchedSchedule.appointmentDate,
+          createdByUserId: selectedPatient.userId,
+          updatedByUserId: selectedPatient.userId,
+        },
+        paymentMethod: "VNPay",
+        amount: service.price,
+      };
+
+      console.log("Submitting booking payload:", bookingPayload);
 
       try {
-        const schedules =
-          await doctorScheduleService.getAvailableSchedulesByServiceId(
-            serviceId ?? ""
-          );
-        const matchedSchedule = schedules.find(
-          (s) =>
-            s.doctorId === doctorId &&
-            s.appointmentDate === `${selectedDate}T${selectedTime}`
-        );
-
-        const amount = services.find((s) => s.serviceId === serviceId)?.price;
-
-        const bookingPayload = {
-          paymentId: 0,
-          payerId: selectedPatient?.userId,
-          reservation: {
-            patientId: selectedPatient?.userId,
-            doctorScheduleId:
-              matchedSchedule?.doctorScheduleId?.toString() || "",
-            reason: symptoms,
-            priorExaminationImg: priorExaminationImg || "",
-            appointmentDate: matchedSchedule?.appointmentDate,
-            createdByUserId: selectedPatient?.userId || "",
-            updatedByUserId: selectedPatient?.userId || "",
-          },
-          paymentMethod: "VNPay",
-          amount,
-        };
-
-        const bookingRes = await handleVNPayPayment(bookingPayload);
-        if (
-          !bookingRes ||
-          typeof bookingRes !== "object" ||
-          !("ok" in bookingRes)
-        ) {
-          throw new Error("Không thể lưu lịch hẹn.");
+        const paymentResult = await handleVNPayPayment(bookingPayload);
+        if (!paymentResult?.ok) {
+          throw new Error("Không thể xử lý thanh toán. Vui lòng thử lại sau.");
         }
-      } catch (err) {
-        console.error("Lỗi khi đặt lịch:", err);
-        alert("Đã xảy ra lỗi khi đặt lịch.");
-      } finally {
-        dispatch(setIsSubmitting(false));
+      } catch (paymentError) {
+        console.error("Payment error:", paymentError);
+        throw new Error("Lỗi trong quá trình thanh toán. Vui lòng thử lại sau.");
       }
-    },
-    [
-      dispatch,
-      selectedPatient,
-      doctorId,
-      serviceId,
-      selectedDate,
-      selectedTime,
-      symptoms,
-      priorExaminationImg,
-      services,
-    ]
-  );
+
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Đã xảy ra lỗi khi đặt lịch";
+      setError(errorMessage);
+      console.error("Booking error:", err);
+    } finally {
+      dispatch(setIsSubmitting(false));
+    }
+  }, [dispatch, selectedPatient, doctorId, serviceId, selectedDate, selectedTime, symptoms, priorExaminationImg, services]);
 
   const handleBack = useCallback(() => {
     if (currentStep === 1) {
@@ -124,22 +148,9 @@ const BookingForm = () => {
   const confirmCancel = useCallback(() => {
     dispatch(setShowBookingForm(false));
     dispatch(setShowConfirmModal(false));
-    dispatch(setCurrentStep(1));
-    dispatch(setServices([]));
-    dispatch(setServiceId(""));
-    dispatch(setIsSubmitting(false));
-    dispatch(setSpecialties([]));
-    dispatch(setSpecialtyId(0));
-    dispatch(setDoctors([]));
-    dispatch(setDoctorId(""));
-    dispatch(setSelectedDate(""));
-    dispatch(setSelectedTime(""));
-    dispatch(setSelectedPatient(null));
-    dispatch(setSuggestionData(null));
-    dispatch(setIsShowRestoreSuggestion(false));
   }, [dispatch]);
 
-  if (!isShowBookingForm) return null;
+  if (!showBookingForm) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -166,11 +177,7 @@ const BookingForm = () => {
               strokeWidth="2"
               viewBox="0 0 24 24"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 19l-7-7 7-7"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
             Quay lại
           </button>
@@ -185,18 +192,10 @@ const BookingForm = () => {
           {currentStep === 3 && (
             <button
               type="submit"
-              onClick={() =>
-                handleSubmit(
-                  new Event(
-                    "submit"
-                  ) as unknown as React.FormEvent<HTMLFormElement>
-                )
-              }
+              onClick={() => handleSubmit(new Event('submit') as unknown as React.FormEvent<HTMLFormElement>)}
               disabled={isSubmitting}
               className={`px-4 py-2 rounded-md transition text-white ${
-                isSubmitting
-                  ? "bg-cyan-300 cursor-not-allowed"
-                  : "bg-cyan-600 hover:bg-cyan-700"
+                isSubmitting ? "bg-cyan-300 cursor-not-allowed" : "bg-cyan-600 hover:bg-cyan-700"
               }`}
             >
               {isSubmitting ? "Đang xử lý..." : "Xác nhận đặt lịch"}
@@ -204,7 +203,7 @@ const BookingForm = () => {
           )}
         </div>
 
-        <BookingStepper />
+        <BookingStepper  />
 
         <div className="flex-1 mt-6 min-h-[400px] overflow-y-auto">
           {currentStep === 1 && <PatientInfor />}
@@ -213,7 +212,7 @@ const BookingForm = () => {
         </div>
       </div>
 
-      {isShowConfirmModal && (
+      {showConfirmModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div
             className="bg-white rounded-xl p-8 w-[90%] max-w-[550px] shadow-2xl"
@@ -240,6 +239,13 @@ const BookingForm = () => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {error && (
+        <div className="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <strong className="font-bold">Lỗi!</strong>
+          <span className="block sm:inline"> {error}</span>
         </div>
       )}
     </div>

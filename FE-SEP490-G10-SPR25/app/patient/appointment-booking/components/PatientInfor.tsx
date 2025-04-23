@@ -1,17 +1,15 @@
 "use client";
-import { useBookingContext } from "@/patient/contexts/BookingContext";
+import { useDispatch, useSelector } from 'react-redux';
 import Image from "next/image";
 import { CheckCircle2 as CheckCircle } from "lucide-react";
 import AddPatientForm from "./AddPatientForm";
+import { setSelectedPatient, setAddingPatient, setCurrentStep } from '../bookingSlice';
+import { RootState } from '../store';
+
 const PatientInfor = () => {
-  const {
-    patients,
-    selectedPatient,
-    setSelectedPatient,
-    addingPatient,
-    setAddingPatient,
-    setCurrentStep,
-  } = useBookingContext();
+  const dispatch = useDispatch();
+  const { patients, selectedPatient, addingPatient } = useSelector((state: RootState) => state.booking);
+
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
   
   return (
@@ -22,17 +20,17 @@ const PatientInfor = () => {
 
       {/* Patient List */}
       <div className="space-y-8">
-        {patients.map((patient) => (
+        {patients.map((patient: IPatient) => (
           <div
-          key={patient.userId}
-          className={`bg-white rounded-lg shadow-lg p-6 cursor-pointer transition-all duration-300 ease-in-out transform border border-gray-300 hover:shadow-2xl hover:scale-105 ${
-            selectedPatient?.phone === patient.phone
-              ? "ring-2 ring-cyan-500 border-cyan-500 scale-100"
-              : ""
-          }`}
+            key={patient.userId}
+            className={`bg-white rounded-lg shadow-lg p-6 cursor-pointer transition-all duration-300 ease-in-out transform border border-gray-300 hover:shadow-2xl hover:scale-105 ${
+              selectedPatient?.phone === patient.phone
+                ? "ring-2 ring-cyan-500 border-cyan-500 scale-100"
+                : ""
+            }`}
             onClick={() => {
-              setSelectedPatient(patient);
-              setCurrentStep(2);
+              dispatch(setSelectedPatient(patient));
+              dispatch(setCurrentStep(2)); // Chuyển sang bước tiếp theo
             }}
           >
             <div className="flex items-center gap-6">
@@ -56,8 +54,8 @@ const PatientInfor = () => {
               {/* Patient Information */}
               <div className="flex-1 min-w-0">
                 {/* Patient Name, Date of Birth, and Phone Number in separate lines */}
-                <div className=" flex justify-start flex-col">
-                  <h3 className="text-lg font-semibold text-gray-800  text-left">
+                <div className="flex justify-start flex-col">
+                  <h3 className="text-lg font-semibold text-gray-800 text-left">
                     {patient.userName}
                   </h3>
                   <div className="flex flex-row">
@@ -67,7 +65,7 @@ const PatientInfor = () => {
                     </p>
                   </div>
 
-                  <div className=" flex flex-row">
+                  <div className="flex flex-row">
                     <p className="font-medium text-gray-500">Điện thoại :</p>
                     <p className="text-gray-800">{patient.phone || "---"}</p>
                   </div>
@@ -83,16 +81,17 @@ const PatientInfor = () => {
             )}
           </div>
         ))}
+
         {/* Add New Patient Button */}
         {addingPatient && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <AddPatientForm onClose={() => setAddingPatient(false)} />
+            <AddPatientForm onClose={() => dispatch(setAddingPatient(false))} />
           </div>
         )}
 
         <div className="flex mt-6">
           <button
-            onClick={() => setAddingPatient(true)}
+            onClick={() => dispatch(setAddingPatient(true))}
             className="w-full py-3 text-white bg-cyan-500 border-2 border-dashed border-white rounded-lg hover:bg-cyan-600 transition-all duration-300"
           >
             + Thêm bệnh nhân mới

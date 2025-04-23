@@ -237,6 +237,10 @@ export const {
 } = bookingSlice.actions;
 
 // Add selectors
+export const selectBooking = (state: { booking: BookingState }) => state.booking;
+export const selectSpecialties = (state: { booking: BookingState }) => state.booking.specialties;
+export const selectServices = (state: { booking: BookingState }) => state.booking.services;
+export const selectDoctors = (state: { booking: BookingState }) => state.booking.doctors;
 export const selectSymptoms = (state: { booking: BookingState }) => state.booking.symptoms;
 
 export default bookingSlice.reducer;

@@ -36,7 +36,7 @@ export const doctorScheduleService = {
 
   async getAvailableSchedulesByServiceId(
     serviceId: string | number
-  ): Promise<IAvailableSchedules[]> {
+  ): Promise<IAvailableSchedule[]> {
     try {
       const res = await fetch(WEBHOOK_URL, {
         method: "POST",

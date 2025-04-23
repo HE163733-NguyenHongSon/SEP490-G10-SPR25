@@ -3,16 +3,19 @@ import React, { useEffect } from "react";
 import Select from "react-select";
 import { Stethoscope as StethoscopeIcon, RefreshCw } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSpecialtyId, setShowRestoreSuggestion } from "../bookingSlice";
-import { restoreSuggestion } from "../bookingThunks";
-import type { RootState, AppDispatch } from "../store";
+import {
+  setSpecialtyId,
+  setIsShowRestoreSuggestion,
+ 
+} from "../redux/bookingSlice";
+import { restoreSuggestion } from "../redux/bookingThunks";
+import type { RootState, AppDispatch } from "../../store";
 import type { StylesConfig } from "react-select";
 
 const SpecialtySelector = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { specialties, specialtyId, showRestoreSuggestion: showRestore } = useSelector(
-    (state: RootState) => state.booking
-  );
+  const { specialties, specialtyId, isShowRestoreSuggestion, suggestionData } =
+    useSelector((state: RootState) => state.booking);
 
   const options = specialties.map((s: ISpecialty) => ({
     value: String(s.specialtyId),
@@ -20,28 +23,37 @@ const SpecialtySelector = () => {
   }));
 
   useEffect(() => {
-    if (specialtyId && !localStorage.getItem("suggestedSpecialtyId")) {
-      localStorage.setItem("suggestedSpecialtyId", specialtyId.toString());
+    if (specialtyId && !localStorage.getItem("bookingSuggestion")) {
+      localStorage.setItem("bookingSuggestion", JSON.stringify(suggestionData));
     }
   }, [specialtyId]);
 
-  const currentSpecialty = options.find(opt => opt.value === String(specialtyId));
+  const currentSpecialty = options.find(
+    (opt) => opt.value === String(specialtyId)
+  );
 
-  const handleSpecialtyChange = (selectedOption: { value: string; label: string } | null) => {
+  const handleSpecialtyChange = (
+    selectedOption: { value: string; label: string } | null
+  ) => {
     if (selectedOption) {
       const selectedId = Number(selectedOption.value);
-      const suggestedId = Number(localStorage.getItem("suggestedSpecialtyId"));
-
+      const suggestion: IBookingSuggestion = JSON.parse(
+        localStorage.getItem("bookingSuggestion") || "{}"
+      );
       dispatch(setSpecialtyId(selectedId));
-      dispatch(setShowRestoreSuggestion(selectedId !== suggestedId));
+
+      dispatch(
+        setIsShowRestoreSuggestion(
+          selectedId !== Number(suggestion.specialty.specialtyId)
+        )
+      );
     }
   };
 
   const handleRestoreSuggestion = () => {
     dispatch(restoreSuggestion());
-
-    const suggestedId = Number(localStorage.getItem("suggestedSpecialtyId"));
-    dispatch(setSpecialtyId(suggestedId));
+    // const suggestedId = Number(localStorage.getItem("suggestedSpecialtyId"));
+    // dispatch(setSpecialtyId(suggestedId));
   };
 
   const customStyles: StylesConfig<{ value: string; label: string }, false> = {
@@ -57,7 +69,8 @@ const SpecialtySelector = () => {
     }),
     option: (base, state) => ({
       ...base,
-      backgroundColor: state.isSelected || state.isFocused ? "#f3f4f6" : "white",
+      backgroundColor:
+        state.isSelected || state.isFocused ? "#f3f4f6" : "white",
       color: "#374151",
       padding: "10px 12px",
       cursor: "pointer",
@@ -79,7 +92,7 @@ const SpecialtySelector = () => {
           <StethoscopeIcon className="w-4 h-4 mr-2" />
           Chuyên khoa
         </label>
-        {showRestore && (
+        {isShowRestoreSuggestion && (
           <button
             onClick={handleRestoreSuggestion}
             className="text-xs text-cyan-600 hover:text-cyan-700 flex items-center"

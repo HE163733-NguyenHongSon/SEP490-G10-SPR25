@@ -3,7 +3,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useUser } from "@/contexts/UserContext";
 import { useDispatch } from "react-redux";
-import { addPatient, setAddingPatient, setSelectedPatient } from "../bookingSlice";
+import {
+  addPatient,
+  setAddingPatient,
+  setSelectedPatient,
+} from "../redux/bookingSlice";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -34,17 +38,13 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
     };
 
     try {
-      // Giả sử gọi API để thêm bệnh nhân
-      // const newPatient = await patientService.addPatient(addedPatient);
-
-      // Nếu thành công, dispatch action để lưu bệnh nhân vào Redux
-      dispatch(addPatient({ payload: addedPatient }));
+      dispatch(addPatient(addedPatient));
       dispatch(setAddingPatient(true));
       dispatch(setSelectedPatient(addedPatient));
 
       toast.success("Thêm bệnh nhân thành công!");
       onClose();
-    } catch (error) {
+    } catch {
       dispatch(setAddingPatient(false));
       toast.error("Thêm thất bại hoặc bệnh nhân đã tồn tại!");
     }

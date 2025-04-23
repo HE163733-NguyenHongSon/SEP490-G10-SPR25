@@ -2,5 +2,6 @@ interface IBookingSuggestion {
   symptoms?: string;
   specialty:Partial<ISpecialty>;
   service: Partial<IService>;
-  availableSchedules: IAvailableSchedules[];
+  availableSchedules: IAvailableSchedule[];
 }
+   

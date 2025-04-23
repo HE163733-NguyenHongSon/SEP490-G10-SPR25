@@ -1,17 +1,23 @@
 "use client";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { CheckCircle2 as CheckCircle } from "lucide-react";
 import AddPatientForm from "./AddPatientForm";
-import { setSelectedPatient, setAddingPatient, setCurrentStep } from '../bookingSlice';
-import { RootState } from '../store';
+import {
+  setSelectedPatient,
+  setAddingPatient,
+  setCurrentStep,
+} from "../redux/bookingSlice";
+import { RootState } from "../../store";
 
 const PatientInfor = () => {
   const dispatch = useDispatch();
-  const { patients, selectedPatient, addingPatient } = useSelector((state: RootState) => state.booking);
+  const { patients, selectedPatient, addingPatient } = useSelector(
+    (state: RootState) => state.booking
+  );
 
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
-  
+
   return (
     <div className="p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-6">

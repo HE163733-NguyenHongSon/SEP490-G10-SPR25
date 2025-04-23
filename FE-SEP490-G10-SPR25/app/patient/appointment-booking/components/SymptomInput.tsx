@@ -1,12 +1,13 @@
 // components/SymptomInput.js
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setSymptoms, selectSymptoms } from '../bookingSlice';
-import { FileText } from 'lucide-react';
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setSymptoms } from "../redux/bookingSlice";
+import { FileText } from "lucide-react";
+import { RootState } from "@/patient/store";
 
 const SymptomInput = () => {
   const dispatch = useDispatch();
-  const symptoms = useSelector(selectSymptoms);
+  const {symptoms} = useSelector((state:RootState)=>state.booking);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     dispatch(setSymptoms(e.target.value));

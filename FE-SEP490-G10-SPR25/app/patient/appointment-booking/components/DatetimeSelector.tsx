@@ -9,7 +9,6 @@ import {
   setSelectedSlotId,
   setAvailableDates,
 } from "../redux/bookingSlice";
-
 import { FaCalendar as Calendar, FaClock as Clock } from "react-icons/fa";
 import { RootState } from "../../store";
 
@@ -28,14 +27,12 @@ const DatetimeSelector = () => {
     selectedTime,
     doctorId,
     suggestionData,
-    availableDates,
     availableSchedules,
+    availableDates,
     isLoading,
     isShowRestoreSuggestion,
   } = useSelector((state: RootState) => state.booking);
-  console.log("show", isShowRestoreSuggestion);
 
-  // Danh sách khung giờ theo ngày được chọn
   const timeOptions: ITimeOption[] = useMemo(() => {
     const selectedDay = availableDates.find((d) => d.date === selectedDate);
     return (
@@ -47,60 +44,60 @@ const DatetimeSelector = () => {
     );
   }, [availableDates, selectedDate]);
 
-  // Xử lý khi availableDates thay đổi
-  useEffect(() => {
-    const fetchSchedules = async () => {
-      const filteredSchedules = availableSchedules
-        .filter((s) => String(s.doctorId) === String(doctorId))
-        .reduce((acc: IAvailableDate[], schedule: IAvailableSchedule) => {
-          const date = schedule.appointmentDate.split("T")[0];
-          const slot = {
-            slotId: String(schedule.slotId),
-            slotStartTime: schedule.slotStartTime || "",
-            slotEndTime: schedule.slotEndTime || "",
-          };
+  const fetchSchedules = useCallback(() => {
+    const filteredSchedules = availableSchedules
+      .filter((s) => String(s.doctorId) === String(doctorId))
+      .reduce((acc: IAvailableDate[], schedule: IAvailableSchedule) => {
+        const date = schedule.appointmentDate.split("T")[0];
+        const slot = {
+          slotId: String(schedule.slotId),
+          slotStartTime: schedule.slotStartTime || "",
+          slotEndTime: schedule.slotEndTime || "",
+        };
 
-          const existing = acc.find((item) => item.date === date);
-          if (existing) {
-            existing.times.push(slot);
-          } else {
-            acc.push({ date, times: [slot] });
-          }
-
-          return acc;
-        }, []);
-
-      dispatch(setAvailableDates(filteredSchedules));
-      if (filteredSchedules.length > 0) {
-        const dates = availableDates.map((d) => {
-          const [year, month, day] = d.date.split("-").map(Number);
-          return new Date(year, month - 1, day);
-        });
-
-        setAvailableDateObjects(dates);
-        const fromSuggestion =
-          (suggestionData?.availableSchedules ?? []).length > 0;
-
-        if (fromSuggestion) {
-          const firstDate = availableDates[0];
-          dispatch(setSelectedDate(firstDate.date));
-          if (firstDate.times.length > 0) {
-            dispatch(setSelectedTime(firstDate.times[0].slotStartTime));
-            dispatch(setSelectedSlotId(firstDate.times[0].slotId));
-          }
+        const existing = acc.find((item) => item.date === date);
+        if (existing) {
+          existing.times.push(slot);
+        } else {
+          acc.push({ date, times: [slot] });
         }
-      } else {
-        setAvailableDateObjects([]);
-        dispatch(setSelectedDate(""));
-        dispatch(setSelectedTime(""));
-        dispatch(setSelectedSlotId(""));
+
+        return acc;
+      }, []);
+
+    dispatch(setAvailableDates(filteredSchedules));
+
+    if (filteredSchedules.length > 0) {
+      const dates = filteredSchedules.map((d) => {
+        const [year, month, day] = d.date.split("-").map(Number);
+        return new Date(Date.UTC(year, month - 1, day));
+      });
+
+      setAvailableDateObjects(dates);
+
+      const fromSuggestion =
+        (suggestionData?.availableSchedules ?? []).length > 0;
+
+      if (fromSuggestion) {
+        const firstDate = filteredSchedules[0];
+        dispatch(setSelectedDate(firstDate.date));
+        if (firstDate.times.length > 0) {
+          dispatch(setSelectedTime(firstDate.times[0].slotStartTime));
+          dispatch(setSelectedSlotId(firstDate.times[0].slotId));
+        }
       }
-    };
+    } else {
+      setAvailableDateObjects([]);
+      dispatch(setSelectedDate(""));
+      dispatch(setSelectedTime(""));
+      dispatch(setSelectedSlotId(""));
+    }
+  }, [availableSchedules, doctorId, suggestionData, dispatch]);
 
+  useEffect(() => {
     fetchSchedules();
-  }, [doctorId, availableDates, suggestionData, dispatch]);
+  }, [fetchSchedules]);
 
-  // Nếu selectedTime không nằm trong danh sách times, chọn lại khung giờ đầu tiên
   useEffect(() => {
     if (timeOptions.length === 0) {
       dispatch(setSelectedTime(""));
@@ -120,7 +117,6 @@ const DatetimeSelector = () => {
       if (!date) return;
       const isoDate = date.toISOString().split("T")[0];
       dispatch(setSelectedDate(isoDate));
-      console.log("dfdf", isoDate);
     },
     [dispatch]
   );
@@ -138,8 +134,13 @@ const DatetimeSelector = () => {
     [dispatch]
   );
 
-  const isDateAvailable = (date: Date) =>
-    availableDateObjects.some((d) => d.toDateString() === date.toDateString());
+  const isDateAvailable = useCallback(
+    (date: Date) =>
+      availableDateObjects.some(
+        (d) => d.toDateString() === date.toDateString()
+      ),
+    [availableDateObjects]
+  );
 
   const selectedTimeOption =
     timeOptions.find((opt) => opt.value === selectedTime) || null;
@@ -147,7 +148,6 @@ const DatetimeSelector = () => {
   return (
     <div className="space-y-4 w-full">
       <div className="flex flex-col md:flex-row gap-4 w-full">
-        {/* Date Picker */}
         <div className="w-full md:w-1/2">
           <label className="text-sm font-medium mb-1 flex items-center gap-1 text-gray-500">
             <Calendar className="w-4 h-4" />
@@ -168,7 +168,6 @@ const DatetimeSelector = () => {
           />
         </div>
 
-        {/* Time Selector */}
         <div className="w-full md:w-1/2">
           <label className="text-sm font-medium mb-1 flex items-center gap-1 text-gray-500">
             <Clock className="w-4 h-4" />
@@ -186,7 +185,6 @@ const DatetimeSelector = () => {
         </div>
       </div>
 
-      {/* Ngày giờ đã chọn */}
       {selectedDate && (
         <div className="text-sm text-gray-600">
           Ngày hẹn: {new Date(selectedDate).toLocaleDateString("vi-VN")}
@@ -194,7 +192,6 @@ const DatetimeSelector = () => {
         </div>
       )}
 
-      {/* Không có lịch khả dụng */}
       {availableDates.length === 0 && !isLoading && (
         <div className="text-sm text-red-500">Không có lịch khả dụng.</div>
       )}

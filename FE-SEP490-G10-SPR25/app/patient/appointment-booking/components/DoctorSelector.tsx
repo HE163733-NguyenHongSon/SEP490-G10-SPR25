@@ -52,6 +52,8 @@ const DoctorSelector = () => {
 
   useEffect(() => {
     const fetchDoctors = async () => {
+      if (!serviceId) return;
+
       dispatch(setLoading(true));
       try {
         const availableSchedules =
@@ -59,6 +61,7 @@ const DoctorSelector = () => {
             serviceId
           );
         dispatch(setAvailableSchedules(availableSchedules));
+
         const doctorList = availableSchedules
           .map((ds) => ({
             value: String(ds.doctorId ?? ""),
@@ -67,13 +70,12 @@ const DoctorSelector = () => {
           .filter(
             (v, i, self) => self.findIndex((d) => d.value === v.value) === i
           );
-
         dispatch(setDoctors(doctorList));
 
         if (!isShowRestoreSuggestion) {
           const firstSchedule = suggestionData?.availableSchedules?.[0];
           if (firstSchedule) {
-            dispatch(setDoctorId(String(firstSchedule.doctorId)));
+            dispatch(setDoctorId(String(firstSchedule.doctorId ?? "")));
             dispatch(
               setSelectedDate(
                 firstSchedule.appointmentDate?.split("T")[0] ?? ""
@@ -84,6 +86,10 @@ const DoctorSelector = () => {
                 `${firstSchedule.slotStartTime}-${firstSchedule.slotEndTime}`
               )
             );
+          } else {
+            dispatch(setDoctorId(""));
+            dispatch(setSelectedDate(""));
+            dispatch(setSelectedTime(""));
           }
         } else {
           dispatch(setDoctorId(""));
@@ -91,14 +97,14 @@ const DoctorSelector = () => {
           dispatch(setSelectedTime(""));
         }
       } catch (error) {
-        console.error("Error fetching doctors:", error);
+        console.error("Lỗi khi tải danh sách bác sĩ:", error);
       } finally {
         dispatch(setLoading(false));
       }
     };
 
     fetchDoctors();
-  }, [serviceId, specialtyId, suggestionData?.availableSchedules, dispatch]);
+  }, [serviceId, specialtyId, suggestionData?.availableSchedules]);
 
   const currentDoctor = useMemo(() => {
     return doctorId
@@ -108,24 +114,24 @@ const DoctorSelector = () => {
 
   const handleChange = useCallback(
     (option: { value: string; label: string } | null) => {
-      if (option) {
-        const selectedDoctorId = String(option.value);
-        dispatch(setDoctorId(selectedDoctorId));
+      if (!option) return;
 
-        const doctorSchedules = (suggestionData?.availableSchedules ?? [])
-          .filter((s) => String(s.doctorId) === selectedDoctorId)
-          .sort(
-            (a, b) =>
-              new Date(a.appointmentDate).getTime() -
-              new Date(b.appointmentDate).getTime()
-          );
+      const selectedDoctorId = String(option.value);
+      dispatch(setDoctorId(selectedDoctorId));
 
-        const isoDate =
-          doctorSchedules?.[0]?.appointmentDate?.split("T")[0] ?? "";
-        dispatch(setSelectedDate(isoDate));
-      }
+      const doctorSchedules = (suggestionData?.availableSchedules ?? [])
+        .filter((s) => String(s.doctorId) === selectedDoctorId)
+        .sort((a, b) => {
+          const aTime = new Date(a.appointmentDate ?? "").getTime();
+          const bTime = new Date(b.appointmentDate ?? "").getTime();
+          return aTime - bTime;
+        });
+
+      const isoDate =
+        doctorSchedules?.[0]?.appointmentDate?.split("T")[0] ?? "";
+      dispatch(setSelectedDate(isoDate));
     },
-    [dispatch, suggestionData?.availableSchedules]
+    [suggestionData?.availableSchedules]
   );
 
   return (

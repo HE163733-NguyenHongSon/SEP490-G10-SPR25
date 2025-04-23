@@ -11,13 +11,15 @@ import {
   setLoading,
   setPatients,
   setShowBookingForm,
-  isLoading,
 } from "./redux/bookingSlice";
+import { RootState } from "../store";
 
 const PopupBody = () => {
   const { user } = useUser();
   const dispatch = useDispatch();
-  const { symptoms, isLoading } = useSelector((state: any) => state.booking);
+  const { symptoms, isLoading } = useSelector(
+    (state: RootState) => state.booking
+  );
 
   const { data: patientDetail } = useQuery({
     queryKey: ["patientDetail", user],

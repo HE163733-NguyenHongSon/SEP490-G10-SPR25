@@ -1,8 +1,8 @@
 "use client";
+import { useUser } from "@/contexts/UserContext";
 import { Button, Col, Form, Input, message, Modal, Row, Space, Table } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useUser } from "@/contexts/UserContext";
 
 interface IReservation {
   reservationId: number;
@@ -25,6 +25,7 @@ interface IReservation {
   }
   appointmentDate: string;
   updatedDate: string;
+  status: string;
 }
 
 const Reservation = () => {
@@ -35,11 +36,13 @@ const Reservation = () => {
   const { user } = useUser()
   useEffect(() => {
     const fetchReservations = async () => {
-      const response = await axios.get("http://localhost:5220/api/Reservations")
-      setReservations(response.data)
-    }
-    fetchReservations()
-  }, [])
+      const response = await axios.get("http://localhost:5220/api/Reservations");
+      const filtered = response.data.filter((r: IReservation) => r.status === "Đang chờ");
+      setReservations(filtered);
+    };
+    fetchReservations();
+  }, []);
+  
   const handleConfirm = async (record: IReservation) => {
     try {
       await axios.put("http://localhost:5220/api/Reservations/UpdateReservationStatus", {
@@ -49,12 +52,13 @@ const Reservation = () => {
         updatedByUserId: user?.userId, 
         updatedDate: new Date().toISOString(),
       });
+      setReservations(prev => prev.filter(r => r.reservationId !== record.reservationId));
       message.success(`Confirmed reservation ID: ${record.reservationId}`);
     } catch (error) {
       message.error("Failed to confirm reservation");
     }
   };
-
+  
   const handleCancel = async (record: IReservation) => {
     try {
       await axios.put("http://localhost:5220/api/Reservations/UpdateReservationStatus", {
@@ -64,12 +68,13 @@ const Reservation = () => {
         updatedByUserId: user?.userId, 
         updatedDate: new Date().toISOString(),
       });
+      setReservations(prev => prev.filter(r => r.reservationId !== record.reservationId));
       message.warning(`Cancelled reservation ID: ${record.reservationId}`);
     } catch (error) {
       message.error("Failed to cancel reservation");
     }
-    
   };
+  
   const handleViewDetail = (record: IReservation) => {
     setSelectedReservation(record);
     form.setFieldsValue(record); // Đặt giá trị vào form

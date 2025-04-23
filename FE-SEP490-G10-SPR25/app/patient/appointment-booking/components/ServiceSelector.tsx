@@ -11,25 +11,26 @@ import {
   setDoctorId,
 } from "../bookingSlice";
 import { RootState } from "../store";
-import { StylesConfig } from "react-select";  
+import { StylesConfig } from "react-select";
 
-const ServiceSelector = () => {
+const ServiceSelector: React.FC = () => {
   const dispatch = useDispatch();
-
   const { services, serviceId, suggestionData, specialtyId } = useSelector(
     (state: RootState) => state.booking
   );
 
+  const options = services.map((s) => ({
+    value: s.serviceId,
+    label: `${s.serviceName} - ${Number(s.price).toLocaleString("vi-VN")} VND`,
+  }));
+
   const getSelectedOption = () => {
     const selected = services.find((s) => s.serviceId.toString() === serviceId);
-    return selected
-      ? {
-          value: selected.serviceId,
-          label: `${selected.serviceName} - ${Number(
-            selected.price
-          ).toLocaleString("vi-VN")} VND`,
-        }
-      : null;
+    if (!selected) return null;
+    return {
+      value: selected.serviceId,
+      label: `${selected.serviceName} - ${Number(selected.price).toLocaleString("vi-VN")} VND`,
+    };
   };
 
   const customStyles: StylesConfig<{ value: string; label: string }, false> = {
@@ -45,8 +46,7 @@ const ServiceSelector = () => {
     }),
     option: (base, state) => ({
       ...base,
-      backgroundColor:
-        state.isSelected || state.isFocused ? "#f3f4f6" : "white",
+      backgroundColor: state.isSelected || state.isFocused ? "#f3f4f6" : "white",
       color: "#374151",
       padding: "10px 12px",
       cursor: "pointer",
@@ -74,7 +74,7 @@ const ServiceSelector = () => {
         const data = await serviceService.getServicesBySpecialty(specialtyId);
         dispatch(setServices(data));
         dispatch(setDoctorId(""));
-        dispatch(setServiceId("")); // Reset lựa chọn dịch vụ khi đổi chuyên khoa
+        dispatch(setServiceId(""));
       } catch (error) {
         console.error("Error fetching services:", error);
       } finally {
@@ -85,12 +85,7 @@ const ServiceSelector = () => {
     if (specialtyId) {
       fetchServices();
     }
-  }, [specialtyId]);
-
-  const options = services.map((s) => ({
-    value: s.serviceId,
-    label: `${s.serviceName} - ${Number(s.price).toLocaleString("vi-VN")} VND`,
-  }));
+  }, [specialtyId, dispatch]);
 
   return (
     <div className="space-y-2">

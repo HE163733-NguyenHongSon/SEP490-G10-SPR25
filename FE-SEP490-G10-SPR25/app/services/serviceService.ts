@@ -1,46 +1,26 @@
 import axios from "axios";
 
-// export interface IService {
-//   serviceId: number | string;
-//   serviceName: string;
-//   price: number;
-//   image?: string;
-//   overview?: string;
-//   estimatedTime?: string;
-//   rating?: number;
-//   ratingCount?: number;
-//   specialtyId?: number;
-// }
-
-export interface ServiceCreateDTO {
-  serviceName: string;
-  overview: string;
+ interface ServiceCreateDTO extends Omit<IService, 'serviceId'> {
   process: string;
   treatmentTechniques: string;
-  price: number;
-  image: string;
-  specialtyId: number;
   isPrepayment?: boolean;
-  estimatedTime?: string;
 }
 
-export interface ServiceUpdateDTO extends ServiceCreateDTO {
-  serviceId: number;
+ interface ServiceUpdateDTO extends IService {
+  serviceId: string;
 }
 
-// Hiển thị URL đang sử dụng để debug
+
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/Services`;
 console.log("Service API URL:", apiUrl);
 
-// Fallback URL trong trường hợp env không khả dụng
-const fallbackUrl = "http://localhost:5220/api/Services";
+
 
 export const serviceService = {
   getNumberOfServices: async (): Promise<number> => {
     try {
-      // Sử dụng API URL từ env hoặc fallback
       const url = `${
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5220"
+        process.env.NEXT_PUBLIC_API_URL
       }/odata/Services/$count`;
       console.log("Fetching count from:", url);
       const response = await fetch(url, {
@@ -65,7 +45,7 @@ export const serviceService = {
   getAllServices: async (): Promise<IService[]> => {
     try {
       // Sử dụng API URL từ env hoặc fallback
-      const url = apiUrl || fallbackUrl;
+      const url = apiUrl 
       console.log("Fetching all services from:", url);
 
       const response = await fetch(url, {

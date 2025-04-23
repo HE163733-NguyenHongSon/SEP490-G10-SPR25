@@ -13,7 +13,7 @@ import {
 import { RootState } from "../store";
 import { StylesConfig } from "react-select";  
 
-const ServiceSelector = () => {
+const ServiceSelector = () => d
   const dispatch = useDispatch();
 
   const { services, serviceId, suggestionData, specialtyId } = useSelector(

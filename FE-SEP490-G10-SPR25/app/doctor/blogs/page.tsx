@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { PlusCircle, Eye, Pencil, Trash2, Loader2 } from "lucide-react";
 
 interface IApiPost {
   postId: number;
@@ -50,70 +51,137 @@ const DoctorBlogsPage = () => {
     }
   };
 
-  if (loading) return <div className="text-center mt-10">Đang tải...</div>;
-  if (error) return <div className="text-center text-red-500 mt-10">{error}</div>;
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <Loader2 className="h-12 w-12 text-blue-500 animate-spin mb-4" />
+        <p className="text-lg text-gray-600">Đang tải bài viết...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md w-full text-center">
+          <p className="text-red-500 text-lg font-medium mb-2">Lỗi</p>
+          <p className="text-gray-600">{error}</p>
+          <button 
+            onClick={() => {
+              setLoading(true);
+              setError(null);
+              fetchPosts();
+            }}
+            className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
+          >
+            Thử lại
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-gray-100 min-h-screen py-10 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Quản lý bài viết (Doctor)</h1>
-          <Link
-            href="/doctor/blogs/create"
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          >
-            + Tạo bài viết
-          </Link>
+    <div className="bg-gray-50 min-h-screen py-8 px-4 sm:px-6 lg:px-8 animate-fadeIn">
+      <div className="max-w-7xl mx-auto">
+        <div className="bg-white shadow-sm rounded-lg px-6 py-5 mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Quản lý bài viết</h1>
+              <p className="text-gray-500 mt-1">Tạo và quản lý các bài viết y tế của bạn</p>
+            </div>
+            <Link
+              href="/doctor/blogs/create"
+              className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
+            >
+              <PlusCircle className="h-5 w-5" />
+              <span>Tạo bài viết mới</span>
+            </Link>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((post) => (
-            <div
-              key={post.postId}
-              className="bg-white border rounded-lg shadow-sm overflow-hidden flex flex-col"
+        {posts.length === 0 ? (
+          <div className="bg-white shadow-sm rounded-lg p-12 text-center">
+            <p className="text-gray-500 text-lg mb-4">Chưa có bài viết nào</p>
+            <Link
+              href="/doctor/blogs/create"
+              className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200"
             >
-              <Image
-                src={`${process.env.NEXT_PUBLIC_S3_BASE_URL}/${post.postImageUrl}` || "/images/placeholder.jpg"}
-                alt={post.postTitle}
-                width={300}
-                height={200}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4 flex-grow">
-                <h3 className="font-semibold text-lg mb-2">{post.postTitle}</h3>
-                <p className="text-sm text-gray-600 line-clamp-3 mb-3">
-                  {post.postDescription}
-                </p>
-                <div className="text-xs text-gray-500 mb-1">
-                  Ngày đăng: {new Date(post.postCreatedDate).toLocaleDateString("vi-VN")}
+              <PlusCircle className="h-5 w-5" />
+              <span>Tạo bài viết đầu tiên</span>
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
+              <div
+                key={post.postId}
+                className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300 flex flex-col h-full"
+              >
+                <div className="relative h-52 w-full">
+                  {post.postImageUrl ? (
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_S3_BASE_URL}/${post.postImageUrl}`}
+                      alt={post.postTitle}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <span className="text-gray-500">Không có hình ảnh</span>
+                    </div>
+                  )}
                 </div>
-                <div className="text-xs text-gray-500 mb-3">
-                  Tác giả: {post.authorName || "Ẩn danh"}
-                </div>
-                <div className="flex gap-2 flex-wrap">
-                  <Link
-                    href={`/doctor/blogs/${post.postId}`}
-                    className="px-3 py-1 text-sm bg-blue-500 text-white rounded"
-                  >
-                    Xem
-                  </Link>
-                  <Link
-                    href={`/doctor/blogs/edit/${post.postId}`}
-                    className="px-3 py-1 text-sm bg-yellow-500 text-white rounded"
-                  >
-                    Sửa
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(post.postId)}
-                    className="px-3 py-1 text-sm bg-red-500 text-white rounded"
-                  >
-                    Xoá
-                  </button>
+                
+                <div className="p-5 flex-grow flex flex-col">
+                  <div className="flex-grow">
+                    <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">{post.postTitle}</h3>
+                    <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                      {post.postDescription}
+                    </p>
+                  </div>
+                  
+                  <div className="mt-auto">
+                    <div className="flex items-center text-xs text-gray-500 mb-3">
+                      <span className="mr-4">
+                        <span className="font-medium">Ngày đăng:</span>{" "}
+                        {new Date(post.postCreatedDate).toLocaleDateString("vi-VN")}
+                      </span>
+                      <span>
+                        <span className="font-medium">Tác giả:</span>{" "}
+                        {post.authorName || "Ẩn danh"}
+                      </span>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <Link
+                        href={`/doctor/blogs/${post.postId}`}
+                        className="flex items-center justify-center gap-1 flex-1 px-3 py-2 text-sm font-medium bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200"
+                      >
+                        <Eye className="h-4 w-4" />
+                        <span>Xem</span>
+                      </Link>
+                      <Link
+                        href={`/doctor/blogs/edit/${post.postId}`}
+                        className="flex items-center justify-center gap-1 flex-1 px-3 py-2 text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white rounded-md transition-colors duration-200"
+                      >
+                        <Pencil className="h-4 w-4" />
+                        <span>Sửa</span>
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(post.postId)}
+                        className="flex items-center justify-center gap-1 flex-1 px-3 py-2 text-sm font-medium bg-red-500 hover:bg-red-600 text-white rounded-md transition-colors duration-200"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span>Xoá</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

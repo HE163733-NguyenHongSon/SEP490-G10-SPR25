@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { restoreSuggestion } from "./bookingThunks";
+import { restoreSuggestion, fetchServices, fetchSpecialties, fetchDoctors, fetchAvailableDates, submitBooking } from "./bookingThunks";
 
 // Định nghĩa interface cho state của booking
 interface BookingState {
   symptoms: string;
   loading: boolean;
+  error: string | null;
   showBookingForm: boolean;
   currentStep: number;
   patients: IPatient[];
@@ -32,6 +33,7 @@ interface BookingState {
 const initialState: BookingState = {
   symptoms: "",
   loading: false,
+  error: null,
   showBookingForm: false,
   currentStep: 1,
   patients: [],
@@ -68,6 +70,9 @@ const bookingSlice = createSlice({
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
+    },
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload;
     },
     setShowBookingForm: (state, action: PayloadAction<boolean>) => {
       state.showBookingForm = action.payload;
@@ -135,17 +140,78 @@ const bookingSlice = createSlice({
     setShowConfirmModal: (state, action: PayloadAction<boolean>) => {
       state.showConfirmModal = action.payload;
     },
+    resetBookingState: (state) => {
+      return { ...initialState, customSelectStyles: state.customSelectStyles };
+    },
   },
   extraReducers: (builder) => {
-    builder.addCase(restoreSuggestion.fulfilled, (state) => {
-      state.showRestoreSuggestion = false;
-    });
+    builder
+      .addCase(restoreSuggestion.fulfilled, (state) => {
+        state.showRestoreSuggestion = false;
+      })
+      .addCase(fetchServices.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchServices.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(fetchServices.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch services";
+      })
+      .addCase(fetchSpecialties.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchSpecialties.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(fetchSpecialties.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch specialties";
+      })
+      .addCase(fetchDoctors.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchDoctors.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(fetchDoctors.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch doctors";
+      })
+      .addCase(fetchAvailableDates.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAvailableDates.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(fetchAvailableDates.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to fetch available dates";
+      })
+      .addCase(submitBooking.pending, (state) => {
+        state.isSubmitting = true;
+        state.error = null;
+      })
+      .addCase(submitBooking.fulfilled, (state) => {
+        state.isSubmitting = false;
+        state.showConfirmModal = true;
+      })
+      .addCase(submitBooking.rejected, (state, action) => {
+        state.isSubmitting = false;
+        state.error = action.error.message || "Failed to submit booking";
+      });
   },
 });
 
 export const {
   setSymptoms,
   setLoading,
+  setError,
   setShowBookingForm,
   setCurrentStep,
   setPatients,
@@ -167,6 +233,10 @@ export const {
   setSchedules,
   setIsSubmitting,
   setShowConfirmModal,
+  resetBookingState,
 } = bookingSlice.actions;
+
+// Add selectors
+export const selectSymptoms = (state: { booking: BookingState }) => state.booking.symptoms;
 
 export default bookingSlice.reducer;

@@ -11,14 +11,13 @@ import {
   setLoading,
   setPatients,
   setShowBookingForm,
-} from "./bookingSlice";
-import { RootState } from "./store";
+  isLoading,
+} from "./redux/bookingSlice";
 
 const PopupBody = () => {
   const { user } = useUser();
   const dispatch = useDispatch();
-  const symptoms = useSelector((state: RootState) => state.booking.symptoms);
-  const loading = useSelector((state: RootState) => state.booking.loading);
+  const { symptoms, isLoading } = useSelector((state: any) => state.booking);
 
   const { data: patientDetail } = useQuery({
     queryKey: ["patientDetail", user],
@@ -53,7 +52,7 @@ const PopupBody = () => {
         />
         <button
           onClick={handleSubmit}
-          disabled={loading || symptoms.trim().length < 2}
+          disabled={isLoading || symptoms.trim().length < 2}
           className="absolute right-3 top-1/2 transform -translate-y-1/2"
         >
           <PaperAirplaneIcon className="w-6 h-6 text-cyan-500" />

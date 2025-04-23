@@ -1,16 +1,17 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
-import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch, useSelector } from "react-redux";
-import { doctorScheduleService } from "@/services/doctorScheduleService";
-
+import DatePicker from "react-datepicker";
+import Select from "react-select";
+import "react-datepicker/dist/react-datepicker.css";
 import {
-  setAvailableDates,
-  setSchedules,
   setSelectedDate,
   setSelectedTime,
   setSelectedSlotId,
-  setLoading,
-} from "../bookingSlice";
+  setAvailableDates,
+} from "../redux/bookingSlice";
+
+import { FaCalendar as Calendar, FaClock as Clock } from "react-icons/fa";
+import { RootState } from "../../store";
 
 interface ITimeOption {
   value: string;
@@ -18,73 +19,25 @@ interface ITimeOption {
   slotId: string;
 }
 
-import { RootState } from "../store"; // Adjust the import path based on your project structure
-
 const DatetimeSelector = () => {
   const dispatch = useDispatch();
   const [availableDateObjects, setAvailableDateObjects] = useState<Date[]>([]);
+
   const {
     selectedDate,
     selectedTime,
-    schedules,
     doctorId,
-    serviceId,
     suggestionData,
-  } = useSelector((state: RootState) => state.booking); // Use RootState instead of any
+    availableDates,
+    availableSchedules,
+    isLoading,
+    isShowRestoreSuggestion,
+  } = useSelector((state: RootState) => state.booking);
+  console.log("show", isShowRestoreSuggestion);
 
-  // Fetch schedules data from API or suggestion data
-  useEffect(() => {
-    const fetchSchedules = async () => {
-      dispatch(setLoading(true));
-      try {
-        let rawSchedules = [];
-
-        if ((suggestionData?.availableSchedules ?? []).length > 0) {
-          rawSchedules = suggestionData?.availableSchedules || [];
-        } else {
-          rawSchedules = await doctorScheduleService.getAvailableSchedulesByServiceId(serviceId);
-        }
-
-        const filteredSchedules = rawSchedules
-          .filter((s: IAvailableSchedules) => String(s.doctorId) === String(doctorId))
-          .reduce((acc: IAvailableDate[], schedule: IAvailableSchedules) => {
-            const date = schedule.appointmentDate.split("T")[0];
-            const slot = {
-              slotId: String(schedule.slotId),
-              slotStartTime: schedule.slotStartTime || "",
-              slotEndTime: schedule.slotEndTime || "",
-            };
-
-            const existing = acc.find((item) => item.date === date);
-            if (existing) {
-              existing.times.push(slot);
-            } else {
-              acc.push({
-                date,
-                times: [slot],
-              });
-            }
-
-            return acc;
-          }, []);
-
-        dispatch(setSchedules(filteredSchedules));
-      } catch (err) {
-        console.error("Lỗi khi lấy lịch hẹn:", err);
-        dispatch(setSchedules([]));
-      } finally {
-        dispatch(setLoading(false));
-      }
-    };
-
-    if (doctorId && serviceId) {
-      fetchSchedules();
-    }
-  }, [suggestionData, doctorId, serviceId, dispatch]);
-
-  // Prepare time options based on selected date
+  // Danh sách khung giờ theo ngày được chọn
   const timeOptions: ITimeOption[] = useMemo(() => {
-    const selectedDay = schedules.find((d) => d.date === selectedDate);
+    const selectedDay = availableDates.find((d) => d.date === selectedDate);
     return (
       selectedDay?.times.map((t) => ({
         value: t.slotStartTime,
@@ -92,38 +45,62 @@ const DatetimeSelector = () => {
         slotId: t.slotId,
       })) || []
     );
-  }, [schedules, selectedDate]);
+  }, [availableDates, selectedDate]);
 
+  // Xử lý khi availableDates thay đổi
   useEffect(() => {
-    if (schedules.length > 0) {
-      const dates = schedules.map((d) => {
-        const [year, month, day] = d.date.split("-").map(Number);
-        return new Date(year, month - 1, day); // Fix lệch timezone
-      });
+    const fetchSchedules = async () => {
+      const filteredSchedules = availableSchedules
+        .filter((s) => String(s.doctorId) === String(doctorId))
+        .reduce((acc: IAvailableDate[], schedule: IAvailableSchedule) => {
+          const date = schedule.appointmentDate.split("T")[0];
+          const slot = {
+            slotId: String(schedule.slotId),
+            slotStartTime: schedule.slotStartTime || "",
+            slotEndTime: schedule.slotEndTime || "",
+          };
 
-      dispatch(setAvailableDates(schedules));
-      setAvailableDateObjects(dates);
+          const existing = acc.find((item) => item.date === date);
+          if (existing) {
+            existing.times.push(slot);
+          } else {
+            acc.push({ date, times: [slot] });
+          }
 
-      const fromSuggestion =
-        (suggestionData?.availableSchedules ?? []).length > 0;
+          return acc;
+        }, []);
 
-      if (fromSuggestion) {
-        const firstDate = schedules[0];
-        dispatch(setSelectedDate(firstDate.date));
-        if (firstDate.times.length > 0) {
-          dispatch(setSelectedTime(firstDate.times[0].slotStartTime));
-          dispatch(setSelectedSlotId(firstDate.times[0].slotId));
+      dispatch(setAvailableDates(filteredSchedules));
+      if (filteredSchedules.length > 0) {
+        const dates = availableDates.map((d) => {
+          const [year, month, day] = d.date.split("-").map(Number);
+          return new Date(year, month - 1, day);
+        });
+
+        setAvailableDateObjects(dates);
+        const fromSuggestion =
+          (suggestionData?.availableSchedules ?? []).length > 0;
+
+        if (fromSuggestion) {
+          const firstDate = availableDates[0];
+          dispatch(setSelectedDate(firstDate.date));
+          if (firstDate.times.length > 0) {
+            dispatch(setSelectedTime(firstDate.times[0].slotStartTime));
+            dispatch(setSelectedSlotId(firstDate.times[0].slotId));
+          }
         }
+      } else {
+        setAvailableDateObjects([]);
+        dispatch(setSelectedDate(""));
+        dispatch(setSelectedTime(""));
+        dispatch(setSelectedSlotId(""));
       }
-    } else {
-      dispatch(setAvailableDates([]));
-      setAvailableDateObjects([]);
-      dispatch(setSelectedTime(""));
-      dispatch(setSelectedSlotId(""));
-      dispatch(setSelectedDate(""));
-    }
-  }, [schedules, suggestionData, dispatch]);
+    };
 
+    fetchSchedules();
+  }, [doctorId, availableDates, suggestionData, dispatch]);
+
+  // Nếu selectedTime không nằm trong danh sách times, chọn lại khung giờ đầu tiên
   useEffect(() => {
     if (timeOptions.length === 0) {
       dispatch(setSelectedTime(""));
@@ -143,6 +120,7 @@ const DatetimeSelector = () => {
       if (!date) return;
       const isoDate = date.toISOString().split("T")[0];
       dispatch(setSelectedDate(isoDate));
+      console.log("dfdf", isoDate);
     },
     [dispatch]
   );
@@ -168,7 +146,58 @@ const DatetimeSelector = () => {
 
   return (
     <div className="space-y-4 w-full">
-      {/* Render UI similar to your previous component */}
+      <div className="flex flex-col md:flex-row gap-4 w-full">
+        {/* Date Picker */}
+        <div className="w-full md:w-1/2">
+          <label className="text-sm font-medium mb-1 flex items-center gap-1 text-gray-500">
+            <Calendar className="w-4 h-4" />
+            Chọn ngày
+          </label>
+          <DatePicker
+            selected={
+              selectedDate && !isShowRestoreSuggestion
+                ? new Date(selectedDate)
+                : null
+            }
+            onChange={handleDateChange}
+            filterDate={isDateAvailable}
+            dateFormat="dd/MM/yyyy"
+            placeholderText="Chọn ngày"
+            className="w-full p-2 border rounded-md text-gray-700"
+            minDate={new Date()}
+          />
+        </div>
+
+        {/* Time Selector */}
+        <div className="w-full md:w-1/2">
+          <label className="text-sm font-medium mb-1 flex items-center gap-1 text-gray-500">
+            <Clock className="w-4 h-4" />
+            Chọn giờ
+          </label>
+          <Select
+            value={!isShowRestoreSuggestion ? selectedTimeOption : null}
+            onChange={handleTimeChange}
+            options={timeOptions}
+            placeholder={timeOptions.length ? "Chọn giờ" : "Không có khung giờ"}
+            isDisabled={!selectedDate || timeOptions.length === 0}
+            className="w-full text-gray-700"
+            noOptionsMessage={() => "Không có khung giờ"}
+          />
+        </div>
+      </div>
+
+      {/* Ngày giờ đã chọn */}
+      {selectedDate && (
+        <div className="text-sm text-gray-600">
+          Ngày hẹn: {new Date(selectedDate).toLocaleDateString("vi-VN")}
+          {selectedTime && ` lúc ${selectedTime}`}
+        </div>
+      )}
+
+      {/* Không có lịch khả dụng */}
+      {availableDates.length === 0 && !isLoading && (
+        <div className="text-sm text-red-500">Không có lịch khả dụng.</div>
+      )}
     </div>
   );
 };

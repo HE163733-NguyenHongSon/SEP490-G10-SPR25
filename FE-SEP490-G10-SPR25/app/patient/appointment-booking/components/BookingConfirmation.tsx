@@ -1,31 +1,24 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
   setSymptoms,
-  selectBooking,
-  selectSpecialties,
-  selectServices,
-  selectDoctors,
-} from "../bookingSlice";
+} from "../redux/bookingSlice";
+import { RootState } from "../../store"; // Adjust the path to your store file
 
 const BookingConfirmation = () => {
   const dispatch = useDispatch();
-  
-  // Select all needed data from Redux store
+
   const {
-    selectedPatient,
     symptoms,
+    selectedPatient,
+    specialties,
+    services,
+    doctors,
+    doctorId,
     specialtyId,
     serviceId,
-    doctorId,
-    // selectedDate,
-    // selectedTime,
-    suggestionData,
-  } = useSelector(selectBooking);
-
-  const specialties = useSelector(selectSpecialties);
-  const services = useSelector(selectServices);
-  const doctors = useSelector(selectDoctors);
-
+    suggestionData
+  } = useSelector((state: RootState) => state.booking);
+     
   // Helper functions to get display values
   const getSpecialtyName = () => {
     const specialty = specialties.find(
@@ -37,13 +30,13 @@ const BookingConfirmation = () => {
   const getService = () => {
     const service = services.find((s) => s.serviceId === serviceId);
     return service || suggestionData?.service;
-  };
-
+  };    
+              
   const getDoctorName = () => {
     const doctor = doctors.find((d) => d.value === doctorId);
     return doctor ? doctor.label : "";
-  };
-
+  };              
+      
   // const getFormattedDateTime = () => {
   //   if (selectedDate && selectedTime) {
   //     return `${formatAppointmentDate(selectedDate)} - ${selectedTime}`;

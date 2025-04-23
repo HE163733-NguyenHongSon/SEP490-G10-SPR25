@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { FileImage, X } from "lucide-react";
 import { Image } from "antd";
 import { useDispatch } from "react-redux";
-import { setPriorExaminationImg, clearPriorExaminationImg } from "../bookingSlice";
+import {
+  setPriorExaminationImg,
+  clearPriorExaminationImg,
+} from "../redux/bookingSlice";
 
 const FileUpload = () => {
   const [preview, setPreview] = useState<string | null>(null);

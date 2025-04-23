@@ -22,18 +22,20 @@ import {
   setSuggestionData,
   setSymptoms,
   setPatients,
-} from "../bookingSlice";
-import { RootState } from "../store";
+  setServiceId,
+  setDoctorId,
+  setSelectedDate,  
+  setSelectedTime
+} from "../redux/bookingSlice"; 
+import { RootState } from "../../store";
 
 const BookingInfor = () => {
   const dispatch = useDispatch();
   const { user } = useUser();
 
-  const {
-    symptoms,
-    loading,
-    selectedPatient,
-  } = useSelector((state: RootState) => state.booking);
+  const { symptoms, isLoading, selectedPatient } = useSelector(
+    (state: RootState) => state.booking
+  );
 
   const { data: patientDetail } = useQuery({
     queryKey: ["patientDetail", user],
@@ -48,10 +50,12 @@ const BookingInfor = () => {
   const handleSubmit = async () => {
     if (symptoms.trim().length > 2) {
       dispatch(setSymptoms(symptoms.trim()));
-      dispatch(setPatients([user as IPatient, ...(patientDetail?.dependents || [])]));
+      dispatch(
+        setPatients([user as IPatient, ...(patientDetail?.dependents || [])])
+      );
       dispatch(setLoading(true));
     }
-  };
+  };  
 
   // Example usage of handleSubmit
   useEffect(() => {
@@ -105,15 +109,20 @@ const BookingInfor = () => {
     return () => controller.abort();
   }, [selectedPatient, symptoms, dispatch]);
 
-  useEffect(() => {
-    return () => {
+  useEffect(() => { 
+    return () => {                  
+      dispatch(setSpecialtyId(0));
+      dispatch(setServiceId(""));
+      dispatch(setDoctorId(""));
+      dispatch(setSelectedDate(""));
+      dispatch(setSelectedTime(""));
       localStorage.removeItem("bookingSuggestion");
     };
   }, []);
 
   return (
     <div className="relative border-b border-gray-200 py-6 md:py-8 px-2 md:px-4 rounded-lg bg-white shadow-sm transition-all duration-300">
-      {loading && (
+      {isLoading && (
         <div className="absolute inset-0 bg-white/80 z-20 flex items-center justify-center rounded-lg">
           <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
         </div>
@@ -121,7 +130,7 @@ const BookingInfor = () => {
 
       <div
         className={`space-y-10 transition-opacity duration-300 ${
-          loading ? "opacity-50 pointer-events-none" : "opacity-100"
+          isLoading ? "opacity-50 pointer-events-none" : "opacity-100"
         }`}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

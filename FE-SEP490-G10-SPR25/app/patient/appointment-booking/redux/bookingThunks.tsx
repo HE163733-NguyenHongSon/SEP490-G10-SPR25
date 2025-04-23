@@ -4,12 +4,14 @@ import {
   setSpecialtyId,
   setServiceId,
   setDoctorId,
-  setShowRestoreSuggestion,
+  setIsShowRestoreSuggestion,
   setLoading,
   setServices,
   setSpecialties,
   setDoctors,
   setAvailableDates,
+  setSelectedDate,
+  setSelectedTime,
 } from "./bookingSlice";
 import api from "@/services/api";
 
@@ -19,14 +21,33 @@ export const restoreSuggestion = createAsyncThunk(
     const storedSuggestion = localStorage.getItem("bookingSuggestion");
     if (storedSuggestion) {
       try {
-        const parsedData = JSON.parse(storedSuggestion);
+        const parsedData: IBookingSuggestion = JSON.parse(storedSuggestion);
         dispatch(setSuggestionData(parsedData));
-        dispatch(setSpecialtyId(Number(parsedData?.specialty?.specialtyId ?? 0)));
+        dispatch(
+          setSpecialtyId(Number(parsedData?.specialty?.specialtyId ?? 0))
+        );
         dispatch(setServiceId(parsedData?.service?.serviceId ?? ""));
-        dispatch(setDoctorId(parsedData?.availableSchedules?.[0]?.doctorScheduleId ?? ""));
-        dispatch(setShowRestoreSuggestion(false));
+        dispatch(
+          setDoctorId(String(parsedData?.availableSchedules?.[0]?.doctorId))
+        );
+        dispatch(
+          setSelectedDate(
+            parsedData?.availableSchedules?.[0]?.appointmentDate.split(
+              "T"
+            )[0] ?? ""
+          )
+        );
+        dispatch(
+          setSelectedTime(
+            parsedData?.availableSchedules?.[0]?.slotStartTime ?? ""
+          )
+        );
+        dispatch(setIsShowRestoreSuggestion(false));
       } catch (error) {
-        console.error("Error parsing suggestion data from localStorage:", error);
+        console.error(
+          "Error parsing suggestion data from localStorage:",
+          error
+        );
       }
     }
   }
@@ -79,10 +100,15 @@ export const fetchDoctors = createAsyncThunk(
 
 export const fetchAvailableDates = createAsyncThunk(
   "booking/fetchAvailableDates",
-  async ({ doctorId, date }: { doctorId: string; date: string }, { dispatch }) => {
+  async (
+    { doctorId, date }: { doctorId: string; date: string },
+    { dispatch }
+  ) => {
     try {
       dispatch(setLoading(true));
-      const response = await api.get(`/schedules/available?doctorId=${doctorId}&date=${date}`);
+      const response = await api.get(
+        `/schedules/available?doctorId=${doctorId}&date=${date}`
+      );
       dispatch(setAvailableDates(response.data));
     } catch (error) {
       console.error("Error fetching available dates:", error);
@@ -94,7 +120,7 @@ export const fetchAvailableDates = createAsyncThunk(
 
 export const submitBooking = createAsyncThunk(
   "booking/submitBooking",
-  async (bookingData: any, { dispatch }) => {
+  async (bookingData: IPayment, { dispatch }) => {
     try {
       dispatch(setLoading(true));
       const response = await api.post("/appointments", bookingData);

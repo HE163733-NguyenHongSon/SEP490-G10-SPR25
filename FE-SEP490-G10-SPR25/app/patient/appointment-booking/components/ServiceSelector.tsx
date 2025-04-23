@@ -8,12 +8,11 @@ import {
   setServices,
   setServiceId,
   setLoading,
-  setDoctorId,
-} from "../bookingSlice";
-import { RootState } from "../store";
-import { StylesConfig } from "react-select";  
+} from "../redux/bookingSlice";
+import { RootState } from "../../store";
+import { StylesConfig } from "react-select";
 
-const ServiceSelector = () => d
+const ServiceSelector = () => {
   const dispatch = useDispatch();
 
   const { services, serviceId, suggestionData, specialtyId } = useSelector(
@@ -73,8 +72,7 @@ const ServiceSelector = () => d
       try {
         const data = await serviceService.getServicesBySpecialty(specialtyId);
         dispatch(setServices(data));
-        dispatch(setDoctorId(""));
-        dispatch(setServiceId("")); // Reset lựa chọn dịch vụ khi đổi chuyên khoa
+        dispatch(setServiceId(String(suggestionData?.service.serviceId)));
       } catch (error) {
         console.error("Error fetching services:", error);
       } finally {

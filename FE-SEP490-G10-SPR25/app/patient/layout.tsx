@@ -7,7 +7,7 @@ import React, { ReactNode } from "react";
 import ProtectedRoute from "../components/ProtectedRoute";
 import { AppRole } from "../types/roles";
 import { Provider } from "react-redux";
-import store from "./appointment-booking/store"; 
+import {store} from "./store";
 interface PatientLayoutProps {
   children: ReactNode;
 }

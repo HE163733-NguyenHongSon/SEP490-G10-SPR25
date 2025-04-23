@@ -54,7 +54,8 @@ const Header: React.FC = () => {
           <h1 className="ml-4 text-xl font-semibold text-gray-800">Receptionist Dashboard</h1>
         </div>
         <div className="flex items-center space-x-4">
-          {/* Add user profile or other header items here */}
+          <NotificationDropdown />
+          <UserDropdown />
         </div>
       </div>
     </header>

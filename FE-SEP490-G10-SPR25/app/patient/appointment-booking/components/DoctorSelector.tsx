@@ -1,89 +1,129 @@
 "use client";
 import React, { useEffect } from "react";
-import Select from "react-select";
 import { User as UserIcon } from "lucide-react";
-import { useBookingContext } from "@/patient/contexts/BookingContext";
-import type { SingleValue } from "react-select";
+import { useDispatch, useSelector } from "react-redux";
+import Select from "react-select";
+import { StylesConfig } from "react-select";
 import { doctorScheduleService } from "@/services/doctorScheduleService";
+import {
+  setDoctors,
+  setDoctorId,
+  setLoading,
+  setSelectedDate,
+  setSelectedTime,
+} from "../bookingSlice";
+import { RootState } from "../store";
+
+// Custom styles for the select component
+const customStyles: StylesConfig<{ value: string; label: string }, false> = {
+  control: (base, state) => ({
+    ...base,
+    backgroundColor: "white",
+    borderColor: state.isFocused ? "#67e8f9" : "#d1d5db",
+    borderRadius: "0.5rem",
+    boxShadow: "none",
+    "&:hover": {
+      borderColor: "#67e8f9",
+    },
+  }),
+  option: (base, state) => ({
+    ...base,
+    backgroundColor: state.isSelected || state.isFocused ? "#f3f4f6" : "white",
+    color: "#374151",
+    padding: "10px 12px",
+    cursor: "pointer",
+  }),
+  singleValue: (base) => ({
+    ...base,
+    color: "#374151",
+    display: "flex",
+    alignItems: "center",
+  }),
+  input: (base) => ({
+    ...base,
+    color: "#374151",
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: "#9ca3af",
+  }),
+};
 
 const DoctorSelector = () => {
-  const {
-    serviceId,
-    doctors,
-    setDoctors,
-    doctorId,
-    setDoctorId,
-    suggestionData,
-    customStyles,
-    setLoading,
-    setSelectedDate,
-    setSelectedTime,
-  } = useBookingContext();
+  const dispatch = useDispatch();
+  const { doctors, doctorId, serviceId, suggestionData } = useSelector(
+    (state: RootState) => state.booking
+  );
 
   useEffect(() => {
     const fetchDoctors = async () => {
-      setLoading(true);
+      console.log("Current serviceId:", serviceId);
+      dispatch(setLoading(true));
       try {
         const doctorList = (
-          await doctorScheduleService.getAvailableSchedulesByServiceId(serviceId)
+          await doctorScheduleService.getAvailableSchedulesByServiceId(
+            serviceId
+          )
         ).map((ds) => ({
           value: String(ds.doctorId ?? ""),
           label: ds.doctorName ?? "Unknown Doctor",
         }));
-  
-        const suggestedDoctors: IDoctorOption[] = [
-          ...new Map(
-            (suggestionData?.availableSchedules ?? []).map(
-              (ds: IAvailableSchedules) => [
-                String(ds.doctorId),
-                {
-                  value: String(ds.doctorId),
-                  label: ds.doctorName ?? "Unknown Doctor",
-                },
-              ]
-            )
-          ).values(),
-        ];
-  
-        const hasSuggestions = Array.isArray(suggestionData?.availableSchedules) && suggestionData.availableSchedules.length > 0;
-  
-        setDoctors(hasSuggestions ? suggestedDoctors : doctorList);
-  
+
+        const suggestedDoctors = Array.from(
+          new Map(
+            (suggestionData?.availableSchedules ?? []).map((ds) => [
+              String(ds.doctorId),
+              {
+                value: String(ds.doctorId),
+                label: ds.doctorName ?? "Unknown Doctor",
+              },
+            ])
+          ).values()
+        );
+        const hasSuggestions =
+          Array.isArray(suggestionData?.availableSchedules) &&
+          suggestionData.availableSchedules.length > 0;
+
+        dispatch(setDoctors(hasSuggestions ? suggestedDoctors : doctorList));
+
         if (hasSuggestions) {
-          setDoctorId(suggestedDoctors[0]?.value ?? "");
-          setSelectedDate(
-            suggestionData.availableSchedules[0]?.appointmentDate?.split("T")[0] ?? ""
+          console.log("sddsd", hasSuggestions);
+          dispatch(setDoctorId(suggestedDoctors[0]?.value));
+          dispatch(  setSelectedDate(  suggestionData.availableSchedules[0]?.appointmentDate?.split(
+                "T"
+              )[0] ?? ""
+            )
           );
-          setSelectedTime(
-            `${suggestionData.availableSchedules[0]?.slotStartTime}-${suggestionData.availableSchedules[0]?.slotEndTime}`
+          dispatch(
+            setSelectedTime(
+              `${suggestionData.availableSchedules[0]?.slotStartTime}-${suggestionData.availableSchedules[0]?.slotEndTime}`
+            )
           );
         } else {
-          setDoctorId("");
-          setSelectedDate("");
-          setSelectedTime("");
+          dispatch(setDoctorId(""));
+          dispatch(setSelectedDate(""));
+          dispatch(setSelectedTime(""));
         }
       } catch (error) {
         console.error("Error fetching doctors:", error);
       } finally {
-        setLoading(false);
+        dispatch(setLoading(false));
       }
     };
-  
+
     if (serviceId) {
       fetchDoctors();
     }
-  }, [serviceId, suggestionData?.availableSchedules]);
-  
+  }, [serviceId, suggestionData?.availableSchedules, dispatch]);
 
-  const currentDoctor =
-    doctors.find((d) => String(d.value) === String(doctorId)) || null;
+  const currentDoctor = doctorId
+    ? doctors.find((d) => String(d.value) === String(doctorId))
+    : null;
 
-  const handleChange = (
-    option: SingleValue<{ value: number | string; label: string }>
-  ) => {
+  const handleChange = (option: { value: string; label: string } | null) => {
     if (option) {
       const selectedDoctorId = String(option.value);
-      setDoctorId(selectedDoctorId);
+      dispatch(setDoctorId(selectedDoctorId));
 
       const doctorSchedules = suggestionData?.availableSchedules
         ?.filter((s) => String(s.doctorId) === selectedDoctorId)
@@ -94,13 +134,11 @@ const DoctorSelector = () => {
         );
 
       const nearestDate = doctorSchedules?.[0]?.appointmentDate;
-
       const isoDate = nearestDate
         ? new Date(nearestDate).toISOString().split("T")[0]
         : "";
 
-      setSelectedDate(isoDate);
-      console.log("Selected date:", isoDate);
+      dispatch(setSelectedDate(isoDate));
     }
   };
 
@@ -111,7 +149,6 @@ const DoctorSelector = () => {
         Chọn bác sĩ
       </label>
       <Select
-        styles={customStyles}
         value={currentDoctor}
         onChange={handleChange}
         options={doctors.map((doctor) => ({
@@ -121,6 +158,7 @@ const DoctorSelector = () => {
         isDisabled={!doctors.length}
         placeholder="Chọn bác sĩ"
         noOptionsMessage={() => "Không có bác sĩ nào"}
+        styles={customStyles} // Apply custom styles here
       />
     </div>
   );

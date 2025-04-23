@@ -1,7 +1,11 @@
 "use client";
+import {  useSelector } from 'react-redux';
 import { CheckCircle, User, Calendar, Check } from "lucide-react";
+import { RootState } from '../store';
 
-const BookingStepper = ({ currentStep }: { currentStep: number }) => {
+const BookingStepper = () => {
+  const { currentStep } = useSelector((state:RootState) => state.booking); // Access currentStep from Redux store
+
   const steps = ["Thông tin bệnh nhân", "Thông tin lịch hẹn", "Xác nhận"];
   const icons = [
     <User key="user" className="w-6 h-6" />,
@@ -9,19 +13,21 @@ const BookingStepper = ({ currentStep }: { currentStep: number }) => {
     <Check key="check" className="w-6 h-6" />
   ];
 
+
+
   return (
     <div className="w-full mb-8">
       <div className="relative flex justify-between items-center">
-        {/* Đường kẻ nền */}
+        {/* Background Line */}
         <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 z-0 transform -translate-y-1/2" />
         
-        {/* Thanh tiến trình màu */}
+        {/* Progress Bar */}
         <div
           className="absolute top-1/2 left-0 h-1 bg-cyan-500 z-10 transform -translate-y-1/2 transition-all duration-500"
           style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
         />
 
-        {/* Các bước */}
+        {/* Steps */}
         {steps.map((step, index) => {
           const isActive = currentStep === index + 1;
           const isCompleted = currentStep > index + 1;
@@ -46,6 +52,8 @@ const BookingStepper = ({ currentStep }: { currentStep: number }) => {
           );
         })}
       </div>
+
+    
     </div>
   );
 };

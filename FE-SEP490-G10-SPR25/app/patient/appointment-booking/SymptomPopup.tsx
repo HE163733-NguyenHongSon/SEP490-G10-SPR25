@@ -1,23 +1,24 @@
 "use client";
+
 import { useUser } from "@/contexts/UserContext";
 import { patientService } from "@/services/patientService";
 import { useQuery } from "@tanstack/react-query";
-import BookingForm from "./BookingForm";
+import BookingForm from "./components/BookingForm";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  BookingProvider,
-  useBookingContext,
-} from "@/patient/contexts/BookingContext";
+  setSymptoms,
+  setLoading,
+  setPatients,
+  setShowBookingForm,
+} from "./bookingSlice";
+import { RootState } from "./store";
+
 const PopupBody = () => {
   const { user } = useUser();
-  const {
-    symptoms,
-    setSymptoms,
-    loading,
-    setLoading,
-    setShowBookingForm,
-    setPatients,
-  } = useBookingContext();
+  const dispatch = useDispatch();
+  const symptoms = useSelector((state: RootState) => state.booking.symptoms);
+  const loading = useSelector((state: RootState) => state.booking.loading);
 
   const { data: patientDetail } = useQuery({
     queryKey: ["patientDetail", user],
@@ -31,10 +32,12 @@ const PopupBody = () => {
 
   const handleSubmit = async () => {
     if (symptoms.trim().length > 2) {
-      setSymptoms(symptoms.trim());
-      setPatients([user as IPatient, ...(patientDetail?.dependents || [])]);
-      setLoading(true);
-      setShowBookingForm(true);
+      dispatch(setSymptoms(symptoms.trim()));
+      dispatch(
+        setPatients([user as IPatient, ...(patientDetail?.dependents || [])])
+      );
+      dispatch(setLoading(true));
+      dispatch(setShowBookingForm(true));
     }
   };
 
@@ -45,7 +48,7 @@ const PopupBody = () => {
           type="text"
           placeholder="Nhập triệu chứng..."
           value={symptoms}
-          onChange={(e) => setSymptoms(e.target.value)}
+          onChange={(e) => dispatch(setSymptoms(e.target.value))}
           className="pl-4 pr-10 py-4 w-full h-full rounded bg-gray-100 text-gray-500 focus:outline-none"
         />
         <button
@@ -61,10 +64,4 @@ const PopupBody = () => {
   );
 };
 
-const SymptomPopup = () => (
-  <BookingProvider>
-    <PopupBody />
-  </BookingProvider>
-);
-
-export default SymptomPopup;
+export default PopupBody;

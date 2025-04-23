@@ -1,7 +1,13 @@
+"use client";
+
 import React, { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useDispatch, useSelector } from "react-redux";
+import { useUser } from "@/contexts/UserContext";
 import reservationService from "@/services/reservationService";
-import { useBookingContext } from "@/patient/contexts/BookingContext";
 import { specialtyService } from "@/services/specialtyService";
+import { patientService } from "@/services/patientService";
+
 import SpecialtySelector from "./SpecialtySelector";
 import ServiceSelector from "./ServiceSelector";
 import DoctorSelector from "./DoctorSelector";
@@ -9,64 +15,115 @@ import DatetimeSelector from "./DatetimeSelector";
 import SymptomInput from "./SymptomInput";
 import FileUpload from "./FileUpload";
 
+import {
+  setLoading,
+  setSpecialties,
+  setSpecialtyId,
+  setSuggestionData,
+  setSymptoms,
+  setPatients,
+} from "../bookingSlice";
+import { RootState } from "../store";
+
 const BookingInfor = () => {
+  const dispatch = useDispatch();
+  const { user } = useUser();
+
   const {
     symptoms,
-    setSpecialties,
-    specialtyId,
-    setSpecialtyId,
-    suggestionData,
-    setSuggestionData,
-    setLoading,
-    selectedPatient,
     loading,
-  } = useBookingContext();
+    selectedPatient,
+  } = useSelector((state: RootState) => state.booking);
 
-  useEffect(() => {
-    const storedSuggestion = localStorage.getItem("bookingSuggestion");
-    if (storedSuggestion) {
-      const parsedData = JSON.parse(storedSuggestion);
-      setSuggestionData(parsedData);
-      setSpecialtyId(Number(parsedData?.specialty?.specialtyId ?? specialtyId));
+  const { data: patientDetail } = useQuery({
+    queryKey: ["patientDetail", user],
+    queryFn: async () => {
+      const data = await patientService.getPatientDetailById(user?.userId);
+      return data;
+    },
+    enabled: !!user,
+    staleTime: 30000,
+  });
+
+  const handleSubmit = async () => {
+    if (symptoms.trim().length > 2) {
+      dispatch(setSymptoms(symptoms.trim()));
+      dispatch(setPatients([user as IPatient, ...(patientDetail?.dependents || [])]));
+      dispatch(setLoading(true));
     }
-  }, []);
+  };
+
+  // Example usage of handleSubmit
+  useEffect(() => {
+    handleSubmit();
+  }, [symptoms, patientDetail, user, dispatch]);
 
   useEffect(() => {
-    const fetchSuggestionData = async () => {
-      setLoading(true);
+    const stored = localStorage.getItem("bookingSuggestion");
+    if (stored) {
       try {
-        const data = await reservationService.getBookingSuggestion(
-          symptoms
-        );
-        const specialties = await specialtyService.getSpecialtyList();
+        const parsed = JSON.parse(stored);
+        dispatch(setSuggestionData(parsed));
+        if (parsed?.specialty?.specialtyId) {
+          dispatch(setSpecialtyId(Number(parsed.specialty.specialtyId)));
+        }
+      } catch (err) {
+        console.error("Error parsing bookingSuggestion:", err);
+      }
+    }
+  }, [dispatch]);
 
-        localStorage.setItem("bookingSuggestion", JSON.stringify(data));
-        setSuggestionData(suggestionData ?? data);
-        setSpecialtyId(Number(data?.specialty?.specialtyId ?? specialtyId));
-        setSpecialties(specialties);
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchData = async () => {
+      dispatch(setLoading(true));
+      try {
+        const [suggestion, specialtyList] = await Promise.all([
+          reservationService.getBookingSuggestion(symptoms),
+          specialtyService.getSpecialtyList(),
+        ]);
+        dispatch(setSpecialties(specialtyList));
+        dispatch(setSuggestionData(suggestion));
+        localStorage.setItem("bookingSuggestion", JSON.stringify(suggestion));
+        if (suggestion?.specialty?.specialtyId) {
+          dispatch(setSpecialtyId(Number(suggestion.specialty.specialtyId)));
+        }
       } catch (error) {
-        console.error("Lỗi khi lấy gợi ý lịch khám:", error);
+        if (error instanceof Error && error.name !== "AbortError") {
+          console.error("Error fetching suggestion:", error);
+        }
       } finally {
-        setLoading(false);
+        dispatch(setLoading(false));
       }
     };
 
-    if (selectedPatient?.userId && symptoms) {
-      fetchSuggestionData();
+    if (selectedPatient?.userId && symptoms.length > 0) {
+      fetchData();
     }
-  }, [selectedPatient, symptoms]);
+
+    return () => controller.abort();
+  }, [selectedPatient, symptoms, dispatch]);
+
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("bookingSuggestion");
+    };
+  }, []);
 
   return (
     <div className="relative border-b border-gray-200 py-6 md:py-8 px-2 md:px-4 rounded-lg bg-white shadow-sm transition-all duration-300">
-      {/* Overlay loading */}
       {loading && (
         <div className="absolute inset-0 bg-white/80 z-20 flex items-center justify-center rounded-lg">
           <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
 
-      <div className={`space-y-10 transition-opacity duration-300 ${loading ? "opacity-50 pointer-events-none" : "opacity-100"}`}>
-        {/* Chọn chuyên khoa và dịch vụ */}
+      <div
+        className={`space-y-10 transition-opacity duration-300 ${
+          loading ? "opacity-50 pointer-events-none" : "opacity-100"
+        }`}
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="w-full">
             <SpecialtySelector />
@@ -76,7 +133,6 @@ const BookingInfor = () => {
           </div>
         </div>
 
-        {/* Chọn bác sĩ và thời gian */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="w-full">
             <DoctorSelector />
@@ -86,12 +142,10 @@ const BookingInfor = () => {
           </div>
         </div>
 
-        {/* Triệu chứng */}
         <div className="w-full">
           <SymptomInput />
         </div>
 
-        {/* Tệp đính kèm */}
         <div className="w-full">
           <FileUpload />
         </div>

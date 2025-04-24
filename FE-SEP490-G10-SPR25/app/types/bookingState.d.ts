@@ -20,10 +20,9 @@ interface IBookingState {
   selectedTime: string;
   selectedSlotId: string;
   isShowRestoreSuggestion: boolean;
-  priorExaminationImg: string | null | File | File[];
+  priorExaminationImg: File | null;
   isSubmitting: boolean;
   isShowConfirmModal: boolean;
-  availableSchedules:IAvailableSchedule[],
+  availableSchedules: IAvailableSchedule[];
   customSelectStyles: React.CSSProperties;
-
 }

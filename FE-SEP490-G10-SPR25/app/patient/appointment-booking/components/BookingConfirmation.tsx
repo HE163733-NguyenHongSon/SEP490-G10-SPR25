@@ -1,42 +1,42 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setSymptoms,
-} from "../redux/bookingSlice";
 import { RootState } from "../../store"; // Adjust the path to your store file
+import { useState, useEffect } from "react";
 
 const BookingConfirmation = () => {
   const dispatch = useDispatch();
+  const [service, setService] = useState<IService>();
+  const [doctor, setDoctor] = useState<IDoctorOption>();
+  const [specialty, setSpecialty] = useState<ISpecialty>();
 
   const {
     symptoms,
     selectedPatient,
+    selectedDate,
+    selectedTime,
     specialties,
     services,
     doctors,
     doctorId,
     specialtyId,
     serviceId,
-    suggestionData
   } = useSelector((state: RootState) => state.booking);
-     
-  // Helper functions to get display values
-  const getSpecialtyName = () => {
-    const specialty = specialties.find(
-      (s) => s.specialtyId === specialtyId?.toString()
-    );
-    return specialty ? specialty.specialtyName : "";
-  };
 
-  const getService = () => {
-    const service = services.find((s) => s.serviceId === serviceId);
-    return service || suggestionData?.service;
-  };    
-              
-  const getDoctorName = () => {
+  console.log(selectedDate, selectedTime);
+  useEffect(() => {
+    const service = services.find(
+      (s) => String(s.serviceId) === String(serviceId)
+    );
+    const specialty = specialties.find(
+      (s) => s.specialtyId == specialtyId?.toString()
+    );
+
     const doctor = doctors.find((d) => d.value === doctorId);
-    return doctor ? doctor.label : "";
-  };              
-      
+    setSpecialty(specialty);
+    setDoctor(doctor);
+    setService(service);
+  }, []);
+  // Helper functions to get display values
+
   // const getFormattedDateTime = () => {
   //   if (selectedDate && selectedTime) {
   //     return `${formatAppointmentDate(selectedDate)} - ${selectedTime}`;
@@ -58,10 +58,6 @@ const BookingConfirmation = () => {
     }
 
     return age;
-  };
-
-  const handleSymptomsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(setSymptoms(e.target.value));
   };
 
   return (
@@ -217,7 +213,7 @@ const BookingConfirmation = () => {
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800">
-                      {getSpecialtyName() || "Không có thông tin"}
+                      {specialty?.specialtyName || "Không có thông tin"}
                     </p>
                   </div>
                 </div>
@@ -228,14 +224,12 @@ const BookingConfirmation = () => {
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800 ">
-                      {getService() && (
+                      {service && (
                         <div>
-                          <p className="font-bold">
-                            {getService()?.serviceName}
-                          </p>
+                          <p className="font-bold">{service?.serviceName}</p>
                           <p>
                             {" "}
-                            {Number(getService()?.price ?? 0).toLocaleString(
+                            {Number(service.price ?? 0).toLocaleString(
                               "en-US"
                             )}{" "}
                             VND{" "}
@@ -254,7 +248,7 @@ const BookingConfirmation = () => {
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800">
-                      {getDoctorName() || "Không có thông tin"}
+                      {doctor?.label || "Không có thông tin"}
                     </p>
                   </div>
                 </div>
@@ -263,11 +257,33 @@ const BookingConfirmation = () => {
                   <label className="block text-sm font-medium text-gray-600">
                     Thời gian hẹn
                   </label>
-                  {/* <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
+                  <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800">
-                      {getFormattedDateTime() || "Không có thông tin"}
+                      {selectedDate && selectedTime
+                        ? (() => {
+                            const dateTime = new Date(
+                              `${selectedDate}T${selectedTime}`
+                            );
+                            const formattedDate = dateTime.toLocaleDateString(
+                              "vi-VN",
+                              {
+                                day: "2-digit",
+                                month: "2-digit",
+                                year: "numeric",
+                              }
+                            );
+                            const formattedTime = dateTime.toLocaleTimeString(
+                              "vi-VN",
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            );
+                            return `${formattedDate} - ${formattedTime}`;
+                          })()
+                        : "Không có thông tin"}
                     </p>
-                  </div> */}
+                  </div>
                 </div>
               </div>
             </div>
@@ -279,9 +295,9 @@ const BookingConfirmation = () => {
               <div className="mt-1">
                 <textarea
                   rows={4}
+                  disabled={true}
                   className="w-full text-gray-700 p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   value={symptoms}
-                  onChange={handleSymptomsChange}
                   placeholder="Mô tả chi tiết triệu chứng hoặc lý do khám của bạn"
                 />
               </div>
@@ -293,7 +309,7 @@ const BookingConfirmation = () => {
               </label>
               <div className="mt-2 px-4 py-3 border border-gray-300 rounded-md bg-gray-50">
                 <p className="text-gray-700 font-semibold text-lg">
-                  {Number(getService()?.price ?? 0).toLocaleString("en-US")} VND{" "}
+                  {Number(service?.price ?? 0).toLocaleString("en-US")} VND{" "}
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
                   Bao gồm phí khám, xét nghiệm cơ bản, và tư vấn chuyên khoa

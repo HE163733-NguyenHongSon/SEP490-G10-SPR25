@@ -68,7 +68,7 @@ const bookingSlice = createSlice({
     },
     setPriorExaminationImg: (
       state,
-      action: PayloadAction<string | null | File>
+      action: PayloadAction<File | null>
     ) => {
       state.priorExaminationImg = action.payload;
     },
@@ -136,7 +136,7 @@ const bookingSlice = createSlice({
       state.isShowConfirmModal = action.payload;
     },
     clearPriorExaminationImg: (state) => {
-      state.priorExaminationImg = [];
+      state.priorExaminationImg = new File([], "placeholder.txt");
     },
   },
 

@@ -255,6 +255,93 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         //    }
         //}
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditPost(int id, [FromForm] IFormFileCollection files)
+        {
+            var form = Request.Form;
+
+            string postTitle = form["postTitle"];
+            string postDescription = form["postDescription"];
+            string postSourceUrl = form["postSourceUrl"];
+            int postAuthorId = int.Parse(form["postAuthorId"]);
+            string postSectionsJson = form["postSectionsJson"];
+
+            var sections = JsonConvert.DeserializeObject<List<PostSectionDTO>>(postSectionsJson);
+            if (sections == null || sections.Count == 0)
+                return BadRequest("Phải có ít nhất một section");
+
+            // Lấy tổng số PostSections hiện tại
+            int sectionCount = await _postService.GetPostSectionsCountAsync();
+
+            var uploadedUrls = new List<string>();
+            int fileIndex = 0;
+
+            foreach (var file in files)
+            {
+                var ext = Path.GetExtension(file.FileName);
+
+                // Tìm section cần gán ảnh (section mới)
+                var matchingSection = sections
+                    .Where(s => string.IsNullOrEmpty(s.PostImageUrl))
+                    .OrderBy(s => s.SectionIndex)
+                    .Skip(fileIndex)
+                    .FirstOrDefault();
+
+                if (matchingSection == null)
+                    return BadRequest("Không tìm thấy section tương ứng để đặt tên ảnh");
+
+                var fileName = $"phan_{sectionCount + matchingSection.SectionIndex}{ext}";
+
+                await using var ms = new MemoryStream();
+                await file.CopyToAsync(ms);
+                ms.Position = 0;
+
+                var newFormFile = new FormFile(ms, 0, ms.Length, file.Name, fileName)
+                {
+                    Headers = file.Headers,
+                    ContentType = file.ContentType
+                };
+
+                var result = await _storageService.UploadFilesAsync(new List<IFormFile> { newFormFile });
+                var uploaded = result.FirstOrDefault();
+
+                if (uploaded?.StatusCode == 200)
+                {
+                    matchingSection.PostImageUrl = uploaded.FileName;
+                    uploadedUrls.Add(uploaded.FileName);
+                }
+                else
+                {
+                    return BadRequest($"Upload ảnh thất bại: {uploaded?.Message}");
+                }
+
+                fileIndex++;
+            }
+
+            // Gọi service cập nhật bài viết
+            var postDTO = new PostDetailDTO
+            {
+                PostId = id,
+                PostTitle = postTitle,
+                PostDescription = postDescription,
+                PostSourceUrl = postSourceUrl,
+                AuthorId = postAuthorId,
+                PostSections = sections
+            };
+
+            try
+            {
+                await _postService.UpdatePostAsync(postDTO);
+                return Ok(new { message = "Sua bai viet thanh cong" });
+            }
+            catch (Exception ex)
+            {
+                var message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, $"Lỗi server: {message}");
+            }
+        }
+
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(int id)

@@ -1,96 +1,131 @@
-import React from 'react';
-import type { Metadata } from "next";
-import Link from 'next/link';
-import { Calendar, Filter, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+'use client';
 
-export const metadata: Metadata = {
-  title: "Lịch Hẹn Bác Sĩ",
-  description: "Quản lý lịch hẹn của bạn",
-};
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Calendar, Filter, Search, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { doctorService } from '../../services/doctorService';
+import { getCurrentUser } from '../../services/authService';
 
 export default function DoctorAppointmentsPage() {
-  const appointments = [
-    {
-      id: 1,
-      patient: {
-        id: 101,
-        name: "Nguyễn Văn A",
-        age: 42,
-        gender: "Nam",
-        image: null
-      },
-      date: "18/05/2023",
-      time: "09:00 - 09:30",
-      reason: "Khám định kỳ cho bệnh tăng huyết áp",
-      status: "Đã xác nhận",
-      previousTreatment: "Kê đơn lisinopril 10mg hàng ngày. Huyết áp 140/85 tại lần khám gần nhất.",
-      medicalHistory: "Chẩn đoán tăng huyết áp vào năm 2018. Không có tình trạng bệnh đáng kể nào khác."
-    },
-    {
-      id: 2,
-      patient: {
-        id: 102,
-        name: "Lê Thị B",
-        age: 35,
-        gender: "Nữ",
-        image: null
-      },
-      date: "18/05/2023",
-      time: "10:30 - 11:00",
-      reason: "Tái khám sau điều trị nhiễm khuẩn",
-      status: "Đã xác nhận",
-      previousTreatment: "Kê đơn amoxicillin 500mg, ngày 3 lần trong 7 ngày từ 11/05.",
-      medicalHistory: "Nhiễm trùng đường tiết niệu tái phát. Dị ứng với penicillin."
-    },
-    {
-      id: 3,
-      patient: {
-        id: 103,
-        name: "Trần Văn C",
-        age: 65,
-        gender: "Nam",
-        image: null
-      },
-      date: "18/05/2023",
-      time: "13:00 - 13:30",
-      reason: "Đau ngực và khó thở",
-      status: "Đã xác nhận",
-      previousTreatment: "Không có - Lần đầu khám cho tình trạng này",
-      medicalHistory: "Tiểu đường type 2, rối loạn lipid máu. Tiền sử gia đình có bệnh động mạch vành."
-    },
-    {
-      id: 4,
-      patient: {
-        id: 104,
-        name: "Phạm Thị D",
-        age: 28,
-        gender: "Nữ",
-        image: null
-      },
-      date: "19/05/2023",
-      time: "09:30 - 10:00",
-      reason: "Khám thai - 3 tháng giữa",
-      status: "Đã lên lịch",
-      previousTreatment: "Kê đơn vitamin tiền sản chuẩn. Siêu âm ở tuần 12 cho thấy phát triển bình thường.",
-      medicalHistory: "G1P0. Không có biến chứng cho đến nay. Không có tiền sử bệnh đáng kể."
-    },
-    {
-      id: 5,
-      patient: {
-        id: 105,
-        name: "Vũ Văn E",
-        age: 52,
-        gender: "Nam",
-        image: null
-      },
-      date: "19/05/2023",
-      time: "11:30 - 12:00",
-      reason: "Tái khám đau lưng dưới",
-      status: "Đã lên lịch",
-      previousTreatment: "Vật lý trị liệu 2 lần/tuần trong 4 tuần. Kê đơn naproxen 500mg, 2 lần/ngày khi cần.",
-      medicalHistory: "Đau lưng dưới mãn tính trong hơn 5 năm. Thoái hóa đĩa đệm L4-L5."
+  const router = useRouter();
+  const [appointments, setAppointments] = useState<IReservation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('Xác nhận');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<IReservation | null>(null);
+  const [cancellationReason, setCancellationReason] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [currentDoctor, setCurrentDoctor] = useState<any>(null);
+
+  // Group appointments by date
+  const appointmentsByDate = appointments.reduce((groups: Record<string, IReservation[]>, appointment) => {
+    const date = new Date(appointment.appointmentDate).toLocaleDateString('vi-VN');
+    if (!groups[date]) {
+      groups[date] = [];
     }
-  ];
+    groups[date].push(appointment);
+    return groups;
+  }, {});
+
+  // Debug: Log the grouped appointments
+  useEffect(() => {
+    console.log("Grouped appointments:", Object.keys(appointmentsByDate));
+    console.log("Total appointments:", appointments.length);
+    if (appointments.length > 0) {
+      console.log("Sample appointment data:", appointments[0]);
+    }
+  }, [appointments, appointmentsByDate]);
+
+  // Get current user ID from auth
+  useEffect(() => {
+    const user = getCurrentUser();
+    console.log("Current logged in user:", user);
+    setCurrentDoctor(user);
+  }, []);
+
+  // Get current user ID
+  const getUserId = () => {
+    if (currentDoctor && currentDoctor.userId) {
+      return currentDoctor.userId;
+    }
+    // Fallback to hardcoded ID if auth fails
+    console.warn("Failed to get user ID from auth, using fallback ID");
+    return 33;
+  };
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const doctorId = getUserId();
+        console.log(`Starting to fetch appointments for doctor ${doctorId} with status ${statusFilter}`);
+        
+        const data = await doctorService.getDoctorAppointments(doctorId, statusFilter);
+        console.log(`Fetch complete. Received ${data.length} appointments from service`);
+        
+        setAppointments(data);
+        if (data.length === 0) {
+          console.log("No appointments found for the selected status");
+        }
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+        setError(`Không thể tải dữ liệu: ${error instanceof Error ? error.message : 'Lỗi không xác định'}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAppointments();
+  }, [statusFilter, currentDoctor]);
+
+  const handleOpenCancelModal = (appointment: IReservation) => {
+    setSelectedAppointment(appointment);
+    setIsModalOpen(true);
+  };
+
+  const handleCancelAppointment = async () => {
+    if (!selectedAppointment || !cancellationReason.trim()) return;
+
+    try {
+      await doctorService.cancelAppointment(
+        parseInt(selectedAppointment.reservationId), 
+        cancellationReason
+      );
+      
+      // Refresh the appointment list
+      const doctorId = getUserId();
+      const data = await doctorService.getDoctorAppointments(doctorId, statusFilter);
+      setAppointments(data);
+      
+      // Close the modal and reset state
+      setIsModalOpen(false);
+      setSelectedAppointment(null);
+      setCancellationReason('');
+    } catch (error) {
+      console.error("Error cancelling appointment:", error);
+    }
+  };
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log("Changing status filter to:", e.target.value);
+    setStatusFilter(e.target.value);
+  };
+
+  const filterAppointments = (appointment: IReservation) => {
+    const patientName = appointment.patient?.userName?.toLowerCase() || '';
+    return patientName.includes(searchTerm.toLowerCase());
+  };
+
+  const handleStartExamination = (appointment: IReservation) => {
+    router.push(`/doctor/appointments/${appointment.reservationId}`);
+  };
+
+  // Debug: Check if we have any dates to render
+  const hasAppointments = Object.keys(appointmentsByDate).length > 0;
+  console.log("Has appointments to render:", hasAppointments);
 
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
@@ -101,9 +136,6 @@ export default function DoctorAppointmentsPage() {
             <button className="px-4 py-2 border rounded-md hover:bg-gray-50 flex items-center">
               <Calendar className="h-4 w-4 mr-2" />
               Hôm nay
-            </button>
-            <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-              Lịch hẹn mới
             </button>
           </div>
         </div>
@@ -119,23 +151,21 @@ export default function DoctorAppointmentsPage() {
                   type="text"
                   placeholder="Tìm kiếm bệnh nhân..."
                   className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
             </div>
             <div className="flex gap-3">
-              <select className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <option value="">Tất cả trạng thái</option>
-                <option value="confirmed">Đã xác nhận</option>
-                <option value="scheduled">Đã lên lịch</option>
-                <option value="completed">Đã hoàn thành</option>
-                <option value="cancelled">Đã hủy</option>
-              </select>
-              <select className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <option value="">Tất cả ngày</option>
-                <option value="today">Hôm nay</option>
-                <option value="tomorrow">Ngày mai</option>
-                <option value="this_week">Tuần này</option>
-                <option value="next_week">Tuần sau</option>
+              <select 
+                className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                value={statusFilter}
+                onChange={handleFilterChange}
+              >
+                <option value="Xác nhận">Đã xác nhận</option>
+                <option value="Đang chờ">Chờ xác nhận</option>
+                <option value="Hoàn thành">Đã hoàn thành</option>
+                <option value="Hủy">Đã hủy</option>
               </select>
               <button className="p-2 border rounded-md hover:bg-gray-50">
                 <Filter className="h-5 w-5 text-gray-500" />
@@ -146,158 +176,155 @@ export default function DoctorAppointmentsPage() {
       </div>
       
       <div className="col-span-12 space-y-4">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Lịch hẹn hôm nay</h2>
-            <div className="text-sm text-gray-500">18/05/2023</div>
+        {loading ? (
+          <div className="bg-white rounded-lg shadow p-6 text-center">
+            <p>Đang tải dữ liệu...</p>
           </div>
-          
-          <div className="space-y-4">
-            {appointments.filter(app => app.date === "18/05/2023").map((appointment) => (
-              <div key={appointment.id} className="border rounded-lg overflow-hidden">
-                <div className="p-4 bg-gray-50 border-b flex flex-col md:flex-row md:items-center md:justify-between">
-                  <div className="flex items-center">
-                    <div className="h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium mr-3">
-                      {appointment.patient.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h3 className="font-medium">{appointment.patient.name}</h3>
-                      <p className="text-sm text-gray-500">{appointment.patient.age} tuổi, {appointment.patient.gender}</p>
-                    </div>
-                  </div>
-                  <div className="mt-3 md:mt-0 flex items-center space-x-4">
-                    <div className="text-center">
-                      <p className="text-sm font-medium">{appointment.time}</p>
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        appointment.status === 'Đã xác nhận' ? 'bg-green-100 text-green-800' : 
-                        appointment.status === 'Đã lên lịch' ? 'bg-blue-100 text-blue-800' : 
-                        appointment.status === 'Đã hoàn thành' ? 'bg-gray-100 text-gray-800' : 
-                        'bg-red-100 text-red-800'
-                      }`}>{appointment.status}</span>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Link href={`/doctor/appointments/${appointment.id}`}>
-                        <button className="px-3 py-1 border border-indigo-600 text-indigo-600 rounded hover:bg-indigo-50">
-                          Xem
-                        </button>
-                      </Link>
-                      <button className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700">
-                        Bắt đầu
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <h4 className="text-sm font-semibold mb-2">Lý do khám</h4>
-                      <p className="text-sm text-gray-700">{appointment.reason}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold mb-2">Điều trị trước đó</h4>
-                      <p className="text-sm text-gray-700">{appointment.previousTreatment}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold mb-2">Tiền sử bệnh</h4>
-                      <p className="text-sm text-gray-700">{appointment.medicalHistory}</p>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex justify-end">
-                    <Link href={`/doctor/medical-records?patientId=${appointment.patient.id}`} className="text-sm text-indigo-600 hover:text-indigo-800">
-                      Xem đầy đủ tiền sử bệnh →
-                    </Link>
-                  </div>
-                </div>
+        ) : error ? (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center text-red-700">
+            <p>{error}</p>
+          </div>
+        ) : appointments.length === 0 ? (
+          <div className="bg-white rounded-lg shadow p-6 text-center">
+            <p>Không có lịch hẹn nào trong trạng thái {statusFilter}</p>
+          </div>
+        ) : !hasAppointments ? (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+            <p>Có dữ liệu nhưng không thể nhóm theo ngày. Kiểm tra định dạng ngày tháng.</p>
+            <pre className="mt-2 text-xs text-left bg-gray-100 p-2 rounded overflow-auto">
+              {JSON.stringify(appointments[0], null, 2)}
+            </pre>
+          </div>
+        ) : (
+          Object.entries(appointmentsByDate).map(([date, dateAppointments]) => (
+            <div key={date} className="bg-white rounded-lg shadow p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold">Lịch hẹn ngày {date}</h2>
+                <div className="text-sm text-gray-500">Số lượng: {dateAppointments.length}</div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Lịch hẹn sắp tới</h2>
-            <div className="text-sm text-gray-500">19/05/2023</div>
-          </div>
-          
-          <div className="space-y-4">
-            {appointments.filter(app => app.date === "19/05/2023").map((appointment) => (
-              <div key={appointment.id} className="border rounded-lg overflow-hidden">
-                <div className="p-4 bg-gray-50 border-b flex flex-col md:flex-row md:items-center md:justify-between">
-                  <div className="flex items-center">
-                    <div className="h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium mr-3">
-                      {appointment.patient.name.charAt(0)}
+              
+              <div className="space-y-4">
+                {dateAppointments.filter(filterAppointments).map((appointment) => (
+                  <div key={appointment.reservationId} className="border rounded-lg overflow-hidden">
+                    <div className="p-4 bg-gray-50 border-b flex flex-col md:flex-row md:items-center md:justify-between">
+                      <div className="flex items-center">
+                        <div className="h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium mr-3">
+                          {appointment.patient?.userName?.charAt(0) || '?'}
+                        </div>
+                        <div>
+                          <h3 className="font-medium">{appointment.patient?.userName || 'Không có tên'}</h3>
+                          <p className="text-sm text-gray-500">
+                            {appointment.patient?.dob && `${new Date().getFullYear() - new Date(appointment.patient.dob).getFullYear()} tuổi, `}
+                            {appointment.patient?.gender || 'Không rõ'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-3 md:mt-0 flex items-center space-x-4">
+                        <div className="text-center">
+                          <p className="text-sm font-medium">
+                            {appointment.doctorSchedule?.slotStartTime?.substring(0, 5) || '--:--'} - {appointment.doctorSchedule?.slotEndTime?.substring(0, 5) || '--:--'}
+                          </p>
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            appointment.status === 'Xác nhận' ? 'bg-green-100 text-green-800' : 
+                            appointment.status === 'Đang chờ' ? 'bg-blue-100 text-blue-800' : 
+                            appointment.status === 'Hoàn thành' ? 'bg-gray-100 text-gray-800' : 
+                            'bg-red-100 text-red-800'
+                          }`}>{appointment.status}</span>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Link href={`/doctor/appointments/${appointment.reservationId}`}>
+                            <button className="px-3 py-1 border border-indigo-600 text-indigo-600 rounded hover:bg-indigo-50">
+                              Xem
+                            </button>
+                          </Link>
+                          {appointment.status === 'Xác nhận' && (
+                            <>
+                              <button 
+                                className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                                onClick={() => handleStartExamination(appointment)}
+                              >
+                                Bắt đầu
+                              </button>
+                              <button 
+                                className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                                onClick={() => handleOpenCancelModal(appointment)}
+                              >
+                                Hủy
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-medium">{appointment.patient.name}</h3>
-                      <p className="text-sm text-gray-500">{appointment.patient.age} tuổi, {appointment.patient.gender}</p>
+                    <div className="p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <h4 className="text-sm font-semibold mb-2">Lý do khám</h4>
+                          <p className="text-sm text-gray-700">{appointment.reason || 'Không có thông tin'}</p>
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-2">Phòng khám</h4>
+                          <p className="text-sm text-gray-700">
+                            {appointment.doctorSchedule?.roomId || 'Chưa có phòng'}
+                          </p>
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-2">Dịch vụ</h4>
+                          <p className="text-sm text-gray-700">
+                            {appointment.doctorSchedule?.serviceId || 'Không có thông tin'}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex justify-end">
+                        <Link href={`/doctor/patients/${appointment.patient?.userId}`} className="text-sm text-indigo-600 hover:text-indigo-800">
+                          Xem hồ sơ bệnh nhân →
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                  <div className="mt-3 md:mt-0 flex items-center space-x-4">
-                    <div className="text-center">
-                      <p className="text-sm font-medium">{appointment.time}</p>
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        appointment.status === 'Đã xác nhận' ? 'bg-green-100 text-green-800' : 
-                        appointment.status === 'Đã lên lịch' ? 'bg-blue-100 text-blue-800' : 
-                        appointment.status === 'Đã hoàn thành' ? 'bg-gray-100 text-gray-800' : 
-                        'bg-red-100 text-red-800'
-                      }`}>{appointment.status}</span>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Link href={`/doctor/appointments/${appointment.id}`}>
-                        <button className="px-3 py-1 border border-indigo-600 text-indigo-600 rounded hover:bg-indigo-50">
-                          Xem
-                        </button>
-                      </Link>
-                      <button className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700">
-                        Bắt đầu
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <h4 className="text-sm font-semibold mb-2">Lý do khám</h4>
-                      <p className="text-sm text-gray-700">{appointment.reason}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold mb-2">Điều trị trước đó</h4>
-                      <p className="text-sm text-gray-700">{appointment.previousTreatment}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold mb-2">Tiền sử bệnh</h4>
-                      <p className="text-sm text-gray-700">{appointment.medicalHistory}</p>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex justify-end">
-                    <Link href={`/doctor/medical-records?patientId=${appointment.patient.id}`} className="text-sm text-indigo-600 hover:text-indigo-800">
-                      Xem đầy đủ tiền sử bệnh →
-                    </Link>
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          ))
+        )}
       </div>
 
-      <div className="col-span-12 mt-4 flex items-center justify-between">
-        <button className="flex items-center px-4 py-2 border rounded-md hover:bg-gray-50">
-          <ChevronLeft className="h-4 w-4 mr-1" />
-          Trước
-        </button>
-        <div className="flex items-center">
-          <span className="px-4 py-2 border rounded-md bg-indigo-50 text-indigo-600 font-medium">1</span>
-          <span className="px-4 py-2 text-gray-600">2</span>
-          <span className="px-4 py-2 text-gray-600">3</span>
-          <span className="px-4 py-2 text-gray-600">...</span>
-          <span className="px-4 py-2 text-gray-600">8</span>
+      {/* Cancellation Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Hủy lịch hẹn</h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-gray-700">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <p className="mb-4">Vui lòng cung cấp lý do hủy lịch hẹn với {selectedAppointment?.patient?.userName || 'bệnh nhân'}.</p>
+            <textarea
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4"
+              rows={4}
+              placeholder="Nhập lý do hủy lịch..."
+              value={cancellationReason}
+              onChange={(e) => setCancellationReason(e.target.value)}
+            ></textarea>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 border rounded-md hover:bg-gray-50"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleCancelAppointment}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                disabled={!cancellationReason.trim()}
+              >
+                Xác nhận hủy
+              </button>
+            </div>
+          </div>
         </div>
-        <button className="flex items-center px-4 py-2 border rounded-md hover:bg-gray-50">
-          Sau
-          <ChevronRight className="h-4 w-4 ml-1" />
-        </button>
-      </div>
+      )}
     </div>
   );
 } 

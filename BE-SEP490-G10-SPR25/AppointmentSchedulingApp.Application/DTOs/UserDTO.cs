@@ -24,30 +24,28 @@ namespace AppointmentSchedulingApp.Application.DTOs
         [JsonPropertyOrder(6)]
         public long? CitizenId { get; set; }
 
-        [JsonPropertyOrder(7)]
-        public string PhoneNumber { get; set; }
 
-        [JsonPropertyOrder(8)]
+        [JsonPropertyOrder(7)]
         public string Gender { get; set; }
 
-        [JsonPropertyOrder(9)]
+        [JsonPropertyOrder(8)]
         public string Dob { get; set; }
 
-        [JsonPropertyOrder(10)]
+        [JsonPropertyOrder(9)]
         public string Address { get; set; }
 
-        [JsonPropertyOrder(11)]
+        [JsonPropertyOrder(10)]
         public string? AvatarUrl { get; set; }
 
-        [JsonPropertyOrder(12)]
+        [JsonPropertyOrder(11)]
         public bool IsVerify { get; set; }
 
-        [JsonPropertyOrder(13)]
+        [JsonPropertyOrder(12)]
         public bool IsActive { get; set; }
 
-        [JsonPropertyOrder(14)]
-        public string RoleNames { get; set; }  
-              
+        [JsonPropertyOrder(13)]
+        public string? RoleNames { get; set; }
+
         [JsonIgnore]
         public List<RoleDTO> Roles { get; set; }
 

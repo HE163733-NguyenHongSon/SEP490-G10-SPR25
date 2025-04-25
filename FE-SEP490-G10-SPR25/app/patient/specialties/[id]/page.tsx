@@ -5,39 +5,29 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+
 export default function SpecialtyDetails() {
   const router = useRouter();
   const { id } = useParams()
 
-  interface Service {
-    serviceId: number;
-    serviceName: string;
-    overview: string;
-    process: string;
-    price: number;
-    image: string;
-  }
-
-  interface Doctor {
-    doctorId: number;
-    academicTitle: string;
-    degree: string;
-    doctorName: string;
-    experience: string;
-    avatarImage: string;
-  }
-
-  interface Specialty {
+  interface SpecialtyDetail {
     specialtyId: number;
     specialtyName: string;
     specialtyDescription: string;
     image: string;
     devices: string[];
-    services: Service[];
-    doctors: Doctor[];
+    services: IService[];
+    doctors: {
+      doctorId: number;
+      academicTitle: string;
+      degree: string;
+      doctorName: string;
+      experience: string;
+      avatarImage: string;
+    }[];
   }
 
-  const [specialty, setSpecialty] = useState<Specialty | null>(null);
+  const [specialty, setSpecialty] = useState<SpecialtyDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>("overall");
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
@@ -91,7 +81,7 @@ export default function SpecialtyDetails() {
               <div className="flex-1">
                 <h1 className="text-2xl font-bold text-black">{specialty?.specialtyName || "Loading..."}</h1>
                 <div className="text-gray-600 mt-2 space-y-2">
-                  <Link href="#introduce" className="block text-blue-500 hover:underline">
+                  {/* <Link href="#introduce" className="block text-blue-500 hover:underline">
                     · Introduce
                   </Link>
                   <Link href="#service" className="block text-blue-500 hover:underline">
@@ -99,7 +89,7 @@ export default function SpecialtyDetails() {
                   </Link>
                   <Link href="#doctor-take-on" className="block text-blue-500 hover:underline">
                     · Doctor take on
-                  </Link>
+                  </Link> */}
                   <button className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
                     Book appointment
                   </button>

@@ -16,6 +16,8 @@
     "@radix-ui/react-tabs": "^1.1.4",
     "@react-jvectormap/core": "^1.0.4",
     "@react-jvectormap/world": "^1.1.2",
+    "@redux-devtools/extension": "^3.3.0",
+    "@reduxjs/toolkit": "^2.7.0",
     "@tanstack/react-query": "^5.70.0",
     "@types/react-datepicker": "^6.2.0",
     "antd": "^5.24.6",
@@ -41,9 +43,11 @@
     "react-medium-image-zoom": "^5.2.14",
     "react-multi-carousel": "^2.8.5",
     "react-paginate": "^8.3.0",
+    "react-redux": "^9.2.0",
     "react-select": "^5.10.1",
     "react-tabs": "^6.1.0",
     "react-toastify": "^11.0.5",
+    "redux": "^5.0.1",
     "tailwind-merge": "^3.2.0"
   },
   "devDependencies": {

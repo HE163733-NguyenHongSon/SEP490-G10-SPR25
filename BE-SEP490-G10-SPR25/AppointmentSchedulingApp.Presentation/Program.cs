@@ -206,6 +206,9 @@ builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IStorageService, StorageService >();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
+builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<ISlotService, SlotService>();
 
 // Đăng ký các dịch vụ liên quan đến người dùng
 builder.Services.AddScoped<IUserService, UserService>();
@@ -213,6 +216,8 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IDoctorScheduleService, DoctorScheduleService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());//Tự tìm mapper trong phạm vi  solution với các project đã tham chiếu với nhau

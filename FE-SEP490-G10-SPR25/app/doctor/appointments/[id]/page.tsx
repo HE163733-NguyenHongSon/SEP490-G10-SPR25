@@ -1,328 +1,969 @@
-import React from 'react';
-import type { Metadata } from "next";
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Clock, Calendar, ArrowLeft, User, FileText, Plus, CheckCircle, AlarmClock } from 'lucide-react';
+import { doctorService } from '../../../services/doctorService';
+import { medicalRecordService } from '../../../services/medicalRecordService';
+import { getCurrentUser } from '../../../services/authService';
+import { Calendar, Clock, Award, ChevronLeft, CheckCircle, FilePlus, FileText, User, Users, Phone, Mail, MapPin, ClipboardList, Clock3, Calendar as CalendarIcon, Activity, AlertCircle, Search } from 'lucide-react';
+import dayjs from 'dayjs';
+import Image from 'next/image';
 
-export const metadata: Metadata = {
-  title: "Chi Tiết Lịch Hẹn",
-  description: "Xem và quản lý chi tiết lịch hẹn",
-};
-
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function AppointmentDetailPage({ params }: PageProps) {
-  const appointmentId = params.id;
+export default function AppointmentDetails() {
+  const params = useParams();
+  const router = useRouter();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
   
-  // Dữ liệu lịch hẹn mẫu - trong ứng dụng thực tế, dữ liệu này sẽ được lấy dựa trên ID
-  const appointment = {
-    id: parseInt(appointmentId),
-    patient: {
-      id: 101,
-      name: "Nguyễn Văn A",
-      age: 42,
-      gender: "Nam",
-      email: "nguyenvana@example.com",
-      phone: "0912 345 678",
-      image: null
-    },
-    date: "18/05/2023",
-    time: "09:00 - 09:30",
-    reason: "Khám định kỳ cho bệnh tăng huyết áp",
-    status: "Đã xác nhận",
-    previousTreatment: "Kê đơn lisinopril 10mg hàng ngày. Huyết áp 140/85 tại lần khám gần nhất.",
-    medicalHistory: [
-      { date: "18/04/2023", diagnosis: "Tăng huyết áp", treatment: "Lisinopril 10mg hàng ngày" },
-      { date: "15/01/2023", diagnosis: "Cảm cúm thông thường", treatment: "Điều trị triệu chứng" },
-      { date: "10/10/2022", diagnosis: "Khám sức khỏe định kỳ", treatment: "Không yêu cầu điều trị" }
-    ],
-    vitalSigns: {
-      bloodPressure: "140/85",
-      heartRate: "72 nhịp/phút",
-      respiratoryRate: "16 nhịp/phút",
-      temperature: "37°C",
-      oxygenSaturation: "98%"
+  const [appointment, setAppointment] = useState<IReservation | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isFirstVisit, setIsFirstVisit] = useState(false);
+  const [medicalHistory, setMedicalHistory] = useState<IMedicalRecord[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [currentDoctor, setCurrentDoctor] = useState<any>(null);
+  const [existingMedicalRecord, setExistingMedicalRecord] = useState<IMedicalRecord | null>(null);
+  const [checkingExistingRecord, setCheckingExistingRecord] = useState(false);
+  const [showNewRecordForm, setShowNewRecordForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredHistory, setFilteredHistory] = useState<IMedicalRecord[]>([]);
+  const [expandedRecords, setExpandedRecords] = useState<string[]>([]);
+  const [showPreviousRecordModal, setShowPreviousRecordModal] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<IMedicalRecord | null>(null);
+  
+  // Form state
+  const [symptoms, setSymptoms] = useState('');
+  const [diagnosis, setDiagnosis] = useState('');
+  const [treatmentPlan, setTreatmentPlan] = useState('');
+  const [followUpDate, setFollowUpDate] = useState('');
+  const [notes, setNotes] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  
+  // Get current user ID from auth
+  useEffect(() => {
+    const user = getCurrentUser();
+    console.log("Current logged in user:", user);
+    setCurrentDoctor(user);
+  }, []);
+  
+  // Get current user ID if needed
+  const getUserId = () => {
+    if (currentDoctor && currentDoctor.userId) {
+      return currentDoctor.userId;
+    }
+    // Fallback to hardcoded ID if auth fails
+    console.warn("Failed to get user ID from auth, using fallback ID");
+    return 33;
+  };
+  
+  // Lọc lịch sử bệnh án theo tìm kiếm
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredHistory(medicalHistory);
+      return;
+    }
+    
+    const searchLower = searchTerm.toLowerCase();
+    const filtered = medicalHistory.filter(record => 
+      (record.symptoms && record.symptoms.toLowerCase().includes(searchLower)) ||
+      (record.diagnosis && record.diagnosis.toLowerCase().includes(searchLower)) ||
+      (record.treatmentPlan && record.treatmentPlan.toLowerCase().includes(searchLower)) ||
+      (record.notes && record.notes.toLowerCase().includes(searchLower))
+    );
+    
+    setFilteredHistory(filtered);
+  }, [searchTerm, medicalHistory]);
+  
+  // Hàm kiểm tra bệnh án đã tồn tại
+  const checkExistingMedicalRecord = async (reservationId: string) => {
+    try {
+      setCheckingExistingRecord(true);
+      // Tìm bệnh án trong medical history nếu có
+      const existingRecord = medicalHistory.find(record => 
+        record.reservationId === reservationId
+      );
+
+      if (existingRecord) {
+        console.log("Found existing medical record in history:", existingRecord);
+        setExistingMedicalRecord(existingRecord);
+        return;
+      }
+
+      // Nếu không tìm thấy trong history, thử lấy từ API
+      try {
+        const record = await medicalRecordService.getMedicalRecordDetailById(reservationId);
+        console.log("Found existing medical record from API:", record);
+        if (record) {
+          setExistingMedicalRecord(record);
+        }
+      } catch (error) {
+        console.log("No existing medical record found via API, this is expected if none exists");
+        // Không làm gì nếu không tìm thấy - đây là trường hợp bình thường nếu chưa có bệnh án
+      }
+    } catch (error) {
+      console.error("Error checking existing medical record:", error);
+    } finally {
+      setCheckingExistingRecord(false);
     }
   };
+  
+  useEffect(() => {
+    const fetchAppointment = async () => {
+      try {
+        setLoading(true);
+        // In a real app, you would get the appointment data from the API
+        // For now, we'll just use a placeholder
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/Reservations/${id}`);
+        if (!response.ok) throw new Error('Failed to fetch appointment');
+        
+        const data = await response.json();
+        setAppointment(data);
+        
+        // Check if first visit and get medical history
+        if (data.patient?.patientId) {
+          setHistoryLoading(true);
+          try {
+            const isFirst = await doctorService.isFirstTimePatient(data.patient.patientId);
+            setIsFirstVisit(isFirst);
+            
+            if (!isFirst) {
+              const history = await doctorService.getPatientMedicalHistory(data.patient.patientId);
+              setMedicalHistory(history);
+              setFilteredHistory(history);
+              
+              // Kiểm tra xem lịch hẹn hiện tại đã có bệnh án chưa
+              if (history.some(record => record.reservationId === data.reservationId)) {
+                const currentRecord = history.find(record => record.reservationId === data.reservationId);
+                if (currentRecord) {
+                  setExistingMedicalRecord(currentRecord);
+                }
+              }
+            }
+          } catch (error) {
+            console.error("Error fetching patient history:", error);
+          } finally {
+            setHistoryLoading(false);
+          }
+        }
+        
+        // Kiểm tra bệnh án hiện có cho lịch hẹn này
+        if (data.reservationId) {
+          await checkExistingMedicalRecord(data.reservationId);
+        }
+      } catch (error) {
+        console.error("Error fetching appointment:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    if (id) {
+      fetchAppointment();
+    }
+  }, [id]);
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!appointment) return;
+    
+    try {
+      setSubmitting(true);
+      
+      // Ensure reservationId is a number
+      const reservationIdNumber = parseInt(appointment.reservationId);
+      
+      const medicalRecord: IMedicalRecord = {
+        reservationId: appointment.reservationId,
+        appointmentDate: appointment.appointmentDate,
+        symptoms,
+        diagnosis,
+        treatmentPlan,
+        followUpDate: followUpDate ? new Date(followUpDate).toISOString() : undefined,
+        notes
+      };
+      
+      console.log("Submitting medical record:", medicalRecord);
+      
+      // Tạo medical record - backend tự động cập nhật trạng thái reservation
+      const result = await doctorService.createMedicalRecord(reservationIdNumber, medicalRecord);
+      console.log("Medical record created successfully:", result);
+      
+      setSuccess(true);
+      
+      // Cập nhật state để hiển thị bệnh án mới
+      setExistingMedicalRecord(result);
+      setShowNewRecordForm(false);
+      
+      // Redirect after short delay
+      setTimeout(() => {
+        router.push('/doctor/appointments');
+      }, 2000);
+      
+    } catch (error) {
+      console.error("Error creating medical record:", error);
+      
+      // Kiểm tra nếu lỗi là "bệnh án đã tồn tại"
+      const errorMessage = error instanceof Error ? error.message : 'Lỗi không xác định';
+      if (errorMessage.includes("tồn tại") || errorMessage.includes("500")) {
+        alert("Bệnh án đã tồn tại cho lịch hẹn này! Hãy kiểm tra lại.");
+        // Thử tải lại bệnh án hiện tại
+        if (appointment?.reservationId) {
+          await checkExistingMedicalRecord(appointment.reservationId);
+        }
+      } else {
+        alert(`Lỗi khi tạo hồ sơ y tế: ${errorMessage}`);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+  
+  // Format date và time để hiển thị
+  const formatDate = (dateString: string) => {
+    if (!dateString) return 'N/A';
+    return dayjs(dateString).format('DD/MM/YYYY');
+  };
+  
+  const formatTime = (timeString: string) => {
+    if (!timeString) return '';
+    return timeString.substring(0, 5);
+  };
+  
+  // Hàm highlight text đang tìm kiếm
+  const highlightText = (text: string, term: string) => {
+    if (!term.trim() || !text) return text;
+    
+    const parts = text.split(new RegExp(`(${term})`, 'gi'));
+    return (
+      <>
+        {parts.map((part, i) => 
+          part.toLowerCase() === term.toLowerCase() ? 
+          <span key={i} className="bg-yellow-200">{part}</span> : 
+          part
+        )}
+      </>
+    );
+  };
+  
+  // Toggle expanded record
+  const toggleExpandRecord = (recordId: string) => {
+    setExpandedRecords(prev => 
+      prev.includes(recordId) 
+        ? prev.filter(id => id !== recordId) 
+        : [...prev, recordId]
+    );
+  };
 
-  return (
-    <div className="grid grid-cols-12 gap-4 md:gap-6">
-      <div className="col-span-12">
-        <div className="flex items-center mb-4">
-          <Link href="/doctor/appointments" className="mr-4">
-            <button className="p-2 border rounded-md hover:bg-gray-50">
-              <ArrowLeft className="h-5 w-5 text-gray-500" />
-            </button>
+  // Hiển thị modal xem bệnh án trước đó
+  const showPreviousRecord = () => {
+    console.log("Showing previous record modal");
+    if (medicalHistory.length > 0) {
+      console.log("Setting selected record:", medicalHistory[0]);
+      setSelectedRecord(medicalHistory[0]); // Lấy bệnh án gần nhất
+      setShowPreviousRecordModal(true);
+    } else {
+      console.log("No medical history found");
+      alert("Không tìm thấy hồ sơ bệnh án trước đây");
+    }
+  };
+  
+  if (loading) {
+    return (
+      <div className="p-6">
+        <p className="text-center">Đang tải dữ liệu...</p>
+      </div>
+    );
+  }
+  
+  if (!appointment) {
+    return (
+      <div className="p-6">
+        <p className="text-center">Không tìm thấy thông tin lịch hẹn</p>
+        <div className="mt-4 text-center">
+          <Link href="/doctor/appointments" className="text-indigo-600 hover:text-indigo-800">
+            ← Quay lại danh sách lịch hẹn
           </Link>
-          <h1 className="text-2xl font-bold">Chi Tiết Lịch Hẹn</h1>
         </div>
       </div>
-
-      <div className="col-span-12 lg:col-span-8 space-y-4">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <h2 className="text-xl font-semibold">Thông Tin Bệnh Nhân</h2>
-              <p className="text-gray-500">Lịch hẹn #{appointment.id}</p>
-            </div>
-            <div className="flex space-x-2">
-              <Link href={`/doctor/medical-records/new?patientId=${appointment.patient.id}&appointmentId=${appointment.id}`}>
-                <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center">
-                  <FileText className="h-4 w-4 mr-2" />
-                  Cập Nhật Hồ Sơ Y Tế
-                </button>
-              </Link>
-            </div>
+    );
+  }
+  
+  return (
+    <div className="container mx-auto p-4">
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes scaleIn {
+          from { transform: scale(0.95); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.2s ease-in-out;
+        }
+        .animate-scaleIn {
+          animation: scaleIn 0.2s ease-in-out;
+        }
+      `}</style>
+      <div className="mb-6">
+        <Link href="/doctor/appointments" className="inline-flex items-center text-indigo-600 hover:text-indigo-800">
+          <ChevronLeft size={16} className="mr-1" />
+          Quay lại danh sách lịch hẹn
+        </Link>
+      </div>
+      
+      {success ? (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+          <div className="flex items-center">
+            <CheckCircle className="h-6 w-6 text-green-500 mr-2" />
+            <h2 className="text-xl font-semibold text-green-800">Hồ sơ bệnh án đã được lưu thành công</h2>
           </div>
-
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="md:w-1/3">
-              <div className="flex items-center mb-4">
-                <div className="h-16 w-16 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 text-xl font-bold mr-4">
-                  {appointment.patient.name.charAt(0)}
-                </div>
+          <p className="mt-2 text-green-700">Hồ sơ bệnh án đã được lưu và bệnh nhân có thể xem được thông tin này.</p>
+          <p className="mt-2 text-green-700">Trạng thái lịch hẹn đã được cập nhật thành "Hoàn thành".</p>
+          <p className="mt-4 text-green-700">Đang chuyển hướng về trang danh sách lịch hẹn...</p>
+          <div className="mt-4">
+            <button 
+              onClick={() => router.push('/doctor/appointments')} 
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            >
+              Quay lại danh sách lịch hẹn
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Header với tiêu đề và thông tin */}
+          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <h1 className="text-2xl font-bold text-gray-800">Chi tiết cuộc hẹn</h1>
+              <div className="flex items-center">
+                <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                  {appointment.status || 'Đang xử lý'}
+                </span>
+              </div>
+            </div>
+            
+            {/* Notification for returning patients */}
+            {!isFirstVisit && medicalHistory.length > 0 && (
+              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start">
+                <FileText className="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
                 <div>
-                  <h3 className="text-lg font-semibold">{appointment.patient.name}</h3>
-                  <p className="text-gray-500">{appointment.patient.age} tuổi, {appointment.patient.gender}</p>
+                  <h3 className="font-medium text-blue-800">Bệnh nhân đã có tiền sử khám chữa bệnh</h3>
+                  <p className="text-sm text-blue-700 mt-1">
+                    Bệnh nhân này đã khám {medicalHistory.length} lần trước đây. 
+                    Lần gần nhất vào {formatDate(medicalHistory[0]?.appointmentDate)}.
+                  </p>
+                  <div className="mt-2">
+                    <a 
+                      href="#medical-history" 
+                      className="text-sm text-blue-600 hover:text-blue-800 inline-flex items-center"
+                    >
+                      Xem tiền sử bệnh án
+                      <ChevronLeft className="w-4 h-4 transform rotate-270 ml-1" />
+                    </a>
+                  </div>
                 </div>
               </div>
-              <div className="space-y-3">
+            )}
+            
+            {/* Thông tin cuộc hẹn */}
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Email</p>
-                  <p className="text-sm">{appointment.patient.email}</p>
+                  <p className="text-sm text-gray-500 flex items-center">
+                    <Calendar className="w-4 h-4 mr-2 text-indigo-600" />
+                    Ngày hẹn
+                  </p>
+                  <p className="font-medium">{formatDate(appointment.appointmentDate)}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Điện thoại</p>
-                  <p className="text-sm">{appointment.patient.phone}</p>
+                  <p className="text-sm text-gray-500 flex items-center">
+                    <Clock className="w-4 h-4 mr-2 text-indigo-600" />
+                    Thời gian
+                  </p>
+                  <p className="font-medium">
+                    {formatTime(appointment.doctorSchedule?.slotStartTime || '')} - {formatTime(appointment.doctorSchedule?.slotEndTime || '')}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Trạng thái lịch hẹn</p>
-                  <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                    {appointment.status}
-                  </span>
+                  <p className="text-sm text-gray-500 flex items-center">
+                    <Award className="w-4 h-4 mr-2 text-indigo-600" />
+                    Dịch vụ
+                  </p>
+                  <p className="font-medium">{appointment.doctorSchedule?.serviceId || 'N/A'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 flex items-center">
+                    <ClipboardList className="w-4 h-4 mr-2 text-indigo-600" />
+                    Phòng khám
+                  </p>
+                  <p className="font-medium">{appointment.doctorSchedule?.roomId || 'N/A'}</p>
+                </div>
+              </div>
+              <div className="mt-4">
+                <p className="text-sm text-gray-500 flex items-center">
+                  <AlertCircle className="w-4 h-4 mr-2 text-indigo-600" />
+                  Lý do khám
+                </p>
+                <p className="mt-1 p-2 bg-white rounded border border-gray-200">{appointment.reason || 'Không có thông tin'}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* Thông tin bệnh nhân */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-lg font-semibold mb-4 flex items-center text-gray-800">
+                <User className="mr-2 h-5 w-5 text-indigo-600" />
+                Thông tin bệnh nhân
+              </h2>
+              
+              <div className="space-y-4">
+                <div className="flex items-center mb-4">
+                  <div className="h-12 w-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium mr-3">
+                    {appointment.patient?.userName?.[0] || '?'}
+                  </div>
+                  <div>
+                    <h3 className="font-medium">{appointment.patient?.userName}</h3>
+                    <div className="flex items-center">
+                      <p className="text-sm text-gray-500">
+                        {appointment.patient?.dob && `${new Date().getFullYear() - new Date(appointment.patient.dob.toString()).getFullYear()} tuổi, `}
+                        {appointment.patient?.gender}
+                      </p>
+                      {isFirstVisit ? (
+                        <span className="ml-2 px-2 py-0.5 bg-orange-100 text-orange-700 rounded-full text-xs">
+                          Lần đầu
+                        </span>
+                      ) : (
+                        <span 
+                          onClick={showPreviousRecord}
+                          className="ml-2 px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs flex items-center hover:bg-green-200 transition-colors cursor-pointer"
+                        >
+                          <FileText className="w-3 h-3 mr-1" />
+                          Có tiền sử ({medicalHistory.length} lần khám)
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500 flex items-center">
+                      <Phone className="w-3 h-3 mr-1" />
+                      Điện thoại
+                    </p>
+                    <p className="font-medium">{appointment.patient?.phone || 'N/A'}</p>
+                  </div>
+                  
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-xs text-gray-500 flex items-center">
+                      <Mail className="w-3 h-3 mr-1" />
+                      Email
+                    </p>
+                    <p className="font-medium text-sm overflow-hidden text-ellipsis">{appointment.patient?.email || 'N/A'}</p>
+                  </div>
+                </div>
+                
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-500 flex items-center">
+                    <MapPin className="w-3 h-3 mr-1" />
+                    Địa chỉ
+                  </p>
+                  <p className="font-medium">{appointment.patient?.address || 'N/A'}</p>
+                </div>
+                
+                {/* Badges - có thể thêm thông tin hữu ích */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {isFirstVisit ? (
+                    <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                      Bệnh nhân mới
+                    </span>
+                  ) : (
+                    <button 
+                      onClick={showPreviousRecord}
+                      className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full flex items-center hover:bg-blue-200 transition-colors cursor-pointer"
+                    >
+                      <FileText className="w-3 h-3 mr-1" />
+                      Đã có hồ sơ bệnh án trước đây
+                    </button>
+                  )}
+                  
+                  {appointment.patient?.isActive && (
+                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                      Hồ sơ đang hoạt động
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
             
-            <div className="md:w-2/3 md:border-l md:pl-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <div className="flex items-center mb-2">
-                    <Calendar className="h-5 w-5 text-indigo-500 mr-2" />
-                    <h4 className="font-medium">Ngày</h4>
-                  </div>
-                  <p className="text-gray-700 ml-7">{appointment.date}</p>
+            {/* Tóm tắt y tế */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-lg font-semibold mb-4 flex items-center text-gray-800">
+                <Activity className="mr-2 h-5 w-5 text-indigo-600" />
+                Tóm tắt y tế
+              </h2>
+              
+              <div className="grid grid-cols-1 gap-4">
+                {/* Tổng lượt khám */}
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-sm text-gray-500 mb-1 flex items-center">
+                    <Users className="w-4 h-4 mr-2 text-gray-400" />
+                    Tổng lượt khám
+                  </p>
+                  <p className="text-2xl font-bold text-indigo-600">{medicalHistory.length}</p>
+                  {medicalHistory.length > 0 && (
+                    <p className="text-xs text-gray-500">
+                      Từ {formatDate(medicalHistory[medicalHistory.length - 1]?.appointmentDate)} 
+                      đến {formatDate(medicalHistory[0]?.appointmentDate)}
+                    </p>
+                  )}
                 </div>
-                <div>
-                  <div className="flex items-center mb-2">
-                    <Clock className="h-5 w-5 text-indigo-500 mr-2" />
-                    <h4 className="font-medium">Thời gian</h4>
+                
+                {/* Lần khám gần nhất */}
+                {medicalHistory.length > 0 && (
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <p className="text-sm text-gray-500 mb-1 flex items-center">
+                      <CalendarIcon className="w-4 h-4 mr-2 text-gray-400" />
+                      Lần khám gần nhất
+                    </p>
+                    <p className="text-lg font-semibold">{formatDate(medicalHistory[0]?.appointmentDate)}</p>
+                    <p className="text-xs text-indigo-600">
+                      <span className="font-medium">Chẩn đoán:</span> {medicalHistory[0]?.diagnosis || 'Không có chẩn đoán'}
+                    </p>
+                    <Link href="#medical-history" className="text-xs text-blue-600 hover:underline mt-1 inline-block">
+                      Xem chi tiết tiền sử
+                    </Link>
                   </div>
-                  <p className="text-gray-700 ml-7">{appointment.time}</p>
-                </div>
-                <div className="md:col-span-2">
-                  <div className="flex items-center mb-2">
-                    <FileText className="h-5 w-5 text-indigo-500 mr-2" />
-                    <h4 className="font-medium">Lý do khám</h4>
+                )}
+                
+                {/* Trạng thái bệnh án hiện tại */}
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-sm text-gray-500 mb-1 flex items-center">
+                    <Clock3 className="w-4 h-4 mr-2 text-gray-400" />
+                    Tình trạng hiện tại
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <p className="font-semibold">
+                      {existingMedicalRecord ? 'Đã có bệnh án' : 'Chưa có bệnh án'}
+                    </p>
+                    {existingMedicalRecord ? (
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                        Hoàn thành
+                      </span>
+                    ) : (
+                      <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                        Cần nhập bệnh án
+                      </span>
+                    )}
                   </div>
-                  <p className="text-gray-700 ml-7">{appointment.reason}</p>
-                </div>
-                <div className="md:col-span-2">
-                  <div className="flex items-center mb-2">
-                    <FileText className="h-5 w-5 text-indigo-500 mr-2" />
-                    <h4 className="font-medium">Điều trị trước đó</h4>
-                  </div>
-                  <p className="text-gray-700 ml-7">{appointment.previousTreatment}</p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="p-6 border-b">
-            <h2 className="text-xl font-semibold">Cập Nhật Hồ Sơ Y Tế</h2>
-            <p className="text-gray-500 mt-1">Thêm hồ sơ y tế mới cho lịch hẹn này</p>
-          </div>
-          <div className="p-6">
-            <form>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Triệu chứng chính</label>
-                  <textarea
-                    className="w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    rows={3}
-                    placeholder="Nhập triệu chứng chính của bệnh nhân"
-                  ></textarea>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Chẩn đoán</label>
-                  <textarea
-                    className="w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    rows={3}
-                    placeholder="Nhập chẩn đoán"
-                  ></textarea>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h3 className="text-lg font-medium mb-3">Dấu hiệu sinh tồn</h3>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Huyết áp</label>
-                    <input
-                      type="text"
-                      className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="VD: 120/80"
-                      defaultValue={appointment.vitalSigns.bloodPressure}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Nhịp tim</label>
-                    <input
-                      type="text"
-                      className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="VD: 72 nhịp/phút"
-                      defaultValue={appointment.vitalSigns.heartRate}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Nhịp thở</label>
-                    <input
-                      type="text"
-                      className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="VD: 16 nhịp/phút"
-                      defaultValue={appointment.vitalSigns.respiratoryRate}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Nhiệt độ</label>
-                    <input
-                      type="text"
-                      className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="VD: 37°C"
-                      defaultValue={appointment.vitalSigns.temperature}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">SpO2</label>
-                    <input
-                      type="text"
-                      className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="VD: 98%"
-                      defaultValue={appointment.vitalSigns.oxygenSaturation}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Kế hoạch điều trị</label>
-                <textarea
-                  className="w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  rows={4}
-                  placeholder="Mô tả kế hoạch điều trị cho bệnh nhân"
-                ></textarea>
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Đơn thuốc</label>
-                <textarea
-                  className="w-full rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  rows={3}
-                  placeholder="Nhập thuốc, liều lượng và hướng dẫn sử dụng"
-                ></textarea>
-              </div>
-
-              <div className="mb-6">
-                <div className="flex items-center mb-2">
+          
+          {/* Tiền sử bệnh án */}
+          {!isFirstVisit && medicalHistory.length > 0 && (
+            <div id="medical-history" className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+                  <ClipboardList className="mr-2 h-5 w-5 text-indigo-600" />
+                  Tiền sử bệnh án ({filteredHistory.length}/{medicalHistory.length})
+                </h2>
+                
+                {/* Tìm kiếm bệnh án */}
+                <div className="relative">
                   <input
-                    type="checkbox"
-                    id="follow-up"
-                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    type="text"
+                    placeholder="Tìm kiếm bệnh án..."
+                    className="w-60 px-3 py-2 pl-9 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
-                  <label htmlFor="follow-up" className="ml-2 block text-sm text-gray-700">
-                    Đặt lịch tái khám
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                </div>
+              </div>
+              
+              {historyLoading ? (
+                <p className="text-center py-4">Đang tải tiền sử bệnh án...</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  {filteredHistory.length > 0 ? (
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày khám</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Triệu chứng</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chẩn đoán</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kế hoạch điều trị</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {filteredHistory.map((record, index) => {
+                          const recordId = `record-${record.reservationId || index}`;
+                          const isExpanded = expandedRecords.includes(recordId);
+                          
+                          return (
+                            <React.Fragment key={index}>
+                              <tr className={`hover:bg-gray-50 ${index === 0 ? 'bg-blue-50' : ''}`}>
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                  {formatDate(record.appointmentDate)}
+                                  {index === 0 && (
+                                    <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs">
+                                      Gần nhất
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-700 max-w-xs truncate">
+                                  {highlightText(record.symptoms || 'N/A', searchTerm)}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-700 max-w-xs truncate">
+                                  {highlightText(record.diagnosis || 'N/A', searchTerm)}
+                                </td>
+                                <td className="px-4 py-3 text-sm text-gray-700 max-w-xs truncate">
+                                  {highlightText(record.treatmentPlan || 'N/A', searchTerm)}
+                                </td>
+                                <td className="px-4 py-3 whitespace-nowrap text-sm text-blue-600">
+                                  <button 
+                                    onClick={() => toggleExpandRecord(recordId)}
+                                    className="hover:text-blue-800"
+                                  >
+                                    {isExpanded ? 'Thu gọn' : 'Chi tiết'}
+                                  </button>
+                                </td>
+                              </tr>
+                              {isExpanded && (
+                                <tr className="bg-gray-50">
+                                  <td colSpan={5} className="px-4 py-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div className="p-3 bg-white rounded-lg border border-gray-200">
+                                        <h4 className="text-xs uppercase font-semibold text-gray-500 mb-1">Triệu chứng</h4>
+                                        <p className="text-sm whitespace-pre-line">{record.symptoms || 'Không có thông tin'}</p>
+                                      </div>
+                                      <div className="p-3 bg-white rounded-lg border border-gray-200">
+                                        <h4 className="text-xs uppercase font-semibold text-gray-500 mb-1">Chẩn đoán</h4>
+                                        <p className="text-sm whitespace-pre-line">{record.diagnosis || 'Không có thông tin'}</p>
+                                      </div>
+                                      <div className="p-3 bg-white rounded-lg border border-gray-200">
+                                        <h4 className="text-xs uppercase font-semibold text-gray-500 mb-1">Kế hoạch điều trị</h4>
+                                        <p className="text-sm whitespace-pre-line">{record.treatmentPlan || 'Không có thông tin'}</p>
+                                      </div>
+                                      {record.notes && (
+                                        <div className="p-3 bg-white rounded-lg border border-gray-200">
+                                          <h4 className="text-xs uppercase font-semibold text-gray-500 mb-1">Ghi chú</h4>
+                                          <p className="text-sm whitespace-pre-line">{record.notes}</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
+                            </React.Fragment>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div className="text-center py-4 text-gray-500">
+                      {searchTerm ? 'Không tìm thấy bệnh án phù hợp với từ khóa tìm kiếm' : 'Bệnh nhân chưa có tiền sử bệnh án'}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+          
+          {/* Bệnh án hiện tại */}
+          {existingMedicalRecord ? (
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold flex items-center text-gray-800">
+                  <FileText className="mr-2 h-5 w-5 text-indigo-600" />
+                  Bệnh án hiện tại
+                </h2>
+                <button
+                  type="button"
+                  onClick={() => setShowNewRecordForm(!showNewRecordForm)}
+                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  {showNewRecordForm ? (
+                    <>
+                      <FileText className="h-4 w-4 mr-2" />
+                      Ẩn biểu mẫu bệnh án mới
+                    </>
+                  ) : (
+                    <>
+                      <FilePlus className="h-4 w-4 mr-2" />
+                      Thêm bệnh án mới
+                    </>
+                  )}
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-sm font-semibold text-gray-600 mb-2">Thông tin chung</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs text-gray-500">Ngày khám</p>
+                      <p className="font-medium">{formatDate(existingMedicalRecord.appointmentDate)}</p>
+                    </div>
+                    
+                    {existingMedicalRecord.followUpDate && (
+                      <div>
+                        <p className="text-xs text-gray-500">Ngày tái khám</p>
+                        <p className="font-medium">{formatDate(existingMedicalRecord.followUpDate)}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="col-span-1 md:col-span-2 space-y-4">
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-sm font-semibold text-gray-600 mb-2">Triệu chứng</h3>
+                    <p className="text-gray-700 whitespace-pre-line">{existingMedicalRecord.symptoms || 'Không có thông tin'}</p>
+                  </div>
+                  
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-sm font-semibold text-gray-600 mb-2">Chẩn đoán</h3>
+                    <p className="text-gray-700 whitespace-pre-line">{existingMedicalRecord.diagnosis || 'Không có thông tin'}</p>
+                  </div>
+                  
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-sm font-semibold text-gray-600 mb-2">Kế hoạch điều trị</h3>
+                    <p className="text-gray-700 whitespace-pre-line">{existingMedicalRecord.treatmentPlan || 'Không có thông tin'}</p>
+                  </div>
+                  
+                  {existingMedicalRecord.notes && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <h3 className="text-sm font-semibold text-gray-600 mb-2">Ghi chú</h3>
+                      <p className="text-gray-700 whitespace-pre-line">{existingMedicalRecord.notes}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : checkingExistingRecord ? (
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <p className="text-center py-4">Đang kiểm tra bệnh án hiện có...</p>
+            </div>
+          ) : null}
+          
+          {/* Form nhập bệnh án mới */}
+          {(!existingMedicalRecord || showNewRecordForm) && (
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-lg font-semibold mb-4 flex items-center text-gray-800">
+                <FilePlus className="mr-2 h-5 w-5 text-indigo-600" />
+                {existingMedicalRecord ? 'Thêm bệnh án mới' : 'Nhập kết quả khám'}
+              </h2>
+              
+              {existingMedicalRecord && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                  <div className="flex items-start">
+                    <AlertCircle className="h-5 w-5 text-yellow-500 mr-2 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-yellow-700">
+                        Lưu ý: Bệnh án đã tồn tại cho lịch hẹn này
+                      </p>
+                      <p className="text-sm text-yellow-600 mt-1">
+                        Việc tạo thêm bệnh án mới sẽ tạo một bản ghi mới. Chỉ thực hiện điều này nếu cần thiết.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="symptoms" className="block text-sm font-medium text-gray-700 mb-1">
+                    Triệu chứng <span className="text-red-500">*</span>
                   </label>
+                  <textarea
+                    id="symptoms"
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    value={symptoms}
+                    onChange={(e) => setSymptoms(e.target.value)}
+                    required
+                    placeholder="Mô tả các triệu chứng của bệnh nhân"
+                  ></textarea>
                 </div>
-                <div className="ml-6 mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Ngày tái khám</label>
-                    <input
-                      type="date"
-                      className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Lý do tái khám</label>
-                    <input
-                      type="text"
-                      className="w-full rounded-md border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="VD: Kiểm tra tiến triển"
-                    />
-                  </div>
+                
+                <div>
+                  <label htmlFor="diagnosis" className="block text-sm font-medium text-gray-700 mb-1">
+                    Chẩn đoán <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    id="diagnosis"
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    value={diagnosis}
+                    onChange={(e) => setDiagnosis(e.target.value)}
+                    required
+                    placeholder="Nhập chẩn đoán của bác sĩ"
+                  ></textarea>
                 </div>
-              </div>
+                
+                <div>
+                  <label htmlFor="treatmentPlan" className="block text-sm font-medium text-gray-700 mb-1">
+                    Kế hoạch điều trị <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    id="treatmentPlan"
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    value={treatmentPlan}
+                    onChange={(e) => setTreatmentPlan(e.target.value)}
+                    required
+                    placeholder="Mô tả kế hoạch điều trị cho bệnh nhân"
+                  ></textarea>
+                </div>
+                
+                <div>
+                  <label htmlFor="followUpDate" className="block text-sm font-medium text-gray-700 mb-1">
+                    Ngày tái khám (nếu có)
+                  </label>
+                  <input
+                    type="date"
+                    id="followUpDate"
+                    className="w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    value={followUpDate}
+                    onChange={(e) => setFollowUpDate(e.target.value)}
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
+                    Ghi chú
+                  </label>
+                  <textarea
+                    id="notes"
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="Thông tin bổ sung, lưu ý cho bệnh nhân"
+                  ></textarea>
+                </div>
+                
+                <div className="flex justify-end pt-4">
+                  <Link href="/doctor/appointments">
+                    <button 
+                      type="button"
+                      className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 mr-4"
+                      disabled={submitting}
+                    >
+                      Hủy
+                    </button>
+                  </Link>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-indigo-300 flex items-center"
+                    disabled={submitting}
+                  >
+                    {submitting ? (
+                      <>
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Đang lưu...
+                      </>
+                    ) : (
+                      'Lưu kết quả khám'
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+        </>
+      )}
 
-              <div className="flex justify-end space-x-3">
-                <button type="button" className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                  Lưu nháp
+      {/* Modal hiển thị bệnh án gần nhất */}
+      {showPreviousRecordModal && selectedRecord && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4 animate-fadeIn" style={{animation: "fadeIn 0.2s ease-in-out"}}>
+          <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[80vh] overflow-y-auto animate-scaleIn" style={{animation: "scaleIn 0.2s ease-in-out"}}>
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold flex items-center">
+                  <FileText className="w-5 h-5 mr-2 text-indigo-600" />
+                  Hồ sơ bệnh án lần trước
+                </h2>
+                <button 
+                  onClick={() => {
+                    console.log("Closing modal");
+                    setShowPreviousRecordModal(false);
+                  }}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
                 </button>
-                <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center">
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  Hoàn thành khám
+              </div>
+              
+              <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm text-gray-700 flex items-center">
+                  <Calendar className="w-4 h-4 mr-2 text-indigo-600" />
+                  <span className="font-medium">Ngày khám:</span> {formatDate(selectedRecord.appointmentDate)}
+                </p>
+                {selectedRecord.followUpDate && (
+                  <p className="text-sm text-gray-700 flex items-center mt-1">
+                    <Calendar className="w-4 h-4 mr-2 text-indigo-600" />
+                    <span className="font-medium">Ngày tái khám:</span> {formatDate(selectedRecord.followUpDate)}
+                  </p>
+                )}
+              </div>
+              
+              <div className="space-y-4">
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Triệu chứng</h3>
+                  <p className="text-gray-700 whitespace-pre-line">{selectedRecord.symptoms || 'Không có thông tin'}</p>
+                </div>
+                
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Chẩn đoán</h3>
+                  <p className="text-gray-700 whitespace-pre-line">{selectedRecord.diagnosis || 'Không có thông tin'}</p>
+                </div>
+                
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Kế hoạch điều trị</h3>
+                  <p className="text-gray-700 whitespace-pre-line">{selectedRecord.treatmentPlan || 'Không có thông tin'}</p>
+                </div>
+                
+                {selectedRecord.notes && (
+                  <div className="p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-sm font-semibold text-gray-700 mb-2">Ghi chú</h3>
+                    <p className="text-gray-700 whitespace-pre-line">{selectedRecord.notes}</p>
+                  </div>
+                )}
+              </div>
+              
+              <div className="mt-6 flex justify-between">
+                <a 
+                  href="#medical-history" 
+                  onClick={() => setShowPreviousRecordModal(false)}
+                  className="text-indigo-600 hover:text-indigo-800 font-medium flex items-center"
+                >
+                  Xem tất cả lịch sử bệnh án
+                  <ChevronLeft className="w-4 h-4 transform rotate-270 ml-1" />
+                </a>
+                <button
+                  onClick={() => setShowPreviousRecordModal(false)}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+                >
+                  Đóng
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <div className="col-span-12 lg:col-span-4 space-y-4">
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="p-4 bg-indigo-50 border-b border-indigo-100">
-            <h2 className="font-semibold text-indigo-900">Tiền sử bệnh án</h2>
-          </div>
-          <div className="p-4">
-            <div className="space-y-4">
-              {appointment.medicalHistory.map((record, index) => (
-                <div key={index} className="border-b pb-3 last:border-b-0 last:pb-0">
-                  <div className="flex justify-between mb-1">
-                    <h3 className="font-medium text-gray-900">{record.diagnosis}</h3>
-                    <span className="text-sm text-gray-500">{record.date}</span>
-                  </div>
-                  <p className="text-sm text-gray-700">{record.treatment}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4">
-              <Link href={`/doctor/medical-records?patientId=${appointment.patient.id}`} className="text-sm text-indigo-600 hover:text-indigo-800">
-                Xem đầy đủ lịch sử bệnh án →
-              </Link>
             </div>
           </div>
         </div>
-
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="p-4 bg-blue-50 border-b border-blue-100">
-            <h2 className="font-semibold text-blue-900">Ghi chú</h2>
-          </div>
-          <div className="p-4">
-            <textarea
-              className="w-full h-32 rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Thêm ghi chú cá nhân về lịch hẹn này..."
-            ></textarea>
-            <div className="mt-3 flex justify-end">
-              <button className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
-                Lưu ghi chú
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 } 

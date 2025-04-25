@@ -13,5 +13,13 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<DoctorDetailDTO> GetDoctorDetailById(int doctorId);
         Task<DoctorDetailDTO> UpdateDoctor(DoctorDetailDTO doctorDto);
         Task<bool> DeleteDoctor(int doctorId);
+        
+        // New methods for doctor appointments
+        Task<List<ReservationDTO>> GetDoctorAppointments(int doctorId, string status = "Xác nhận");
+        Task<bool> CancelAppointment(int reservationId, string cancellationReason);
+        Task<MedicalRecordDTO> CreateMedicalRecord(int reservationId, MedicalRecordDTO medicalRecordDTO);
+        Task<bool> IsFirstTimePatient(int patientId);
+        Task<List<MedicalRecordDTO>> GetPatientPreviousMedicalRecords(int patientId);
+        Task<IEnumerable<DoctorDTO>> GetDoctorListByServiceId(int serviceId);
     }
 }

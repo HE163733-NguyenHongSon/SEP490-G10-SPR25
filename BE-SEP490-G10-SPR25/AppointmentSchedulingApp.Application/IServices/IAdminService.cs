@@ -21,7 +21,7 @@ namespace AppointmentSchedulingApp.Application.IServices
         //int TotalDoctorDashboard();
         //int TotalServiceDashboard();
         //double AppointmentSchedulePercentChangeDashboard();
-        DashboardDTO DashboardAdmin();
+        DashboardAdminDTO DashboardAdmin();
 
         Task<List<StatisticDTO>> GetStatisticsForLast12Months();
     }

@@ -4,20 +4,20 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {  BsCalendar } from "react-icons/bs";
 import { FaChevronRight, FaSearch, FaFilter, FaTimes } from "react-icons/fa";
-import { Service, serviceService } from "../../services/serviceService";
+import { serviceService, IService } from "../../services/serviceService";
 import RatingStars from "../../components/RatingStars";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 interface ServiceListProps {
-  services: Service[];
+  services: IService[];
 }
 
 export function ServiceList({ services }: ServiceListProps) {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedSpecialty, setSelectedSpecialty] = useState<number | null>(null);
-  const [filteredServices, setFilteredServices] = useState<Service[]>(services);
+  const [filteredServices, setFilteredServices] = useState<IService[]>(services);
   const [specialties, setSpecialties] = useState<{id: number, name: string}[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);

@@ -19,16 +19,13 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
-                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
                 .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob.ToString("dd/MM/yyyy")))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
                 .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => src.AvatarUrl))
                 .ForMember(dest => dest.IsVerify, opt => opt.MapFrom(src => src.IsVerify))
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
-                .ForMember(dest => dest.RoleNames, opt => opt.MapFrom(src => 
-                    string.Join(", ", src.Roles.Select(r => r.RoleName))))
-                // Đảm bảo không cố gắng truy cập vào Status từ User mà chỉ từ các entity con
+                .ForMember(dest => dest.RoleNames, opt => opt.MapFrom(src =>  string.Join(", ", src.Roles.Select(r => r.RoleName))))
                 .ReverseMap();
 
             CreateMap<User, PatientUpdateDTO>()

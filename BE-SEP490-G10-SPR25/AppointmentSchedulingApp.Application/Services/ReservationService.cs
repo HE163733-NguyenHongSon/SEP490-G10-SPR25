@@ -1,8 +1,10 @@
 ﻿using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
+using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentSchedulingApp.Application.Services
@@ -19,11 +21,11 @@ namespace AppointmentSchedulingApp.Application.Services
         }
         public async Task<List<ReservationDTO>> GetListReservation()
         {
-            var query =  unitOfWork.ReservationRepository.GetQueryable();
+            var query = unitOfWork.ReservationRepository.GetQueryable();
 
-            return await  query.ProjectTo<ReservationDTO>(mapper.ConfigurationProvider).ToListAsync();
+            return await query.ProjectTo<ReservationDTO>(mapper.ConfigurationProvider).ToListAsync();
         }
-        
+
 
         public async Task<List<ReservationDTO>> GetListReservationByFilter(int patientId, string status, string sortBy)
         {
@@ -32,7 +34,7 @@ namespace AppointmentSchedulingApp.Application.Services
             {
                 return null;
             }
-            var queryable =  unitOfWork.ReservationRepository.GetQueryable(r => r.PatientId.Equals(patientId) && r.Status.Equals(status));
+            var queryable = unitOfWork.ReservationRepository.GetQueryable(r => r.PatientId.Equals(patientId) && r.Status.Equals(status));
             queryable = sortBy switch
             {
                 "Cuộc hẹn gần đây" => queryable.OrderByDescending(r => r.AppointmentDate),
@@ -110,10 +112,23 @@ namespace AppointmentSchedulingApp.Application.Services
             var startOfWeek = DateTime.UtcNow.AddHours(7);
             var endOfWeek = startOfWeek.AddDays(7).AddMilliseconds(-1);
 
-            var query = unitOfWork.ReservationRepository.GetQueryable(r => r.AppointmentDate >= startOfWeek && r.AppointmentDate <= endOfWeek 
+            var query = unitOfWork.ReservationRepository.GetQueryable(r => r.AppointmentDate >= startOfWeek && r.AppointmentDate <= endOfWeek
                                                                               && (r.Status == "Đang chờ" || r.Status == "Xác nhận"));
             return await query.ProjectTo<ReservationDTO>(mapper.ConfigurationProvider).ToListAsync();
-           
+
         }
+
+        public async Task<bool> AddReservation(AddedReservationDTO reservationDTO)
+        {
+            var reservation = mapper.Map<Reservation>(reservationDTO);
+
+
+            await unitOfWork.ReservationRepository.AddAsync(reservation);
+
+             await unitOfWork.CommitAsync();
+
+            return true;
+        }
+
     }
 }

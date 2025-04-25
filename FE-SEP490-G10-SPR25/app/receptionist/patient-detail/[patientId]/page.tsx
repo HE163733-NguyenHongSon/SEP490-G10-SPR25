@@ -17,7 +17,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
         const patientData = await patientService.getPatientDetailById(params.patientId);
 
         setPatient(patientData);
-        setMedicalRecords(patientData.medicalRecords || []);      
+        setMedicalRecords(patientData.medicalRecords || []);
 
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch patient data');
@@ -59,6 +59,14 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
         {/* Header */}
         <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 p-6 text-white">
           <div className="flex items-center justify-between">
+          <Link href="/receptionist/patient" passHref>
+              <button className="flex items-center text-white hover:text-blue-100 transition-colors">
+                <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Quay lại
+              </button>
+            </Link>
             <div>
               <h1 className="text-2xl font-bold">Hồ sơ bệnh nhân</h1>
               <p className="mt-1 text-cyan-100">Mã BN: #{patient.userId}</p>
@@ -91,18 +99,16 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
                 )}
               </div>
             </div>
-            
+
             <div className="text-center">
-            <h2 className="text-xl font-semibold text-gray-800 mb-1">
+              <h2 className="text-xl font-semibold text-gray-800 mb-1">
                 {patient.userName}
               </h2>
               <h2 className="text-lg font-semibold text-cyan-500 mb-1">
                 {patient.roleNames}
               </h2>
-              <div className={`inline-flex items-center px-4 py-1 rounded-full text-sm font-medium ${
-            
-                'bg-purple-100 text-purple-800'
-              }`}>
+              <div className={`inline-flex items-center px-4 py-1 rounded-full text-sm font-medium ${'bg-purple-100 text-purple-800'
+                }`}>
                 <span className="w-2 h-2 rounded-full mr-2 bg-current" />
                 {patient.rank}
               </div>
@@ -117,7 +123,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-50">
                 <h3 className="text-lg font-semibold text-gray-700 mb-4 flex items-center">
                   <svg className="w-5 h-5 mr-2 text-cyan-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4z"/>
+                    <path d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4z" />
                   </svg>
                   Thông tin cá nhân
                 </h3>
@@ -127,7 +133,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
                   {/* <InfoItem label="Ngày sinh" value={new Date(patient.dob).toLocaleDateString()} /> */}
                   <InfoItem label="Ngày sinh" value={patient.dob} />
                   <InfoItem label="Địa chỉ" value={patient.address} />
-                  <InfoItem label="Tình trạng" value={patient.mainCondition} highlight />
+                  <InfoItem label="Tình trạng" value={patient.mainCondition || ''} highlight />
                 </dl>
               </div>
 
@@ -140,8 +146,8 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
                   Thông tin liên hệ
                 </h3>
                 <dl className="space-y-3">
-                  <InfoItem label="Điện thoại" value={patient.phoneNumber} />
-                  <InfoItem label="Email" value={patient.email} />
+                  <InfoItem label="Điện thoại" value={patient.phone} />
+                  <InfoItem label="Email" value={patient.email || ''} />
                 </dl>
               </div>
 
@@ -194,29 +200,30 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {medicalRecords.length > 0 ? (
-                      medicalRecords.map((record, index) => (
-                        <tr key={index}>
+                      medicalRecords.map((record, index) =>
+                        record ? (
+                          <tr key={index}>
                             <td className="py-3 px-4">{index + 1}</td>
                             <td className="py-3 px-4">{record.appointmentDate}</td>
                             <td className="py-3 px-4">{record.symptoms}</td>
                             <td className="py-3 px-4">{record.diagnosis}</td>
                             <td className="py-3 px-4">
-                            <button 
-                            onClick={() => window.location.href = `/medical-records/${record.reservationId}`}
-                            className="px-3 py-1 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors"
-                          >
-                            Chi tiết
-                          </button>
-                          </td>
-                          <td className="hidden">{record.reservationId}</td>
-                        </tr>
-                      ))
+                              <button
+                                onClick={() =>
+                                  (window.location.href = `/medical-records/${record.reservationId}`)
+                                }
+                                className="px-3 py-1 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors"
+                              >
+                                Chi tiết
+                              </button>
+                            </td>
+                            <td className="hidden">{record.reservationId}</td>
+                          </tr>
+                        ) : null
+                      )
                     ) : (
                       <tr>
-                        <td
-                          colSpan={4}
-                          className="py-3 px-4 text-center text-gray-500"
-                        >
+                        <td colSpan={4} className="py-3 px-4 text-center text-gray-500">
                           Không có dữ liệu
                         </td>
                       </tr>
@@ -253,7 +260,7 @@ export default function PatientDetailPage({ params }: { params: { patientId: str
 }
 
 // Helper component
-const InfoItem = ({ label, value, highlight }: { label: string; value: string | number; highlight?: boolean }) => (
+const InfoItem = ({ label, value, highlight }: { label: string; value: string | number | undefined; highlight?: boolean }) => (
   <div className={`flex justify-between items-center ${highlight ? 'bg-cyan-50 px-4 py-2 rounded-lg' : ''}`}>
     <dt className="text-gray-600">{label}:</dt>
     <dd className={`font-medium ${highlight ? 'text-cyan-700' : 'text-gray-900'}`}>

@@ -1,10 +1,12 @@
 interface IReservation {
   reservationId: string;
   patient: IPatient;
+  patientId?:string;
   appointmentDate: string;
   doctorSchedule:IDoctorSchedule
+  doctorScheduleId:string;
   reason: string;
-  priorExaminationImg: string;
+  priorExaminationImg: File | null | string;
   status: string;
   cancellationReason:string;
   createdDate:string;

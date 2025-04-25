@@ -92,7 +92,7 @@ namespace AppointmentSchedulingApp.Application.Tests.Services
             Assert.AreEqual(user.UserId, result.UserId);
             Assert.AreEqual(user.UserName, result.UserName);
             Assert.AreEqual(user.Email, result.Email);
-            Assert.AreEqual(user.Phone, result.PhoneNumber);
+            Assert.AreEqual(user.Phone, result.Phone);
             Assert.AreEqual(roles, result.Roles);
             Assert.IsEmpty(message.ToString());
         }

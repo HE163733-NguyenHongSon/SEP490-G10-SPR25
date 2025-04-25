@@ -1,14 +1,64 @@
+'use client';
+
+import { useState, useEffect } from "react";
 import type { Metadata } from "next";
 import React from "react";
 import Link from "next/link";
 import { Calendar, Clock, Star, FileText, BookOpen, User } from "lucide-react";
+import { doctorService } from "../services/doctorService";
+import { getCurrentUser } from "../services/authService";
 
-export const metadata: Metadata = {
-  title: "Trang Quản Lý Bác Sĩ",
-  description: "Trang quản lý dành cho bác sĩ",
-};
 
 export default function DoctorDashboardPage() {
+  const [appointments, setAppointments] = useState<IReservation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [todayAppointments, setTodayAppointments] = useState<IReservation[]>([]);
+
+  // Get current user ID
+  const getUserId = (): number => {
+    const currentDoctor = getCurrentUser();
+    if (currentDoctor && currentDoctor.userId) {
+      return Number(currentDoctor.userId);
+    }
+    // Fallback to hardcoded ID if auth fails
+    console.warn("Failed to get user ID from auth, using fallback ID");
+    return 33;
+  };
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const doctorId = getUserId();
+        console.log(`Fetching appointments for doctor ${doctorId}`);
+        
+        const data = await doctorService.getDoctorAppointments(doctorId, "Xác nhận");
+        console.log(`Received ${data.length} appointments from service`);
+        
+        setAppointments(data);
+        
+        // Filter for today's appointments
+        const today = new Date().toISOString().split('T')[0];
+        const todayAppts = data.filter((appointment) => {
+          const apptDate = new Date(appointment.appointmentDate).toISOString().split('T')[0];
+          return apptDate === today;
+        });
+        
+        setTodayAppointments(todayAppts);
+        console.log(`Found ${todayAppts.length} appointments for today`);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+        setError(`Không thể tải dữ liệu: ${error instanceof Error ? error.message : 'Lỗi không xác định'}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
+
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12">
@@ -27,59 +77,67 @@ export default function DoctorDashboardPage() {
       <div className="col-span-12 p-6 bg-white rounded-lg shadow">
         <h2 className="text-xl font-semibold mb-4">Lịch Hẹn Hôm Nay</h2>
         <div className="border rounded-lg overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bệnh Nhân</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thời Gian</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lý Do</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng Thái</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao Tác</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <div className="h-10 w-10 rounded-full bg-gray-200"></div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">John Smith</div>
-                      <div className="text-sm text-gray-500">john.smith@example.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">09:00 AM</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Khám sức khỏe định kỳ</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Đã xác nhận</span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <Link href="/doctor/appointments/1" className="text-blue-600 hover:text-blue-900 mr-3">Xem</Link>
-                  <button className="text-blue-600 hover:text-blue-900">Bắt đầu</button>
-                </td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <div className="h-10 w-10 rounded-full bg-gray-200"></div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">Mary Johnson</div>
-                      <div className="text-sm text-gray-500">mary.j@example.com</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">11:30 AM</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Tái khám sau điều trị</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Đã xác nhận</span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <Link href="/doctor/appointments/2" className="text-blue-600 hover:text-blue-900 mr-3">Xem</Link>
-                  <button className="text-blue-600 hover:text-blue-900">Bắt đầu</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          {loading ? (
+            <div className="p-4 text-center">
+              <p>Đang tải dữ liệu...</p>
+            </div>
+          ) : error ? (
+            <div className="p-4 text-center text-red-600">
+              <p>{error}</p>
+            </div>
+          ) : todayAppointments.length === 0 ? (
+            <div className="p-4 text-center text-gray-600">
+              <p>Không có lịch hẹn nào cho hôm nay</p>
+            </div>
+          ) : (
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bệnh Nhân</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thời Gian</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lý Do</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng Thái</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {todayAppointments.map((appointment) => (
+                  <tr key={appointment.reservationId}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
+                          {appointment.patient?.userName?.charAt(0) || '?'}
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">{appointment.patient?.userName || 'Không có tên'}</div>
+                          <div className="text-sm text-gray-500">{appointment.patient?.email || 'Không có email'}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {appointment.doctorSchedule?.slotStartTime?.substring(0, 5) || '--:--'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {appointment.reason || 'Không có lý do'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        {appointment.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <Link href={`/doctor/appointments/${appointment.reservationId}`} className="text-blue-600 hover:text-blue-900 mr-3">
+                        Xem
+                      </Link>
+                      <Link href={`/doctor/appointments/${appointment.reservationId}`} className="text-blue-600 hover:text-blue-900">
+                        Bắt đầu
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
       
@@ -195,43 +253,50 @@ export default function DoctorDashboardPage() {
       <div className="col-span-12 md:col-span-6 p-6 bg-white rounded-lg shadow">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Lịch Sắp Tới</h2>
-          <Link href="/doctor/schedule" className="text-sm text-blue-600 hover:text-blue-800">Xem Lịch</Link>
+          <Link href="/doctor/appointments" className="text-sm text-blue-600 hover:text-blue-800">Xem Lịch</Link>
         </div>
-        <div className="space-y-3">
-          <div className="p-3 border rounded-lg flex justify-between items-center">
-            <div className="flex items-start space-x-3">
-              <div className="bg-blue-100 p-2 rounded-full">
-                <Calendar className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="font-medium">Hôm nay - 8 Cuộc hẹn</p>
-                <p className="text-sm text-gray-500">09:00 AM - 05:00 PM</p>
-              </div>
-            </div>
+        {loading ? (
+          <div className="p-4 text-center">
+            <p>Đang tải dữ liệu...</p>
           </div>
-          <div className="p-3 border rounded-lg flex justify-between items-center">
-            <div className="flex items-start space-x-3">
-              <div className="bg-blue-100 p-2 rounded-full">
-                <Calendar className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="font-medium">Ngày mai - 5 Cuộc hẹn</p>
-                <p className="text-sm text-gray-500">10:00 AM - 04:00 PM</p>
-              </div>
-            </div>
+        ) : error ? (
+          <div className="p-4 text-center text-red-600">
+            <p>{error}</p>
           </div>
-          <div className="p-3 border rounded-lg flex justify-between items-center">
-            <div className="flex items-start space-x-3">
-              <div className="bg-red-100 p-2 rounded-full">
-                <Calendar className="h-5 w-5 text-red-600" />
-              </div>
-              <div>
-                <p className="font-medium">Hội Nghị Y Khoa</p>
-                <p className="text-sm text-gray-500">20/05/2023 - Cả ngày</p>
-              </div>
-            </div>
+        ) : appointments.length === 0 ? (
+          <div className="p-4 text-center text-gray-600">
+            <p>Không có lịch hẹn nào sắp tới</p>
           </div>
-        </div>
+        ) : (
+          <div className="space-y-3">
+            {/* Group appointments by date */}
+            {Object.entries(
+              appointments.reduce((groups: Record<string, IReservation[]>, appointment) => {
+                const date = new Date(appointment.appointmentDate).toLocaleDateString('vi-VN');
+                if (!groups[date]) {
+                  groups[date] = [];
+                }
+                groups[date].push(appointment);
+                return groups;
+              }, {})
+            ).slice(0, 3).map(([date, dateAppointments]) => (
+              <div key={date} className="p-3 border rounded-lg flex justify-between items-center">
+                <div className="flex items-start space-x-3">
+                  <div className="bg-blue-100 p-2 rounded-full">
+                    <Calendar className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium">{date} - {dateAppointments.length} Cuộc hẹn</p>
+                    <p className="text-sm text-gray-500">
+                      {dateAppointments.length > 0 && dateAppointments[0].doctorSchedule?.slotStartTime?.substring(0, 5)} - 
+                      {dateAppointments.length > 0 && dateAppointments[dateAppointments.length - 1].doctorSchedule?.slotEndTime?.substring(0, 5)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       
       <div className="col-span-12 md:col-span-6 p-6 bg-white rounded-lg shadow">

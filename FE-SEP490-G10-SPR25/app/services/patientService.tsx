@@ -33,6 +33,29 @@ export const patientService = {
       return 0; // Return 0 instead of throwing error
     }
   },
+  addPatient: async (patientData: IAddedPatient): Promise<IPatient | null> => {
+    try {
+      const response = await fetch(`${apiUrl}/api/Patients/AddPatient`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(patientData),
+      });
+  
+      if (!response.ok) {
+        console.error("Lỗi khi thêm bệnh nhân:", await response.text());
+        return null; 
+      }
+  
+      const data: IPatient = await response.json();
+      console.log("Kết quả:", data);
+      return data;
+    } catch (error) {
+      console.error("Lỗi khi gọi API:", error);
+      return null;
+    }
+  },
   
   async getPatientList(): Promise<IPatient[]> {
     try {

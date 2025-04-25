@@ -1,51 +1,53 @@
-import { useBookingContext } from "@/patient/contexts/BookingContext";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSymptoms,
+} from "../redux/bookingSlice";
+import { RootState } from "../../store"; // Adjust the path to your store file
 
 const BookingConfirmation = () => {
-  const {
-    selectedPatient,
-    symptoms,
-    specialtyId,
-    specialties,
-    serviceId,
-    services,
-    doctorId,
-    doctors,
-    selectedDate,
-    selectedTime,
-    formatAppointmentDate,
-  } = useBookingContext();
+  const dispatch = useDispatch();
 
+  const {
+    symptoms,
+    selectedPatient,
+    specialties,
+    services,
+    doctors,
+    doctorId,
+    specialtyId,
+    serviceId,
+    suggestionData
+  } = useSelector((state: RootState) => state.booking);
+     
   // Helper functions to get display values
   const getSpecialtyName = () => {
     const specialty = specialties.find(
-      (s) => s.specialtyId == specialtyId.toString()
+      (s) => s.specialtyId === specialtyId?.toString()
     );
     return specialty ? specialty.specialtyName : "";
   };
 
   const getService = () => {
-    const service = services.find((s) => s.serviceId == serviceId.toString());
-    console.log("Found service:", service);
-    return service;
-  };
-
+    const service = services.find((s) => s.serviceId === serviceId);
+    return service || suggestionData?.service;
+  };    
+              
   const getDoctorName = () => {
     const doctor = doctors.find((d) => d.value === doctorId);
     return doctor ? doctor.label : "";
-  };
-
-  const getFormattedDateTime = () => {
-    if (selectedDate && selectedTime) {
-      return `${formatAppointmentDate(selectedDate)} - ${selectedTime}`;
-    }
-    return "";
-  };
+  };              
+      
+  // const getFormattedDateTime = () => {
+  //   if (selectedDate && selectedTime) {
+  //     return `${formatAppointmentDate(selectedDate)} - ${selectedTime}`;
+  //   }
+  //   return "";
+  // };
 
   const calculateAge = (dob: string) => {
     if (!dob) return "";
 
     const [day, month, year] = dob.split("/").map(Number);
-
     const birthDate = new Date(year, month - 1, day);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -56,6 +58,10 @@ const BookingConfirmation = () => {
     }
 
     return age;
+  };
+
+  const handleSymptomsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    dispatch(setSymptoms(e.target.value));
   };
 
   return (
@@ -129,10 +135,7 @@ const BookingConfirmation = () => {
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800">
-                      {selectedPatient?.dob
-                        ? selectedPatient.dob
-                        : "Không có thông tin"}
-                      {/* {console.log(selectedPatient)} */}
+                      {selectedPatient?.dob || "Không có thông tin"}
                     </p>
                   </div>
                 </div>
@@ -168,7 +171,9 @@ const BookingConfirmation = () => {
                     Giới tính
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                    <p className="text-gray-800">{selectedPatient?.gender}</p>
+                    <p className="text-gray-800">
+                      {selectedPatient?.gender || "Không có thông tin"}
+                    </p>
                   </div>
                 </div>
 
@@ -222,13 +227,19 @@ const BookingConfirmation = () => {
                     Dịch vụ y tế
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                    <p className="text-gray-800">
+                    <p className="text-gray-800 ">
                       {getService() && (
                         <div>
                           <p className="font-bold">
                             {getService()?.serviceName}
                           </p>
-                          <p>{getService()?.price} VND</p>
+                          <p>
+                            {" "}
+                            {Number(getService()?.price ?? 0).toLocaleString(
+                              "en-US"
+                            )}{" "}
+                            VND{" "}
+                          </p>
                         </div>
                       )}
                     </p>
@@ -252,11 +263,11 @@ const BookingConfirmation = () => {
                   <label className="block text-sm font-medium text-gray-600">
                     Thời gian hẹn
                   </label>
-                  <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
+                  {/* <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800">
                       {getFormattedDateTime() || "Không có thông tin"}
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -270,6 +281,7 @@ const BookingConfirmation = () => {
                   rows={4}
                   className="w-full text-gray-700 p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   value={symptoms}
+                  onChange={handleSymptomsChange}
                   placeholder="Mô tả chi tiết triệu chứng hoặc lý do khám của bạn"
                 />
               </div>
@@ -281,7 +293,7 @@ const BookingConfirmation = () => {
               </label>
               <div className="mt-2 px-4 py-3 border border-gray-300 rounded-md bg-gray-50">
                 <p className="text-gray-700 font-semibold text-lg">
-                  {getService()?.price.toLocaleString("en-US")}VND
+                  {Number(getService()?.price ?? 0).toLocaleString("en-US")} VND{" "}
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
                   Bao gồm phí khám, xét nghiệm cơ bản, và tư vấn chuyên khoa
@@ -318,8 +330,7 @@ const BookingConfirmation = () => {
                   📧 Email: support@hospital.com
                 </p>
                 <p className="text-gray-600">⏰ Phản hồi trong vòng 24 giờ</p>
-                <p className="text-gray-600">📞 Hotline: 1900 1234 567</p>{" "}
-                {/* Thêm số điện thoại nếu muốn */}
+                <p className="text-gray-600">📞 Hotline: 1900 1234 567</p>
               </div>
             </div>
           </div>

@@ -2,30 +2,24 @@
 import React, { useEffect } from "react";
 import Select from "react-select";
 import { User } from "lucide-react";
-import { useBookingContext } from "@/patient/contexts/BookingContext";
+import { useDispatch, useSelector } from "react-redux";
 import { serviceService } from "@/services/serviceService";
+import {
+  setServices,
+  setServiceId,
+  setLoading,
+} from "../redux/bookingSlice";
+import { RootState } from "../../store";
+import { StylesConfig } from "react-select";
 
 const ServiceSelector = () => {
-  const {
-    services,
-    setServices,
-    serviceId,
-    setServiceId,
-    customStyles,
-    suggestionData,
-    setLoading,
-    specialtyId,
-  } = useBookingContext();
+  const dispatch = useDispatch();
+
+  const { services, serviceId, suggestionData, specialtyId } = useSelector(
+    (state: RootState) => state.booking
+  );
 
   const getSelectedOption = () => {
-    if (suggestionData?.service?.serviceId) {
-      const { serviceName, serviceId, price } = suggestionData.service;
-      return {
-        value: serviceId,
-        label: `${serviceName} - ${Number(price).toLocaleString("vi-VN")} VND`,
-      };
-    }
-
     const selected = services.find((s) => s.serviceId.toString() === serviceId);
     return selected
       ? {
@@ -37,16 +31,52 @@ const ServiceSelector = () => {
       : null;
   };
 
+  const customStyles: StylesConfig<{ value: string; label: string }, false> = {
+    control: (base, state) => ({
+      ...base,
+      backgroundColor: "white",
+      borderColor: state.isFocused ? "#67e8f9" : "#d1d5db",
+      borderRadius: "0.5rem",
+      boxShadow: "none",
+      "&:hover": {
+        borderColor: "#67e8f9",
+      },
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor:
+        state.isSelected || state.isFocused ? "#f3f4f6" : "white",
+      color: "#374151",
+      padding: "10px 12px",
+      cursor: "pointer",
+    }),
+    singleValue: (base) => ({
+      ...base,
+      color: "#374151",
+      display: "flex",
+      alignItems: "center",
+    }),
+    input: (base) => ({
+      ...base,
+      color: "#374151",
+    }),
+    placeholder: (base) => ({
+      ...base,
+      color: "#9ca3af",
+    }),
+  };
+
   useEffect(() => {
     const fetchServices = async () => {
-      setLoading(true);
+      dispatch(setLoading(true));
       try {
         const data = await serviceService.getServicesBySpecialty(specialtyId);
-        setServices(data);
+        dispatch(setServices(data));
+        dispatch(setServiceId(String(suggestionData?.service.serviceId)));
       } catch (error) {
         console.error("Error fetching services:", error);
       } finally {
-        setLoading(false);
+        dispatch(setLoading(false));
       }
     };
 
@@ -67,14 +97,14 @@ const ServiceSelector = () => {
         Dịch vụ y tế
       </label>
       <Select
-        styles={customStyles}
         value={getSelectedOption()}
-        onChange={(opt) => setServiceId(opt?.value?.toString() ?? "")}
+        onChange={(opt) => dispatch(setServiceId(opt?.value?.toString() ?? ""))}
         options={options}
         isClearable
         isDisabled={!options.length}
         placeholder="Chọn dịch vụ"
         noOptionsMessage={() => "Không có dịch vụ khả dụng"}
+        styles={customStyles}
       />
     </div>
   );

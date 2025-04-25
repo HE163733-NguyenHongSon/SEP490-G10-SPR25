@@ -1,14 +1,20 @@
 import React, { useState } from "react";
 import { FileImage, X } from "lucide-react";
+import { Image } from "antd";
+import { useDispatch } from "react-redux";
+import {
+  setPriorExaminationImg,
+  clearPriorExaminationImg,
+} from "../redux/bookingSlice";
 
 const FileUpload = () => {
-  const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const dispatch = useDispatch();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
-      setFile(selectedFile);
+      dispatch(setPriorExaminationImg(selectedFile)); // Lưu vào Redux
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
@@ -18,7 +24,7 @@ const FileUpload = () => {
   };
 
   const handleRemoveImage = () => {
-    setFile(null);
+    dispatch(clearPriorExaminationImg()); // Xoá khỏi Redux
     setPreview(null);
   };
 
@@ -33,7 +39,7 @@ const FileUpload = () => {
         <div className="space-y-1 text-center">
           {preview ? (
             <div className="relative w-28 h-28 border border-gray-300 mx-auto rounded-md overflow-hidden">
-              <img
+              <Image
                 src={preview}
                 alt="Preview"
                 className="w-full h-full object-cover"

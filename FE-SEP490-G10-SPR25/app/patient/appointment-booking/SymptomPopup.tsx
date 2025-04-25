@@ -1,23 +1,25 @@
 "use client";
+
 import { useUser } from "@/contexts/UserContext";
 import { patientService } from "@/services/patientService";
 import { useQuery } from "@tanstack/react-query";
-import BookingForm from "./BookingForm";
+import BookingForm from "./components/BookingForm";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  BookingProvider,
-  useBookingContext,
-} from "@/patient/contexts/BookingContext";
+  setSymptoms,
+  setLoading,
+  setPatients,
+  setShowBookingForm,
+} from "./redux/bookingSlice";
+import { RootState } from "../store";
+
 const PopupBody = () => {
   const { user } = useUser();
-  const {
-    symptoms,
-    setSymptoms,
-    loading,
-    setLoading,
-    setShowBookingForm,
-    setPatients,
-  } = useBookingContext();
+  const dispatch = useDispatch();
+  const { symptoms, isLoading } = useSelector(
+    (state: RootState) => state.booking
+  );
 
   const { data: patientDetail } = useQuery({
     queryKey: ["patientDetail", user],
@@ -31,10 +33,12 @@ const PopupBody = () => {
 
   const handleSubmit = async () => {
     if (symptoms.trim().length > 2) {
-      setSymptoms(symptoms.trim());
-      setPatients([user as IPatient, ...(patientDetail?.dependents || [])]);
-      setLoading(true);
-      setShowBookingForm(true);
+      dispatch(setSymptoms(symptoms.trim()));
+      dispatch(
+        setPatients([user as IPatient, ...(patientDetail?.dependents || [])])
+      );
+      dispatch(setLoading(true));
+      dispatch(setShowBookingForm(true));
     }
   };
 
@@ -45,12 +49,12 @@ const PopupBody = () => {
           type="text"
           placeholder="Nhập triệu chứng..."
           value={symptoms}
-          onChange={(e) => setSymptoms(e.target.value)}
+          onChange={(e) => dispatch(setSymptoms(e.target.value))}
           className="pl-4 pr-10 py-4 w-full h-full rounded bg-gray-100 text-gray-500 focus:outline-none"
         />
         <button
           onClick={handleSubmit}
-          disabled={loading || symptoms.trim().length < 2}
+          disabled={isLoading || symptoms.trim().length < 2}
           className="absolute right-3 top-1/2 transform -translate-y-1/2"
         >
           <PaperAirplaneIcon className="w-6 h-6 text-cyan-500" />
@@ -61,10 +65,4 @@ const PopupBody = () => {
   );
 };
 
-const SymptomPopup = () => (
-  <BookingProvider>
-    <PopupBody />
-  </BookingProvider>
-);
-
-export default SymptomPopup;
+export default PopupBody;

@@ -18,6 +18,14 @@ interface ITimeOption {
   slotId: string;
 }
 
+// Helper: format date as yyyy-MM-dd
+const formatDateToYMD = (date: Date): string => {
+  const pad = (n: number) => (n < 10 ? `0${n}` : n);
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )}`;
+};
+
 const DatetimeSelector = () => {
   const dispatch = useDispatch();
   const [availableDateObjects, setAvailableDateObjects] = useState<Date[]>([]);
@@ -68,17 +76,13 @@ const DatetimeSelector = () => {
     dispatch(setAvailableDates(filteredSchedules));
 
     if (filteredSchedules.length > 0) {
-      const dates = filteredSchedules.map((d) => {
-        const [year, month, day] = d.date.split("-").map(Number);
-        return new Date(Date.UTC(year, month - 1, day));
-      });
-
+      const dates = filteredSchedules.map((d) => new Date(d.date));
       setAvailableDateObjects(dates);
 
       const fromSuggestion =
         (suggestionData?.availableSchedules ?? []).length > 0;
 
-      if (fromSuggestion) {
+      if (!isShowRestoreSuggestion && fromSuggestion) {
         const firstDate = filteredSchedules[0];
         dispatch(setSelectedDate(firstDate.date));
         if (firstDate.times.length > 0) {
@@ -92,7 +96,13 @@ const DatetimeSelector = () => {
       dispatch(setSelectedTime(""));
       dispatch(setSelectedSlotId(""));
     }
-  }, [availableSchedules, doctorId, suggestionData, dispatch]);
+  }, [
+    availableSchedules,
+    doctorId,
+    suggestionData,
+    dispatch,
+    isShowRestoreSuggestion,
+  ]);
 
   useEffect(() => {
     fetchSchedules();
@@ -115,8 +125,8 @@ const DatetimeSelector = () => {
   const handleDateChange = useCallback(
     (date: Date | null) => {
       if (!date) return;
-      const isoDate = date.toISOString().split("T")[0];
-      dispatch(setSelectedDate(isoDate));
+      const formatted = formatDateToYMD(date);
+      dispatch(setSelectedDate(formatted));
     },
     [dispatch]
   );
@@ -137,13 +147,10 @@ const DatetimeSelector = () => {
   const isDateAvailable = useCallback(
     (date: Date) =>
       availableDateObjects.some(
-        (d) => d.toDateString() === date.toDateString()
+        (d) => formatDateToYMD(d) === formatDateToYMD(date)
       ),
     [availableDateObjects]
   );
-
-  const selectedTimeOption =
-    timeOptions.find((opt) => opt.value === selectedTime) || null;
 
   return (
     <div className="space-y-4 w-full">
@@ -154,11 +161,7 @@ const DatetimeSelector = () => {
             Chọn ngày
           </label>
           <DatePicker
-            selected={
-              selectedDate && !isShowRestoreSuggestion
-                ? new Date(selectedDate)
-                : null
-            }
+            selected={selectedDate ? new Date(selectedDate) : null}
             onChange={handleDateChange}
             filterDate={isDateAvailable}
             dateFormat="dd/MM/yyyy"
@@ -174,12 +177,26 @@ const DatetimeSelector = () => {
             Chọn giờ
           </label>
           <Select
-            value={!isShowRestoreSuggestion ? selectedTimeOption : null}
+            value={
+              timeOptions.find((opt) => opt.value === selectedTime) || null
+            }
             onChange={handleTimeChange}
             options={timeOptions}
             placeholder={timeOptions.length ? "Chọn giờ" : "Không có khung giờ"}
             isDisabled={!selectedDate || timeOptions.length === 0}
-            className="w-full text-gray-700"
+            className="w-full"
+            styles={{
+              control: (base, state) => ({
+                ...base,
+                backgroundColor: state.isDisabled ? "#f9f9f9" : "#fff",
+                color: "#4b5563",
+                borderColor: state.isFocused ? "#3b82f6" : "#d1d5db",
+                boxShadow: state.isFocused ? "0 0 0 1px #3b82f6" : "none",
+                "&:hover": { borderColor: "#3b82f6" },
+              }),
+              singleValue: (base) => ({ ...base, color: "#374151" }),
+              placeholder: (base) => ({ ...base, color: "#9ca3af" }),
+            }}
             noOptionsMessage={() => "Không có khung giờ"}
           />
         </div>

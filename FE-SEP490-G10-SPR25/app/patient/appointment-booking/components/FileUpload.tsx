@@ -1,15 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FileImage, X } from "lucide-react";
 import { Image } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setPriorExaminationImg,
   clearPriorExaminationImg,
 } from "../redux/bookingSlice";
+import { RootState } from "@/patient/store";
 
 const FileUpload = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const { priorExaminationImg } = useSelector(
+    (state: RootState) => state.booking
+  );
+
+  // Nếu priorExaminationImg có giá trị, set preview
+  useEffect(() => {
+    if (priorExaminationImg) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(priorExaminationImg);
+    }
+  }, [priorExaminationImg]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -42,6 +57,22 @@ const FileUpload = () => {
               <Image
                 src={preview}
                 alt="Preview"
+                className="w-full h-full object-cover"
+              />
+              <button
+                onClick={handleRemoveImage}
+                className="absolute -top-2 -right-2 bg-white text-gray-500 rounded-full p-1 shadow hover:text-red-500"
+                title="Xoá ảnh"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          ) : priorExaminationImg ? (
+            // Nếu không có preview nhưng có ảnh trong Redux, hiển thị ảnh đó
+            <div className="relative w-28 h-28 border border-gray-300 mx-auto rounded-md overflow-hidden">
+              <Image
+                src={URL.createObjectURL(priorExaminationImg)}
+                alt="Prior Examination"
                 className="w-full h-full object-cover"
               />
               <button

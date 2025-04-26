@@ -6,7 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setSpecialtyId,
   setIsShowRestoreSuggestion,
- 
+  setDoctorId,
+  setServiceId,
+  setSelectedDate,
+  setSelectedTime,
 } from "../redux/bookingSlice";
 import { restoreSuggestion } from "../redux/bookingThunks";
 import type { RootState, AppDispatch } from "../../store";
@@ -41,7 +44,10 @@ const SpecialtySelector = () => {
         localStorage.getItem("bookingSuggestion") || "{}"
       );
       dispatch(setSpecialtyId(selectedId));
-
+      dispatch(setServiceId(""));
+      dispatch(setDoctorId(""));
+      dispatch(setSelectedDate(""));
+      dispatch(setSelectedTime(""));
       dispatch(
         setIsShowRestoreSuggestion(
           selectedId !== Number(suggestion.specialty.specialtyId)

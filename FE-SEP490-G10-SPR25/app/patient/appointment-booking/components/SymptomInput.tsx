@@ -1,17 +1,11 @@
 // components/SymptomInput.js
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setSymptoms } from "../redux/bookingSlice";
+import {  useSelector } from "react-redux";
 import { FileText } from "lucide-react";
 import { RootState } from "@/patient/store";
 
 const SymptomInput = () => {
-  const dispatch = useDispatch();
-  const {symptoms} = useSelector((state:RootState)=>state.booking);
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(setSymptoms(e.target.value));
-  };
+  const { symptoms } = useSelector((state: RootState) => state.booking);
 
   return (
     <div className="space-y-2">
@@ -22,7 +16,7 @@ const SymptomInput = () => {
       <textarea
         rows={4}
         value={symptoms}
-        onChange={handleChange}
+        disabled={true}
         placeholder="Mô tả chi tiết lý do khám, triệu chứng hoặc mối quan tâm của bạn."
         className="w-full text-gray-700 rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 py-2 px-3 border"
       />

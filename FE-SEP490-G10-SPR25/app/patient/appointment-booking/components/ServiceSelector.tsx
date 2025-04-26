@@ -72,7 +72,7 @@ const ServiceSelector = () => {
       try {
         const data = await serviceService.getServicesBySpecialty(specialtyId);
         dispatch(setServices(data));
-        dispatch(setServiceId(String(suggestionData?.service.serviceId)));
+        dispatch(setServiceId(String(suggestionData?.service.serviceId)??serviceId));
       } catch (error) {
         console.error("Error fetching services:", error);
       } finally {

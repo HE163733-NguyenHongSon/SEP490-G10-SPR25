@@ -12,12 +12,12 @@ import { RootState } from "../../store";
 
 const PatientInfor = () => {
   const dispatch = useDispatch();
-  const { patients, selectedPatient, addingPatient } = useSelector(
+  const { patients, selectedPatient, addingPatient, doctorId } = useSelector(
     (state: RootState) => state.booking
   );
-
+  
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
-
+  console.log("prious doctor", doctorId);
   return (
     <div className="p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-6">

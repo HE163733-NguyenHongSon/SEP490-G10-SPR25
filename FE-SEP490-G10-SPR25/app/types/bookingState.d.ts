@@ -14,7 +14,7 @@ interface IBookingState {
   specialties: ISpecialty[];
   specialtyId: number;
   doctors: IDoctorOption[];
-  doctorId?: string;
+  doctorId: string;
   availableDates: IAvailableDate[];
   selectedDate: string;
   selectedTime: string;

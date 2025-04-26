@@ -5,8 +5,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import PageBreadCrumb from "../components/PageBreadCrumb";
 
-
-
 interface ISpecialty {
   specialtyId: number;
   specialtyName: string;
@@ -18,13 +16,14 @@ interface ISpecialty {
 const SpecialtiesManagement = () => {
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
   const [specialties, setSpecialties] = useState<ISpecialty[]>([]);
+
   useEffect(() => {
-    const fetchSpecialties = async() => {
-      const response =  await axios.get("http://localhost:5220/api/Specialties")
-      setSpecialties(response.data)
-    }
-    fetchSpecialties()
-  },[])
+    const fetchSpecialties = async () => {
+      const response = await axios.get("http://localhost:5220/api/Specialties");
+      setSpecialties(response.data);
+    };
+    fetchSpecialties();
+  }, []);
 
   const [form] = Form.useForm();
   const [editingSpecialty, setEditingSpecialty] = useState<ISpecialty | null>(null);
@@ -35,26 +34,26 @@ const SpecialtiesManagement = () => {
     form.resetFields();
     setIsModalVisible(true);
   };
+
   const handleEdit = (specialty: ISpecialty) => {
     setEditingSpecialty(specialty);
-  
-    // Convert image string to Upload format
+
     const fileList = specialty.image
       ? [
           {
-            uid: '-1',
-            name: 'Uploaded Image',
-            status: 'done',
+            uid: "-1",
+            name: "Ảnh đã tải",
+            status: "done",
             url: specialty.image,
           },
         ]
       : [];
-  
+
     form.setFieldsValue({
       ...specialty,
       image: fileList,
     });
-  
+
     setIsModalVisible(true);
   };
 
@@ -62,85 +61,95 @@ const SpecialtiesManagement = () => {
     try {
       await axios.delete(`http://localhost:5220/api/Specialties/${id}`);
       setSpecialties((prev) => prev.filter((s) => s.specialtyId !== id));
-  
-      message.success("Deleted successfully");
+
+      message.success("Xóa chuyên khoa thành công");
     } catch (error) {
-      message.error("Failed to delete");
+      message.error("Xóa thất bại");
     }
   };
-  
 
   const handleSubmit = async (values: any) => {
     try {
+      let imageFilename = "";
+
+      if (values.image && values.image.length > 0) {
+        if (values.image[0].originFileObj) {
+          imageFilename = values.image[0].name;
+        } else {
+          const url = values.image[0].url || values.image[0].thumbUrl;
+          imageFilename = url.split("/").pop();
+        }
+      }
+
+      const payload = {
+        ...values,
+        image: imageFilename,
+      };
+
       if (editingSpecialty) {
         const response = await axios.put(
           `http://localhost:5220/api/Specialties/${editingSpecialty.specialtyId}`,
-          { ...editingSpecialty, ...values }
+          { ...editingSpecialty, ...payload }
         );
-  
-        const updated = response.data;
-  
+
+        const updatedSpecialty = response.data;
+
         setSpecialties((prev) =>
-          prev.map((s) =>
-            s.specialtyId === updated.specialtyId ? updated : s
+          prev.map((specialty) =>
+            specialty.specialtyId === updatedSpecialty.specialtyId ? updatedSpecialty : specialty
           )
         );
-  
-        message.success("Updated successfully");
+
+        message.success("Cập nhật thành công");
       } else {
         const response = await axios.post("http://localhost:5220/api/Specialties", {
-          ...values,
+          ...payload,
           createdAt: new Date().toISOString(),
         });
-  
+
         setSpecialties((prev) => [...prev, response.data]);
-        message.success("Created successfully");
+        message.success("Thêm mới thành công");
       }
-  
+
       setIsModalVisible(false);
       setEditingSpecialty(null);
       form.resetFields();
     } catch (err) {
-      console.error("Error submitting form", err);
-      message.error("Error submitting form");
+      console.error("Lỗi khi gửi form", err);
+      message.error("Gửi biểu mẫu thất bại");
     }
   };
-  
 
   const columns = [
     {
-      title: "ID",
+      title: "Mã",
       dataIndex: "specialtyId",
       key: "specialtyId",
       width: "10%",
     },
     {
-      title: "Name",
+      title: "Tên chuyên khoa",
       dataIndex: "specialtyName",
       key: "specialtyName",
       width: "20%",
     },
     {
-      title: "Description",
+      title: "Mô tả",
       dataIndex: "description",
       key: "description",
       width: "30%",
     },
     {
-      title: "Image",
+      title: "Hình ảnh",
       dataIndex: "image",
       key: "image",
       width: "15%",
-      render: (url: string) => <img src={`${imgUrl}/${url}`} alt="Specialty" className="h-12 w-auto" />,
+      render: (url: string) => (
+        <img src={`${imgUrl}/${url}`} alt="Chuyên khoa" className="h-12 w-auto" />
+      ),
     },
-    // {
-    //   title: "Created At",
-    //   dataIndex: "createdAt",
-    //   key: "createdAt",
-    //   width: "15%",
-    // },
     {
-      title: "Actions",
+      title: "Hành động",
       key: "actions",
       width: "10%",
       render: (_: any, specialty: ISpecialty) => (
@@ -151,20 +160,16 @@ const SpecialtiesManagement = () => {
             type="primary"
             size="small"
           >
-            Edit
+            Sửa
           </Button>
           <Popconfirm
-            title="Are you sure you want to delete this service?"
+            title="Bạn có chắc muốn xóa chuyên khoa này không?"
             onConfirm={() => handleDelete(specialty.specialtyId)}
-            okText="Yes"
-            cancelText="No"
+            okText="Có"
+            cancelText="Không"
           >
-            <Button
-              icon={<DeleteOutlined />}
-              danger
-              size="small"
-            >
-              Delete
+            <Button icon={<DeleteOutlined />} danger size="small">
+              Xóa
             </Button>
           </Popconfirm>
         </Space>
@@ -175,13 +180,13 @@ const SpecialtiesManagement = () => {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Specialty Management</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Quản lý chuyên khoa</h1>
       </div>
 
       <div className="mb-6 flex justify-between items-center">
-        <PageBreadCrumb pageTitle="Specialty Management" />
+        <PageBreadCrumb pageTitle="Quản lý chuyên khoa" />
         <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
-          Add New Specialty
+          Thêm chuyên khoa
         </Button>
       </div>
 
@@ -190,7 +195,7 @@ const SpecialtiesManagement = () => {
       </div>
 
       <Modal
-        title={editingSpecialty ? "Edit Specialty" : "Add New Specialty"}
+        title={editingSpecialty ? "Chỉnh sửa chuyên khoa" : "Thêm chuyên khoa"}
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
@@ -199,23 +204,29 @@ const SpecialtiesManagement = () => {
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           <Form.Item
             name="specialtyName"
-            label="Specialty Name"
-            rules={[{ required: true, message: "Please enter the name" }]}
+            label="Tên chuyên khoa"
+            rules={[
+              { required: true, message: "Vui lòng nhập tên chuyên khoa" },
+              {
+                pattern: /^[A-Za-zÀ-ỹ\s\-]+$/u,
+                message: "Tên không được chứa số hoặc ký tự đặc biệt",
+              },
+            ]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
             name="description"
-            label="Description"
-            rules={[{ required: true, message: "Please enter the description" }]}
+            label="Mô tả"
+            rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
           >
             <Input.TextArea rows={3} />
           </Form.Item>
 
           <Form.Item
             name="image"
-            label="Upload Image"
+            label="Tải ảnh"
             valuePropName="fileList"
             getValueFromEvent={(e) => {
               if (Array.isArray(e)) {
@@ -223,26 +234,20 @@ const SpecialtiesManagement = () => {
               }
               return e?.fileList;
             }}
-            rules={[{ required: true, message: "Please upload an image" }]}
+            rules={[{ required: true, message: "Vui lòng tải ảnh" }]}
           >
-            <Upload
-              name="image"
-              listType="picture"
-              beforeUpload={() => false}
-              accept="image/*"
-            >
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
+            <Upload name="image" listType="picture" beforeUpload={() => false} accept="image/*">
+              <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
             </Upload>
           </Form.Item>
-
 
           <Form.Item>
             <div className="flex justify-end">
               <Button onClick={() => setIsModalVisible(false)} style={{ marginRight: 8 }}>
-                Cancel
+                Hủy
               </Button>
               <Button type="primary" htmlType="submit">
-                {editingSpecialty ? "Update" : "Create"}
+                {editingSpecialty ? "Cập nhật" : "Tạo mới"}
               </Button>
             </div>
           </Form.Item>

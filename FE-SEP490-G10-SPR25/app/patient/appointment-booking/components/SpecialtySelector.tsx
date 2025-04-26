@@ -1,5 +1,4 @@
 "use client";
-import React, { useEffect } from "react";
 import Select from "react-select";
 import { Stethoscope as StethoscopeIcon, RefreshCw } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +16,7 @@ import type { StylesConfig } from "react-select";
 
 const SpecialtySelector = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { specialties, specialtyId, isShowRestoreSuggestion, suggestionData } =
+  const { specialties, specialtyId, isShowRestoreSuggestion } =
     useSelector((state: RootState) => state.booking);
 
   const options = specialties.map((s: ISpecialty) => ({
@@ -25,11 +24,7 @@ const SpecialtySelector = () => {
     label: s.specialtyName,
   }));
 
-  useEffect(() => {
-    if (specialtyId && !localStorage.getItem("bookingSuggestion")) {
-      localStorage.setItem("bookingSuggestion", JSON.stringify(suggestionData));
-    }
-  }, [specialtyId]);
+  
 
   const currentSpecialty = options.find(
     (opt) => opt.value === String(specialtyId)
@@ -58,8 +53,6 @@ const SpecialtySelector = () => {
 
   const handleRestoreSuggestion = () => {
     dispatch(restoreSuggestion());
-    // const suggestedId = Number(localStorage.getItem("suggestedSpecialtyId"));
-    // dispatch(setSpecialtyId(suggestedId));
   };
 
   const customStyles: StylesConfig<{ value: string; label: string }, false> = {

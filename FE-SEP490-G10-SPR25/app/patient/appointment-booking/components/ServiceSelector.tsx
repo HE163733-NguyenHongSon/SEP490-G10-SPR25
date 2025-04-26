@@ -4,11 +4,7 @@ import Select from "react-select";
 import { User } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { serviceService } from "@/services/serviceService";
-import {
-  setServices,
-  setServiceId,
-  setLoading,
-} from "../redux/bookingSlice";
+import { setServices, setServiceId, setLoading } from "../redux/bookingSlice";
 import { RootState } from "../../store";
 import { StylesConfig } from "react-select";
 
@@ -69,10 +65,13 @@ const ServiceSelector = () => {
   useEffect(() => {
     const fetchServices = async () => {
       dispatch(setLoading(true));
+      console.log(serviceId);
       try {
         const data = await serviceService.getServicesBySpecialty(specialtyId);
         dispatch(setServices(data));
-        dispatch(setServiceId(String(suggestionData?.service.serviceId)??serviceId));
+        if (!serviceId) {
+          dispatch(setServiceId(String(suggestionData?.service.serviceId)));
+        }
       } catch (error) {
         console.error("Error fetching services:", error);
       } finally {

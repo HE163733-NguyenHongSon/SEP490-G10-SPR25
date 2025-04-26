@@ -21,7 +21,6 @@ const PaginatedItems = <T,>({
 }: PaginatedItemsProps<T>) => {
   const [itemOffset, setItemOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
- 
 
   const endOffset = itemOffset + itemsPerPage;
   const currentItems = items.slice(itemOffset, endOffset);
@@ -61,9 +60,11 @@ const PaginatedItems = <T,>({
           disabledClassName="opacity-50 cursor-not-allowed"
           breakClassName="text-gray-700 font-semibold"
         />
-        <h2 className="text-gray-700 font-semibold text-lg ml-2  ">
-          {items.length} kết quả
-        </h2>
+        {items.length > 0 && (
+          <h2 className="text-gray-700 font-semibold text-lg ml-2  ">
+            {items.length} kết quả
+          </h2>
+        )}
       </div>
     </div>
   );

@@ -317,7 +317,7 @@ const MedicalReportPage = () => {
                     <div className="flex items-center">
                       <PhoneIcon className="w-4 h-4 text-gray-400 mr-2" />
                       <p className="text-lg font-semibold text-gray-600">
-                        {medicalReport?.patient?.phoneNumber || "Chưa cập nhật"}
+                        {medicalReport?.patient?.phone || "Chưa cập nhật"}
                       </p>
                     </div>
                     <div className="flex items-center">

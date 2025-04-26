@@ -48,35 +48,27 @@ const DoctorSelector = () => {
     specialtyId,
     suggestionData,
     isShowRestoreSuggestion,
+    selectedDate,
+    selectedTime,
   } = useSelector((state: RootState) => state.booking);
 
   const isRestore = isShowRestoreSuggestion;
 
   const applySuggestionFromDoctorId = useCallback(
-    (selectedDoctorId: string) => {
-      console.log("🔄 applySuggestionFromDoctorId", selectedDoctorId);
-      dispatch(setDoctorId(selectedDoctorId));
+    (firstSchedule: IAvailableSchedule) => {
+      dispatch(setDoctorId(String(firstSchedule.doctorId)));
 
-      const doctorSchedules = (suggestionData?.availableSchedules ?? [])
-        .filter((s) => String(s.doctorId) === selectedDoctorId)
-        .sort((a, b) => {
-          const aTime = new Date(a.appointmentDate ?? "").getTime();
-          const bTime = new Date(b.appointmentDate ?? "").getTime();
-          return aTime - bTime;
-        });
-
-      const firstSchedule = doctorSchedules[0];
       if (firstSchedule && !isRestore) {
         const isoDate = firstSchedule.appointmentDate?.split("T")[0] ?? "";
         const timeRange = `${firstSchedule.slotStartTime}-${firstSchedule.slotEndTime}`;
-        dispatch(setSelectedDate(isoDate));
-        dispatch(setSelectedTime(timeRange));
+        if (!selectedDate) dispatch(setSelectedDate(isoDate));
+        if (!selectedTime) dispatch(setSelectedTime(timeRange));
       } else {
         dispatch(setSelectedDate(""));
         dispatch(setSelectedTime(""));
       }
     },
-    [dispatch, suggestionData?.availableSchedules, isRestore]
+    [serviceId]
   );
 
   useEffect(() => {
@@ -103,10 +95,9 @@ const DoctorSelector = () => {
 
         dispatch(setDoctors(doctorList));
 
-        // Chỉ auto chọn nếu chưa có doctorId
-        const firstSchedule = suggestionData?.availableSchedules?.[0];
+        const firstSchedule = availableSchedules?.[0];
         if (!doctorId && firstSchedule && !isRestore) {
-          applySuggestionFromDoctorId(String(firstSchedule.doctorId ?? ""));
+          applySuggestionFromDoctorId(firstSchedule);
         }
       } catch (error) {
         console.error("Lỗi khi tải danh sách bác sĩ:", error);
@@ -132,14 +123,6 @@ const DoctorSelector = () => {
       : null;
   }, [doctorId, doctors]);
 
-  const handleDoctorChange = useCallback(
-    (option: { value: string; label: string } | null) => {
-      if (option) {
-        applySuggestionFromDoctorId(option.value);
-      }
-    },
-    [applySuggestionFromDoctorId]
-  );
 
   return (
     <div className="space-y-2">
@@ -149,7 +132,11 @@ const DoctorSelector = () => {
       </label>
       <Select
         value={currentDoctor}
-        onChange={handleDoctorChange}
+        onChange={(newValue) => {
+          if (newValue) {
+            dispatch(setDoctorId(newValue.value));
+          }
+        }}
         options={doctors}
         isDisabled={!doctors.length}
         placeholder="Chọn bác sĩ"

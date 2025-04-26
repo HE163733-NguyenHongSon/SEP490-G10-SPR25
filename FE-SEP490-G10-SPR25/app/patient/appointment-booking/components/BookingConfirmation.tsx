@@ -1,13 +1,8 @@
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store"; // Adjust the path to your store file
-import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import moment from "moment";
 
 const BookingConfirmation = () => {
-  const dispatch = useDispatch();
-  const [service, setService] = useState<IService>();
-  const [doctor, setDoctor] = useState<IDoctorOption>();
-  const [specialty, setSpecialty] = useState<ISpecialty>();
-
   const {
     symptoms,
     selectedPatient,
@@ -21,28 +16,9 @@ const BookingConfirmation = () => {
     serviceId,
   } = useSelector((state: RootState) => state.booking);
 
-  console.log(selectedDate, selectedTime);
-  useEffect(() => {
-    const service = services.find(
-      (s) => String(s.serviceId) === String(serviceId)
-    );
-    const specialty = specialties.find(
-      (s) => s.specialtyId == specialtyId?.toString()
-    );
-
-    const doctor = doctors.find((d) => d.value === doctorId);
-    setSpecialty(specialty);
-    setDoctor(doctor);
-    setService(service);
-  }, []);
-  // Helper functions to get display values
-
-  // const getFormattedDateTime = () => {
-  //   if (selectedDate && selectedTime) {
-  //     return `${formatAppointmentDate(selectedDate)} - ${selectedTime}`;
-  //   }
-  //   return "";
-  // };
+  const service = services.find(
+    (s) => String(s.serviceId) === String(serviceId)
+  );
 
   const calculateAge = (dob: string) => {
     if (!dob) return "";
@@ -213,7 +189,11 @@ const BookingConfirmation = () => {
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800">
-                      {specialty?.specialtyName || "Không có thông tin"}
+                      {
+                        specialties.find(
+                          (s) => s.specialtyId == specialtyId?.toString()
+                        )?.specialtyName
+                      }
                     </p>
                   </div>
                 </div>
@@ -248,7 +228,7 @@ const BookingConfirmation = () => {
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800">
-                      {doctor?.label || "Không có thông tin"}
+                      {doctors.find((d) => d.value === doctorId)?.label}
                     </p>
                   </div>
                 </div>
@@ -258,31 +238,9 @@ const BookingConfirmation = () => {
                     Thời gian hẹn
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                    <p className="text-gray-800">
-                      {selectedDate && selectedTime
-                        ? (() => {
-                            const dateTime = new Date(
-                              `${selectedDate}T${selectedTime}`
-                            );
-                            const formattedDate = dateTime.toLocaleDateString(
-                              "vi-VN",
-                              {
-                                day: "2-digit",
-                                month: "2-digit",
-                                year: "numeric",
-                              }
-                            );
-                            const formattedTime = dateTime.toLocaleTimeString(
-                              "vi-VN",
-                              {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }
-                            );
-                            return `${formattedDate} - ${formattedTime}`;
-                          })()
-                        : "Không có thông tin"}
-                    </p>
+                    <p className="text-gray-800">{`${moment(
+                      selectedDate
+                    ).format("DD-MM-YYYY")} vào lúc ${selectedTime}`}</p>
                   </div>
                 </div>
               </div>
@@ -309,11 +267,18 @@ const BookingConfirmation = () => {
               </label>
               <div className="mt-2 px-4 py-3 border border-gray-300 rounded-md bg-gray-50">
                 <p className="text-gray-700 font-semibold text-lg">
-                  {Number(service?.price ?? 0).toLocaleString("en-US")} VND{" "}
+                  {Number(service?.price ?? 0).toLocaleString("en-US")} VND
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
                   Bao gồm phí khám, xét nghiệm cơ bản, và tư vấn chuyên khoa
                 </p>
+                {service?.isPrepayment && (
+                  <p className="text-sm text-red-600 font-medium mt-2">
+                    Đây là dịch vụ thanh toán trước. Bạn{" "}
+                    <span className="underline">chỉ có thể dời lịch</span> và{" "}
+                    <strong>không thể hủy</strong> sau khi đặt lịch.
+                  </p>
+                )}
               </div>
             </div>
           </div>

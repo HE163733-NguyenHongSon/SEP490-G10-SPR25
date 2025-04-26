@@ -1,15 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 
-// import {
-//   restoreSuggestion,
-//   fetchServices,
-//   fetchSpecialties,
-//   fetchDoctors,
-//   fetchAvailableDates,
-//   submitBooking,
-// } from "./bookingThunks";
-
 const initialState: IBookingState = {
   symptoms: "",
   isLoading: false,
@@ -26,14 +17,13 @@ const initialState: IBookingState = {
   specialties: [],
   specialtyId: 0,
   doctors: [],
-  doctorId: undefined,
+  doctorId: "",
   availableDates: [],
   selectedDate: "",
   selectedTime: "",
   selectedSlotId: "",
   isShowRestoreSuggestion: false,
   priorExaminationImg: null,
-  // schedules: [],
   isSubmitting: false,
   isShowConfirmModal: false,
   customSelectStyles: {},
@@ -66,10 +56,7 @@ const bookingSlice = createSlice({
     setSelectedSlotId: (state, action: PayloadAction<string>) => {
       state.selectedSlotId = action.payload;
     },
-    setPriorExaminationImg: (
-      state,
-      action: PayloadAction<File | null>
-    ) => {
+    setPriorExaminationImg: (state, action: PayloadAction<File | null>) => {
       state.priorExaminationImg = action.payload;
     },
     setIsShowRestoreSuggestion: (state, action: PayloadAction<boolean>) => {
@@ -111,7 +98,7 @@ const bookingSlice = createSlice({
     setServiceId: (state, action: PayloadAction<string>) => {
       state.serviceId = action.payload;
     },
-    setDoctorId: (state, action: PayloadAction<string | undefined>) => {
+    setDoctorId: (state, action: PayloadAction<string>) => {
       state.doctorId = action.payload;
     },
     resetBookingState(state) {
@@ -139,51 +126,6 @@ const bookingSlice = createSlice({
       state.priorExaminationImg = new File([], "placeholder.txt");
     },
   },
-
-  // extraReducers: (builder) => {
-  //   builder
-  //     .addCase(restoreSuggestion.fulfilled, (state) => {
-  //       state.showRestoreSuggestion = false;
-  //     })
-  //     .addMatcher(
-  //       (action) =>
-  //         action.type.startsWith("booking/") &&
-  //         action.type.endsWith("/pending"),
-  //       (state) => {
-  //         state.loading = true;
-  //         state.error = null;
-  //       }
-  //     )
-  //     .addMatcher(
-  //       (action) =>
-  //         action.type.startsWith("booking/") &&
-  //         action.type.endsWith("/fulfilled"),
-  //       (state) => {
-  //         state.loading = false;
-  //       }
-  //     )
-  //     .addMatcher(
-  //       (action) =>
-  //         action.type.startsWith("booking/") &&
-  //         action.type.endsWith("/rejected"),
-  //       (state, action) => {
-  //         state.loading = false;
-  //         state.error = action.error?.message || "Something went wrong";
-  //       }
-  //     )
-  //     .addCase(submitBooking.pending, (state) => {
-  //       state.isSubmitting = true;
-  //       state.error = null;
-  //     })
-  //     .addCase(submitBooking.fulfilled, (state) => {
-  //       state.isSubmitting = false;
-  //       state.showConfirmModal = true;
-  //     })
-  //     .addCase(submitBooking.rejected, (state, action) => {
-  //       state.isSubmitting = false;
-  //       state.error = action.error.message || "Failed to submit booking";
-  //     });
-  // },
 });
 
 export const {

@@ -177,9 +177,10 @@ const DatetimeSelector = () => {
             Chọn giờ
           </label>
           <Select
-            value={
-              timeOptions.find((opt) => opt.value === selectedTime) || null
-            }
+          value={
+            selectedTime ? timeOptions.find((opt) => opt.value === selectedTime) : null
+          }
+          
             onChange={handleTimeChange}
             options={timeOptions}
             placeholder={timeOptions.length ? "Chọn giờ" : "Không có khung giờ"}

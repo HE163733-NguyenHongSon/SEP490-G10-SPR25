@@ -1,12 +1,9 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
-import { useUser } from "@/contexts/UserContext";
 import reservationService from "@/services/reservationService";
 import { specialtyService } from "@/services/specialtyService";
-import { patientService } from "@/services/patientService";
 
 import SpecialtySelector from "./SpecialtySelector";
 import ServiceSelector from "./ServiceSelector";
@@ -20,62 +17,18 @@ import {
   setSpecialties,
   setSpecialtyId,
   setSuggestionData,
-  setSymptoms,
-  setPatients,
-  setServiceId,
-  setDoctorId,
-  setSelectedDate,  
-  setSelectedTime
+
 } from "../redux/bookingSlice"; 
 import { RootState } from "../../store";
 
 const BookingInfor = () => {
   const dispatch = useDispatch();
-  const { user } = useUser();
 
-  const { symptoms, isLoading, selectedPatient } = useSelector(
+  const { symptoms, isLoading, selectedPatient,specialtyId } = useSelector(
     (state: RootState) => state.booking
   );
 
-  const { data: patientDetail } = useQuery({
-    queryKey: ["patientDetail", user],
-    queryFn: async () => {
-      const data = await patientService.getPatientDetailById(user?.userId);
-      return data;
-    },
-    enabled: !!user,
-    staleTime: 30000,
-  });
-
-  const handleSubmit = async () => {
-    if (symptoms.trim().length > 2) {
-      dispatch(setSymptoms(symptoms.trim()));
-      dispatch(
-        setPatients([user as IPatient, ...(patientDetail?.dependents || [])])
-      );
-      dispatch(setLoading(true));
-    }
-  };  
-
-  // Example usage of handleSubmit
-  useEffect(() => {
-    handleSubmit();
-  }, [symptoms, patientDetail, user, dispatch]);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("bookingSuggestion");
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        dispatch(setSuggestionData(parsed));
-        if (parsed?.specialty?.specialtyId) {
-          dispatch(setSpecialtyId(Number(parsed.specialty.specialtyId)));
-        }
-      } catch (err) {
-        console.error("Error parsing bookingSuggestion:", err);
-      }
-    }
-  }, [dispatch]);
+  
 
   useEffect(() => {
     const controller = new AbortController();
@@ -90,8 +43,8 @@ const BookingInfor = () => {
         dispatch(setSpecialties(specialtyList));
         dispatch(setSuggestionData(suggestion));
         localStorage.setItem("bookingSuggestion", JSON.stringify(suggestion));
-        if (suggestion?.specialty?.specialtyId) {
-          dispatch(setSpecialtyId(Number(suggestion.specialty.specialtyId)));
+        if (!specialtyId) {
+          dispatch(setSpecialtyId(Number(suggestion?.specialty.specialtyId)));
         }
       } catch (error) {
         if (error instanceof Error && error.name !== "AbortError") {
@@ -107,19 +60,9 @@ const BookingInfor = () => {
     }
 
     return () => controller.abort();
-  }, [selectedPatient, symptoms, dispatch]);
+  }, [symptoms, dispatch, selectedPatient?.userId, specialtyId]);
 
-  useEffect(() => { 
-    return () => {                  
-      dispatch(setSpecialtyId(0));
-      dispatch(setServiceId(""));
-      dispatch(setDoctorId(""));
-      dispatch(setSelectedDate(""));
-      dispatch(setSelectedTime(""));
-      localStorage.removeItem("bookingSuggestion");
-    };
-  }, []);
-
+ 
   return (
     <div className="relative border-b border-gray-200 py-6 md:py-8 px-2 md:px-4 rounded-lg bg-white shadow-sm transition-all duration-300">
       {isLoading && (

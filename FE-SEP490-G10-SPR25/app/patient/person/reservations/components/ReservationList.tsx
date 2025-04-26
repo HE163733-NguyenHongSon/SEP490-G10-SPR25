@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+
 import React, { useState } from "react";
 import Image from "next/image";
 import moment from "moment";
@@ -7,6 +9,8 @@ import reservationService from "@/services/reservationService";
 import { Modal } from "./Modal";
 import CancelReservationMessage from "./CancelReservationMessage";
 import { emailService } from "@/services/emailService";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 interface ReservationListProps {
   items: IReservation[];
   onCancelSuccess: (reservationId: string) => void;
@@ -124,7 +128,10 @@ const ReservationList: React.FC<ReservationListProps> = ({
                   "Thông tin đặt lịch",
                   "Lý do đặt lịch",
                   "Ngày cập nhật",
-                  "Lý do hủy",
+                  items.some((item) => item.status === "Đã hủy")
+                    ? "Lý do hủy"
+                    : "Ảnh phác đồ điều trị trước",
+                  "Trạng thái thanh toán",
                   "Hành động",
                 ].map((header) => (
                   <th
@@ -136,6 +143,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
                 ))}
               </tr>
             </thead>
+
             <tbody>
               {items.map((reservation) => (
                 <tr key={reservation.reservationId}>
@@ -144,7 +152,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
                   </td>
 
                   <td className="border border-gray-300 rounded-md">
-                    <div className="grid grid-cols-3 py-3 px-8">
+                    <div className="grid grid-cols-2 py-3 px-5">
                       <div className="service col-span-1 gap-2 grid grid-cols-3 border-r-2 border-gray-300">
                         <div className="col-span-1 flex justify-center items-center">
                           <div className="w-[100px] h-[50px] overflow-hidden rounded-lg">
@@ -162,12 +170,12 @@ const ReservationList: React.FC<ReservationListProps> = ({
                             {reservation.doctorSchedule.serviceName}
                           </p>
                           <p className="text-sm font-semibold">
-                            {reservation.doctorSchedule.servicePrice} VND
+                            {reservation.doctorSchedule.servicePrice}
                           </p>
                         </div>
                       </div>
 
-                      <div className="col-span-2 pl-4">
+                      <div className="col-span-1 pl-4">
                         <p>
                           Khám bởi bác sĩ{" "}
                           <span className="font-semibold">
@@ -210,22 +218,96 @@ const ReservationList: React.FC<ReservationListProps> = ({
                       "vi-VN"
                     )}
                   </td>
-                  <td className="border border-gray-300 px-4">
-                    {reservation.cancellationReason ??
-                      (reservation.status === "Đang chờ"
-                        ? "Lịch hẹn chưa bị hủy"
-                        : "")}
+                  <td className="border border-gray-300 px-4 ">
+                    <div className=" overflow-hidden rounded-md  flex items-center justify-center">
+                      {reservation.status === "Đã hủy" ? (
+                        <div className="flex items-center justify-center w-full h-full">
+                          <span className="text-sm text-gray-700 text-center px-2">
+                            {reservation.cancellationReason ||
+                              "Không có lý do hủy"}
+                          </span>
+                        </div>
+                      ) : reservation.priorExaminationImg ? (
+                        <Zoom>
+                          <img
+                            className="object-cover w-30 h-20"
+                            src={`${imgUrl}/${reservation.priorExaminationImg}`}
+                            alt="Phác đồ điều trị"
+                            width={120}
+                            height={80}
+                          />
+                        </Zoom>
+                      ) : (
+                        <div className="flex items-center justify-center w-full h-full">
+                          <svg
+                            className="w-6 h-6 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={1.5}
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M3 3l18 18M4.5 4.5h15v15h-15v-15zm3 3l3 3 2-2 4 4"
+                            />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+
+                  <td className="border border-gray-300 px-4 text-center">
+                    {reservation.doctorSchedule.isPrepayment ? (
+                      <span className="inline-flex items-center text-green-600 font-medium">
+                        <svg
+                          className="w-5 h-5 mr-1 text-green-500"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                        Đã thanh toán
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center text-red-500 font-medium">
+                        <svg
+                          className="w-5 h-5 mr-1 text-red-400"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                        Chưa thanh toán
+                      </span>
+                    )}
                   </td>
 
                   <td className="border border-gray-300 px-4">
                     <button
                       onClick={() => handleCancel(reservation)}
                       className={`px-4 py-1 rounded-full transition-all duration-200 ${
-                        reservation.status === "Đang chờ"
-                          ? "bg-white text-black border border-gray-300 hover:bg-cyan-600 hover:text-white"
-                          : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        reservation.status !== "Đang chờ" ||
+                        reservation.doctorSchedule.isPrepayment
+                          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                          : "bg-white text-black border border-gray-300 hover:bg-cyan-600 hover:text-white"
                       }`}
-                      disabled={reservation.status !== "Đang chờ"}
+                      disabled={
+                        reservation.status !== "Đang chờ" ||
+                        reservation.doctorSchedule.isPrepayment
+                      }
                     >
                       Hủy
                     </button>

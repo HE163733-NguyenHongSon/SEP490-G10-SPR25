@@ -36,7 +36,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 AwsSecretKey = _configuration["AWS:SecretKey"]
             };
 
-            _bucketName = _configuration["AWS:BucketName"] ; 
+            _bucketName = _configuration["AWS:BucketName"];
         }
 
         public async Task<S3DTO> UploadFileAsync(S3 s3)
@@ -70,15 +70,15 @@ namespace AppointmentSchedulingApp.Application.Services
                     ContentType = s3.ContentType,
                     StorageClass = S3StorageClass.Standard,
                     AutoCloseStream = false,
-                    PartSize = 8 * 1024 * 1024 
+                    PartSize = 8 * 1024 * 1024
                 };
                 using var client = new AmazonS3Client(credentials, config);
-                var transferUtility= new TransferUtility(client);
+                var transferUtility = new TransferUtility(client);
                 await transferUtility.UploadAsync(uploadRequest);
 
                 response.StatusCode = 200;
                 response.Message = $"File {s3.Name} uploaded successfully to {s3.BucketName}";
-                response.FileName = s3.Name; 
+                response.FileName = s3.Name;
 
             }
             catch (AmazonS3Exception ex)
@@ -101,7 +101,9 @@ namespace AppointmentSchedulingApp.Application.Services
             return response;
         }
 
-        public async Task<List<S3DTO>> UploadFilesAsync(List<IFormFile> files)
+        public async Task<List<S3DTO>> UploadFilesAsync(
+         List<IFormFile> files,
+             Func<IFormFile, string> renameFunc = null)
         {
             var results = new List<S3DTO>();
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".pdf", ".mp4" };
@@ -110,6 +112,7 @@ namespace AppointmentSchedulingApp.Application.Services
             {
                 var fileExt = Path.GetExtension(file.FileName).ToLowerInvariant();
 
+                // Kiểm tra loại file
                 if (string.IsNullOrEmpty(fileExt) || !allowedExtensions.Contains(fileExt))
                 {
                     results.Add(new S3DTO
@@ -121,6 +124,8 @@ namespace AppointmentSchedulingApp.Application.Services
                     continue;
                 }
 
+                var newFileName = renameFunc?.Invoke(file) ?? file.FileName;
+
                 await using var memoryStream = new MemoryStream();
                 await file.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
@@ -129,7 +134,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 {
                     BucketName = _bucketName,
                     InputStream = memoryStream,
-                    Name = file.FileName, // giữ nguyên tên
+                    Name = newFileName,
                     ContentType = file.ContentType
                 };
 

@@ -19,6 +19,20 @@ namespace AppointmentSchedulingApp.Application.Services
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
         }
+        public async Task UpdatePriorExaminationImg(int reservationId, string fileName)
+        {
+            var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId == reservationId);
+            if (reservation == null)
+            {
+                throw new Exception($"Reservation with ID {reservationId} not found.");
+            }
+
+            reservation.PriorExaminationImg = fileName;
+
+            unitOfWork.ReservationRepository.Update(reservation);
+            await unitOfWork.CommitAsync();
+        }
+
         public async Task<List<ReservationDTO>> GetListReservation()
         {
             var query = unitOfWork.ReservationRepository.GetQueryable();
@@ -118,16 +132,16 @@ namespace AppointmentSchedulingApp.Application.Services
 
         }
 
-        public async Task<bool> AddReservation(AddedReservationDTO reservationDTO)
+        public async Task<Reservation> AddReservation(AddedReservationDTO reservationDTO)
         {
             var reservation = mapper.Map<Reservation>(reservationDTO);
 
 
             await unitOfWork.ReservationRepository.AddAsync(reservation);
 
-             await unitOfWork.CommitAsync();
+            await unitOfWork.CommitAsync();
 
-            return true;
+            return reservation;
         }
 
     }

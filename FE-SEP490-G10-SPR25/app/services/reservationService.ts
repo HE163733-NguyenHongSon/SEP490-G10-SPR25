@@ -86,16 +86,37 @@ const reservationService = {
   },
   async addReservation(reservation: IAddedReservation) {
     try {
+      const formData = new FormData();
+
+      if (reservation.patientId) {
+        formData.append("PatientId", reservation.patientId);
+      }
+      if (reservation.doctorScheduleId) {
+        formData.append("DoctorScheduleId", reservation.doctorScheduleId);
+      }
+      formData.append("Reason", reservation.reason);
+      if (reservation.appointmentDate) {
+        formData.append("AppointmentDate", reservation.appointmentDate);
+      }
+      if (reservation.createdByUserId) {
+        formData.append("CreatedByUserId", reservation.createdByUserId);
+      }
+      if (reservation.updatedByUserId) {
+        formData.append("UpdatedByUserId", reservation.updatedByUserId);
+      }
+
+      // Nếu có ảnh khám trước thì gửi kèm
+      if (reservation.priorExaminationImg) {
+        formData.append("PriorExaminationImg", reservation.priorExaminationImg);
+      }
+
       const res = await fetch(`${apiUrl}/api/Reservations/AddReservation`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(reservation),
+        body: formData,
       });
 
       if (!res.ok) {
-        console.error("thêm lịch hẹn thất bại:", await res.text());
+        console.error("Thêm lịch hẹn thất bại:", await res.text());
         return null;
       }
 
@@ -106,6 +127,7 @@ const reservationService = {
       return null;
     }
   },
+
   async updateReservationStatus(rs: IReservationStatus) {
     console.log(rs);
     const response = await fetch(

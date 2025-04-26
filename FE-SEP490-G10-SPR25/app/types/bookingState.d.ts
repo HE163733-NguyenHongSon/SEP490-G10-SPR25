@@ -7,12 +7,12 @@ interface IBookingState {
   addedPatient: IAddedPatient | null;
   patients: IPatient[];
   selectedPatient: IPatient | null;
-  addingPatient: boolean;
+  isAddingPatient: boolean;
   suggestionData: IBookingSuggestion | null;
   services: IService[];
   serviceId: string;
   specialties: ISpecialty[];
-  specialtyId: number;
+  specialtyId: string;
   doctors: IDoctorOption[];
   doctorId: string;
   availableDates: IAvailableDate[];
@@ -20,7 +20,7 @@ interface IBookingState {
   selectedTime: string;
   selectedSlotId: string;
   isShowRestoreSuggestion: boolean;
-  priorExaminationImg: File | null;
+  priorExaminationImgUrl: string | null;
   isSubmitting: boolean;
   isShowConfirmModal: boolean;
   availableSchedules: IAvailableSchedule[];

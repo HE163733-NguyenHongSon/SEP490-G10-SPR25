@@ -57,6 +57,14 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public void DeletePostSection(PostSection section)
+        {
+            _context.PostSections.Remove(section);
+        }
+        public async Task AddPostSectionAsync(PostSection section)
+        {
+            await _context.PostSections.AddAsync(section);
+        }
         public async Task<int> GetPostSectionsCountAsync()
         {
             return await _context.PostSections.CountAsync();

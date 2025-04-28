@@ -6,6 +6,8 @@ import { useQuery } from "@tanstack/react-query";
 import BookingForm from "./components/BookingForm";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
+import { FileProvider } from "./contexts/FileContext";
+
 import {
   setSymptoms,
   setLoading,
@@ -34,9 +36,19 @@ const PopupBody = () => {
   const handleSubmit = async () => {
     if (symptoms.trim().length > 2) {
       dispatch(setSymptoms(symptoms.trim()));
-      dispatch(
-        setPatients([user as IPatient, ...(patientDetail?.dependents || [])])
-      );
+      const guardian: IPatient = {
+        userId: patientDetail?.userId,
+        userName: patientDetail?.userName,
+        avatarUrl: patientDetail?.avatarUrl,
+        relationship: "Người giám hộ",
+        dob: patientDetail?.dob,
+        phone: patientDetail?.phone,
+        address: patientDetail?.address,
+        gender: patientDetail?.gender,
+        email: patientDetail?.email,
+      };
+      dispatch(setPatients([guardian, ...(patientDetail?.dependents || [])]));
+      console.log([user as IPatient, ...(patientDetail?.dependents || [])]);
       dispatch(setLoading(true));
       dispatch(setShowBookingForm(true));
     }
@@ -60,7 +72,9 @@ const PopupBody = () => {
           <PaperAirplaneIcon className="w-6 h-6 text-cyan-500" />
         </button>
       </div>
-      <BookingForm />
+      <FileProvider>
+        <BookingForm />
+      </FileProvider>
     </div>
   );
 };

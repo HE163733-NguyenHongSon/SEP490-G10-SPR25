@@ -23,7 +23,9 @@ const VNPayReturn = () => {
     if (status === "success") {
       setPopup({
         title: "✅ Thanh toán thành công",
-        message: `Mã giao dịch: ${transactionId}\nSố tiền: ${amount ? Number(amount).toLocaleString("en-US") : "0"} VNĐ\nPhương thức: ${paymentMethod}\nTrạng thái: ${paymentStatus}`,
+        message: `Mã giao dịch: ${transactionId}\nSố tiền: ${
+          amount ? Number(amount).toLocaleString("en-US") : "0"
+        } VNĐ\nPhương thức: ${paymentMethod}\nTrạng thái: ${paymentStatus}`,
         isSuccess: true,
       });
     } else {
@@ -42,20 +44,27 @@ const VNPayReturn = () => {
   }, [searchParams, router]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      {popup && (
-        <div className="bg-white shadow-lg rounded-xl p-6 max-w-md text-center">
-          <h2
-            className={`text-xl font-bold ${
-              popup.isSuccess ? "text-green-600" : "text-red-600"
-            }`}
-          >
-            {popup.title}
-          </h2>
-          <p className="mt-4 whitespace-pre-line">{popup.message}</p>
-          <p className="mt-6 text-sm text-gray-400">Đang chuyển hướng...</p>
-        </div>
-      )}
+    <div
+      className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center justify-center z-10"
+      style={{ backgroundImage: 'url("/images/background_home.jpeg")' }}
+      id="Body"
+    >
+      <div className="absolute inset-0 bg-black bg-opacity-50 z-20"></div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        {popup && (
+          <div className="bg-white shadow-lg rounded-xl p-6 max-w-md text-center">
+            <h2
+              className={`text-xl font-bold ${
+                popup.isSuccess ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {popup.title}
+            </h2>
+            <p className="mt-4 whitespace-pre-line">{popup.message}</p>
+            <p className="mt-6 text-sm text-gray-400">Đang chuyển hướng...</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

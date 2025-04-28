@@ -17,21 +17,18 @@ import {
   setSpecialties,
   setSpecialtyId,
   setSuggestionData,
-
-} from "../redux/bookingSlice"; 
+} from "../redux/bookingSlice";
 import { RootState } from "../../store";
 
 const BookingInfor = () => {
   const dispatch = useDispatch();
 
-  const { symptoms, isLoading, selectedPatient,specialtyId } = useSelector(
+  const { symptoms, isLoading, selectedPatient, specialtyId } = useSelector(
     (state: RootState) => state.booking
   );
 
-  
-
   useEffect(() => {
-    const controller = new AbortController();
+    // const controller = new AbortController();
 
     const fetchData = async () => {
       dispatch(setLoading(true));
@@ -44,7 +41,7 @@ const BookingInfor = () => {
         dispatch(setSuggestionData(suggestion));
         localStorage.setItem("bookingSuggestion", JSON.stringify(suggestion));
         if (!specialtyId) {
-          dispatch(setSpecialtyId(Number(suggestion?.specialty.specialtyId)));
+          dispatch(setSpecialtyId(suggestion?.specialty.specialtyId || ""));
         }
       } catch (error) {
         if (error instanceof Error && error.name !== "AbortError") {
@@ -59,10 +56,9 @@ const BookingInfor = () => {
       fetchData();
     }
 
-    return () => controller.abort();
+    // return () => controller.abort();
   }, [symptoms, dispatch, selectedPatient?.userId, specialtyId]);
 
- 
   return (
     <div className="relative border-b border-gray-200 py-6 md:py-8 px-2 md:px-4 rounded-lg bg-white shadow-sm transition-all duration-300">
       {isLoading && (

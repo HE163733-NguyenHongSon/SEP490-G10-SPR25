@@ -50,7 +50,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 model.Reservation.PatientId,
                 model.Reservation.DoctorScheduleId,
                 model.Reservation.Reason ?? "",
-                model.Reservation.PriorExaminationImg ?? "",
+                //model.Reservation.PriorExaminationImg ?? null,
                 model.Reservation.AppointmentDate.ToString("yyyyMMddHHmmss"),
                 model.Reservation.CreatedByUserId,
                 model.Reservation.UpdatedByUserId
@@ -128,7 +128,7 @@ namespace AppointmentSchedulingApp.Application.Services
                     int patientId = int.Parse(parts[1]);
                     int doctorScheduleId = int.Parse(parts[2]);
                     string reason = parts[3];
-                    string priorExaminationImg = parts[4];
+                    //string priorExaminationImg = parts[4];
                     DateTime appointmentDate = DateTime.ParseExact(parts[5], "yyyyMMddHHmmss", null);
                     int createdByUserId = int.Parse(parts[6]);
                     int updatedByUserId = int.Parse(parts[7]);
@@ -138,7 +138,7 @@ namespace AppointmentSchedulingApp.Application.Services
                         PatientId = patientId,
                         DoctorScheduleId = doctorScheduleId,
                         Reason = reason,
-                        PriorExaminationImg = priorExaminationImg,
+                        //PriorExaminationImg = priorExaminationImg,
                         AppointmentDate = appointmentDate,
                         CreatedByUserId = createdByUserId,
                         UpdatedByUserId = updatedByUserId

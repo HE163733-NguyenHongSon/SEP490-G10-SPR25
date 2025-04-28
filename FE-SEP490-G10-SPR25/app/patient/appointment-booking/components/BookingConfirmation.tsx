@@ -262,22 +262,30 @@ const BookingConfirmation = () => {
             </div>
 
             <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-600">
+              <label className="block text-sm font-medium text-gray-600 mb-1">
                 Giá dịch vụ / Tổng chi phí khám
               </label>
-              <div className="mt-2 px-4 py-3 border border-gray-300 rounded-md bg-gray-50">
-                <p className="text-gray-700 font-semibold text-lg">
+              <div className="px-4 py-3 border border-gray-300 rounded-md bg-gray-50 space-y-1">
+                <p className="text-gray-800 font-semibold text-lg">
                   {Number(service?.price ?? 0).toLocaleString("en-US")} VND
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Bao gồm phí khám, xét nghiệm cơ bản, và tư vấn chuyên khoa
+                <p className="text-sm text-gray-500">
+                  Gồm khám, xét nghiệm cơ bản, tư vấn chuyên khoa.
                 </p>
+
                 {service?.isPrepayment && (
-                  <p className="text-sm text-red-600 font-medium mt-2">
-                    Đây là dịch vụ thanh toán trước. Bạn{" "}
-                    <span className="underline">chỉ có thể dời lịch</span> và{" "}
-                    <strong>không thể hủy</strong> sau khi đặt lịch.
-                  </p>
+                  <div className="mt-2 bg-red-50 border border-red-200 p-3 rounded-md text-sm text-red-700 space-y-1">
+                    <p className="font-medium">
+                      Dịch vụ yêu cầu thanh toán trước.
+                    </p>
+                    <p>Liên hệ lễ tân để yêu cầu hoàn tiền.</p>
+                    <p>
+                      <strong>Trong 24 giờ:</strong> hoàn tiền đầy đủ.
+                    </p>
+                    <p>
+                      <strong>Sau 24 giờ:</strong> có thể trừ phí hoặc từ chối.
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

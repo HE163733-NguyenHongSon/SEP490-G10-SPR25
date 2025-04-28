@@ -16,15 +16,14 @@ import type { StylesConfig } from "react-select";
 
 const SpecialtySelector = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { specialties, specialtyId, isShowRestoreSuggestion } =
-    useSelector((state: RootState) => state.booking);
+  const { specialties, specialtyId, isShowRestoreSuggestion } = useSelector(
+    (state: RootState) => state.booking
+  );
 
   const options = specialties.map((s: ISpecialty) => ({
     value: String(s.specialtyId),
     label: s.specialtyName,
   }));
-
-  
 
   const currentSpecialty = options.find(
     (opt) => opt.value === String(specialtyId)
@@ -34,7 +33,7 @@ const SpecialtySelector = () => {
     selectedOption: { value: string; label: string } | null
   ) => {
     if (selectedOption) {
-      const selectedId = Number(selectedOption.value);
+      const selectedId = selectedOption.value;
       const suggestion: IBookingSuggestion = JSON.parse(
         localStorage.getItem("bookingSuggestion") || "{}"
       );
@@ -45,7 +44,7 @@ const SpecialtySelector = () => {
       dispatch(setSelectedTime(""));
       dispatch(
         setIsShowRestoreSuggestion(
-          selectedId !== Number(suggestion.specialty.specialtyId)
+          selectedId !== suggestion.specialty.specialtyId
         )
       );
     }

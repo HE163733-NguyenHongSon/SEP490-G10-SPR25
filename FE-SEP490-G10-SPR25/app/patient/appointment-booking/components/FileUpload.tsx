@@ -1,103 +1,85 @@
-import React, { useState, useEffect } from "react";
-import { FileImage, X } from "lucide-react";
-import { Image } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  setPriorExaminationImg,
-  clearPriorExaminationImg,
-} from "../redux/bookingSlice";
-import { RootState } from "@/patient/store";
+import React, { useState, useEffect, useRef } from "react";
+import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Button, Image, Typography } from "antd";
+import { useFileContext } from "../contexts/FileContext";
 
-const FileUpload = () => {
+const { Text } = Typography;
+
+const FileUpload: React.FC = () => {
+  const { selectedFile, setSelectedFile } = useFileContext();
   const [preview, setPreview] = useState<string | null>(null);
-  const dispatch = useDispatch();
-  const { priorExaminationImg } = useSelector(
-    (state: RootState) => state.booking
-  );
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Nếu priorExaminationImg có giá trị, set preview
   useEffect(() => {
-    if (priorExaminationImg) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(priorExaminationImg);
-    }
-  }, [priorExaminationImg]);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0];
     if (selectedFile) {
-      dispatch(setPriorExaminationImg(selectedFile)); // Lưu vào Redux
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
       };
       reader.readAsDataURL(selectedFile);
+    } else {
+      setPreview(null);
+    }
+  }, [selectedFile]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
     }
   };
 
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
   const handleRemoveImage = () => {
-    dispatch(clearPriorExaminationImg()); // Xoá khỏi Redux
-    setPreview(null);
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // ⭐ Reset input để chọn lại cùng file
+    }
   };
 
   return (
-    <div className="space-y-2">
-      <label className="text-sm font-medium text-gray-700 flex items-center">
-        <FileImage className="w-4 h-4 mr-2" />
-        Tải lên phác đồ điều trị trước (nếu có)
-      </label>
+    <div style={{ marginTop: 20 }}>
+      <Text strong>Phác đồ điều trị trước đây (nếu có):</Text>
+      <div style={{ marginTop: 10 }}>
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          style={{ display: "none" }}
+        />
 
-      <div className="mt-1 px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
-        <div className="space-y-1 text-center">
-          {preview ? (
-            <div className="relative w-28 h-28 border border-gray-300 mx-auto rounded-md overflow-hidden">
+        {!selectedFile ? (
+          <Button
+            icon={<UploadOutlined />}
+            type="dashed"
+            onClick={handleUploadClick}
+          >
+            Tải lên file
+          </Button>
+        ) : (
+          <div style={{ marginTop: 10 }}>
+            {preview && (
               <Image
                 src={preview}
                 alt="Preview"
-                className="w-full h-full object-cover"
+                width={200}
+                style={{ marginBottom: 10, borderRadius: 8 }}
               />
-              <button
-                onClick={handleRemoveImage}
-                className="absolute -top-2 -right-2 bg-white text-gray-500 rounded-full p-1 shadow hover:text-red-500"
-                title="Xoá ảnh"
-              >
-                <X size={16} />
-              </button>
-            </div>
-          ) : priorExaminationImg ? (
-            // Nếu không có preview nhưng có ảnh trong Redux, hiển thị ảnh đó
-            <div className="relative w-28 h-28 border border-gray-300 mx-auto rounded-md overflow-hidden">
-              <Image
-                src={URL.createObjectURL(priorExaminationImg)}
-                alt="Prior Examination"
-                className="w-full h-full object-cover"
-              />
-              <button
-                onClick={handleRemoveImage}
-                className="absolute -top-2 -right-2 bg-white text-gray-500 rounded-full p-1 shadow hover:text-red-500"
-                title="Xoá ảnh"
-              >
-                <X size={16} />
-              </button>
-            </div>
-          ) : (
-            <div className="flex text-sm text-gray-600 justify-center">
-              <label className="relative cursor-pointer bg-white rounded-md font-medium text-cyan-600 hover:text-cyan-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-cyan-500">
-                <span>Tải ảnh lên</span>
-                <input
-                  type="file"
-                  className="sr-only"
-                  onChange={handleFileChange}
-                />
-              </label>
-              <p className="pl-1">hoặc kéo thả tại đây</p>
-            </div>
-          )}
-          <p className="text-xs text-gray-500">PNG, JPG, GIF tối đa 10MB</p>
-        </div>
+            )}
+            <br />
+            <Button
+              type="primary"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={handleRemoveImage}
+            >
+              Xóa file
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

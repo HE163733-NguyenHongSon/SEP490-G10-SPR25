@@ -67,7 +67,7 @@ const ServiceSelector = () => {
       dispatch(setLoading(true));
       console.log(serviceId);
       try {
-        const data = await serviceService.getServicesBySpecialty(specialtyId);
+        const data = await serviceService.getServicesBySpecialty(Number(specialtyId));
         dispatch(setServices(data));
         if (!serviceId) {
           dispatch(setServiceId(String(suggestionData?.service.serviceId)));

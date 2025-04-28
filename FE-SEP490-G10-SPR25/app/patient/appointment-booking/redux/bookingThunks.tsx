@@ -1,4 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios"; 
+
 import {
   setSuggestionData,
   setSpecialtyId,
@@ -23,9 +25,8 @@ export const restoreSuggestion = createAsyncThunk(
       try {
         const parsedData: IBookingSuggestion = JSON.parse(storedSuggestion);
         dispatch(setSuggestionData(parsedData));
-        dispatch(
-          setSpecialtyId(Number(parsedData?.specialty?.specialtyId ?? 0))
-        );
+        dispatch(setSpecialtyId(String(parsedData?.specialty?.specialtyId)));
+
         dispatch(setServiceId(parsedData?.service?.serviceId ?? ""));
         dispatch(
           setDoctorId(String(parsedData?.availableSchedules?.[0]?.doctorId))
@@ -52,7 +53,23 @@ export const restoreSuggestion = createAsyncThunk(
     }
   }
 );
-
+export const addPatientAsync = createAsyncThunk(
+  "booking/addPatientAsync",
+  async (patient: IAddedPatient, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/api/Patients/AddPatient", patient);
+      return response.data;
+    } catch (error: unknown) { 
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data);
+      } else if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue("Unknown error");
+      }
+    }
+  }
+);
 export const fetchServices = createAsyncThunk(
   "booking/fetchServices",
   async (_, { dispatch }) => {

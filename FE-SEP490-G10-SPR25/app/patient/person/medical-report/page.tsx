@@ -41,17 +41,14 @@ const MedicalReportPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [selectedDependent, setSelectedDependent] = useState<IPatient>();
   const { user } = useUser();
-
-  // const [dependents, setDependents] = useState<IPatient[]>([]);
-  // const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   useEffect(() => {
     if (user) {
       setPatient(user as IPatient);
     }
   }, [user]);
+  // const [selectedDependent, setSelectedDependent] = useState<IPatient>();
 
   const { data: patientList } = useQuery({
     queryKey: ["patients"],
@@ -60,7 +57,7 @@ const MedicalReportPage = () => {
       const dependents = pd?.dependents || [];
       pd.relationship =
         dependents.length > 0 ? "Người giám hộ" : "Bệnh nhân chính";
-      setSelectedDependent(pd as IPatient);
+      setPatient(pd as IPatient);
       return [pd as IPatient, ...dependents];
     },
     staleTime: 30000,
@@ -72,13 +69,11 @@ const MedicalReportPage = () => {
     isLoading: isLoadingMedicalReport,
     error: medicalReportError,
   } = useQuery<IMedicalReport>({
-    queryKey: ["medicalReport", selectedDependent?.userId],
+    queryKey: ["medicalReport", patient?.userId],
     queryFn: () =>
-      medicalReportService.getMedicalReportByPatientId(
-        selectedDependent?.userId
-      ),
+      medicalReportService.getMedicalReportByPatientId(patient?.userId),
     staleTime: 30000,
-    enabled: !!selectedDependent?.userId,
+    enabled: !!patient?.userId,
   });
 
   // Initialize Fuse.js for fuzzy search
@@ -195,8 +190,8 @@ const MedicalReportPage = () => {
               <div className="flex flex-col gap-3 max-w-60 w-full">
                 <SelectPatient
                   patients={patientList || []}
-                  selectedPatient={selectedDependent ?? undefined}
-                  onChange={(p) => setSelectedDependent(p)}
+                  selectedPatient={patient}
+                  onChange={(p) => setPatient(p)}
                 />
                 <ExportButton patientId={patient?.userId} />
               </div>

@@ -30,7 +30,9 @@ namespace AppointmentSchedulingApp.Application.Profiles
             CreateMap<PostDetailDTO, Post>()
                 .ForMember(dest => dest.PostId, opt => opt.Ignore())
                 .ForMember(dest => dest.PostAuthor, opt => opt.Ignore())
-                .ForMember(dest => dest.PostSections, opt => opt.MapFrom(src => src.PostSections));
+                .ForMember(dest => dest.PostSections, opt => opt.Ignore())
+                .ForMember(dest => dest.Comments, opt => opt.Ignore())
+                .ForMember(dest => dest.PostCreatedDate, opt => opt.Ignore());
 
             //CreateMap<Post, PostDTO>()
             //.ForMember(dest => dest.AuthorName,

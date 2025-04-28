@@ -4,7 +4,7 @@ import reservationService from "@/services/reservationService";
 import PaginatedItems from "@/components/PaginatedItems";
 import ReservationList from "./components/ReservationList";
 import SelectSort from "@/components/SelectSort";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingTable } from "@/components/LoadingTable";
 import { useSearchParams } from "next/navigation";
@@ -21,11 +21,11 @@ const ReservationPage = () => {
   const sortBy = searchParams.get("sortBy") || "Cuộc hẹn gần đây";
   const [patientId, setPatientId] = useState<string>("1");
   const queryClient = useQueryClient();
-  const { user } = useUser(); 
+  const { user } = useUser();
 
   useEffect(() => {
     if (user) {
-      setPatientId(user?.userId);
+      setPatientId(user?.userId || "1");
     }
   }, [user]);
 
@@ -39,7 +39,6 @@ const ReservationPage = () => {
   const {
     data: reservationList = [],
     isLoading: isLoadingReservations,
-    error: reservationError,
   } = useQuery({
     queryKey: ["reservations", patientId, status, sortBy],
     queryFn: async (): Promise<IReservation[]> => {
@@ -57,7 +56,6 @@ const ReservationPage = () => {
   const {
     data: statusList = [],
     isLoading: isLoadingStatus,
-    error: statusError,
   } = useQuery({
     queryKey: ["statusList"],
     queryFn: async () => {
@@ -127,50 +125,43 @@ const ReservationPage = () => {
         pauseOnHover
         theme="light"
       />
-      {reservationList.length === 0 ? (
-        <div>
-          <p>Bệnh nhân chưa có lịch hẹn</p>
-        </div>
-      ) : (
-        <div className="p-4 my-5">
-          <div className="flex flex-row items-center justify-center gap-3  ">
-            {isLoadingReservations || isLoadingStatus ? (
-              <p>Loading...</p>
-            ) : (
-              <>
-                <SelectSort
-                  options={sortOptions}
-                  path="/patient/person/reservations"
-                  initialSelectedValue="Cuộc hẹn gần đây"
-                />
-                <FilterButtonList
-                  itemList={statusList}
-                  onFilterSelect={(value) => setStatus(value)}
-                  selectedItem={status}
-                />
-              </>
-            )}
-          </div>
 
+      <div className="p-4 my-5">
+        <div className="flex flex-row items-center justify-center gap-3  ">
           {isLoadingReservations || isLoadingStatus ? (
-            <LoadingTable />
-          ) : reservationError || statusError ? (
-            <p>Error loading data</p>
+            <p>Loading...</p>
           ) : (
-            <PaginatedItems
-              itemsPerPage={4}
-              items={reservationList}
-              RenderComponent={(props) => (
-                <ReservationList
-                  {...props}
-                  onCancelSuccess={handleCancelSuccess}
-                  onCancelFailed={(error) => handleCancelFailed(error)}
-                />
-              )}
-            />
+            <>
+              <SelectSort
+                options={sortOptions}
+                path="/patient/person/reservations"
+                initialSelectedValue="Cuộc hẹn gần đây"
+              />
+              <FilterButtonList
+                itemList={statusList}
+                onFilterSelect={(value) => setStatus(value)}
+                selectedItem={status}
+              />
+            </>
           )}
         </div>
-      )}
+
+        {isLoadingReservations || isLoadingStatus ? (
+          <LoadingTable />
+        ) : (
+          <PaginatedItems
+            itemsPerPage={4}
+            items={reservationList}
+            RenderComponent={(props) => (
+              <ReservationList
+                {...props}
+                onCancelSuccess={handleCancelSuccess}
+                onCancelFailed={(error) => handleCancelFailed(error)}
+              />
+            )}
+          />
+        )}
+      </div>
     </>
   );
 };

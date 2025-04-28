@@ -1,51 +1,29 @@
-import { useBookingContext } from "@/patient/contexts/BookingContext";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import moment from "moment";
 
 const BookingConfirmation = () => {
   const {
-    selectedPatient,
     symptoms,
-    specialtyId,
-    specialties,
-    serviceId,
-    services,
-    doctorId,
-    doctors,
+    selectedPatient,
     selectedDate,
     selectedTime,
-    formatAppointmentDate,
-  } = useBookingContext();
+    specialties,
+    services,
+    doctors,
+    doctorId,
+    specialtyId,
+    serviceId,
+  } = useSelector((state: RootState) => state.booking);
 
-  // Helper functions to get display values
-  const getSpecialtyName = () => {
-    const specialty = specialties.find(
-      (s) => s.specialtyId == specialtyId.toString()
-    );
-    return specialty ? specialty.specialtyName : "";
-  };
-
-  const getService = () => {
-    const service = services.find((s) => s.serviceId == serviceId.toString());
-    console.log("Found service:", service);
-    return service;
-  };
-
-  const getDoctorName = () => {
-    const doctor = doctors.find((d) => d.value === doctorId);
-    return doctor ? doctor.label : "";
-  };
-
-  const getFormattedDateTime = () => {
-    if (selectedDate && selectedTime) {
-      return `${formatAppointmentDate(selectedDate)} - ${selectedTime}`;
-    }
-    return "";
-  };
+  const service = services.find(
+    (s) => String(s.serviceId) === String(serviceId)
+  );
 
   const calculateAge = (dob: string) => {
     if (!dob) return "";
 
     const [day, month, year] = dob.split("/").map(Number);
-
     const birthDate = new Date(year, month - 1, day);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -129,10 +107,7 @@ const BookingConfirmation = () => {
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800">
-                      {selectedPatient?.dob
-                        ? selectedPatient.dob
-                        : "Không có thông tin"}
-                      {/* {console.log(selectedPatient)} */}
+                      {selectedPatient?.dob || "Không có thông tin"}
                     </p>
                   </div>
                 </div>
@@ -168,7 +143,9 @@ const BookingConfirmation = () => {
                     Giới tính
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                    <p className="text-gray-800">{selectedPatient?.gender}</p>
+                    <p className="text-gray-800">
+                      {selectedPatient?.gender || "Không có thông tin"}
+                    </p>
                   </div>
                 </div>
 
@@ -212,7 +189,11 @@ const BookingConfirmation = () => {
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800">
-                      {getSpecialtyName() || "Không có thông tin"}
+                      {
+                        specialties.find(
+                          (s) => s.specialtyId == specialtyId?.toString()
+                        )?.specialtyName
+                      }
                     </p>
                   </div>
                 </div>
@@ -222,13 +203,17 @@ const BookingConfirmation = () => {
                     Dịch vụ y tế
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                    <p className="text-gray-800">
-                      {getService() && (
+                    <p className="text-gray-800 ">
+                      {service && (
                         <div>
-                          <p className="font-bold">
-                            {getService()?.serviceName}
+                          <p className="font-bold">{service?.serviceName}</p>
+                          <p>
+                            {" "}
+                            {Number(service.price ?? 0).toLocaleString(
+                              "en-US"
+                            )}{" "}
+                            VND{" "}
                           </p>
-                          <p>{getService()?.price} VND</p>
                         </div>
                       )}
                     </p>
@@ -243,7 +228,7 @@ const BookingConfirmation = () => {
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800">
-                      {getDoctorName() || "Không có thông tin"}
+                      {doctors.find((d) => d.value === doctorId)?.label}
                     </p>
                   </div>
                 </div>
@@ -253,9 +238,9 @@ const BookingConfirmation = () => {
                     Thời gian hẹn
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                    <p className="text-gray-800">
-                      {getFormattedDateTime() || "Không có thông tin"}
-                    </p>
+                    <p className="text-gray-800">{`${moment(
+                      selectedDate
+                    ).format("DD-MM-YYYY")} vào lúc ${selectedTime}`}</p>
                   </div>
                 </div>
               </div>
@@ -268,6 +253,7 @@ const BookingConfirmation = () => {
               <div className="mt-1">
                 <textarea
                   rows={4}
+                  disabled={true}
                   className="w-full text-gray-700 p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   value={symptoms}
                   placeholder="Mô tả chi tiết triệu chứng hoặc lý do khám của bạn"
@@ -276,16 +262,31 @@ const BookingConfirmation = () => {
             </div>
 
             <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-600">
+              <label className="block text-sm font-medium text-gray-600 mb-1">
                 Giá dịch vụ / Tổng chi phí khám
               </label>
-              <div className="mt-2 px-4 py-3 border border-gray-300 rounded-md bg-gray-50">
-                <p className="text-gray-700 font-semibold text-lg">
-                  {getService()?.price.toLocaleString("en-US")}VND
+              <div className="px-4 py-3 border border-gray-300 rounded-md bg-gray-50 space-y-1">
+                <p className="text-gray-800 font-semibold text-lg">
+                  {Number(service?.price ?? 0).toLocaleString("en-US")} VND
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Bao gồm phí khám, xét nghiệm cơ bản, và tư vấn chuyên khoa
+                <p className="text-sm text-gray-500">
+                  Gồm khám, xét nghiệm cơ bản, tư vấn chuyên khoa.
                 </p>
+
+                {service?.isPrepayment && (
+                  <div className="mt-2 bg-red-50 border border-red-200 p-3 rounded-md text-sm text-red-700 space-y-1">
+                    <p className="font-medium">
+                      Dịch vụ yêu cầu thanh toán trước.
+                    </p>
+                    <p>Liên hệ lễ tân để yêu cầu hoàn tiền.</p>
+                    <p>
+                      <strong>Trong 24 giờ:</strong> hoàn tiền đầy đủ.
+                    </p>
+                    <p>
+                      <strong>Sau 24 giờ:</strong> có thể trừ phí hoặc từ chối.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -318,8 +319,7 @@ const BookingConfirmation = () => {
                   📧 Email: support@hospital.com
                 </p>
                 <p className="text-gray-600">⏰ Phản hồi trong vòng 24 giờ</p>
-                <p className="text-gray-600">📞 Hotline: 1900 1234 567</p>{" "}
-                {/* Thêm số điện thoại nếu muốn */}
+                <p className="text-gray-600">📞 Hotline: 1900 1234 567</p>
               </div>
             </div>
           </div>

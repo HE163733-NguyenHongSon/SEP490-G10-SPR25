@@ -7,6 +7,7 @@ interface IDoctorSchedule {
   serviceName: string;
   servicePrice: string;
   serviceImage: string;
+  isPrepayment: boolean;
   dayOfWeek: string;
   roomId: number;
   roomName: string;

@@ -30,17 +30,16 @@ const reservationService = {
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1; // JS: 0 = Jan
-
-    const response = await fetch(
+    const url =
       `${apiUrl}/odata/Reservations/$count?$filter=` +
-        `patient/userId eq ${patientId} and ` +
-        `status eq 'Đã hủy' and ` +
-        `year(appointmentDate) eq ${year} and ` +
-        `month(appointmentDate) eq ${month}`,
-      {
-        next: { revalidate: 0 }, // Không cache
-      }
-    );
+      `patient/userId eq ${patientId} and ` +
+      `status eq 'Đã hủy' and ` +
+      `year(updatedDate) eq ${year} and ` +
+      `month(updatedDate) eq ${month}`;
+    console.log(url);
+    const response = await fetch(url, {
+      next: { revalidate: 0 },
+    });
 
     if (!response.ok) {
       throw new Error("Failed to fetch reservation count");
@@ -85,8 +84,52 @@ const reservationService = {
       return null;
     }
   },
+  async addReservation(reservation: IAddedReservation) {
+    try {
+      const formData = new FormData();
+
+      if (reservation.patientId) {
+        formData.append("PatientId", reservation.patientId);
+      }
+      if (reservation.doctorScheduleId) {
+        formData.append("DoctorScheduleId", reservation.doctorScheduleId);
+      }
+      formData.append("Reason", reservation.reason);
+      if (reservation.appointmentDate) {
+        formData.append("AppointmentDate", reservation.appointmentDate);
+      }
+      if (reservation.createdByUserId) {
+        formData.append("CreatedByUserId", reservation.createdByUserId);
+      }
+      if (reservation.updatedByUserId) {
+        formData.append("UpdatedByUserId", reservation.updatedByUserId);
+      }
+
+      // Nếu có ảnh khám trước thì gửi kèm
+      if (reservation.priorExaminationImg) {
+        formData.append("PriorExaminationImg", reservation.priorExaminationImg);
+      }
+
+      const res = await fetch(`${apiUrl}/api/Reservations/AddReservation`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        console.error("Thêm lịch hẹn thất bại:", await res.text());
+        return null;
+      }
+
+      const result = await res.json();
+      return result;
+    } catch (error) {
+      console.error("Error add booking:", error);
+      return null;
+    }
+  },
 
   async updateReservationStatus(rs: IReservationStatus) {
+    console.log(rs);
     const response = await fetch(
       `${apiUrl}/api/Reservations/UpdateReservationStatus`,
       {

@@ -372,7 +372,7 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             return await _medicalRecordService.GetPatientMedicalHistoryByPatientId(patientId);
         }
-
+        
         public async Task<IEnumerable<DoctorDTO>> GetDoctorListByServiceId(int serviceId)
         {
             var doctors = await dbContext.Doctors

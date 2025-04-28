@@ -1,187 +1,278 @@
-"use client";
-import { useBookingContext } from "@/patient/contexts/BookingContext";
+// BookingForm.tsx
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { useEffect, useCallback, useState } from "react";
+import { emailService } from "@/services/emailService";
+import { Provider } from "react-redux";
+import { store } from "../../store";
+import SuccessReservationMessage from "./SuccessReservationMessage";
+import { useFileContext } from "../contexts/FileContext";
+
+import {
+  setShowBookingForm,
+  setCurrentStep,
+  setServiceId,
+  setServices,
+  setSpecialties,
+  setSpecialtyId,
+  setDoctors,
+  setDoctorId,
+  setSelectedPatient,
+  setIsShowRestoreSuggestion,
+  setIsSubmitting,
+  setShowConfirmModal,
+  setSuggestionData,
+  setSelectedDate,
+  setSelectedTime,
+} from "../redux/bookingSlice";
 import PatientInfor from "./PatientInfor";
 import BookingInfor from "./BookingInfor";
 import BookingConfirmation from "./BookingConfirmation";
 import BookingStepper from "./BookingStepper";
-import { useRef, useEffect, useState, memo, useCallback } from "react";
-
-const MemoizedPatientInfor = memo(PatientInfor);
-const MemoizedBookingInfor = memo(BookingInfor);
-const MemoizedBookingConfirmation = memo(BookingConfirmation);
-
+import { handleVNPayPayment } from "@/services/vnPayService";
+import reservationService from "@/services/reservationService";
+import { toast } from "react-toastify";
+import ReactDOMServer from "react-dom/server";
 const BookingForm = () => {
-  const {
-    showBookingForm,
-    currentStep,
-    closeBookingForm,
-    prevStep,
-    nextStep,
-    setSuggestionData,
-    setSelectedPatient,
-    setServiceId,
-    setSpecialtyId,
-    setDoctorId,
-    setSelectedDate,
-    setSelectedTime,
-  } = useBookingContext();
-
-  const formRef = useRef<HTMLDivElement>(null);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const dispatch = useDispatch();
   const [isMounted, setIsMounted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { selectedFile } = useFileContext();
 
-  // Tối ưu hóa cuộn khi form được hiển thị lần đầu tiên
+  const {
+    isShowBookingForm,
+    currentStep,
+    selectedPatient,
+    selectedDate,
+    selectedTime,
+    symptoms,
+    services,
+    serviceId,
+    doctorId,
+    isSubmitting,
+    isShowConfirmModal,
+    availableSchedules,
+  } = useSelector((state: RootState) => state.booking);
+
   useEffect(() => {
-    if (!showBookingForm) return;
-
     setIsMounted(true);
-    formRef.current?.scrollIntoView({ behavior: "smooth" });
-
-    return () => {
-      setIsMounted(false);
-    };
-  }, [showBookingForm]);
-
-  const handleOverlayClick = useCallback((e: React.MouseEvent) => {
-    if (formRef.current && !formRef.current.contains(e.target as Node)) {
-      setShowConfirmModal(true);
-    }
   }, []);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+    dispatch(setIsSubmitting(true));
+
+    try {
+      const scheduleDateTime = `${selectedDate}T${selectedTime}`;
+      const matchedSchedule = availableSchedules?.find(
+        (s) =>
+          s.doctorId?.toString() === doctorId &&
+          s.appointmentDate === scheduleDateTime
+      );
+
+      const service = services.find(
+        (s) => String(s.serviceId) === String(serviceId)
+      );
+
+      const reservation: IAddedReservation = {
+        patientId: selectedPatient?.userId,
+        doctorScheduleId: matchedSchedule?.doctorScheduleId?.toString(),
+        reason: symptoms || "",
+        priorExaminationImg: selectedFile,
+        appointmentDate: matchedSchedule?.appointmentDate,
+        createdByUserId: selectedPatient?.userId,
+        updatedByUserId: selectedPatient?.userId,
+      };
+      let isSuccess = false;
+
+      if (!service?.isPrepayment) {
+        isSuccess = await reservationService.addReservation(reservation);
+        if (!isSuccess) toast.error("Đặt lịch thất bại. Vui lòng thử lại!");
+      } else {
+        try {
+          toast.info("Đang chuyển hướng đến cổng thanh toán VNPay...");
+          await handleVNPayPayment({
+            payerId: selectedPatient?.userId,
+            reservation,
+            paymentMethod: "VNPay",
+            amount: service?.price,
+          });
+          isSuccess = true;
+        } catch (paymentError) {
+          console.error("Payment error:", paymentError);
+          toast.error("Lỗi trong quá trình thanh toán. Vui lòng thử lại sau.");
+          throw paymentError;
+        }
+      }
+
+      if (isSuccess) {
+        toast.success("Đặt lịch hẹn thành công!");
+
+        const htmlMessage = ReactDOMServer.renderToStaticMarkup(
+          <Provider store={store}>
+            <SuccessReservationMessage />
+          </Provider>
+        );
+        console.log("fdfd", selectedPatient?.email);
+        await emailService.sendEmail({
+          toEmail: selectedPatient?.email || "",
+          subject: "Thông báo đặt lịch thành công!",
+          message: htmlMessage,
+        });
+
+        setTimeout(() => confirmCancel(), 1000);
+      }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Đã xảy ra lỗi khi đặt lịch";
+      setError(errorMessage);
+      console.error("Booking error:", err);
+    } finally {
+      dispatch(setIsSubmitting(false));
+    }
+  };
 
   const handleBack = useCallback(() => {
     if (currentStep === 1) {
-      setShowConfirmModal(true);
+      dispatch(setShowConfirmModal(true));
     } else {
-      if (currentStep === 2) {
-        setSuggestionData(null);
-      }
-      prevStep();
+      if (currentStep === 2) dispatch(setServices([]));
+      dispatch(setCurrentStep(currentStep - 1));
     }
-  }, [currentStep, prevStep, setSuggestionData]);
+  }, [dispatch, currentStep]);
 
   const confirmCancel = useCallback(() => {
-    setSelectedPatient(null);
-    setSuggestionData(null);
-    setServiceId(0);
-    setSpecialtyId(1);
-    setDoctorId(undefined);
-    setSelectedDate("");
-    setSelectedTime("");
-    closeBookingForm();
-    setShowConfirmModal(false);
-  }, [
-    closeBookingForm,
-    setSelectedPatient,
-    setSuggestionData,
-    setServiceId,
-    setSpecialtyId,
-    setDoctorId,
-    setSelectedDate,
-    setSelectedTime,
-  ]);
+    dispatch(setShowBookingForm(false));
+    dispatch(setShowConfirmModal(false));
+    dispatch(setCurrentStep(1));
+    dispatch(setServices([]));
+    dispatch(setServiceId(""));
+    dispatch(setIsSubmitting(false));
+    dispatch(setSpecialties([]));
+    dispatch(setSpecialtyId(""));
+    dispatch(setDoctors([]));
+    dispatch(setDoctorId(""));
+    dispatch(setSelectedDate(""));
+    dispatch(setSelectedTime(""));
+    dispatch(setSelectedPatient(null));
+    dispatch(setSuggestionData(null));
+    dispatch(setIsShowRestoreSuggestion(false));
+  }, [dispatch]);
 
-  if (!showBookingForm) return null;
+  if (!isShowBookingForm) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Overlay */}
-      <div
-        className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
-          isMounted ? "opacity-100" : "opacity-0"
-        }`}
-        onClick={handleOverlayClick}
-      />
-
-      {/* Form */}
-      <div
-        ref={formRef}
-        className={`relative z-50 top-12 w-[90%] md:w-2/3 lg:w-1/2 h-[90vh] bg-white rounded-2xl shadow-2xl p-6 flex flex-col transition-opacity duration-300 ${
-          isMounted ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <button
-            onClick={handleBack}
-            className="text-cyan-600 hover:text-cyan-800 font-semibold flex items-center"
-          >
-            <svg
-              className="w-5 h-5 mr-1"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            Quay lại
-          </button>
-
-          {currentStep < 3 && (
+    
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div
+          className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+            isMounted ? "opacity-100" : "opacity-0"
+          }`}
+          onClick={() => dispatch(setShowConfirmModal(true))}
+        />
+        <div
+          className={`relative z-50 top-12 w-[90%] md:w-2/3 lg:w-1/2 h-[90vh] bg-white rounded-2xl shadow-2xl p-6 flex flex-col transition-opacity duration-300 ${
+            isMounted ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div className="flex justify-between items-center mb-6">
             <button
-              onClick={nextStep}
-              className="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700 transition"
+              onClick={handleBack}
+              className="text-cyan-600 hover:text-cyan-800 font-semibold flex items-center"
             >
-              Tiếp theo
-            </button>
-          )}
-
-          {currentStep === 3 && (
-            <button
-              type="submit"
-              className="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700 transition"
-            >
-              Xác nhận đặt lịch
-            </button>
-          )}
-        </div>
-
-        {/* Stepper */}
-        <BookingStepper currentStep={currentStep} />
-
-        {/* Nội dung form */}
-        <div className="flex-1 mt-6 min-h-[400px] overflow-y-auto">
-          {currentStep === 1 && <MemoizedPatientInfor />}
-          {currentStep === 2 && <MemoizedBookingInfor />}
-          {currentStep === 3 && <MemoizedBookingConfirmation />}
-        </div>
-      </div>
-
-      {/* Modal xác nhận */}
-      {showConfirmModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div
-            className="bg-white rounded-xl p-8 w-[90%] max-w-[550px] shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              Bạn có chắc chắn muốn hủy đặt lịch?
-            </h2>
-            <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-              Thao tác này sẽ xóa tất cả thông tin bạn đã nhập...
-            </p>
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={() => setShowConfirmModal(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:underline transition"
+              <svg
+                className="w-5 h-5 mr-1"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
               >
-                Không
-              </button>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              Quay lại
+            </button>
+            {currentStep < 3 && (
               <button
-                onClick={confirmCancel}
-                className="bg-red-500 text-white px-5 py-2 rounded-md font-medium hover:bg-red-600 transition"
+                onClick={() => dispatch(setCurrentStep(currentStep + 1))}
+                className="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700 transition"
               >
-                Hủy đặt lịch
+                Tiếp theo
               </button>
-            </div>
+            )}
+            {currentStep === 3 && (
+              <button
+                type="submit"
+                onClick={() =>
+                  handleSubmit(
+                    new Event(
+                      "submit"
+                    ) as unknown as React.FormEvent<HTMLFormElement>
+                  )
+                }
+                disabled={isSubmitting}
+                className={`px-4 py-2 rounded-md transition text-white ${
+                  isSubmitting
+                    ? "bg-cyan-300 cursor-not-allowed"
+                    : "bg-cyan-600 hover:bg-cyan-700"
+                }`}
+              >
+                {isSubmitting ? "Đang xử lý..." : "Xác nhận đặt lịch"}
+              </button>
+            )}
+          </div>
+
+          <BookingStepper />
+
+          <div className="flex-1 mt-6 min-h-[400px] overflow-y-auto">
+            {currentStep === 1 && <PatientInfor />}
+            {currentStep === 2 && <BookingInfor />}
+            {currentStep === 3 && <BookingConfirmation />}
           </div>
         </div>
-      )}
-    </div>
+
+        {isShowConfirmModal && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div
+              className="bg-white rounded-xl p-8 w-[90%] max-w-[550px] shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-xl font-bold text-gray-800 mb-4">
+                Bạn có chắc chắn muốn hủy đặt lịch?
+              </h2>
+              <p className="text-sm text-gray-600 mb-6">
+                Thao tác này sẽ xóa tất cả thông tin bạn đã nhập...
+              </p>
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => dispatch(setShowConfirmModal(false))}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:underline"
+                >
+                  Không
+                </button>
+                <button
+                  onClick={confirmCancel}
+                  className="bg-red-500 text-white px-5 py-2 rounded-md hover:bg-red-600"
+                >
+                  Hủy đặt lịch
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div className="fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            <strong className="font-bold">Lỗi!</strong>
+            <span className="block sm:inline"> {error}</span>
+          </div>
+        )}
+      </div>
+ 
   );
 };
 

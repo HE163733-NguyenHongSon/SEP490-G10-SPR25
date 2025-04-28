@@ -1,13 +1,15 @@
-"use client";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useUser } from "@/contexts/UserContext";
-import { patientService } from "@/services/patientService";
+import { useDispatch, useSelector } from "react-redux";
+import { addPatientAsync } from "../redux/bookingThunks";
+import type { AppDispatch, RootState } from "../../store";
+
+import { setIsAddingPatient, setPatients } from "../redux/bookingSlice";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useBookingContext } from "@/patient/contexts/BookingContext";
 
 const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
   const [userName, setUserName] = useState("");
@@ -18,13 +20,12 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
   const [relationship, setRelationship] = useState("");
   const [address, setAddress] = useState("");
   const { user } = useUser();
-  const { setPatients, setAddingPatient, setSelectedPatient, patients } =
-    useBookingContext();
-
+  const dispatch = useDispatch<AppDispatch>();
+  const patients  = useSelector((state: RootState) => state.booking.patients);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const addedPatient: IAddedPatient = {
+    const addedPatient = {
       userName,
       phone,
       dob: dob ? format(dob, "yyyy-MM-dd") : "",
@@ -34,31 +35,15 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
       address,
       guardianId: user?.userId,
     };
-
-    // Gọi API để thêm bệnh nhân
-    const newPatient = await patientService.addPatient(addedPatient);
-
-    if (newPatient) {
+    console.log("dsdsd", addedPatient);
+    try {
+      await dispatch(addPatientAsync(addedPatient)).unwrap();
+      dispatch(setIsAddingPatient(true));
+      dispatch(setPatients([...patients, addedPatient as IPatient]));
       toast.success("Thêm bệnh nhân thành công!");
-
-      setPatients([
-        ...patients,
-        {
-          ...newPatient,
-          userName,
-          phone,
-          dob: dob ? format(dob, "yyyy-MM-dd") : "",
-          gender,
-          citizenId,
-          relationship,
-          address,
-          guardianId: user?.userId,
-        },
-      ]);
-      setAddingPatient(true);
-      setSelectedPatient(newPatient);
-    } else {
-      setAddingPatient(false);
+      onClose();
+    } catch {
+      dispatch(setIsAddingPatient(false));
       toast.error("Thêm thất bại hoặc bệnh nhân đã tồn tại!");
     }
   };

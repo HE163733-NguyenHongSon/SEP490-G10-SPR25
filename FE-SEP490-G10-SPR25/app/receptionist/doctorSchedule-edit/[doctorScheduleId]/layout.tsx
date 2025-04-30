@@ -1,4 +1,4 @@
-import ClearButton from "@/components/ClearButton";
+import ClearButton from "@/common/components/ClearButton";
 
 export default async function ReceptionistDoctorScheduleUpdateLayout({
   children,

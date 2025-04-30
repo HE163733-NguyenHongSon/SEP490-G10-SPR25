@@ -71,7 +71,7 @@ const reservationService = {
           symptoms,
         }),
       });
-
+    
       if (!res.ok) {
         console.error("Gợi ý thất bại:", await res.text());
         return null;

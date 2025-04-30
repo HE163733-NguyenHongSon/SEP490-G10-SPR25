@@ -1,19 +1,19 @@
 "use client";
-import FilterButtonList from "@/components/FilterButtonList";
-import reservationService from "@/services/reservationService";
-import PaginatedItems from "@/components/PaginatedItems";
+import FilterButtonList from "@/common/components/FilterButtonList";
+import reservationService from "@/common/services/reservationService";
+import PaginatedItems from "@/common/components/PaginatedItems";
 import ReservationList from "./components/ReservationList";
-import SelectSort from "@/components/SelectSort";
+import SelectSort from "@/common/components/SelectSort";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { LoadingTable } from "@/components/LoadingTable";
+import { LoadingTable } from "@/common/components/LoadingTable";
 import { useSearchParams } from "next/navigation";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useUser } from "@/contexts/UserContext";
+import { useUser } from "@/common/contexts/UserContext";
 
 const ReservationPage = () => {
   const searchParams = useSearchParams();
@@ -36,27 +36,22 @@ const ReservationPage = () => {
     { label: "Giá dịch vụ giảm dần", value: "Giá dịch vụ giảm dần" },
   ];
 
-  const {
-    data: reservationList = [],
-    isLoading: isLoadingReservations,
-  } = useQuery({
-    queryKey: ["reservations", patientId, status, sortBy],
-    queryFn: async (): Promise<IReservation[]> => {
-      const result = await reservationService.getListReservationByFilter(
-        patientId,
-        status,
-        sortBy
-      );
+  const { data: reservationList = [], isLoading: isLoadingReservations } =
+    useQuery({
+      queryKey: ["reservations", patientId, status, sortBy],
+      queryFn: async (): Promise<IReservation[]> => {
+        const result = await reservationService.getListReservationByFilter(
+          patientId,
+          status,
+          sortBy
+        );
 
-      return result;
-    },
-    staleTime: 30000,
-  });
+        return result;
+      },
+      staleTime: 30000,
+    });
 
-  const {
-    data: statusList = [],
-    isLoading: isLoadingStatus,
-  } = useQuery({
+  const { data: statusList = [], isLoading: isLoadingStatus } = useQuery({
     queryKey: ["statusList"],
     queryFn: async () => {
       const statuses = await Promise.all([

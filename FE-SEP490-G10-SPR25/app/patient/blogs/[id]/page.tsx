@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import * as signalR from "@microsoft/signalr";
-import { getCurrentUser } from "@/services/authService";
+import { getCurrentUser } from "@/common/services/authService";
 import { Trash2, Edit2, Reply, Send } from "lucide-react";
 
 interface PostSection {
@@ -44,7 +44,8 @@ const PatientBlogDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
-  const [hubConnection, setHubConnection] = useState<signalR.HubConnection | null>(null);
+  const [hubConnection, setHubConnection] =
+    useState<signalR.HubConnection | null>(null);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [currentUserName, setCurrentUserName] = useState<string | null>(null);
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
@@ -55,7 +56,9 @@ const PatientBlogDetailPage = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post/${id}`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/post/${id}`
+        );
         if (!res.ok) throw new Error("Lỗi khi gọi API");
         const data: PostDetail = await res.json();
         setPost(data);
@@ -87,7 +90,7 @@ const PatientBlogDetailPage = () => {
       .build();
 
     connect.on("ReceiveComment", (message: Comment) => {
-      setPost(prev => {
+      setPost((prev) => {
         if (!prev) return prev;
         return {
           ...prev,
@@ -97,11 +100,11 @@ const PatientBlogDetailPage = () => {
     });
 
     connect.on("UpdateComment", (updatedComment: Comment) => {
-      setPost(prev => {
+      setPost((prev) => {
         if (!prev) return prev;
         return {
           ...prev,
-          comments: prev.comments.map(c => 
+          comments: prev.comments.map((c) =>
             c.commentId === updatedComment.commentId ? updatedComment : c
           ),
         };
@@ -109,18 +112,19 @@ const PatientBlogDetailPage = () => {
     });
 
     connect.on("DeleteComment", (commentId: number) => {
-      setPost(prev => {
+      setPost((prev) => {
         if (!prev) return prev;
         return {
           ...prev,
-          comments: prev.comments.filter(c => c.commentId !== commentId),
+          comments: prev.comments.filter((c) => c.commentId !== commentId),
         };
       });
     });
 
-    connect.start()
+    connect
+      .start()
       .then(() => console.log("Kết nối SignalR thành công"))
-      .catch(err => console.error("Lỗi khi kết nối SignalR:", err));
+      .catch((err) => console.error("Lỗi khi kết nối SignalR:", err));
 
     setHubConnection(connect);
 
@@ -153,27 +157,30 @@ const PatientBlogDetailPage = () => {
     if (!editedContent.trim()) return;
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments/${commentId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: editedContent,
-          userId: currentUserId,
-        })
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/comments/${commentId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: editedContent,
+            userId: currentUserId,
+          }),
+        }
+      );
 
       if (res.ok) {
         const updatedComment = await res.json();
         if (hubConnection) {
           await hubConnection.invoke("UpdateComment", updatedComment);
         } else {
-          setPost(prev => {
+          setPost((prev) => {
             if (!prev) return prev;
             return {
               ...prev,
-              comments: prev.comments.map(c => 
+              comments: prev.comments.map((c) =>
                 c.commentId === commentId ? { ...c, content: editedContent } : c
               ),
             };
@@ -192,25 +199,28 @@ const PatientBlogDetailPage = () => {
     if (!window.confirm("Bạn có chắc muốn xóa bình luận này?")) return;
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments/${commentId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: currentUserId,
-        })
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/comments/${commentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: currentUserId,
+          }),
+        }
+      );
 
       if (res.ok) {
         if (hubConnection) {
           await hubConnection.invoke("DeleteComment", commentId);
         } else {
-          setPost(prev => {
+          setPost((prev) => {
             if (!prev) return prev;
             return {
               ...prev,
-              comments: prev.comments.filter(c => c.commentId !== commentId),
+              comments: prev.comments.filter((c) => c.commentId !== commentId),
             };
           });
         }
@@ -226,19 +236,22 @@ const PatientBlogDetailPage = () => {
     if (!replyContent.trim() || !id || !currentUserId) return;
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: replyContent,
-          postId: parseInt(id as string),
-          userId: currentUserId,
-          userName: currentUserName,
-          repliedCommentId: parentCommentId
-        })
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/comments`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: replyContent,
+            postId: parseInt(id as string),
+            userId: currentUserId,
+            userName: currentUserName,
+            repliedCommentId: parentCommentId,
+          }),
+        }
+      );
 
       if (res.ok) {
         const saved = await res.json();
@@ -255,18 +268,30 @@ const PatientBlogDetailPage = () => {
     }
   };
 
-  const renderComment = (comment: Comment, allComments: Comment[], level = 0) => {
-    const replies = allComments.filter(c => c.repliedCommentId === comment.commentId);
+  const renderComment = (
+    comment: Comment,
+    allComments: Comment[],
+    level = 0
+  ) => {
+    const replies = allComments.filter(
+      (c) => c.repliedCommentId === comment.commentId
+    );
     const isCurrentUserComment = comment.userId === currentUserId;
     const indent = Math.min(level, 5);
-    
+
     return (
       <div
         key={comment.commentId}
-        className={`border-l-4 pl-4 mb-6 ${isCurrentUserComment ? 'border-blue-400' : 'border-gray-200'}`}
+        className={`border-l-4 pl-4 mb-6 ${
+          isCurrentUserComment ? "border-blue-400" : "border-gray-200"
+        }`}
         style={{ marginLeft: `${indent * 16}px` }}
       >
-        <div className={`p-4 rounded-lg ${isCurrentUserComment ? 'bg-blue-50' : 'bg-gray-50'}`}>
+        <div
+          className={`p-4 rounded-lg ${
+            isCurrentUserComment ? "bg-blue-50" : "bg-gray-50"
+          }`}
+        >
           {editingCommentId === comment.commentId ? (
             <div className="mb-2">
               <textarea
@@ -293,7 +318,9 @@ const PatientBlogDetailPage = () => {
           ) : (
             <>
               <div className="flex justify-between items-start mb-1">
-                <span className="font-medium text-blue-600">{comment.userName || "Người dùng ẩn danh"}</span>
+                <span className="font-medium text-blue-600">
+                  {comment.userName || "Người dùng ẩn danh"}
+                </span>
                 {isCurrentUserComment && (
                   <div className="flex space-x-2">
                     <button
@@ -315,7 +342,9 @@ const PatientBlogDetailPage = () => {
               </div>
               <p className="text-gray-800 mb-2">{comment.content}</p>
               <div className="flex justify-between items-center text-xs text-gray-500">
-                <span>{new Date(comment.commentOn).toLocaleString("vi-VN")}</span>
+                <span>
+                  {new Date(comment.commentOn).toLocaleString("vi-VN")}
+                </span>
                 <button
                   onClick={() => startReplying(comment.commentId)}
                   className="flex items-center gap-1 text-blue-500 hover:text-blue-700 transition-colors"
@@ -327,7 +356,7 @@ const PatientBlogDetailPage = () => {
             </>
           )}
         </div>
-        
+
         {replyingToId === comment.commentId && (
           <div className="mt-3 mb-4 ml-4">
             <textarea
@@ -354,10 +383,12 @@ const PatientBlogDetailPage = () => {
             </div>
           </div>
         )}
-        
+
         {replies.length > 0 && (
           <div className="mt-3">
-            {replies.map(reply => renderComment(reply, allComments, level + 1))}
+            {replies.map((reply) =>
+              renderComment(reply, allComments, level + 1)
+            )}
           </div>
         )}
       </div>
@@ -368,19 +399,22 @@ const PatientBlogDetailPage = () => {
     if (!newComment.trim() || !id || !currentUserId) return;
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/comments`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: newComment,
-          postId: parseInt(id as string),
-          userId: currentUserId,
-          userName: currentUserName,
-          repliedCommentId: null
-        })
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/comments`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            content: newComment,
+            postId: parseInt(id as string),
+            userId: currentUserId,
+            userName: currentUserName,
+            repliedCommentId: null,
+          }),
+        }
+      );
 
       if (res.ok) {
         const saved = await res.json();
@@ -397,14 +431,20 @@ const PatientBlogDetailPage = () => {
   };
 
   if (loading) return <div className="text-center mt-10">Đang tải...</div>;
-  if (error || !post) return <div className="text-center text-red-500 mt-10">{error || "Không tìm thấy bài viết"}</div>;
+  if (error || !post)
+    return (
+      <div className="text-center text-red-500 mt-10">
+        {error || "Không tìm thấy bài viết"}
+      </div>
+    );
 
   return (
     <div className="bg-gray-100 min-h-screen py-10 px-4">
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg">
         <h1 className="text-3xl font-bold mb-3">{post.postTitle}</h1>
         <p className="text-gray-500 text-sm mb-4">
-          {new Date(post.postCreatedDate).toLocaleDateString("vi-VN")} - {post.authorName ?? "Ẩn danh"}
+          {new Date(post.postCreatedDate).toLocaleDateString("vi-VN")} -{" "}
+          {post.authorName ?? "Ẩn danh"}
         </p>
 
         {post.postImageUrl && (
@@ -417,13 +457,15 @@ const PatientBlogDetailPage = () => {
           </div>
         )}
 
-        <p className="text-lg text-gray-700 mb-8 leading-relaxed">{post.postDescription}</p>
+        <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+          {post.postDescription}
+        </p>
 
         {post.postSourceUrl && (
           <p className="text-sm text-blue-600 hover:text-blue-800 transition-colors mb-8">
-            <a 
-              href={post.postSourceUrl} 
-              target="_blank" 
+            <a
+              href={post.postSourceUrl}
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 hover:underline"
             >
@@ -432,27 +474,33 @@ const PatientBlogDetailPage = () => {
           </p>
         )}
 
-        {post.postSections?.sort((a, b) => a.sectionIndex - b.sectionIndex).map((section, idx) => (
-          <div key={idx} className="mb-12">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900">{section.sectionTitle}</h2>
-            {section.postImageUrl && (
-              <div className="group relative w-full mb-6 rounded-lg overflow-hidden">
-                <div className="aspect-w-16 aspect-h-9">
-                  <img
-                    src={`${process.env.NEXT_PUBLIC_S3_BASE_URL}/${section.postImageUrl}`}
-                    alt={section.sectionTitle}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+        {post.postSections
+          ?.sort((a, b) => a.sectionIndex - b.sectionIndex)
+          .map((section, idx) => (
+            <div key={idx} className="mb-12">
+              <h2 className="text-2xl font-semibold mb-4 text-gray-900">
+                {section.sectionTitle}
+              </h2>
+              {section.postImageUrl && (
+                <div className="group relative w-full mb-6 rounded-lg overflow-hidden">
+                  <div className="aspect-w-16 aspect-h-9">
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_S3_BASE_URL}/${section.postImageUrl}`}
+                      alt={section.sectionTitle}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
                 </div>
-              </div>
-            )}
-            <p className="text-gray-800 whitespace-pre-line leading-relaxed">{section.sectionContent}</p>
-          </div>
-        ))}
+              )}
+              <p className="text-gray-800 whitespace-pre-line leading-relaxed">
+                {section.sectionContent}
+              </p>
+            </div>
+          ))}
 
         <div className="mt-16">
           <h3 className="text-2xl font-semibold mb-6">Bình luận</h3>
-          
+
           <div className="mb-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
             <h4 className="text-lg font-medium mb-3">Thêm bình luận mới</h4>
             <textarea
@@ -471,14 +519,16 @@ const PatientBlogDetailPage = () => {
               <span>Gửi bình luận</span>
             </button>
           </div>
-          
+
           <div className="space-y-2">
             {post.comments.length > 0 ? (
               post.comments
-                .filter(c => !c.repliedCommentId)
-                .map(parent => renderComment(parent, post.comments))
+                .filter((c) => !c.repliedCommentId)
+                .map((parent) => renderComment(parent, post.comments))
             ) : (
-              <p className="text-gray-500 italic text-center py-4">Chưa có bình luận nào. Hãy là người đầu tiên bình luận!</p>
+              <p className="text-gray-500 italic text-center py-4">
+                Chưa có bình luận nào. Hãy là người đầu tiên bình luận!
+              </p>
             )}
           </div>
         </div>

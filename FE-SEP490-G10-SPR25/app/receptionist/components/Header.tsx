@@ -2,7 +2,7 @@
 import { ThemeToggleButton } from "../components/ThemeToggleButton";
 import NotificationDropdown from "../components/NotificationDropdown";
 import UserDropdown from "../components/UserDropdown";
-import { useSidebar } from "@/contexts/SidebarContext";
+import { useSidebar } from "@/common/contexts/SidebarContext";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
@@ -51,7 +51,9 @@ const Header: React.FC = () => {
           >
             <Bars3Icon className="w-6 h-6" />
           </button>
-          <h1 className="ml-4 text-xl font-semibold text-gray-800">Receptionist Dashboard</h1>
+          <h1 className="ml-4 text-xl font-semibold text-gray-800">
+            Receptionist Dashboard
+          </h1>
         </div>
         <div className="flex items-center space-x-4">
           <NotificationDropdown />

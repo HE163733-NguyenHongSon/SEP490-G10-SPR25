@@ -1,5 +1,5 @@
 "use client";
-import { useSidebar } from "@/contexts/SidebarContext";
+import { useSidebar } from "@/common/contexts/SidebarContext";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

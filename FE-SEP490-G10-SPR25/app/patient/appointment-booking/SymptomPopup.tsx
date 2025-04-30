@@ -1,7 +1,6 @@
 "use client";
-
-import { useUser } from "@/contexts/UserContext";
-import { patientService } from "@/services/patientService";
+import { useUser } from "@/common/contexts/UserContext";
+import { patientService } from "@/common/services/patientService";
 import { useQuery } from "@tanstack/react-query";
 import BookingForm from "./components/BookingForm";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
@@ -10,7 +9,7 @@ import { FileProvider } from "./contexts/FileContext";
 
 import {
   setSymptoms,
-  setLoading,
+  setIsLoading,
   setPatients,
   setShowBookingForm,
 } from "./redux/bookingSlice";
@@ -49,7 +48,7 @@ const PopupBody = () => {
       };
       dispatch(setPatients([guardian, ...(patientDetail?.dependents || [])]));
       console.log([user as IPatient, ...(patientDetail?.dependents || [])]);
-      dispatch(setLoading(true));
+      dispatch(setIsLoading(true));
       dispatch(setShowBookingForm(true));
     }
   };

@@ -250,7 +250,6 @@ export const doctorService = {
         query.length > 0 ? `$filter=${query.join(" or ")}&` : ""
       }${sortBy !== "academic_title" ? `$orderby=${orderBy} desc` : ""}`;
       
-      console.log(`Fetching filtered doctors from: ${apiEndpoint}`);
       const res = await fetch(apiEndpoint);
     
       if (!res.ok) {

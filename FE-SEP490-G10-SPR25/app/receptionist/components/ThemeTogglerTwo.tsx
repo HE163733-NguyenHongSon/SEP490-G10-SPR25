@@ -1,5 +1,5 @@
 "use client";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "@/common/contexts/ThemeContext";
 import React from "react";
 
 export default function ThemeTogglerTwo() {

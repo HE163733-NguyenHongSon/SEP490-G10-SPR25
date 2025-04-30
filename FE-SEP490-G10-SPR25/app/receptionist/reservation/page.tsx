@@ -1,6 +1,16 @@
 "use client";
-import { useUser } from "@/contexts/UserContext";
-import { Button, Col, Form, Input, message, Modal, Row, Space, Table } from "antd";
+import { useUser } from "@/common/contexts/UserContext";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  message,
+  Modal,
+  Row,
+  Space,
+  Table,
+} from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -22,7 +32,7 @@ interface IReservation {
     dayOfWeek: string;
     slotStartTime: string;
     slotEndTime: string;
-  }
+  };
   appointmentDate: string;
   updatedDate: string;
   status: string;
@@ -30,65 +40,80 @@ interface IReservation {
 
 const Reservation = () => {
   const [form] = Form.useForm();
-  const [selectedReservation, setSelectedReservation] = useState<IReservation | null>(null);
+  const [selectedReservation, setSelectedReservation] =
+    useState<IReservation | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [reservations, setReservations] = useState<IReservation[]>([]);
-  const { user } = useUser()
+  const { user } = useUser();
   useEffect(() => {
     const fetchReservations = async () => {
-      const response = await axios.get("http://localhost:5220/api/Reservations");
-      const filtered = response.data.filter((r: IReservation) => r.status === "Đang chờ");
+      const response = await axios.get(
+        "http://localhost:5220/api/Reservations"
+      );
+      const filtered = response.data.filter(
+        (r: IReservation) => r.status === "Đang chờ"
+      );
       setReservations(filtered);
     };
     fetchReservations();
   }, []);
-  
+
   const handleConfirm = async (record: IReservation) => {
     try {
-      await axios.put("http://localhost:5220/api/Reservations/UpdateReservationStatus", {
-        reservationId: record.reservationId,
-        cancellationReason: "", 
-        status: "Xác nhận",
-        updatedByUserId: user?.userId, 
-        updatedDate: new Date().toISOString(),
-      });
-      setReservations(prev => prev.filter(r => r.reservationId !== record.reservationId));
+      await axios.put(
+        "http://localhost:5220/api/Reservations/UpdateReservationStatus",
+        {
+          reservationId: record.reservationId,
+          cancellationReason: "",
+          status: "Xác nhận",
+          updatedByUserId: user?.userId,
+          updatedDate: new Date().toISOString(),
+        }
+      );
+      setReservations((prev) =>
+        prev.filter((r) => r.reservationId !== record.reservationId)
+      );
       message.success(`Confirmed reservation ID: ${record.reservationId}`);
     } catch (error) {
       message.error("Failed to confirm reservation");
     }
   };
-  
+
   const handleCancel = async (record: IReservation) => {
     try {
-      await axios.put("http://localhost:5220/api/Reservations/UpdateReservationStatus", {
-        reservationId: record.reservationId,
-        cancellationReason: "", 
-        status: "Đã hủy",
-        updatedByUserId: user?.userId, 
-        updatedDate: new Date().toISOString(),
-      });
-      setReservations(prev => prev.filter(r => r.reservationId !== record.reservationId));
+      await axios.put(
+        "http://localhost:5220/api/Reservations/UpdateReservationStatus",
+        {
+          reservationId: record.reservationId,
+          cancellationReason: "",
+          status: "Đã hủy",
+          updatedByUserId: user?.userId,
+          updatedDate: new Date().toISOString(),
+        }
+      );
+      setReservations((prev) =>
+        prev.filter((r) => r.reservationId !== record.reservationId)
+      );
       message.warning(`Cancelled reservation ID: ${record.reservationId}`);
     } catch (error) {
       message.error("Failed to cancel reservation");
     }
   };
-  
+
   const handleViewDetail = (record: IReservation) => {
     setSelectedReservation(record);
     form.setFieldsValue(record); // Đặt giá trị vào form
     setIsModalVisible(true);
   };
-  
-  
+
   const columns = [
     {
       title: "ReservationId",
       dataIndex: "reservationId",
       key: "reservationId",
-      sorter: (a: IReservation, b: IReservation) => a.reservationId - b.reservationId,
-    },    
+      sorter: (a: IReservation, b: IReservation) =>
+        a.reservationId - b.reservationId,
+    },
     {
       title: "Name",
       key: "name",
@@ -116,7 +141,8 @@ const Reservation = () => {
       dataIndex: "appointmentDate",
       key: "appointmentDate",
       sorter: (a: IReservation, b: IReservation) =>
-        new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime(),
+        new Date(a.appointmentDate).getTime() -
+        new Date(b.appointmentDate).getTime(),
     },
     {
       title: "Update date",
@@ -130,7 +156,11 @@ const Reservation = () => {
       key: "action",
       render: (_: any, record: IReservation) => (
         <Space size="middle">
-          <Button onClick={() => handleConfirm(record)} type="primary" size="small">
+          <Button
+            onClick={() => handleConfirm(record)}
+            type="primary"
+            size="small"
+          >
             Confirm
           </Button>
           <Button onClick={() => handleCancel(record)} danger size="small">
@@ -149,7 +179,7 @@ const Reservation = () => {
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Reservation Management</h1>
       </div>
-      
+
       <Table
         dataSource={reservations}
         columns={columns}
@@ -202,7 +232,9 @@ const Reservation = () => {
               <Form.Item
                 label="Phone Number"
                 name={["patient", "phone"]}
-                rules={[{ required: true, message: "Please enter phone number" }]}
+                rules={[
+                  { required: true, message: "Please enter phone number" },
+                ]}
               >
                 <Input />
               </Form.Item>
@@ -241,7 +273,7 @@ const Reservation = () => {
           >
             <Input />
           </Form.Item>
-          
+
           <Form.Item
             label="Degree"
             name={["doctorSchedule", "location"]}
@@ -303,12 +335,8 @@ const Reservation = () => {
           </Form.Item> */}
         </Form>
       </Modal>
-
-
     </div>
-    
   );
-  
 };
 
 export default Reservation;

@@ -7,10 +7,14 @@ import { usePathname } from "next/navigation";
 import { assets } from "@/public/images/assets";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getCurrentUser, logout, User } from "../../services/authService";
-import { specialtyService } from "@/services/specialtyService";
-import { doctorService } from "@/services/doctorService";
-import { serviceService } from "@/services/serviceService";
+import {
+  getCurrentUser,
+  logout,
+  User,
+} from "../../common/services/authService";
+import { specialtyService } from "@/common/services/specialtyService";
+import { doctorService } from "@/common/services/doctorService";
+import { serviceService } from "@/common/services/serviceService";
 import HomeSearch from "./HomeSearch";
 const Navbar: React.FC = () => {
   const [isShowMobileMenu, setIsShowMobileMenu] = useState(false);
@@ -30,7 +34,7 @@ const Navbar: React.FC = () => {
             label: s.specialtyName,
             value: s.specialtyId?.toString() || "",
             image: s.image || "",
-            type: "specialty" ,
+            type: "specialty",
           })),
           ...doctors.map((d: IDoctor) => ({
             label: d.userName,
@@ -44,7 +48,7 @@ const Navbar: React.FC = () => {
             image: s.image || "",
             type: "service",
           })),
-        ].filter(item => item.value !== "");
+        ].filter((item) => item.value !== "");
 
         setSuggestedData(suggestedData);
       } catch (error) {
@@ -197,7 +201,7 @@ const Navbar: React.FC = () => {
                   href="/patient/person"
                   className="text-white hover:text-cyan-400 transition-colors duration-200 text-sm font-medium"
                 >
-                 {currentUser.userName}
+                  {currentUser.userName}
                 </Link>
                 <button
                   onClick={handleLogout}

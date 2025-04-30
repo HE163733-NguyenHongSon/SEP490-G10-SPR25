@@ -39,6 +39,7 @@ const DatetimeSelector = () => {
     availableDates,
     isLoading,
     isShowRestoreSuggestion,
+    customSelectStyles,
   } = useSelector((state: RootState) => state.booking);
 
   const timeOptions: ITimeOption[] = useMemo(() => {
@@ -177,27 +178,17 @@ const DatetimeSelector = () => {
             Chọn giờ
           </label>
           <Select
-          value={
-            selectedTime ? timeOptions.find((opt) => opt.value === selectedTime) : null
-          }
-          
+            value={
+              selectedTime
+                ? timeOptions.find((opt) => opt.value === selectedTime)
+                : null
+            }
             onChange={handleTimeChange}
             options={timeOptions}
             placeholder={timeOptions.length ? "Chọn giờ" : "Không có khung giờ"}
             isDisabled={!selectedDate || timeOptions.length === 0}
             className="w-full"
-            styles={{
-              control: (base, state) => ({
-                ...base,
-                backgroundColor: state.isDisabled ? "#f9f9f9" : "#fff",
-                color: "#4b5563",
-                borderColor: state.isFocused ? "#3b82f6" : "#d1d5db",
-                boxShadow: state.isFocused ? "0 0 0 1px #3b82f6" : "none",
-                "&:hover": { borderColor: "#3b82f6" },
-              }),
-              singleValue: (base) => ({ ...base, color: "#374151" }),
-              placeholder: (base) => ({ ...base, color: "#9ca3af" }),
-            }}
+            styles={customSelectStyles}
             noOptionsMessage={() => "Không có khung giờ"}
           />
         </div>

@@ -1,11 +1,11 @@
 "use client";
 
-import OptionFilter from "@/components/OptionFilter";
-import CollapsibleSection from "@/components/CollapsibleSection";
-import SelectList from "@/components/SelectList";
-import { serviceService } from "@/services/serviceService";
-import { roomService } from "@/services/roomService";
-import { slotService } from "@/services/slotService";
+import OptionFilter from "@/common/components/OptionFilter";
+import CollapsibleSection from "@/common/components/CollapsibleSection";
+import SelectList from "@/common/components/SelectList";
+import { serviceService } from "@/common/services/serviceService";
+import { roomService } from "@/common/services/roomService";
+import { slotService } from "@/common/services/slotService";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -26,9 +26,21 @@ export default function DoctorSchedulesLayout({
       const roomData = await roomService.getRoomList();
       const slotData = await slotService.getSlotList();
 
-      setServices(serviceData.map(s => ({ label: s.serviceName, value: s.serviceId.toString() })));
-      setRooms(roomData.map(r => ({ label: r.roomName, value: r.roomId.toString() })));
-      setSlots(slotData.map(s => ({ label: `${s.slotStartTime} - ${s.slotEndTime}`, value: s.slotId.toString() })));
+      setServices(
+        serviceData.map((s) => ({
+          label: s.serviceName,
+          value: s.serviceId.toString(),
+        }))
+      );
+      setRooms(
+        roomData.map((r) => ({ label: r.roomName, value: r.roomId.toString() }))
+      );
+      setSlots(
+        slotData.map((s) => ({
+          label: `${s.slotStartTime} - ${s.slotEndTime}`,
+          value: s.slotId.toString(),
+        }))
+      );
     };
 
     fetchData();

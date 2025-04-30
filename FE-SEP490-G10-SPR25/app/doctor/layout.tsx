@@ -1,17 +1,16 @@
 "use client";
 
-import React, { ReactNode } from 'react';
-import ProtectedRoute from '../components/ProtectedRoute';
-import { AppRole } from '../types/roles';
+import React, { ReactNode } from "react";
+import ProtectedRoute from "../common/components/ProtectedRoute";
+import { AppRole } from "../common/types/roles";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 
-
 import "../globals.css";
 
-import { SidebarProvider } from "@/contexts/SidebarContext";
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import Backdrop from '@/admin/components/Backdrop';
+import { SidebarProvider } from "../common/contexts/SidebarContext"
+import { ThemeProvider } from "../common/contexts/ThemeContext"
+import Backdrop from "../doctor/components/Backdrop"
 
 interface DoctorLayoutProps {
   children: ReactNode;
@@ -38,4 +37,4 @@ export default function DoctorLayout({ children }: DoctorLayoutProps) {
       </div>
     </ProtectedRoute>
   );
-} 
+}

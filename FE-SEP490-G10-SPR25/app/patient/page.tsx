@@ -1,9 +1,9 @@
 import { About } from "./components/About";
 import { SpecialtyList } from "@/patient/components/SpecialtyList";
-import { specialtyService } from "@/services/specialtyService";
-import { feedbackService } from "@/services/feedbackService";
+import { specialtyService } from "@/common/services/specialtyService";
+import { feedbackService } from "@/common/services/feedbackService";
 import { DoctorList } from "@/patient/components/DoctorList";
-import { TabsGroup } from "@/components/TabsGroup";
+import { TabsGroup } from "@/common/components/TabsGroup";
 import ListService from "@/patient/components/ListService";
 import FeedbackList from "@/patient/components/FeedbackList";
 import VideoPlayer from "./components/VideoPlayer";

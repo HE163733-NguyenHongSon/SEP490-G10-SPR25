@@ -24,5 +24,5 @@ interface IBookingState {
   isSubmitting: boolean;
   isShowConfirmModal: boolean;
   availableSchedules: IAvailableSchedule[];
-  customSelectStyles: React.CSSProperties;
+  customSelectStyles: StylesConfig<{ value: string; label: string }, false>;
 }

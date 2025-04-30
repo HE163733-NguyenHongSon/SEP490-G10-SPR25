@@ -4,9 +4,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import { assets } from "@/public/images/assets";
 import MedicalRecordList from "@/patient/person/medical-report/components/MedicalRecordList";
 import ExportButton from "@/patient/person/medical-report/components/ExportButton";
-import { medicalReportService } from "@/services/medicalReportService";
+import { medicalReportService } from "@/common/services/medicalReportService";
 import { useQuery } from "@tanstack/react-query";
-import { LoadingTable } from "@/components/LoadingTable";
+import { LoadingTable } from "@/common/components/LoadingTable";
 import Image from "next/image";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
@@ -16,10 +16,10 @@ dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 import Fuse from "fuse.js";
 import { DateRangeSelector } from "@/patient/person/medical-report/components/DateRangeSelector";
-import { patientService } from "@/services/patientService";
+import { patientService } from "@/common/services/patientService";
 import SelectPatient from "@/patient/person/medical-report/components/SelectPatient";
-import { getTimeAgo } from "@/utils/timeUtils";
-import { useUser } from "@/contexts/UserContext";
+import { getTimeAgo } from "@/common/utils/timeUtils";
+import { useUser } from "@/common/contexts/UserContext";
 import {
   ClipboardDocumentCheckIcon,
   UserGroupIcon,

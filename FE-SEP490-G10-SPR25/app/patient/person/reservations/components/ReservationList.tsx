@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import Image from "next/image";
 import moment from "moment";
 import ReactDOMServer from "react-dom/server";
-import { formatTimeWithPeriod } from "@/utils/timeUtils";
-import reservationService from "@/services/reservationService";
+import { formatTimeWithPeriod } from "@/common/utils/timeUtils";
+import reservationService from "@/common/services/reservationService";
 import { Modal } from "./Modal";
 import CancelReservationMessage from "./CancelReservationMessage";
-import { emailService } from "@/services/emailService";
+import { emailService } from "@/common/services/emailService";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 interface ReservationListProps {

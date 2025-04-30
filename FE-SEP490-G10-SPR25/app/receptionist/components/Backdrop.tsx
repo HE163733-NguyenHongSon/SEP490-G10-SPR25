@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { useSidebar } from "@/contexts/SidebarContext";
+import React from "react";
+import { useSidebar } from "@/common/contexts/SidebarContext";
 
 export default function Backdrop() {
   const { isMobileOpen, toggleMobileSidebar } = useSidebar();

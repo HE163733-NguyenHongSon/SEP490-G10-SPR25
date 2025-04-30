@@ -587,7 +587,11 @@ VALUES
   (N'Da liễu', N'Điều trị các bệnh về da, móng và tóc.','chuyenkhoa_13.jpg'),
   (N'Tâm thần', N'Điều trị các rối loạn tâm thần và các bệnh lý tâm thần.','chuyenkhoa_14.jpg'),
   (N'Xét nghiệm y học', N'Thực hiện các xét nghiệm lâm sàng như xét nghiệm máu, nước tiểu và chẩn đoán hình ảnh.','chuyenkhoa_15.jpg'),
-  (N'Hồi sức cấp cứu', N'Điều trị cho bệnh nhân nguy kịch hoặc cần chăm sóc đặc biệt.','chuyenkhoa_16.jpg');
+  (N'Hồi sức cấp cứu', N'Điều trị cho bệnh nhân nguy kịch hoặc cần chăm sóc đặc biệt.','chuyenkhoa_16.jpg'),
+  (N'Hô hấp', N'Chẩn đoán và điều trị các bệnh liên quan đến hệ hô hấp.', 'chuyenkhoa_17.jpg'),
+  (N'Răng Hàm Mặt', N'Chẩn đoán và điều trị các bệnh lý về răng, hàm và mặt.', 'chuyenkhoa_18.jpg');
+
+
 
 
 -----------------------------------------------------------------------------------------------------------------
@@ -813,7 +817,34 @@ VALUES
 N'Kiểm tra và đánh giá chức năng của mạch vành để phát hiện các vấn đề liên quan đến tim mạch, bao gồm bệnh mạch vành, tắc nghẽn động mạch, và các bệnh lý tim mạch khác.',
 N'1. Khai thác tiền sử bệnh tim mạch, bệnh lý gia đình liên quan đến mạch vành.\n2. Đo các chỉ số sinh tồn: huyết áp, nhịp tim.\n3. Thực hiện các xét nghiệm như điện tâm đồ (ECG), siêu âm tim, chụp CT mạch vành hoặc chụp mạch máu qua catheter.\n4. Đánh giá tình trạng mạch vành và tư vấn điều trị nếu cần thiết.',
 N'Sử dụng máy đo huyết áp, máy điện tim (ECG), máy siêu âm tim Doppler, máy chụp CT mạch vành.',
-800000, '00:30:00', 1, 2, N'dichvu_21.jpg',4.5, 15);
+800000, '00:30:00', 1, 2, N'dichvu_21.jpg',4.5, 15),
+
+(N'Khám hô hấp tổng quát',
+N'Kiểm tra và đánh giá tổng quát chức năng hô hấp, phát hiện các bệnh lý về phổi và đường hô hấp.',
+N'1. Khai thác tiền sử bệnh lý hô hấp và các yếu tố nguy cơ.\n2. Đo các chỉ số sinh tồn: nhịp thở, độ bão hòa oxy.\n3. Thực hiện các xét nghiệm như X-quang phổi, đo chức năng hô hấp (spirometry).\n4. Đánh giá tình trạng hô hấp và tư vấn điều trị nếu cần thiết.',
+N'Sử dụng máy đo chức năng hô hấp (spirometer), máy đo oxy máu (pulse oximeter), máy chụp X-quang phổi.',
+600000, '00:30:00', 1, 17, N'dichvu_22.jpg',4.6, 17),
+
+(N'Khám thần kinh tổng quát',
+N'Kiểm tra và đánh giá tổng quát chức năng thần kinh, phát hiện các rối loạn thần kinh và các bệnh lý liên quan đến hệ thần kinh.',
+N'1. Khai thác tiền sử bệnh lý thần kinh và các yếu tố nguy cơ.\n2. Đánh giá phản xạ, cảm giác, vận động và các chức năng thần kinh khác.\n3. Thực hiện các xét nghiệm hỗ trợ như MRI não, CT scan nếu cần thiết.\n4. Tư vấn hướng điều trị và quản lý bệnh lý thần kinh.',
+N'Sử dụng búa phản xạ, thiết bị đo điện cơ (EMG), máy MRI, máy CT scan.',
+650000, '00:40:00', 1, 6, N'dichvu_23.jpg', 4.7, 15),
+
+(N'Khám rụng tóc & bệnh lý da đầu',
+N'Đánh giá tình trạng rụng tóc, bệnh lý da đầu, xác định nguyên nhân và tư vấn điều trị phù hợp.',
+N'1. Khai thác tiền sử rụng tóc, các yếu tố nguy cơ (stress, di truyền, nội tiết...).\n2. Kiểm tra da đầu, mật độ tóc, mức độ rụng tóc.\n3. Thực hiện xét nghiệm máu/hormone nếu cần.\n4. Tư vấn phác đồ điều trị (thuốc, laser, cấy tóc).',
+N'Sử dụng kính phóng đại da liễu (dermatoscope), xét nghiệm máu, máy laser điều trị.',
+500000, '00:25:00', 1, 13, N'dichvu_24.jpg', 4.8, 12),
+
+(N'Khám Răng Hàm Mặt',
+N'Thăm khám và chẩn đoán các bệnh lý về răng, nướu, hàm và mặt. Tư vấn và đưa ra phương pháp điều trị phù hợp.',
+N'1. Khai thác tiền sử bệnh lý răng miệng.\n2. Khám tổng quát tình trạng răng, nướu, hàm.\n3. Chụp X-quang răng nếu cần thiết.\n4. Tư vấn phương án điều trị như trám răng, nhổ răng, chữa tủy, chỉnh nha,...',
+N'Sử dụng dụng cụ khám răng chuyên dụng, máy chụp X-quang răng kỹ thuật số.',
+400000, '00:20:00', 1, 18, N'dichvu_25.jpg', 4.7, 15);
+
+
+    
 
 
 

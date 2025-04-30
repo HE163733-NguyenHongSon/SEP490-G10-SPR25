@@ -2,8 +2,8 @@
 
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import reservationService from "@/services/reservationService";
-import { specialtyService } from "@/services/specialtyService";
+import reservationService from "@/common/services/reservationService";
+import { specialtyService } from "@/common/services/specialtyService";
 
 import SpecialtySelector from "./SpecialtySelector";
 import ServiceSelector from "./ServiceSelector";
@@ -13,7 +13,7 @@ import SymptomInput from "./SymptomInput";
 import FileUpload from "./FileUpload";
 
 import {
-  setLoading,
+  setIsLoading,
   setSpecialties,
   setSpecialtyId,
   setSuggestionData,
@@ -23,15 +23,12 @@ import { RootState } from "../../store";
 const BookingInfor = () => {
   const dispatch = useDispatch();
 
-  const { symptoms, isLoading, selectedPatient, specialtyId } = useSelector(
-    (state: RootState) => state.booking
-  );
+  const { symptoms, isLoading, selectedPatient, isShowRestoreSuggestion } =
+    useSelector((state: RootState) => state.booking);
 
   useEffect(() => {
-    // const controller = new AbortController();
-
     const fetchData = async () => {
-      dispatch(setLoading(true));
+      dispatch(setIsLoading(true));
       try {
         const [suggestion, specialtyList] = await Promise.all([
           reservationService.getBookingSuggestion(symptoms),
@@ -39,25 +36,23 @@ const BookingInfor = () => {
         ]);
         dispatch(setSpecialties(specialtyList));
         dispatch(setSuggestionData(suggestion));
-        localStorage.setItem("bookingSuggestion", JSON.stringify(suggestion));
-        if (!specialtyId) {
+        if (suggestion?.specialty?.specialtyId && !isShowRestoreSuggestion) {
           dispatch(setSpecialtyId(suggestion?.specialty.specialtyId || ""));
+          console.log("suggets  specialty ", suggestion?.specialty.specialtyId);
         }
       } catch (error) {
         if (error instanceof Error && error.name !== "AbortError") {
           console.error("Error fetching suggestion:", error);
         }
       } finally {
-        dispatch(setLoading(false));
+        dispatch(setIsLoading(false));
       }
     };
 
     if (selectedPatient?.userId && symptoms.length > 0) {
       fetchData();
     }
-
-    // return () => controller.abort();
-  }, [symptoms, dispatch, selectedPatient?.userId, specialtyId]);
+  }, [symptoms, dispatch, selectedPatient?.userId]);
 
   return (
     <div className="relative border-b border-gray-200 py-6 md:py-8 px-2 md:px-4 rounded-lg bg-white shadow-sm transition-all duration-300">

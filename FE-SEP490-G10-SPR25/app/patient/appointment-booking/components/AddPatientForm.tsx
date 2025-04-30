@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useUser } from "@/contexts/UserContext";
+import { useUser } from "@/common/contexts/UserContext";
 import { useDispatch, useSelector } from "react-redux";
 import { addPatientAsync } from "../redux/bookingThunks";
 import type { AppDispatch, RootState } from "../../store";
@@ -21,7 +21,7 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
   const [address, setAddress] = useState("");
   const { user } = useUser();
   const dispatch = useDispatch<AppDispatch>();
-  const patients  = useSelector((state: RootState) => state.booking.patients);
+  const patients = useSelector((state: RootState) => state.booking.patients);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 

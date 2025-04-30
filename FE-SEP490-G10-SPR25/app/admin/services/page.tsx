@@ -1,9 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import PageBreadCrumb from "../components/PageBreadCrumb";
-import { serviceService } from "../../services/serviceService";
-import { specialtyService } from "../../services/specialtyService";
-import { Button, Modal, Form, Input, InputNumber, Select, message, Space, Popconfirm, Table } from "antd";
+import { serviceService } from "../../common/services/serviceService";
+import { specialtyService } from "../../common/services/specialtyService";
+import {
+  Button,
+  Modal,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  message,
+  Space,
+  Popconfirm,
+  Table,
+} from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -118,12 +129,19 @@ const ServicesManagement = () => {
         await serviceService.createService(payload);
       }
 
-      message.success(`Service ${editingService ? "updated" : "created"} successfully`);
+      message.success(
+        `Service ${editingService ? "updated" : "created"} successfully`
+      );
       setIsModalVisible(false);
       fetchServices();
     } catch (error) {
-      console.error(`Error ${editingService ? "updating" : "creating"} service:`, error);
-      message.error(`Failed to ${editingService ? "update" : "create"} service`);
+      console.error(
+        `Error ${editingService ? "updating" : "creating"} service:`,
+        error
+      );
+      message.error(
+        `Failed to ${editingService ? "update" : "create"} service`
+      );
     }
   };
 
@@ -146,9 +164,11 @@ const ServicesManagement = () => {
       key: "specialtyId",
       width: "15%",
       render: (specialtyId: number) => {
-        const specialty = specialties.find(s => Number(s.specialtyId) === specialtyId);
+        const specialty = specialties.find(
+          (s) => Number(s.specialtyId) === specialtyId
+        );
         return specialty ? specialty.specialtyName : specialtyId;
-      }
+      },
     },
     {
       title: "Price ($)",
@@ -182,11 +202,7 @@ const ServicesManagement = () => {
             okText="Yes"
             cancelText="No"
           >
-            <Button
-              icon={<DeleteOutlined />}
-              danger
-              size="small"
-            >
+            <Button icon={<DeleteOutlined />} danger size="small">
               Delete
             </Button>
           </Popconfirm>
@@ -198,23 +214,21 @@ const ServicesManagement = () => {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Service Management</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+          Service Management
+        </h1>
       </div>
-      
+
       <div className="mb-6 flex justify-between items-center">
         <PageBreadCrumb pageTitle="Service Management" />
-        <Button 
-          type="primary" 
-          icon={<PlusOutlined />} 
-          onClick={showModal}
-        >
+        <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
           Add New Service
         </Button>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <Table 
-          dataSource={services} 
+        <Table
+          dataSource={services}
           columns={columns}
           loading={loading}
           className="w-full"
@@ -228,54 +242,46 @@ const ServicesManagement = () => {
         footer={null}
         width={800}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-        >
+        <Form form={form} layout="vertical" onFinish={handleSubmit}>
           <Form.Item
             name="serviceName"
             label="Service Name"
-            rules={[{ required: true, message: "Please enter the service name" }]}
+            rules={[
+              { required: true, message: "Please enter the service name" },
+            ]}
           >
             <Input />
           </Form.Item>
-          
+
           <Form.Item
             name="specialtyId"
             label="Specialty"
             rules={[{ required: true, message: "Please select a specialty" }]}
           >
             <Select placeholder="Select a specialty">
-              {specialties.map(specialty => (
-                <Option key={specialty.specialtyId} value={specialty.specialtyId}>
+              {specialties.map((specialty) => (
+                <Option
+                  key={specialty.specialtyId}
+                  value={specialty.specialtyId}
+                >
                   {specialty.specialtyName}
                 </Option>
               ))}
             </Select>
           </Form.Item>
-          
-          <Form.Item
-            name="overview"
-            label="Overview"
-          >
+
+          <Form.Item name="overview" label="Overview">
             <Input.TextArea rows={4} />
           </Form.Item>
-          
-          <Form.Item
-            name="process"
-            label="Process"
-          >
+
+          <Form.Item name="process" label="Process">
             <Input.TextArea rows={4} />
           </Form.Item>
-          
-          <Form.Item
-            name="treatmentTechniques"
-            label="Treatment Techniques"
-          >
+
+          <Form.Item name="treatmentTechniques" label="Treatment Techniques">
             <Input.TextArea rows={4} />
           </Form.Item>
-          
+
           <Form.Item
             name="price"
             label="Price ($)"
@@ -283,21 +289,15 @@ const ServicesManagement = () => {
           >
             <InputNumber min={0} style={{ width: "100%" }} />
           </Form.Item>
-          
-          <Form.Item
-            name="estimatedTime"
-            label="Estimated Time"
-          >
+
+          <Form.Item name="estimatedTime" label="Estimated Time">
             <Input placeholder="e.g., 30 minutes" />
           </Form.Item>
-          
-          <Form.Item
-            name="image"
-            label="Image URL"
-          >
+
+          <Form.Item name="image" label="Image URL">
             <Input placeholder="Enter image URL" />
           </Form.Item>
-          
+
           <Form.Item>
             <div className="flex justify-end">
               <Button onClick={handleCancel} style={{ marginRight: 8 }}>
@@ -314,4 +314,4 @@ const ServicesManagement = () => {
   );
 };
 
-export default ServicesManagement; 
+export default ServicesManagement;

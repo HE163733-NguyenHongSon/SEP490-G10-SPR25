@@ -2,8 +2,13 @@
 import React, { useEffect, useState } from "react";
 import PageBreadCrumb from "../components/PageBreadCrumb";
 import { Button, Table, Space, Popconfirm, message, Modal } from "antd";
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
-import { doctorService } from "@/services/doctorService";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  EyeOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
+import { doctorService } from "@/common/services/doctorService";
 import Link from "next/link";
 
 const DoctorsManagement = () => {
@@ -12,7 +17,9 @@ const DoctorsManagement = () => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [selectedDoctorId, setSelectedDoctorId] = useState<number | null>(null);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
-  const [selectedDoctor, setSelectedDoctor] = useState<IDoctorDetailDTO | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<IDoctorDetailDTO | null>(
+    null
+  );
 
   useEffect(() => {
     fetchDoctors();
@@ -60,7 +67,9 @@ const DoctorsManagement = () => {
       fetchDoctors();
     } catch (error) {
       console.error("Error deleting doctor:", error);
-      message.error("Lỗi khi xóa bác sĩ. Bác sĩ có thể đang có lịch khám hoặc cuộc hẹn đang hoạt động.");
+      message.error(
+        "Lỗi khi xóa bác sĩ. Bác sĩ có thể đang có lịch khám hoặc cuộc hẹn đang hoạt động."
+      );
     } finally {
       setLoading(false);
       setDeleteModalVisible(false);
@@ -91,7 +100,8 @@ const DoctorsManagement = () => {
               />
               <div className="ml-4">
                 <h2 className="text-xl font-bold">
-                  {selectedDoctor.academicTitle} {selectedDoctor.degree} {selectedDoctor.userName}
+                  {selectedDoctor.academicTitle} {selectedDoctor.degree}{" "}
+                  {selectedDoctor.userName}
                 </h2>
                 <p className="text-gray-500">{selectedDoctor.currentWork}</p>
               </div>
@@ -115,7 +125,9 @@ const DoctorsManagement = () => {
               </div>
               <div>
                 <h3 className="font-bold">Kinh nghiệm</h3>
-                <p>{selectedDoctor.workExperience?.match(/\d+/)?.[0] || "0"} năm</p>
+                <p>
+                  {selectedDoctor.workExperience?.match(/\d+/)?.[0] || "0"} năm
+                </p>
               </div>
             </div>
 
@@ -167,9 +179,9 @@ const DoctorsManagement = () => {
       key: "avatarUrl",
       width: "8%",
       render: (avatarUrl: string) => (
-        <img 
-          src={avatarUrl || "/avatar-placeholder.png"} 
-          alt="Doctor Avatar" 
+        <img
+          src={avatarUrl || "/avatar-placeholder.png"}
+          alt="Doctor Avatar"
           className="w-12 h-12 object-cover rounded-full"
         />
       ),
@@ -179,7 +191,8 @@ const DoctorsManagement = () => {
       dataIndex: "userName",
       key: "userName",
       width: "10%",
-      render: (userName: string, record: IDoctor) => userName || record.userName,
+      render: (userName: string, record: IDoctor) =>
+        userName || record.userName,
     },
     {
       title: "Mật khẩu",
@@ -225,11 +238,7 @@ const DoctorsManagement = () => {
           >
             Chi tiết
           </Button>
-          <Button
-            icon={<EditOutlined />}
-            type="primary"
-            size="small"
-          >
+          <Button icon={<EditOutlined />} type="primary" size="small">
             <Link href={`/admin/doctors/${record.userId}/edit`}>Sửa</Link>
           </Button>
           <Button
@@ -254,24 +263,32 @@ const DoctorsManagement = () => {
       okText="Xác nhận"
       cancelText="Hủy"
     >
-      <p>Bạn có chắc chắn muốn xóa bác sĩ này không? Hành động này không thể hoàn tác.</p>
-      <p className="text-yellow-600 mt-2">Lưu ý: Không thể xóa bác sĩ nếu họ có lịch khám hoặc cuộc hẹn đang hoạt động. Vui lòng hủy tất cả các cuộc hẹn đang hoạt động trước khi xóa.</p>
+      <p>
+        Bạn có chắc chắn muốn xóa bác sĩ này không? Hành động này không thể hoàn
+        tác.
+      </p>
+      <p className="text-yellow-600 mt-2">
+        Lưu ý: Không thể xóa bác sĩ nếu họ có lịch khám hoặc cuộc hẹn đang hoạt
+        động. Vui lòng hủy tất cả các cuộc hẹn đang hoạt động trước khi xóa.
+      </p>
     </Modal>
   );
 
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Quản lý bác sĩ</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+          Quản lý bác sĩ
+        </h1>
       </div>
-      
+
       <div className="mb-6 flex justify-between items-center">
         <PageBreadCrumb pageTitle="Quản lý bác sĩ" />
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <Table 
-          dataSource={doctors} 
+        <Table
+          dataSource={doctors}
           columns={columns}
           loading={loading}
           rowKey="doctorId"
@@ -286,4 +303,4 @@ const DoctorsManagement = () => {
   );
 };
 
-export default DoctorsManagement; 
+export default DoctorsManagement;

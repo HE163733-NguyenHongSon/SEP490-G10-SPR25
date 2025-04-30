@@ -1,6 +1,41 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 import { addPatientAsync } from "./bookingThunks";
+import { StylesConfig } from "react-select";
+const customStyles: StylesConfig<{ value: string; label: string }, false> = {
+  control: (base, state) => ({
+    ...base,
+    backgroundColor: "white",
+    borderColor: state.isFocused ? "#67e8f9" : "#d1d5db",
+    borderRadius: "0.5rem",
+    boxShadow: "none",
+    "&:hover": {
+      borderColor: "#67e8f9",
+    },
+  }),
+  option: (base, state) => ({
+    ...base,
+    backgroundColor: state.isSelected || state.isFocused ? "#f3f4f6" : "white",
+    color: "#374151",
+    padding: "10px 12px",
+    cursor: "pointer",
+  }),
+  singleValue: (base) => ({
+    ...base,
+    color: "#374151",
+    display: "flex",
+    alignItems: "center",
+  }),
+  input: (base) => ({
+    ...base,
+    color: "#374151",
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: "#9ca3af",
+  }),
+};
+
 const initialState: IBookingState = {
   symptoms: "",
   isLoading: false,
@@ -26,8 +61,9 @@ const initialState: IBookingState = {
   priorExaminationImgUrl: null,
   isSubmitting: false,
   isShowConfirmModal: false,
-  customSelectStyles: {},
   availableSchedules: [],
+  customSelectStyles: customStyles,
+
 };
 
 const bookingSlice = createSlice({
@@ -37,9 +73,10 @@ const bookingSlice = createSlice({
     setSymptoms: (state, action: PayloadAction<string>) => {
       state.symptoms = action.payload;
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
+    setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
+
     setStep: (state, action: PayloadAction<number>) => {
       state.currentStep = action.payload;
     },
@@ -66,9 +103,7 @@ const bookingSlice = createSlice({
     setSpecialties: (state, action: PayloadAction<ISpecialty[]>) => {
       state.specialties = action.payload;
     },
-    // setPatient: (state, action: PayloadAction<IPatient>) => {
-    //   state.patient = action.payload;
-    // },
+ 
     setPatients: (state, action: PayloadAction<IPatient[]>) => {
       state.patients = action.payload;
     },
@@ -147,9 +182,8 @@ const bookingSlice = createSlice({
 
 export const {
   setSymptoms,
-  setLoading,
+  setIsLoading,
   setStep,
-  // setPatient,
   setSelectedDate,
   setSelectedTime,
   setShowBookingForm,

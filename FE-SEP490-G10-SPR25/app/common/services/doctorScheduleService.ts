@@ -1,5 +1,4 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-const WEBHOOK_URL = process.env.NEXT_PUBLIC_WEBHOOK_URL!;
 
 export const doctorScheduleService = {
   async getDoctorScheduleList(): Promise<IDoctorSchedule[]> {
@@ -36,17 +35,9 @@ export const doctorScheduleService = {
 
   async getAvailableSchedulesByServiceId(
     serviceId: string | number
-  ): Promise<IAvailableSchedule[]> {
+  ): Promise<IAvailableSchedule[]> {    
     try {
-      const res = await fetch(WEBHOOK_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          serviceId,
-        }),
-      });
+      const res = await fetch(`${apiUrl}/api/DoctorSchedules/GetAvailableSchedulesByServiceId/${serviceId}`);
 
       if (!res.ok) {
         console.error("Gợi ý thất bại:", await res.text());

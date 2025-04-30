@@ -12,11 +12,10 @@ import {
 } from "../redux/bookingSlice";
 import { restoreSuggestion } from "../redux/bookingThunks";
 import type { RootState, AppDispatch } from "../../store";
-import type { StylesConfig } from "react-select";
 
 const SpecialtySelector = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { specialties, specialtyId, isShowRestoreSuggestion } = useSelector(
+  const { specialties, specialtyId, isShowRestoreSuggestion,suggestionData,customSelectStyles } = useSelector(
     (state: RootState) => state.booking
   );
 
@@ -33,10 +32,7 @@ const SpecialtySelector = () => {
     selectedOption: { value: string; label: string } | null
   ) => {
     if (selectedOption) {
-      const selectedId = selectedOption.value;
-      const suggestion: IBookingSuggestion = JSON.parse(
-        localStorage.getItem("bookingSuggestion") || "{}"
-      );
+      const selectedId = selectedOption.value;     
       dispatch(setSpecialtyId(selectedId));
       dispatch(setServiceId(""));
       dispatch(setDoctorId(""));
@@ -44,7 +40,7 @@ const SpecialtySelector = () => {
       dispatch(setSelectedTime(""));
       dispatch(
         setIsShowRestoreSuggestion(
-          selectedId !== suggestion.specialty.specialtyId
+          selectedId !== suggestionData?.specialty.specialtyId
         )
       );
     }
@@ -54,34 +50,7 @@ const SpecialtySelector = () => {
     dispatch(restoreSuggestion());
   };
 
-  const customStyles: StylesConfig<{ value: string; label: string }, false> = {
-    control: (base, state) => ({
-      ...base,
-      backgroundColor: "white",
-      borderColor: state.isFocused ? "#67e8f9" : "#d1d5db",
-      borderRadius: "0.5rem",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#67e8f9",
-      },
-    }),
-    option: (base, state) => ({
-      ...base,
-      backgroundColor:
-        state.isSelected || state.isFocused ? "#f3f4f6" : "white",
-      color: "#374151",
-      padding: "10px 12px",
-      cursor: "pointer",
-    }),
-    singleValue: (base) => ({
-      ...base,
-      color: "#374151",
-      display: "flex",
-      alignItems: "center",
-    }),
-    input: (base) => ({ ...base, color: "#374151" }),
-    placeholder: (base) => ({ ...base, color: "#9ca3af" }),
-  };
+ 
 
   return (
     <div className="space-y-2">
@@ -108,7 +77,7 @@ const SpecialtySelector = () => {
         isDisabled={!options.length}
         placeholder="Chọn chuyên khoa"
         noOptionsMessage={() => "Không có chuyên khoa nào"}
-        styles={customStyles}
+        styles={customSelectStyles}
       />
     </div>
   );

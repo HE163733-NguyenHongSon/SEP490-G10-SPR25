@@ -1,7 +1,7 @@
 import React from "react";
-import PaginatedItems from "@/components/PaginatedItems";
+import PaginatedItems from "@/common/components/PaginatedItems";
 import SearchForReceptionist from "../components/SearchForReceptionist";
-import { patientService } from "@/services/patientService";
+import { patientService } from "@/common/services/patientService";
 import { PatientList } from "../components/PatientList";
 
 const PatientsPage = async ({
@@ -25,9 +25,7 @@ const PatientsPage = async ({
     console.log(patients);
     console.log(searchParams.searchField);
     console.log(searchParams.searchValue);
-  }
-  
-  else if (searchParams.ranks) {
+  } else if (searchParams.ranks) {
     // Chưa implement lọc theo ranks
     patients = await patientService.getPatientList();
   } else {

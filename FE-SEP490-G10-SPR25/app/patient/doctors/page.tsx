@@ -1,17 +1,17 @@
-import { doctorService } from "@/services/doctorService";
+import { doctorService } from "@/common/services/doctorService";
 import React from "react";
-import PaginatedItems from "@/components/PaginatedItems";
+import PaginatedItems from "@/common/components/PaginatedItems";
 import { DoctorList } from "@/patient/components/DoctorList";
-import Search from "@/components/Search";
-import DisplayToggle from "@/components/DisplayToggle";
-import SelectSort from "@/components/SelectSort";
+import Search from "@/common/components/Search";
+import DisplayToggle from "@/common/components/DisplayToggle";
+import SelectSort from "@/common/components/SelectSort";
 export const dynamic = "force-dynamic"; // Enable SSR
 
 const DoctorsPage = async ({
   searchParams,
 }: {
   searchParams: {
-    specialties?: string;   
+    specialties?: string;
     academicTitles?: string;
     degrees?: string;
     sortBy: string;
@@ -27,9 +27,8 @@ const DoctorsPage = async ({
     { label: "Nhiều lần khám nhất", value: "most_exam" },
     { label: "Nhiều dịch vụ nhất", value: "most_service" },
     { label: "Học thuật cao nhất", value: "academic_title" },
-
   ];
-  
+
   if (
     !searchParams.searchValues &&
     (searchParams.specialties ||
@@ -51,9 +50,7 @@ const DoctorsPage = async ({
   } else {
     doctors = await doctorService.getDoctorList();
   }
-  const searchOptions: ISearchOption[] = (
-    await doctorService.getDoctorList()
-  )
+  const searchOptions: ISearchOption[] = (await doctorService.getDoctorList())
     .map((d: IDoctor) => ({
       label: d.userName,
       value: d.userId,

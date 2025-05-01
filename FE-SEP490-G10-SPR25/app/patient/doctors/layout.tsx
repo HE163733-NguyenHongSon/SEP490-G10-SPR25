@@ -1,8 +1,8 @@
-import { specialtyService } from "@/services/specialtyService";
-import CollapsibleSection from "@/components/CollapsibleSection";
-import CheckboxList from "@/components/CheckboxList";
-import OptionFilter from "@/components/OptionFilter";
-import ClearButton from "@/components/ClearButton";
+import { specialtyService } from "@/common/services/specialtyService";
+import CollapsibleSection from "@/common/components/CollapsibleSection";
+import CheckboxList from "@/common/components/CheckboxList";
+import OptionFilter from "@/common/components/OptionFilter";
+import ClearButton from "@/common/components/ClearButton";
 export default async function DoctorsLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -13,7 +13,7 @@ export default async function DoctorsLayout({
     value: title,
     isChecked: false,
   }));
-  
+
   const degrees: ICheckboxOption[] = ["BS.CK1", "BS.CK2"].map((degree) => ({
     label: degree,
     value: degree,
@@ -34,7 +34,6 @@ export default async function DoctorsLayout({
     <div
       className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center z-10"
       style={{ backgroundImage: 'url("/images/background_doctors.jpeg")' }}
-      
     >
       <div className="absolute inset-0 bg-black bg-opacity-50 z-20"></div>
 

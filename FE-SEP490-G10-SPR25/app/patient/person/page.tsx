@@ -2,16 +2,16 @@
 
 import * as Tabs from "@radix-ui/react-tabs";
 import Image from "next/image";
-import { patientService } from "@/services/patientService";
+import { patientService } from "@/common/services/patientService";
 import { useQuery } from "@tanstack/react-query";
-import { useUser } from '@/contexts/UserContext';
+import { useUser } from '@/common/contexts/UserContext';
 
 const ProfilePage = () => {
   const { user } = useUser(); 
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   
-  const { data: patientDetail } = useQuery<IPatientDetail & IUser>({
+  const { data: patientDetail } = useQuery<IPatientDetail>({
     queryKey: ["patientDetail", user],
     queryFn: async () => {
       const data = await patientService.getPatientDetailById(user?.userId);
@@ -176,7 +176,7 @@ const ProfilePage = () => {
                     <input
                       id="phone"
                       type="tel"
-                      value={patientDetail?.phoneNumber}
+                      value={patientDetail?.phone}
                       className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
                     />
                   </div>
@@ -227,7 +227,7 @@ const ProfilePage = () => {
         <Tabs.Content value="dependents">
           {patientDetail?.dependents?.length !== 0 ? (
             patientDetail?.dependents?.map(
-              (dependent: IPatient & IUser, index: number) => (
+              (dependent: IPatient, index: number) => (
                 <form key={dependent.userId}>
                   <div className="row-span-1 flex flex-col py-10">
                     <div className="flex flex-row items-center gap-3 py-5 mb-5">
@@ -364,7 +364,7 @@ const ProfilePage = () => {
                           <input
                             id="phone"
                             type="tel"
-                            value={dependent.phoneNumber}
+                            value={dependent.phone}
                             className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
                           />
                         </div>

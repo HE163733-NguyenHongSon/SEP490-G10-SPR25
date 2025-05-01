@@ -1,15 +1,13 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import Image from "next/image";
-import BackButton from "@/components/BackButton";
-import { doctorService } from "@/services/doctorService";
-import { IDoctorDetailDTO } from "@/types/doctor";
-import { IFeedback } from "@/types/feedback";
-import CollapsibleSection from "@/components/CollapsibleSection";
+import BackButton from "@/common/components/BackButton";
+import { doctorService } from "@/common/services/doctorService";
+import CollapsibleSection from "@/common/components/CollapsibleSection";
 import { assets } from "@/public/images/assets";
 import ScheduleTab from "@/patient/doctors/components/ScheduleTab";
 import { DoctorList } from "@/patient/components/DoctorList";
-import  ListService  from "@/patient/components/ListService";
-import { feedbackService } from "@/services/feedbackService";
+import ListService from "@/patient/components/ListService";
+import { feedbackService } from "@/common/services/feedbackService";
 import FeedbackList from "@/patient/components/FeedbackList";
 
 export default async function DoctorDetails({
@@ -17,9 +15,8 @@ export default async function DoctorDetails({
 }: {
   params: { doctorId: string };
 }) {
-  const doctorDetail: IDoctorDetailDTO = await doctorService.getDoctorDetailById(
-    params.doctorId
-  );
+  const doctorDetail: IDoctorDetailDTO =
+    await doctorService.getDoctorDetailById(params.doctorId);
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
   const routes = [
     { value: "overview", name: "Tổng quan" },
@@ -27,7 +24,9 @@ export default async function DoctorDetails({
     { value: "services", name: "Dịch vụ đảm nhận" },
     { value: "reviews", name: "Bình luận đánh giá" },
   ];
-  const doctorFeedbacks = feedbackService.extractDoctorFeedback(doctorDetail.feedbacks);
+  const doctorFeedbacks = feedbackService.extractDoctorFeedback(
+    doctorDetail.feedbacks
+  );
 
   return (
     <div
@@ -52,7 +51,7 @@ export default async function DoctorDetails({
               <span className="mr-2">
                 {doctorDetail.academicTitle}.{doctorDetail.degree}
               </span>
-              {doctorDetail.doctorName}
+              {doctorDetail.userName}
             </h1>
             <h2 className="text-lg text-gray-700">
               {doctorDetail.currentWork}
@@ -125,7 +124,7 @@ export default async function DoctorDetails({
             <Tabs.Content value="overview">
               <CollapsibleSection
                 title="Mô tả"
-                content={doctorDetail.detailDescription}
+                content={doctorDetail.doctorDescription}
                 defaultExpanded={true}
                 titleImage={assets.description}
               />
@@ -152,10 +151,10 @@ export default async function DoctorDetails({
               <ScheduleTab />
             </Tabs.Content>
             <Tabs.Content value="services">
-              <ListService items={doctorDetail.services} displayView="slider"/>
+              <ListService items={doctorDetail.services} displayView="slider" />
             </Tabs.Content>
             <Tabs.Content value="reviews">
-            <FeedbackList feedbacks={doctorFeedbacks} displayView="list" />
+              <FeedbackList feedbacks={doctorFeedbacks} displayView="list" />
             </Tabs.Content>
           </div>
           <div className=" h-[60vh] overflow-y-auto flex flex-col  items-center justify-center">

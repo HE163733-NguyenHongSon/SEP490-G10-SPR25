@@ -2,127 +2,92 @@
 import React, { useEffect, useCallback, useMemo } from "react";
 import { User as UserIcon } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import Select, { StylesConfig } from "react-select";
-import { doctorScheduleService } from "@/services/doctorScheduleService";
+import Select from "react-select";
+import { doctorScheduleService } from "@/common/services/doctorScheduleService";
 import {
   setDoctors,
   setDoctorId,
-  setLoading,
+  setIsLoading,
   setSelectedDate,
   setSelectedTime,
   setAvailableSchedules,
 } from "../redux/bookingSlice";
 import { RootState } from "../../store";
 
-const customStyles: StylesConfig<{ value: string; label: string }, false> = {
-  control: (base, state) => ({
-    ...base,
-    backgroundColor: "white",
-    borderColor: state.isFocused ? "#67e8f9" : "#d1d5db",
-    borderRadius: "0.5rem",
-    boxShadow: "none",
-    "&:hover": { borderColor: "#67e8f9" },
-  }),
-  option: (base, state) => ({
-    ...base,
-    backgroundColor: state.isSelected || state.isFocused ? "#f3f4f6" : "white",
-    color: "#374151",
-    padding: "10px 12px",
-  }),
-  singleValue: (base) => ({
-    ...base,
-    color: "#374151",
-    display: "flex",
-    alignItems: "center",
-  }),
-  input: (base) => ({ ...base, color: "#374151" }),
-  placeholder: (base) => ({ ...base, color: "#9ca3af" }),
-};
-
 const DoctorSelector = () => {
   const dispatch = useDispatch();
+
   const {
     doctors,
     doctorId,
     serviceId,
-    specialtyId,
-    suggestionData,
     isShowRestoreSuggestion,
     selectedDate,
     selectedTime,
+    customSelectStyles,
   } = useSelector((state: RootState) => state.booking);
 
-  const isRestore = isShowRestoreSuggestion;
+  const applyFirstSchedule = useCallback(
+    (schedule: IAvailableSchedule) => {
+      dispatch(setDoctorId(String(schedule.doctorId)));
 
-  const applySuggestionFromDoctorId = useCallback(
-    (firstSchedule: IAvailableSchedule) => {
-      dispatch(setDoctorId(String(firstSchedule.doctorId)));
-
-      if (firstSchedule && !isRestore) {
-        const isoDate = firstSchedule.appointmentDate?.split("T")[0] ?? "";
-        const timeRange = `${firstSchedule.slotStartTime}-${firstSchedule.slotEndTime}`;
-        if (!selectedDate) dispatch(setSelectedDate(isoDate));
-        if (!selectedTime) dispatch(setSelectedTime(timeRange));
+      if (!isShowRestoreSuggestion) {
+        const date = schedule.appointmentDate?.split("T")[0] ?? "";
+        const time = `${schedule.slotStartTime}-${schedule.slotEndTime}`;
+        if (!selectedDate) dispatch(setSelectedDate(date));
+        if (!selectedTime) dispatch(setSelectedTime(time));
       } else {
         dispatch(setSelectedDate(""));
         dispatch(setSelectedTime(""));
       }
     },
-    [serviceId]
+    [dispatch, isShowRestoreSuggestion, selectedDate, selectedTime]
   );
 
   useEffect(() => {
-    const fetchDoctors = async () => {
-      if (!serviceId) return;
+    if (!serviceId) return;
 
-      dispatch(setLoading(true));
+    const fetchDoctors = async () => {
+      dispatch(setIsLoading(true));
       try {
-        const availableSchedules =
+        const schedules =
           await doctorScheduleService.getAvailableSchedulesByServiceId(
             serviceId
           );
 
-        dispatch(setAvailableSchedules(availableSchedules));
+        dispatch(setAvailableSchedules(schedules));
 
-        const doctorList = availableSchedules
-          .map((ds) => ({
-            value: String(ds.doctorId ?? ""),
-            label: ds.doctorName ?? "Unknown Doctor",
-          }))
-          .filter(
-            (v, i, self) => self.findIndex((d) => d.value === v.value) === i
-          );
+        const uniqueDoctors = Array.from(
+          new Map(
+            schedules.map((s) => [
+              s.doctorId,
+              {
+                value: String(s.doctorId),
+                label: s.doctorName ?? "Unknown Doctor",
+              },
+            ])
+          ).values()
+        );
 
-        dispatch(setDoctors(doctorList));
+        dispatch(setDoctors(uniqueDoctors));
 
-        const firstSchedule = availableSchedules?.[0];
-        if (!doctorId && firstSchedule && !isRestore) {
-          applySuggestionFromDoctorId(firstSchedule);
+        if (schedules.length && !isShowRestoreSuggestion) {
+          applyFirstSchedule(schedules[0]);
         }
       } catch (error) {
         console.error("Lỗi khi tải danh sách bác sĩ:", error);
       } finally {
-        dispatch(setLoading(false));
+        dispatch(setIsLoading(false));
       }
     };
 
     fetchDoctors();
-  }, [
-    serviceId,
-    specialtyId,
-    isRestore,
-    applySuggestionFromDoctorId,
-    dispatch,
-    suggestionData?.availableSchedules,
-    doctorId,
-  ]);
+  }, [dispatch, serviceId, isShowRestoreSuggestion, applyFirstSchedule]);
 
-  const currentDoctor = useMemo(() => {
-    return doctorId
-      ? doctors.find((d) => String(d.value) === String(doctorId))
-      : null;
-  }, [doctorId, doctors]);
-
+  const currentDoctor = useMemo(
+    () => doctors.find((d) => d.value === String(doctorId)) ?? null,
+    [doctorId, doctors]
+  );
 
   return (
     <div className="space-y-2">
@@ -132,16 +97,12 @@ const DoctorSelector = () => {
       </label>
       <Select
         value={currentDoctor}
-        onChange={(newValue) => {
-          if (newValue) {
-            dispatch(setDoctorId(newValue.value));
-          }
-        }}
+        onChange={(v) => v && dispatch(setDoctorId(v.value))}
         options={doctors}
         isDisabled={!doctors.length}
         placeholder="Chọn bác sĩ"
         noOptionsMessage={() => "Không có bác sĩ nào"}
-        styles={customStyles}
+        styles={customSelectStyles}
       />
     </div>
   );

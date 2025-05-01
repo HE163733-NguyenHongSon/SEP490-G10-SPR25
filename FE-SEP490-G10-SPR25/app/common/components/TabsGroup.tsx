@@ -4,9 +4,7 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { LoadingTable } from "@/components/LoadingTable";
-
-
+import { LoadingTable } from "@/common/components/LoadingTable";
 
 interface TabsGroupProps<T> {
   tabs: ITabItem[];
@@ -30,7 +28,7 @@ export const TabsGroup = <T,>({
       if (!res.ok) throw new Error("Lỗi khi gọi API");
       return res.json();
     },
-    staleTime: 5000, 
+    staleTime: 5000,
   });
 
   return (

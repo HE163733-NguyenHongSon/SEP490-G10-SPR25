@@ -4,10 +4,10 @@ import Navbar from "@/patient/components/Navbar";
 import { Footer } from "@/patient/components/Footer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { ReactNode } from "react";
-import ProtectedRoute from "../components/ProtectedRoute";
-import { AppRole } from "../types/roles";
+import ProtectedRoute from "../common/components/ProtectedRoute";
+import { AppRole } from "../common/types/roles";
 import { Provider } from "react-redux";
-import {store} from "./store";
+import { store } from "./store";
 interface PatientLayoutProps {
   children: ReactNode;
 }

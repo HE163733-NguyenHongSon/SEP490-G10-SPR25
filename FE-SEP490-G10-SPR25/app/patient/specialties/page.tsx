@@ -1,7 +1,7 @@
 import { SpecialtyList } from "@/patient/components/SpecialtyList";
-import { specialtyService } from "@/services/specialtyService";
-import PaginatedItems from "@/components/PaginatedItems";
-import Search from "@/components/Search";
+import { specialtyService } from "@/common/services/specialtyService";
+import PaginatedItems from "@/common/components/PaginatedItems";
+import Search from "@/common/components/Search";
 
 const SpecialtiesPage = async ({
   searchParams,

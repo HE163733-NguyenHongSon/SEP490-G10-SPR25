@@ -24,13 +24,16 @@ namespace AppointmentSchedulingApp.Application.Services
         private readonly IMapper mapper;
         public IUnitOfWork unitOfWork { get; set; }
         private readonly AppointmentSchedulingDbContext _dbcontext;
+        public IReservationService reservationService { get; set; }
 
-        public DoctorScheduleService(IMapper mapper, IUnitOfWork unitOfWork, AppointmentSchedulingDbContext dbcontext)
+        public DoctorScheduleService(IMapper mapper, IUnitOfWork unitOfWork, AppointmentSchedulingDbContext dbcontext, IReservationService reservationService)
         {
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             _dbcontext = dbcontext;
+            this.reservationService = reservationService;
         }
+
         public async Task<List<DoctorScheduleDTO>> GetDoctorScheduleListByServiceId(int serviceId)
         {
 
@@ -38,6 +41,86 @@ namespace AppointmentSchedulingApp.Application.Services
             return await query.ProjectTo<DoctorScheduleDTO>(mapper.ConfigurationProvider).ToListAsync();
 
         }
+        public async Task<List<AvailableScheduleDTO>> GetProposedDoctorSchedulesByServiceId(int serviceId)
+        {
+
+            var doctorSchedules = await GetDoctorScheduleListByServiceId(serviceId);
+            int weeks = 1;
+
+            var dayMap = new Dictionary<string, DayOfWeek>
+            {
+                ["Chủ Nhật"] = DayOfWeek.Sunday,
+                ["Thứ Hai"] = DayOfWeek.Monday,
+                ["Thứ Ba"] = DayOfWeek.Tuesday,
+                ["Thứ Tư"] = DayOfWeek.Wednesday,
+                ["Thứ Năm"] = DayOfWeek.Thursday,
+                ["Thứ Sáu"] = DayOfWeek.Friday,
+                ["Thứ Bảy"] = DayOfWeek.Saturday
+            };
+
+            var results = new List<AvailableScheduleDTO>();
+
+            var today = DateTime.Today;
+
+            foreach (var schedule in doctorSchedules)
+            {
+                if (!dayMap.TryGetValue(schedule.DayOfWeek, out var targetDay))
+                    continue;
+
+                for (int i = 0; i < weeks * 7; i++)
+                {
+                    var date = today.AddDays(i);
+
+                    if (date.DayOfWeek == targetDay)
+                    {
+                        var fullDateTime = DateTime.SpecifyKind(
+                            date.Add((schedule.SlotStartTime ?? TimeOnly.MinValue).ToTimeSpan()),
+                            DateTimeKind.Unspecified
+                        );
+
+
+                        results.Add(new AvailableScheduleDTO
+                        {
+                            DoctorScheduleId = schedule.DoctorScheduleId,
+                            DoctorId = schedule.DoctorId,
+                            DoctorName = $"{schedule.Degree},{schedule.AcademicTitle},{schedule.DoctorName}",
+                            AppointmentDate = fullDateTime,
+                            SlotId = schedule.SlotId,
+                            SlotStartTime = schedule.SlotStartTime,
+                            SlotEndTime = schedule.SlotEndTime
+                        });
+                    }
+                }
+            }
+
+            var sortedResults = results.OrderBy(r => r.AppointmentDate).ToList();
+
+
+            return sortedResults;
+
+        }
+        public async Task<List<AvailableScheduleDTO>> GetAvailableSchedulesByServiceId(int serviceId)
+        {
+            var proposedSchedules = await GetProposedDoctorSchedulesByServiceId(serviceId);
+            var activeReservation = await reservationService.GetActiveReservationsForThisWeek();
+
+            var nowVN = DateTime.UtcNow.AddHours(12);
+            var availableSchedules = proposedSchedules.Where(proposed =>
+            {
+                bool isNotOverlapping = !activeReservation.Any(active =>
+                    active.DoctorSchedule.DoctorScheduleId == proposed.DoctorScheduleId &&
+                    active.AppointmentDate == proposed.AppointmentDate
+                );
+
+                bool isAfterNowPlusFive = proposed.AppointmentDate > nowVN;
+
+                return isNotOverlapping && isAfterNowPlusFive;
+            }).ToList();
+
+            return availableSchedules;
+
+        }
+
 
         public async Task<List<DoctorScheduleDTO>> GetDoctorScheduleList()
         {
@@ -121,11 +204,11 @@ namespace AppointmentSchedulingApp.Application.Services
                 var doctorSchedule = await _dbcontext.DoctorSchedules
                     .Where(d => d.DoctorScheduleId == doctorScheduleUpdateDTO.DoctorScheduleId)
                     .FirstOrDefaultAsync();
-                if(doctorSchedule == null)
+                if (doctorSchedule == null)
                 {
                     return false;
                 }
-                
+
                 doctorSchedule.DoctorId = doctorScheduleUpdateDTO.DoctorId;
                 doctorSchedule.ServiceId = doctorScheduleUpdateDTO.ServiceId;
                 doctorSchedule.DayOfWeek = doctorScheduleUpdateDTO.DayOfWeek;
@@ -167,11 +250,11 @@ namespace AppointmentSchedulingApp.Application.Services
 
         }
 
-        public async Task<List<DoctorScheduleDTO>> FilterAndSearchDoctorSchedule(string? doctorName,int? serviceId, string? day, int? roomId, int? slotId)
+        public async Task<List<DoctorScheduleDTO>> FilterAndSearchDoctorSchedule(string? doctorName, int? serviceId, string? day, int? roomId, int? slotId)
         {
             try
             {
-                var query =  _dbcontext.DoctorSchedules.AsQueryable();
+                var query = _dbcontext.DoctorSchedules.AsQueryable();
 
                 if (!string.IsNullOrWhiteSpace(doctorName))
                 {
@@ -198,9 +281,9 @@ namespace AppointmentSchedulingApp.Application.Services
                 if (slotId.HasValue)
                 {
                     query = query.Where(ds => ds.SlotId == slotId.Value);
-        }
+                }
 
-                var doctorSchedules =  query.Include(d => d.Doctor)
+                var doctorSchedules = query.Include(d => d.Doctor)
                     .ThenInclude(u => u.DoctorNavigation)
                     .Include(d => d.Slot)
                     .Include(d => d.Service)
@@ -223,7 +306,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 return await doctorSchedules;
             }
             catch (Exception ex)
-        {
+            {
                 throw;
             }
         }
@@ -242,10 +325,10 @@ namespace AppointmentSchedulingApp.Application.Services
             {
                 query = query.Where(ds =>
                     ds.Doctor.DoctorNavigation.UserName.Contains(doctorName));
-        }
+            }
 
             var doctorSchedules = await query.Select(d => new DoctorScheduleDTO
-        {
+            {
                 DoctorScheduleId = d.DoctorScheduleId,
                 DoctorId = d.DoctorId,
                 ServiceId = d.ServiceId,

@@ -1,13 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios"; 
-
+import axios from "axios";
+import { RootState } from "@/patient/store";
 import {
-  setSuggestionData,
   setSpecialtyId,
   setServiceId,
   setDoctorId,
   setIsShowRestoreSuggestion,
-  setLoading,
+  setIsLoading,
   setServices,
   setSpecialties,
   setDoctors,
@@ -15,51 +14,49 @@ import {
   setSelectedDate,
   setSelectedTime,
 } from "./bookingSlice";
-import api from "@/services/api";
+import api from "@/common/services/api";
 
 export const restoreSuggestion = createAsyncThunk(
   "booking/restoreSuggestion",
-  async (_, { dispatch }) => {
-    const storedSuggestion = localStorage.getItem("bookingSuggestion");
-    if (storedSuggestion) {
-      try {
-        const parsedData: IBookingSuggestion = JSON.parse(storedSuggestion);
-        dispatch(setSuggestionData(parsedData));
-        dispatch(setSpecialtyId(String(parsedData?.specialty?.specialtyId)));
+  async (_, { dispatch, getState }) => {
+    const state = getState() as RootState;
+    const { suggestionData } = state.booking;
 
-        dispatch(setServiceId(parsedData?.service?.serviceId ?? ""));
+    if (suggestionData) {
+      try {
+        dispatch(setSpecialtyId(String(suggestionData.specialty?.specialtyId)));
+
+        dispatch(setServiceId(suggestionData.service?.serviceId ?? ""));
         dispatch(
-          setDoctorId(String(parsedData?.availableSchedules?.[0]?.doctorId))
+          setDoctorId(String(suggestionData.availableSchedules?.[0]?.doctorId))
         );
         dispatch(
           setSelectedDate(
-            parsedData?.availableSchedules?.[0]?.appointmentDate.split(
+            suggestionData.availableSchedules?.[0]?.appointmentDate.split(
               "T"
-            )[0] ?? ""
+            )[0]
           )
         );
         dispatch(
           setSelectedTime(
-            parsedData?.availableSchedules?.[0]?.slotStartTime ?? ""
+            suggestionData.availableSchedules?.[0]?.slotStartTime ?? ""
           )
         );
         dispatch(setIsShowRestoreSuggestion(false));
       } catch (error) {
-        console.error(
-          "Error parsing suggestion data from localStorage:",
-          error
-        );
+        console.error("Error restoring suggestion data:", error);
       }
     }
   }
 );
+
 export const addPatientAsync = createAsyncThunk(
   "booking/addPatientAsync",
   async (patient: IAddedPatient, { rejectWithValue }) => {
     try {
       const response = await api.post("/api/Patients/AddPatient", patient);
       return response.data;
-    } catch (error: unknown) { 
+    } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         return rejectWithValue(error.response?.data);
       } else if (error instanceof Error) {
@@ -74,13 +71,13 @@ export const fetchServices = createAsyncThunk(
   "booking/fetchServices",
   async (_, { dispatch }) => {
     try {
-      dispatch(setLoading(true));
+      dispatch(setIsLoading(true));
       const response = await api.get("/services");
       dispatch(setServices(response.data));
     } catch (error) {
       console.error("Error fetching services:", error);
     } finally {
-      dispatch(setLoading(false));
+      dispatch(setIsLoading(false));
     }
   }
 );
@@ -89,13 +86,13 @@ export const fetchSpecialties = createAsyncThunk(
   "booking/fetchSpecialties",
   async (_, { dispatch }) => {
     try {
-      dispatch(setLoading(true));
+      dispatch(setIsLoading(true));
       const response = await api.get("/specialties");
       dispatch(setSpecialties(response.data));
     } catch (error) {
       console.error("Error fetching specialties:", error);
     } finally {
-      dispatch(setLoading(false));
+      dispatch(setIsLoading(false));
     }
   }
 );
@@ -104,13 +101,13 @@ export const fetchDoctors = createAsyncThunk(
   "booking/fetchDoctors",
   async (specialtyId: number, { dispatch }) => {
     try {
-      dispatch(setLoading(true));
+      dispatch(setIsLoading(true));
       const response = await api.get(`/doctors?specialtyId=${specialtyId}`);
       dispatch(setDoctors(response.data));
     } catch (error) {
       console.error("Error fetching doctors:", error);
     } finally {
-      dispatch(setLoading(false));
+      dispatch(setIsLoading(false));
     }
   }
 );
@@ -122,7 +119,7 @@ export const fetchAvailableDates = createAsyncThunk(
     { dispatch }
   ) => {
     try {
-      dispatch(setLoading(true));
+      dispatch(setIsLoading(true));
       const response = await api.get(
         `/schedules/available?doctorId=${doctorId}&date=${date}`
       );
@@ -130,7 +127,7 @@ export const fetchAvailableDates = createAsyncThunk(
     } catch (error) {
       console.error("Error fetching available dates:", error);
     } finally {
-      dispatch(setLoading(false));
+      dispatch(setIsLoading(false));
     }
   }
 );
@@ -139,14 +136,14 @@ export const submitBooking = createAsyncThunk(
   "booking/submitBooking",
   async (bookingData: IPayment, { dispatch }) => {
     try {
-      dispatch(setLoading(true));
+      dispatch(setIsLoading(true));
       const response = await api.post("/appointments", bookingData);
       return response.data;
     } catch (error) {
       console.error("Error submitting booking:", error);
       throw error;
     } finally {
-      dispatch(setLoading(false));
+      dispatch(setIsLoading(false));
     }
   }
 );

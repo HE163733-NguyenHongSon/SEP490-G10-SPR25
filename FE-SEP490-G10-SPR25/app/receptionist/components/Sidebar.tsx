@@ -1,9 +1,9 @@
 "use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useSidebar } from "@/contexts/SidebarContext";
+import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useSidebar } from "@/common/contexts/SidebarContext";
 import {
   HomeIcon,
   UserGroupIcon,
@@ -18,10 +18,18 @@ interface NavItem {
 }
 
 const navigation: NavItem[] = [
-  { name: 'Dashboard', href: '/receptionist', icon: HomeIcon },
-  { name: 'Patients', href: '/receptionist/patient', icon: UserGroupIcon },
-  { name: 'Doctor Schedule', href: '/receptionist/doctorSchedule', icon: CalendarIcon },
-  { name: 'Reservations', href: '/receptionist/reservation', icon: ClipboardDocumentListIcon },
+  { name: "Dashboard", href: "/receptionist", icon: HomeIcon },
+  { name: "Patients", href: "/receptionist/patient", icon: UserGroupIcon },
+  {
+    name: "Doctor Schedule",
+    href: "/receptionist/doctorSchedule",
+    icon: CalendarIcon,
+  },
+  {
+    name: "Reservations",
+    href: "/receptionist/reservation",
+    icon: ClipboardDocumentListIcon,
+  },
 ];
 
 export default function Sidebar() {
@@ -40,7 +48,11 @@ export default function Sidebar() {
     >
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-center h-16 border-b border-gray-200">
-          <h1 className={`text-xl font-semibold ${!isExpanded && !isHovered ? "hidden" : ""}`}>
+          <h1
+            className={`text-xl font-semibold ${
+              !isExpanded && !isHovered ? "hidden" : ""
+            }`}
+          >
             Receptionist
           </h1>
         </div>

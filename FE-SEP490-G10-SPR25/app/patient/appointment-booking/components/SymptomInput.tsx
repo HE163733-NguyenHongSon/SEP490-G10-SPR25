@@ -27,7 +27,7 @@ const SymptomInput = () => {
         </div>
         <span title="Cập nhật triệu chứng">
         <Edit
-            className="w-4 h-4 text-blue-600 cursor-pointer" // Changed icon and color
+            className="w-4 h-4 text-cyan-600 cursor-pointer"
             onClick={handleSave}
           />
         </span>

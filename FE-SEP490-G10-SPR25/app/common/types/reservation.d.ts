@@ -13,4 +13,5 @@ interface IReservation {
   createdByUserId:string;
   updatedDate: string;
   updatedByUserId:string;
+  paymentStatus:string;
 }

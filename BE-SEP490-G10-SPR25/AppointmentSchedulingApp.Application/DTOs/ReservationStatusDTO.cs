@@ -15,7 +15,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string Status { get; set; }
 
         public int UpdatedByUserId { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; } = DateTime.Now;
 
     }
 }

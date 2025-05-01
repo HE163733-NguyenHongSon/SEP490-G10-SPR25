@@ -682,7 +682,7 @@ CREATE TABLE Services (
     TreatmentTechniques NVARCHAR(MAX),
     Price DECIMAL(18,2) NOT NULL,
     EstimatedTime TIME NOT NULL,
-    IsPrepayment BIT DEFAULT 0, 
+    IsPrepayment BIT DEFAULT 1, 
     SpecialtyId INT NOT NULL,
     Image NVARCHAR(200),
 	Rating FLOAT NOT NULL DEFAULT 0,
@@ -1762,29 +1762,30 @@ VALUES
 
 --------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE Payments (
-    PaymentId INT NOT NULL IDENTITY(1,1),
-    PayerId INT NOT NULL,  -- Bệnh nhân hoặc người giám hộ thanh toán
+    --PaymentId INT NOT NULL IDENTITY(1,1),
     ReservationId INT NOT NULL,
+    PayerId INT NOT NULL,  -- Bệnh nhân hoặc người giám hộ thanh toán
     PaymentDate DATETIME DEFAULT GETDATE(),
     ReceptionistId INT DEFAULT NULL,
     PaymentMethod NVARCHAR(50) NOT NULL,
     PaymentStatus NVARCHAR(50) NOT NULL,
     TransactionId NVARCHAR(100) DEFAULT NULL,
     Amount DECIMAL(10, 2) NOT NULL,
-    PRIMARY KEY (PaymentId),
+    PRIMARY KEY (ReservationId),
     CONSTRAINT FK_Payments_User FOREIGN KEY (PayerId) REFERENCES Users(UserId),
     CONSTRAINT FK_Payments_Reservation FOREIGN KEY (ReservationId) REFERENCES Reservations(ReservationId),
     CONSTRAINT FK_Payments_Receptionist FOREIGN KEY (ReceptionistId) REFERENCES Receptionists(ReceptionistId)
 );
 
-INSERT INTO Payments (PayerId, ReservationId, PaymentDate, ReceptionistId, PaymentMethod, PaymentStatus, TransactionId, Amount)
+INSERT INTO Payments (ReservationId, PayerId, PaymentDate, ReceptionistId, PaymentMethod, PaymentStatus, TransactionId, Amount)
 VALUES 
 (1, 1, '2025-03-01 08:30:00', 31, N'Tiền mặt', N'Đã thanh toán', N'TXN12345', 500000),
 (2, 2, '2025-03-02 09:00:00', 31, N'Thẻ tín dụng', N'Đã thanh toán', N'TXN12346', 750000),
-(13, 3, '2025-03-03 10:15:00', 32, N'Ví điện tử VNPay', N'Đã thanh toán', N'TXN12347', 650000),
-(24, 4, '2025-03-04 11:45:00', 32, N'Thẻ ghi nợ', N'Đã thanh toán', N'TXN12348', 820000),
+(3, 13, '2025-03-03 10:15:00', 32, N'Ví điện tử VNPay', N'Đã thanh toán', N'TXN12347', 650000),
+(4, 24, '2025-03-04 11:45:00', 32, N'Thẻ ghi nợ', N'Đã thanh toán', N'TXN12348', 820000),
 (5, 5, '2025-03-05 13:30:00', 32, N'Tiền mặt', N'Đang xử lý', NULL, 400000),
 (6, 6, '2025-03-06 15:00:00', 32, N'Ví điện tử VNPay', N'Chưa thanh toán', NULL, 300000);
+
 -----------------
 --  thêm data   |
 -----------------
@@ -1815,30 +1816,31 @@ VALUES
 (2, 12, N'Kiểm tra mỡ máu', NULL, '2024-10-29', N'Hoàn thành', NULL, 2, 32);
 
 -- Thêm 30 Payments tương ứng
-INSERT INTO Payments (PayerId, ReservationId, PaymentDate, ReceptionistId, PaymentMethod, PaymentStatus, TransactionId, Amount)
+INSERT INTO Payments (ReservationId, PayerId, PaymentDate, ReceptionistId, PaymentMethod, PaymentStatus, TransactionId, Amount)
 VALUES
-(11, 78, '2024-01-05 09:15:00', 31, N'Thẻ tín dụng', N'Đã thanh toán', 'TXN202401001', 450000),
-(12, 79, '2024-02-07 10:00:00', 32, N'Ví điện tử', N'Đã thanh toán', 'TXN202401002', 620000),
-(13, 80, '2024-03-10 10:45:00', 31, N'Tiền mặt', N'Đã thanh toán', 'TXN202401003', 380000),
-(14, 81, '2024-04-12 15:00:00', 32, N'Chuyển khoản', N'Đã thanh toán', 'TXN202401004', 750000),
-(15, 82, '2024-05-15 12:30:00', 31, N'Thẻ ghi nợ', N'Đã thanh toán', 'TXN202401005', 550000),
-(16, 83, '2024-06-02 14:00:00', 32, N'Tiền mặt', N'Đã thanh toán', 'TXN202402001', 420000),
-(17, 84, '2024-07-05 16:15:00', 31, N'Ví điện tử', N'Đã thanh toán', 'TXN202402002', 680000),
-(18, 85, '2024-08-09 09:30:00', 32, N'Thẻ tín dụng', N'Đã thanh toán', 'TXN202402003', 530000),
-(19, 86, '2024-09-14 11:15:00', 31, N'Chuyển khoản', N'Đã thanh toán', 'TXN202402004', 710000),
-(20, 87, '2024-10-18 17:00:00', 32, N'Thẻ ghi nợ', N'Đã thanh toán', 'TXN202402005', 490000),
-(21, 88, '2024-11-01 08:45:00', 31, N'Tiền mặt', N'Đã thanh toán', 'TXN202403001', 580000),
-(22, 89, '2024-12-04 12:45:00', 32, N'Ví điện tử', N'Đã thanh toán', 'TXN202403002', 640000),
-(23, 90, '2024-01-07 15:30:00', 31, N'Thẻ tín dụng', N'Đã thanh toán', 'TXN202403003', 720000),
-(24, 91, '2024-02-10 10:15:00', 32, N'Chuyển khoản', N'Đã thanh toán', 'TXN202403004', 390000),
-(25, 92, '2024-03-12 12:00:00', 31, N'Thẻ ghi nợ', N'Đã thanh toán', 'TXN202403005', 670000),
-(26, 93, '2024-04-15 13:45:00', 32, N'Tiền mặt', N'Đã thanh toán', 'TXN202403006', 540000),
-(27, 94, '2024-05-18 16:30:00', 31, N'Ví điện tử', N'Đã thanh toán', 'TXN202403007', 480000),
-(28, 95, '2024-06-20 09:00:00', 32, N'Thẻ tín dụng', N'Đã thanh toán', 'TXN202403008', 830000),
-(29, 96, '2024-07-22 10:45:00', 31, N'Chuyển khoản', N'Đã thanh toán', 'TXN202403009', 620000),
-(30, 97, '2024-08-25 13:15:00', 32, N'Thẻ ghi nợ', N'Đã thanh toán', 'TXN202403010', 710000),
-(1, 98, '2024-09-27 15:00:00', 31, N'Tiền mặt', N'Đã thanh toán', 'TXN202403011', 590000),
-(2, 99, '2024-10-29 17:15:00', 32, N'Ví điện tử', N'Đã thanh toán', 'TXN202403012', 680000);
+(78, 11, '2024-01-05 09:15:00', 31, N'Thẻ tín dụng', N'Đã thanh toán', 'TXN202401001', 450000),
+(79, 12, '2024-02-07 10:00:00', 32, N'Ví điện tử', N'Đã thanh toán', 'TXN202401002', 620000),
+(80, 13, '2024-03-10 10:45:00', 31, N'Tiền mặt', N'Đã thanh toán', 'TXN202401003', 380000),
+(81, 14, '2024-04-12 15:00:00', 32, N'Chuyển khoản', N'Đã thanh toán', 'TXN202401004', 750000),
+(82, 15, '2024-05-15 12:30:00', 31, N'Thẻ ghi nợ', N'Đã thanh toán', 'TXN202401005', 550000),
+(83, 16, '2024-06-02 14:00:00', 32, N'Tiền mặt', N'Đã thanh toán', 'TXN202402001', 420000),
+(84, 17, '2024-07-05 16:15:00', 31, N'Ví điện tử', N'Đã thanh toán', 'TXN202402002', 680000),
+(85, 18, '2024-08-09 09:30:00', 32, N'Thẻ tín dụng', N'Đã thanh toán', 'TXN202402003', 530000),
+(86, 19, '2024-09-14 11:15:00', 31, N'Chuyển khoản', N'Đã thanh toán', 'TXN202402004', 710000),
+(87, 20, '2024-10-18 17:00:00', 32, N'Thẻ ghi nợ', N'Đã thanh toán', 'TXN202402005', 490000),
+(88, 21, '2024-11-01 08:45:00', 31, N'Tiền mặt', N'Đã thanh toán', 'TXN202403001', 580000),
+(89, 22, '2024-12-04 12:45:00', 32, N'Ví điện tử', N'Đã thanh toán', 'TXN202403002', 640000),
+(90, 23, '2024-01-07 15:30:00', 31, N'Thẻ tín dụng', N'Đã thanh toán', 'TXN202403003', 720000),
+(91, 24, '2024-02-10 10:15:00', 32, N'Chuyển khoản', N'Đã thanh toán', 'TXN202403004', 390000),
+(92, 25, '2024-03-12 12:00:00', 31, N'Thẻ ghi nợ', N'Đã thanh toán', 'TXN202403005', 670000),
+(93, 26, '2024-04-15 13:45:00', 32, N'Tiền mặt', N'Đã thanh toán', 'TXN202403006', 540000),
+(94, 27, '2024-05-18 16:30:00', 31, N'Ví điện tử', N'Đã thanh toán', 'TXN202403007', 480000),
+(95, 28, '2024-06-20 09:00:00', 32, N'Thẻ tín dụng', N'Đã thanh toán', 'TXN202403008', 830000),
+(96, 29, '2024-07-22 10:45:00', 31, N'Chuyển khoản', N'Đã thanh toán', 'TXN202403009', 620000),
+(97, 30, '2024-08-25 13:15:00', 32, N'Thẻ ghi nợ', N'Đã thanh toán', 'TXN202403010', 710000),
+(98, 1,  '2024-09-27 15:00:00', 31, N'Tiền mặt', N'Đã thanh toán', 'TXN202403011', 590000),
+(99, 2,  '2024-10-29 17:15:00', 32, N'Ví điện tử', N'Đã thanh toán', 'TXN202403012', 680000);
+
 
 
 

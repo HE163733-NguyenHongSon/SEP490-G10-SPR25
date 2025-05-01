@@ -24,18 +24,18 @@ const reservationService = {
     const data = await response.json();
     return { name: status, count: data };
   },
-  async getCancelledReservationsThisMonth(
+  async getCancelCountThisMonth (
     patientId?: string
   ): Promise<IStatus> {
-    const now = new Date();
+    const now = new Date();    
     const year = now.getFullYear();
     const month = now.getMonth() + 1; // JS: 0 = Jan
     const url =
       `${apiUrl}/odata/Reservations/$count?$filter=` +
       `patient/userId eq ${patientId} and ` +
       `status eq 'Đã hủy' and ` +
-      `year(updatedDate) eq ${year} and ` +
-      `month(updatedDate) eq ${month}`;
+      `year(createdDate) eq ${year} and ` +
+      `month(createdDate) eq ${month}`;
     console.log(url);
     const response = await fetch(url, {
       next: { revalidate: 0 },

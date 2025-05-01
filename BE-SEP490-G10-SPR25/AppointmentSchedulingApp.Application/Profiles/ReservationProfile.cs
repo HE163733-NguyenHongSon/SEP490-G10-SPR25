@@ -19,6 +19,7 @@ namespace AppointmentSchedulingApp.Application.Profiles
             
              .ForMember(dest => dest.Patient, opt => opt.MapFrom(src => src.Patient.PatientNavigation))
              .ForMember(dest => dest.DoctorSchedule, opt => opt.MapFrom(src => src.DoctorSchedule))          
+             .ForMember(dest => dest.PaymentStatus, opt => opt.MapFrom(src => src.Payment.PaymentStatus))          
              .ReverseMap();   
 
 

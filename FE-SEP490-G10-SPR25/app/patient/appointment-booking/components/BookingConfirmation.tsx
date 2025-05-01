@@ -262,31 +262,32 @@ const BookingConfirmation = () => {
             </div>
 
             <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-600 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Giá dịch vụ / Tổng chi phí khám
               </label>
-              <div className="px-4 py-3 border border-gray-300 rounded-md bg-gray-50 space-y-1">
-                <p className="text-gray-800 font-semibold text-lg">
+
+              <div className="px-4 py-4 border border-gray-300 rounded-lg bg-gray-50 space-y-2 shadow-sm">
+                <p className="text-gray-900 font-bold text-xl">
                   {Number(service?.price ?? 0).toLocaleString("en-US")} VND
                 </p>
                 <p className="text-sm text-gray-500">
                   Gồm khám, xét nghiệm cơ bản, tư vấn chuyên khoa.
                 </p>
 
-                {service?.isPrepayment && (
-                  <div className="mt-2 bg-red-50 border border-red-200 p-3 rounded-md text-sm text-red-700 space-y-1">
-                    <p className="font-medium">
-                      Dịch vụ yêu cầu thanh toán trước.
-                    </p>
-                    <p>Liên hệ lễ tân để yêu cầu hoàn tiền.</p>
-                    <p>
-                      <strong>Trong 24 giờ:</strong> hoàn tiền đầy đủ.
-                    </p>
-                    <p>
-                      <strong>Sau 24 giờ:</strong> có thể trừ phí hoặc từ chối.
-                    </p>
-                  </div>
-                )}
+                <div className="mt-3 bg-red-50 border-l-4 border-red-400 px-4 py-3 rounded-md text-sm text-red-800">
+                  <p className="font-semibold mb-1 text-xl">❗ Chính sách hoàn tiền:</p>
+                  <ul className="list-disc list-inside space-y-1 text-start ">
+                    <li>Liên hệ lễ tân để yêu cầu hoàn tiền hoặc nếu muốn dời lịch .</li>
+                    <li>Kể từ lúc bắt đầu đặt lịch:</li>
+                    <li>
+                      <strong>Trong 2 giờ:</strong> hoàn tiền đầy đủ.
+                    </li>
+                    <li>
+                      <strong>Sau 2 giờ:</strong> có thể trừ phí hoặc từ chối
+                      hoàn tiền.
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

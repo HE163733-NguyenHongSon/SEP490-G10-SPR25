@@ -224,7 +224,7 @@ public partial class AppointmentSchedulingDbContext : DbContext
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.PaymentId).HasName("PK__Payments__9B556A38424DE3AD");
+            entity.HasKey(e => e.ReservationId).HasName("PK__Payments__9B556A38424DE3AD");
 
             entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.PaymentDate)
@@ -246,8 +246,8 @@ public partial class AppointmentSchedulingDbContext : DbContext
                 .HasForeignKey(d => d.ReceptionistId)
                 .HasConstraintName("FK_Payments_Receptionist");
 
-            entity.HasOne(d => d.Reservation).WithMany(p => p.Payments)
-                .HasForeignKey(d => d.ReservationId)
+            entity.HasOne(d => d.Reservation).WithOne(p => p.Payment)
+                .HasForeignKey<Payment>(d => d.ReservationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Payments_Reservation");
         });

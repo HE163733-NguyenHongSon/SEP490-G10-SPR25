@@ -150,7 +150,6 @@ namespace AppointmentSchedulingApp.Application.Services
 
                     var payment = new Payment
                     {
-                        PayerId = payerId,
                         ReservationId = reservation.ReservationId,
                         TransactionId = vnp_TransactionId.ToString(),
                         Amount = vnp_Amount,

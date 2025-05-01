@@ -40,7 +40,7 @@ public partial class Reservation
 
     public virtual Patient Patient { get; set; } = null!;
 
-    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+    public virtual Payment Payment { get; set; } = null!;
 
     public virtual User UpdatedByUser { get; set; } = null!;
 }

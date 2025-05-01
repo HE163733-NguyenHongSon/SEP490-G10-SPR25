@@ -5,11 +5,10 @@ namespace AppointmentSchedulingApp.Domain.Entities;
 
 public partial class Payment
 {
-    public int PaymentId { get; set; }
+    public int ReservationId { get; set; }
 
     public int PayerId { get; set; }
 
-    public int ReservationId { get; set; }
 
     public DateTime? PaymentDate { get; set; }= DateTime.Now;   
 

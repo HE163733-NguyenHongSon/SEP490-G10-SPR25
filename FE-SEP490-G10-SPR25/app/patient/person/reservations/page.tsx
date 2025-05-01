@@ -83,7 +83,7 @@ const ReservationPage = () => {
 
   const handleCancelSuccess = async () => {
     try {
-      toast.success("Hủy đặt chỗ  thành công!", {
+      toast.success("Hủy đặt chỗ  đang xử lý!", {
         position: "top-right",
         autoClose: 3000,
         style: { marginTop: "4rem" },

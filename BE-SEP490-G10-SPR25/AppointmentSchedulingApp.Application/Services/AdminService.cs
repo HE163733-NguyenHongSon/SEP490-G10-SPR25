@@ -821,7 +821,7 @@ namespace AppointmentSchedulingApp.Application.Services
                     Time = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(g.Key.Month) + " " + g.Key.Year,
                     AppointmentCount = g.Count(p =>p.Status == "Hoàn thành"),
                     Year = g.Key.Year,
-                    Revenue = g.SelectMany(r => r.Payments)
+                    Revenue = g.Select(r => r.Payment)
                                .Where(p => p.PaymentStatus == "Đã thanh toán")
                                .Sum(p => p.Amount)
                 })

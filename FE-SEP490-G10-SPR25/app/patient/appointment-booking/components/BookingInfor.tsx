@@ -36,9 +36,8 @@ const BookingInfor = () => {
         ]);
         dispatch(setSpecialties(specialtyList));
         dispatch(setSuggestionData(suggestion));
-        if (suggestion?.specialty?.specialtyId && !isShowRestoreSuggestion) {
+        if (suggestion && !isShowRestoreSuggestion) {
           dispatch(setSpecialtyId(suggestion?.specialty.specialtyId || ""));
-          console.log("suggets  specialty ", suggestion?.specialty.specialtyId);
         }
       } catch (error) {
         if (error instanceof Error && error.name !== "AbortError") {
@@ -52,7 +51,7 @@ const BookingInfor = () => {
     if (selectedPatient?.userId && symptoms.length > 0) {
       fetchData();
     }
-  }, [symptoms, dispatch, selectedPatient?.userId]);
+  }, [symptoms, dispatch]);
 
   return (
     <div className="relative border-b border-gray-200 py-6 md:py-8 px-2 md:px-4 rounded-lg bg-white shadow-sm transition-all duration-300">

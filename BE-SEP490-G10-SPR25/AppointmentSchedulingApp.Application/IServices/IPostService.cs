@@ -13,6 +13,7 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<List<PostDetailDTO>> GetAllPostDetailAsync();
         Task<PostDTO?> GetPostByIdAsync(int id);
         Task<PostDetailDTO> GetPostDetailAsync(int id);
+        Task UpdatePostAsync(PostDetailDTO postDTO);
         Task AddPostAsync(PostDetailDTO postDetailDTO);
         Task <bool> DeletePostAsync(int id);
         Task<int> GetPostSectionsCountAsync();

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 public class DoctorScheduleDTO
 {
@@ -16,6 +17,7 @@ public class DoctorScheduleDTO
     public string ServiceImage { get; set; }
     public string ServicePrice { get; set; }
 
+    public bool? IsPrepayment { get; set; }
     public string DayOfWeek { get; set; } = null!;
 
     public int RoomId { get; set; }

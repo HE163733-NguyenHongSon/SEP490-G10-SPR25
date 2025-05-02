@@ -1,10 +1,10 @@
 import React from "react";
 import { assets } from "@/public/images/assets";
 import Image from "next/image";
-import { doctorService } from "@/services/doctorService";
-import { serviceService } from "@/services/serviceService";
-import { specialtyService } from "@/services/specialtyService";
-import { patientService } from "@/services/patientService";
+import { doctorService } from "@/common/services/doctorService";
+import { serviceService } from "@/common/services/serviceService";
+import { specialtyService } from "@/common/services/specialtyService";
+import { patientService } from "@/common/services/patientService";
 
 export const About = () => {
   const numberOfDoctors = doctorService.getNumberOfDoctors();
@@ -56,7 +56,9 @@ export const About = () => {
               <p>Dịch vụ y tế</p>
             </div>
             <div>
-              <p className="text-4xl font-medium text-cyan-500">{numberOfExaminedPatients}</p>
+              <p className="text-4xl font-medium text-cyan-500">
+                {numberOfExaminedPatients}
+              </p>
               <p>Bệnh nhân đã khám</p>
             </div>
           </div>

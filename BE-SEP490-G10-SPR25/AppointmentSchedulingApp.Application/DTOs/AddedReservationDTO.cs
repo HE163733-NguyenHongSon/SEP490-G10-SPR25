@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace AppointmentSchedulingApp.Application.DTOs
 {
@@ -15,7 +16,7 @@ namespace AppointmentSchedulingApp.Application.DTOs
 
         public string? Reason { get; set; }
 
-        public string? PriorExaminationImg { get; set; }
+        public IFormFile? PriorExaminationImg { get; set; }
 
         public DateTime AppointmentDate { get; set; }
 

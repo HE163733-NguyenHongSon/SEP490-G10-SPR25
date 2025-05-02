@@ -9,11 +9,8 @@ namespace AppointmentSchedulingApp.Application.DTOs
 {
     public class ServiceDetailDTO : ServiceDTO
     {
-        [JsonPropertyOrder(12)]
-        public string SpecialtyName { get; set; }
-
         [JsonPropertyOrder(13)]
-        public bool? IsPrepayment { get; set; }
+        public string SpecialtyName { get; set; }
 
         [JsonPropertyOrder(14)]
         public List<DoctorDTO> RelatedDoctors { get; set; }

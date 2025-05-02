@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useUser } from "@/contexts/UserContext";
-import { useDispatch } from "react-redux";
-import {
-  addPatient,
-  setAddingPatient,
-  setSelectedPatient,
-} from "../redux/bookingSlice";
+import { useUser } from "@/common/contexts/UserContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addPatientAsync } from "../redux/bookingThunks";
+import type { AppDispatch, RootState } from "../../store";
+
+import { setIsAddingPatient, setPatients } from "../redux/bookingSlice";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,8 +20,8 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
   const [relationship, setRelationship] = useState("");
   const [address, setAddress] = useState("");
   const { user } = useUser();
-  const dispatch = useDispatch();
-
+  const dispatch = useDispatch<AppDispatch>();
+  const patients = useSelector((state: RootState) => state.booking.patients);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -36,16 +35,15 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
       address,
       guardianId: user?.userId,
     };
-
+    console.log("dsdsd", addedPatient);
     try {
-      dispatch(addPatient(addedPatient));
-      dispatch(setAddingPatient(true));
-      dispatch(setSelectedPatient(addedPatient));
-
+      await dispatch(addPatientAsync(addedPatient)).unwrap();
+      dispatch(setIsAddingPatient(true));
+      dispatch(setPatients([...patients, addedPatient as IPatient]));
       toast.success("Thêm bệnh nhân thành công!");
       onClose();
     } catch {
-      dispatch(setAddingPatient(false));
+      dispatch(setIsAddingPatient(false));
       toast.error("Thêm thất bại hoặc bệnh nhân đã tồn tại!");
     }
   };

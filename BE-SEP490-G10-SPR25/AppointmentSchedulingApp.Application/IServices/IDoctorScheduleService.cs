@@ -11,6 +11,10 @@ namespace AppointmentSchedulingApp.Application.IServices
     public interface IDoctorScheduleService
     {
         Task<List<DoctorScheduleDTO>> GetDoctorScheduleListByServiceId(int serviceId);
+        Task<List<AvailableScheduleDTO>> GetProposedDoctorSchedulesByServiceId(int serviceId);
+
+        Task<List<AvailableScheduleDTO>> GetAvailableSchedulesByServiceId(int serviceId);
+
         Task<List<DoctorScheduleDTO>> GetDoctorScheduleList();
         Task<DoctorScheduleDTO> GetDoctorScheduleDetailById(int doctorScheduleId);
 

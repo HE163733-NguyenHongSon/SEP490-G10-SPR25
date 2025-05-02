@@ -1,14 +1,18 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { doctorScheduleService } from "@/services/doctorScheduleService";
-import { doctorService } from "@/services/doctorService";
-import { serviceService } from "@/services/serviceService";
-import { roomService } from "@/services/roomService";
-import { slotService } from "@/services/slotService";
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import React, { useEffect, useState } from "react";
+import { doctorScheduleService } from "@/common/services/doctorScheduleService";
+import { doctorService } from "@/common/services/doctorService";
+import { serviceService } from "@/common/services/serviceService";
+import { roomService } from "@/common/services/roomService";
+import { slotService } from "@/common/services/slotService";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-export default function EditDoctorSchedulePage({ params }: { params: { doctorScheduleId: string } }) {
+export default function EditDoctorSchedulePage({
+  params,
+}: {
+  params: { doctorScheduleId: string };
+}) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     doctorScheduleId: 0,
@@ -16,7 +20,7 @@ export default function EditDoctorSchedulePage({ params }: { params: { doctorSch
     serviceId: 0,
     dayOfWeek: "",
     roomId: 0,
-    slotId: 0
+    slotId: 0,
   });
   const [loading, setLoading] = useState({ get: true, submit: false });
   const [error, setError] = useState<string | null>(null);
@@ -29,14 +33,17 @@ export default function EditDoctorSchedulePage({ params }: { params: { doctorSch
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [doctorData, serviceData, roomData, slotData, scheduleData] = await Promise.all([
-          doctorService.getDoctorList(),
-          serviceService.getAllServices(),
-          roomService.getRoomList(),
-          slotService.getSlotList(),
-          doctorScheduleService.getDoctorScheduleDetailById(params.doctorScheduleId)
-        ]);
-        
+        const [doctorData, serviceData, roomData, slotData, scheduleData] =
+          await Promise.all([
+            doctorService.getDoctorList(),
+            serviceService.getAllServices(),
+            roomService.getRoomList(),
+            slotService.getSlotList(),
+            doctorScheduleService.getDoctorScheduleDetailById(
+              params.doctorScheduleId
+            ),
+          ]);
+
         setDoctorList(doctorData);
         setServiceList(serviceData);
         setRoomList(roomData);
@@ -48,13 +55,13 @@ export default function EditDoctorSchedulePage({ params }: { params: { doctorSch
           serviceId: scheduleData.serviceId,
           dayOfWeek: scheduleData.dayOfWeek,
           roomId: scheduleData.roomId,
-          slotId: scheduleData.slotId
+          slotId: scheduleData.slotId,
         });
         setOriginalData(scheduleData);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch data');
+        setError(err instanceof Error ? err.message : "Failed to fetch data");
       } finally {
-        setLoading(prev => ({ ...prev, get: false }));
+        setLoading((prev) => ({ ...prev, get: false }));
       }
     };
 
@@ -63,29 +70,35 @@ export default function EditDoctorSchedulePage({ params }: { params: { doctorSch
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const isConfirmed = window.confirm('Bạn có chắc chắn muốn cập nhật lịch làm việc này?');
+
+    const isConfirmed = window.confirm(
+      "Bạn có chắc chắn muốn cập nhật lịch làm việc này?"
+    );
     if (!isConfirmed) return;
 
-    setLoading(prev => ({ ...prev, submit: true }));
+    setLoading((prev) => ({ ...prev, submit: true }));
     setError(null);
 
     try {
-      const updatedSchedule = await doctorScheduleService.updateDoctorSchedule(formData);
-      router.push(`/receptionist/doctorSchedule-detail/${params.doctorScheduleId}`);
+      const updatedSchedule = await doctorScheduleService.updateDoctorSchedule(
+        formData
+      );
+      router.push(
+        `/receptionist/doctorSchedule-detail/${params.doctorScheduleId}`
+      );
     } catch (err) {
-      console.error('Update error:', err);
-      setError(err instanceof Error ? err.message : 'Cập nhật thất bại');
+      console.error("Update error:", err);
+      setError(err instanceof Error ? err.message : "Cập nhật thất bại");
     } finally {
-      setLoading(prev => ({ ...prev, submit: false }));
+      setLoading((prev) => ({ ...prev, submit: false }));
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: Number(value)
+      [name]: Number(value),
     }));
   };
 
@@ -115,15 +128,18 @@ export default function EditDoctorSchedulePage({ params }: { params: { doctorSch
           ← Quay lại chi tiết lịch làm việc
         </Link>
       </div>
-      <h1 className="text-2xl font-bold mb-6">Chỉnh sửa lịch làm việc #{formData.doctorScheduleId}</h1>
+      <h1 className="text-2xl font-bold mb-6">
+        Chỉnh sửa lịch làm việc #{formData.doctorScheduleId}
+      </h1>
 
       {error && (
-        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">
-          {error}
-        </div>
+        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded">{error}</div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-lg shadow-md p-6 space-y-6"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Chọn bác sĩ */}
           <div className="form-group">
@@ -196,7 +212,9 @@ export default function EditDoctorSchedulePage({ params }: { params: { doctorSch
             <select
               name="dayOfWeek"
               value={formData.dayOfWeek}
-              onChange={(e) => setFormData({ ...formData, dayOfWeek: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, dayOfWeek: e.target.value })
+              }
               className="w-full p-2 border rounded"
               required
             >
@@ -241,7 +259,10 @@ export default function EditDoctorSchedulePage({ params }: { params: { doctorSch
             <p>Dịch vụ: {originalData.serviceName}</p>
             <p>Phòng: {originalData.roomName}</p>
             <p>Ngày trong tuần : {originalData.dayOfWeek}</p>
-            <p>Khung giờ: {originalData.slotStartTime} - {originalData.slotEndTime}</p>
+            <p>
+              Khung giờ: {originalData.slotStartTime} -{" "}
+              {originalData.slotEndTime}
+            </p>
           </div>
         )}
 
@@ -257,7 +278,7 @@ export default function EditDoctorSchedulePage({ params }: { params: { doctorSch
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
             disabled={loading.submit}
           >
-            {loading.submit ? 'Đang cập nhật...' : 'Lưu thay đổi'}
+            {loading.submit ? "Đang cập nhật..." : "Lưu thay đổi"}
           </button>
         </div>
       </form>

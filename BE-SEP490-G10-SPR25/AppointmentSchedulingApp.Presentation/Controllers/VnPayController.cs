@@ -38,11 +38,17 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
             if (response == null || response.VnPayResponseCode != "00")
             {
-                return BadRequest(new { Message = $"Lỗi thanh toán VNPay: {response?.VnPayResponseCode}" });
+                return Redirect($"http://localhost:3000/patient/appointment-booking/vnpay-return?status=fail&code={response?.VnPayResponseCode}");
             }
 
-            return Ok(response );
+            return Redirect($"http://localhost:3000/patient/appointment-booking/vnpay-return?status=success" +
+                $"&transactionId={response.TransactionId}" +
+                $"&amount={response.Amount}" +
+                $"&paymentMethod={response.PaymentMethod}" +
+                $"&paymentStatus={Uri.EscapeDataString(response.PaymentStatus)}" +
+                $"&code={response.VnPayResponseCode}");
         }
+
     }
 
 }

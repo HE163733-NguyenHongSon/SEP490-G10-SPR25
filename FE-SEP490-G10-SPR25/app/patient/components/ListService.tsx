@@ -5,7 +5,7 @@ import Link from "next/link";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
-import RatingStars from "@/components/RatingStars";
+import RatingStars from "@/common/components/RatingStars";
 
 interface ListServiceProps {
   items: IService[];

@@ -4,11 +4,11 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { Dropdown } from "../components/Dropdown";
 import { DropdownItem } from "../components/DropdownItem";
-import { logout } from "@/services/authService";
+import { logout } from "@/common/services/authService";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useUser } from "@/contexts/UserContext";
+import { useUser } from "@/common/contexts/UserContext";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);

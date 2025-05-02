@@ -1,18 +1,35 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, message, Select, Card, Spin, DatePicker } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  message,
+  Select,
+  Card,
+  Spin,
+  DatePicker,
+} from "antd";
 import PageBreadCrumb from "../../../components/PageBreadCrumb";
-import { doctorService } from "@/services/doctorService";
+import { doctorService } from "@/common/services/doctorService";
 import { useRouter } from "next/navigation";
-import dayjs from 'dayjs';
-import 'dayjs/locale/vi';
+import dayjs from "dayjs";
+import "dayjs/locale/vi";
 
-dayjs.locale('vi');
+dayjs.locale("vi");
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-const DEFAULT_ACADEMIC_TITLES = ["GS.TS", "PGS.TS", "TS", "BSCKII", "BSCKI", "ThS", "BS"];
+const DEFAULT_ACADEMIC_TITLES = [
+  "GS.TS",
+  "PGS.TS",
+  "TS",
+  "BSCKII",
+  "BSCKI",
+  "ThS",
+  "BS",
+];
 const DEFAULT_DEGREES = ["Tiến sĩ", "Thạc sĩ", "Cử nhân", ""];
 
 interface EditDoctorProps {
@@ -25,11 +42,15 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
-  const [academicTitles, setAcademicTitles] = useState<string[]>(DEFAULT_ACADEMIC_TITLES);
+  const [academicTitles, setAcademicTitles] = useState<string[]>(
+    DEFAULT_ACADEMIC_TITLES
+  );
   const [degrees, setDegrees] = useState<string[]>(DEFAULT_DEGREES);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [actualPassword, setActualPassword] = useState("");
-  const [doctorDetail, setDoctorDetail] = useState<IDoctorDetailDTO | null>(null);
+  const [doctorDetail, setDoctorDetail] = useState<IDoctorDetailDTO | null>(
+    null
+  );
   const router = useRouter();
   const doctorId = parseInt(params.doctorId);
   const [editingUserId, setEditingUserId] = useState<number | null>(null);
@@ -37,44 +58,58 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
     const fetchData = async () => {
       try {
         setInitializing(true);
-        
-        const fetchedDoctorDetail = await doctorService.getDoctorDetailById(doctorId);
+
+        const fetchedDoctorDetail = await doctorService.getDoctorDetailById(
+          doctorId
+        );
         setDoctorDetail(fetchedDoctorDetail);
-        
-        console.log("API response data:", JSON.stringify(fetchedDoctorDetail, null, 2));
-        
+
+        console.log(
+          "API response data:",
+          JSON.stringify(fetchedDoctorDetail, null, 2)
+        );
+
         const doctors = await doctorService.getDoctorList();
-        
+
         const uniqueAcademicTitles = Array.from(
           new Set(
             doctors
               .map((doctor: IDoctor) => doctor.academicTitle)
-              .filter((title: string | undefined) => title && title.trim() !== '')
+              .filter(
+                (title: string | undefined) => title && title.trim() !== ""
+              )
           )
         ) as string[];
-        
+
         const uniqueDegrees = Array.from(
           new Set(
             doctors
               .map((doctor: IDoctor) => doctor.degree)
-              .filter((degree: string | undefined) => degree && degree.trim() !== '')
+              .filter(
+                (degree: string | undefined) => degree && degree.trim() !== ""
+              )
           )
         ) as string[];
 
         if (uniqueAcademicTitles.length > 0) {
           setAcademicTitles(uniqueAcademicTitles);
         }
-        
+
         if (uniqueDegrees.length > 0) {
           setDegrees(uniqueDegrees);
         }
-        
+
         // Parse date of birth
         let dobValue = undefined;
         try {
           if (fetchedDoctorDetail.dob) {
             // Try to parse the date string using common formats
-            const dateFormats = ['YYYY-MM-DD', 'DD/MM/YYYY', 'MM/DD/YYYY', 'DD-MM-YYYY'];
+            const dateFormats = [
+              "YYYY-MM-DD",
+              "DD/MM/YYYY",
+              "MM/DD/YYYY",
+              "DD-MM-YYYY",
+            ];
             for (const format of dateFormats) {
               const parsedDate = dayjs(fetchedDoctorDetail.dob, format);
               if (parsedDate.isValid()) {
@@ -82,7 +117,7 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
                 break;
               }
             }
-            
+
             // If parsing with specific formats fails, try automatic parsing
             if (!dobValue) {
               const autoDate = dayjs(fetchedDoctorDetail.dob);
@@ -94,14 +129,14 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         } catch (error) {
           console.error("Error parsing date:", error);
         }
-        
+
         if (fetchedDoctorDetail.password) {
           setActualPassword(fetchedDoctorDetail.password);
         }
-        
+
         form.setFieldsValue({
           userName: fetchedDoctorDetail.userName,
-          password: fetchedDoctorDetail.password || "", 
+          password: fetchedDoctorDetail.password || "",
           email: fetchedDoctorDetail.email || "",
           doctorName: fetchedDoctorDetail.userName,
           avatarUrl: fetchedDoctorDetail.avatarUrl,
@@ -118,12 +153,14 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
           phone: fetchedDoctorDetail.phone,
           gender: fetchedDoctorDetail.gender,
           dateOfBirth: dobValue,
-          address: fetchedDoctorDetail.address
+          address: fetchedDoctorDetail.address,
         });
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
-        message.error("Không thể tải thông tin bác sĩ. Vui lòng kiểm tra kết nối đến API hoặc thử lại sau.");
-        
+        message.error(
+          "Không thể tải thông tin bác sĩ. Vui lòng kiểm tra kết nối đến API hoặc thử lại sau."
+        );
+
         setTimeout(() => {
           router.push("/admin/doctors");
         }, 2000);
@@ -138,26 +175,30 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
   const onFinish = async (values: any) => {
     try {
       setLoading(true);
-      const experienceYear = parseInt(values.workExperience?.match(/\d+/)?.[0] || "0");
-      
+      const experienceYear = parseInt(
+        values.workExperience?.match(/\d+/)?.[0] || "0"
+      );
+
       // Xử lý ngày tháng đúng cách
-      let dobValue = '';
+      let dobValue = "";
       if (values.dateOfBirth) {
         if (values.dateOfBirth.isValid && values.dateOfBirth.isValid()) {
-          dobValue = values.dateOfBirth.format('YYYY-MM-DD');
+          dobValue = values.dateOfBirth.format("YYYY-MM-DD");
         } else {
-          message.error('Định dạng ngày không hợp lệ. Vui lòng chọn ngày hợp lệ.');
+          message.error(
+            "Định dạng ngày không hợp lệ. Vui lòng chọn ngày hợp lệ."
+          );
           return;
         }
       }
-      
+
       const citizenId = values.citizenId ? values.citizenId.toString() : "";
-      
+
       if (!doctorDetail) {
         message.error("Không có thông tin bác sĩ!");
         return;
       }
-      
+
       const doctorData: IDoctorDetailDTO = {
         userId: doctorId.toString(),
         userName: values.userName,
@@ -187,10 +228,13 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         dob: dobValue,
         address: values.address,
         citizenId: parseInt(citizenId) || 0,
-        password: !values.password || values.password.trim() === '' ? actualPassword : values.password,
+        password:
+          !values.password || values.password.trim() === ""
+            ? actualPassword
+            : values.password,
         roleNames: "Doctor",
         isVerify: doctorDetail.isVerify,
-        isActive: doctorDetail.isActive
+        isActive: doctorDetail.isActive,
       };
 
       await doctorService.updateDoctor(doctorId, doctorData);
@@ -205,7 +249,7 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
   };
 
   const handlePasswordToggle = (visible: boolean) => {
-    setPasswordVisible(visible);    
+    setPasswordVisible(visible);
     return visible;
   };
 
@@ -220,7 +264,9 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Chỉnh sửa thông tin bác sĩ</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+          Chỉnh sửa thông tin bác sĩ
+        </h1>
       </div>
 
       <div className="mb-6">
@@ -228,17 +274,15 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
       </div>
 
       <Card className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-        >
+        <Form form={form} layout="vertical" onFinish={onFinish}>
           <h2 className="text-xl font-bold mb-4">Thông tin tài khoản</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <Form.Item
               name="userName"
               label="Tên đăng nhập"
-              rules={[{ required: true, message: "Vui lòng nhập tên đăng nhập" }]}
+              rules={[
+                { required: true, message: "Vui lòng nhập tên đăng nhập" },
+              ]}
             >
               <Input placeholder="Nhập tên đăng nhập" disabled />
             </Form.Item>
@@ -246,21 +290,17 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
             <Form.Item
               name="password"
               label="Mật khẩu (thay đổi nếu muốn)"
-              rules={[
-                { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự" }
-              ]}
+              rules={[{ min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự" }]}
             >
-              <Input.Password 
-                placeholder="Mật khẩu hiện tại"
-              />
+              <Input.Password placeholder="Mật khẩu hiện tại" />
             </Form.Item>
-            
+
             <Form.Item
               name="email"
               label="Email"
               rules={[
                 { required: true, message: "Vui lòng nhập email" },
-                { type: 'email', message: "Email không hợp lệ" }
+                { type: "email", message: "Email không hợp lệ" },
               ]}
             >
               <Input placeholder="Nhập email" />
@@ -272,7 +312,9 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
             <Form.Item
               name="citizenId"
               label="Số CMND/CCCD"
-              rules={[{ required: true, message: "Vui lòng nhập số CMND/CCCD" }]}
+              rules={[
+                { required: true, message: "Vui lòng nhập số CMND/CCCD" },
+              ]}
             >
               <Input placeholder="Nhập số CMND/CCCD" />
             </Form.Item>
@@ -280,7 +322,9 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
             <Form.Item
               name="phone"
               label="Số điện thoại"
-              rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
+              rules={[
+                { required: true, message: "Vui lòng nhập số điện thoại" },
+              ]}
             >
               <Input placeholder="Nhập số điện thoại" />
             </Form.Item>
@@ -302,15 +346,15 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
               label="Ngày sinh"
               rules={[{ required: true, message: "Vui lòng chọn ngày sinh" }]}
             >
-              <DatePicker 
-                style={{ width: '100%' }} 
+              <DatePicker
+                style={{ width: "100%" }}
                 format="YYYY-MM-DD"
                 allowClear={true}
                 placeholder="Chọn ngày sinh"
                 popupStyle={{ zIndex: 1060 }}
                 disabledDate={(current) => {
                   // Không cho phép chọn ngày trong tương lai
-                  return current && current > dayjs().endOf('day');
+                  return current && current > dayjs().endOf("day");
                 }}
               />
             </Form.Item>
@@ -337,7 +381,9 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
             <Form.Item
               name="avatarUrl"
               label="URL ảnh đại diện"
-              rules={[{ required: true, message: "Vui lòng nhập URL ảnh đại diện" }]}
+              rules={[
+                { required: true, message: "Vui lòng nhập URL ảnh đại diện" },
+              ]}
             >
               <Input placeholder="Nhập URL ảnh đại diện" />
             </Form.Item>
@@ -345,7 +391,9 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
             <Form.Item
               name="academicTitle"
               label="Học hàm/Học vị"
-              rules={[{ required: true, message: "Vui lòng chọn học hàm/học vị" }]}
+              rules={[
+                { required: true, message: "Vui lòng chọn học hàm/học vị" },
+              ]}
             >
               <Select placeholder="Chọn học hàm/học vị">
                 {academicTitles.map((title) => (
@@ -373,15 +421,17 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
             <Form.Item
               name="currentWork"
               label="Nơi công tác hiện tại"
-              rules={[{ required: true, message: "Vui lòng nhập nơi công tác hiện tại" }]}
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập nơi công tác hiện tại",
+                },
+              ]}
             >
               <Input placeholder="Nhập nơi công tác hiện tại" />
             </Form.Item>
 
-            <Form.Item
-              name="organization"
-              label="Tổ chức"
-            >
+            <Form.Item name="organization" label="Tổ chức">
               <Input placeholder="Nhập tổ chức" />
             </Form.Item>
           </div>
@@ -389,7 +439,9 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
           <Form.Item
             name="detailDescription"
             label="Mô tả chi tiết"
-            rules={[{ required: true, message: "Vui lòng nhập mô tả chi tiết" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập mô tả chi tiết" },
+            ]}
           >
             <TextArea rows={4} placeholder="Nhập mô tả chi tiết về bác sĩ" />
           </Form.Item>
@@ -397,34 +449,34 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
           <Form.Item
             name="workExperience"
             label="Kinh nghiệm làm việc"
-            rules={[{ required: true, message: "Vui lòng nhập kinh nghiệm làm việc" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập kinh nghiệm làm việc" },
+            ]}
           >
-            <TextArea rows={4} placeholder="Nhập kinh nghiệm làm việc (VD: 5 năm kinh nghiệm...)" />
+            <TextArea
+              rows={4}
+              placeholder="Nhập kinh nghiệm làm việc (VD: 5 năm kinh nghiệm...)"
+            />
           </Form.Item>
 
-          <Form.Item
-            name="trainingProcess"
-            label="Quá trình đào tạo"
-          >
+          <Form.Item name="trainingProcess" label="Quá trình đào tạo">
             <TextArea rows={4} placeholder="Nhập quá trình đào tạo" />
           </Form.Item>
 
-          <Form.Item
-            name="researchProject"
-            label="Dự án nghiên cứu"
-          >
+          <Form.Item name="researchProject" label="Dự án nghiên cứu">
             <TextArea rows={4} placeholder="Nhập dự án nghiên cứu" />
           </Form.Item>
 
-          <Form.Item
-            name="prize"
-            label="Giải thưởng"
-          >
+          <Form.Item name="prize" label="Giải thưởng">
             <TextArea rows={4} placeholder="Nhập giải thưởng" />
           </Form.Item>
 
           <Form.Item className="flex justify-end">
-            <Button type="default" onClick={() => router.back()} className="mr-2">
+            <Button
+              type="default"
+              onClick={() => router.back()}
+              className="mr-2"
+            >
               Hủy
             </Button>
             <Button type="primary" htmlType="submit" loading={loading}>
@@ -437,4 +489,4 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
   );
 };
 
-export default EditDoctor; 
+export default EditDoctor;

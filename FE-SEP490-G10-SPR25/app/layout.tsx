@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { UserProvider } from "@/contexts/UserContext";
+import { UserProvider } from "@/common/contexts/UserContext";
 
 import "./globals.css";
 
@@ -18,7 +18,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      
       <UserProvider>
         <body className={inter.className}>{children}</body>
       </UserProvider>

@@ -21,13 +21,14 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public string? CancellationReason { get; set; }
 
         public int CreatedByUserId { get; set; }
-        public string CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
 
 
-        public string UpdatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
         public int UpdatedByUserId { get; set; }
 
+        public string? PaymentStatus { get; set; } = null!;
 
     }
 

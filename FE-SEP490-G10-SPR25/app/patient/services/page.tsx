@@ -1,7 +1,7 @@
-'use client';
+"use client";
 import React, { useEffect, useState } from "react";
 import { ServiceList } from "../components/ServiceList";
-import { serviceService } from "../../services/serviceService";
+import { serviceService } from "../../common/services/serviceService";
 
 const ServicesPage = () => {
   const [services, setServices] = useState<IService[]>([]);
@@ -14,8 +14,8 @@ const ServicesPage = () => {
         const data = await serviceService.getAllServices();
         setServices(data);
       } catch (err) {
-        setError('Failed to fetch services');
-        console.error('Error fetching services:', err);
+        setError("Failed to fetch services");
+        console.error("Error fetching services:", err);
       } finally {
         setLoading(false);
       }

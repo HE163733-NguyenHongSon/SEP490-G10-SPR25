@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import RatingStars from "@/components/RatingStars";
+import RatingStars from "@/common/components/RatingStars";
 import Image from "next/image";
 interface FeedbackItem {
   id: number;

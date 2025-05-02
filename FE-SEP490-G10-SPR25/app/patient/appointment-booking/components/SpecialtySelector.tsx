@@ -1,32 +1,28 @@
 "use client";
-import React, { useEffect } from "react";
 import Select from "react-select";
 import { Stethoscope as StethoscopeIcon, RefreshCw } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setSpecialtyId,
   setIsShowRestoreSuggestion,
- 
+  setDoctorId,
+  setServiceId,
+  setSelectedDate,
+  setSelectedTime,
 } from "../redux/bookingSlice";
 import { restoreSuggestion } from "../redux/bookingThunks";
 import type { RootState, AppDispatch } from "../../store";
-import type { StylesConfig } from "react-select";
 
 const SpecialtySelector = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { specialties, specialtyId, isShowRestoreSuggestion, suggestionData } =
-    useSelector((state: RootState) => state.booking);
+  const { specialties, specialtyId, isShowRestoreSuggestion,suggestionData,customSelectStyles } = useSelector(
+    (state: RootState) => state.booking
+  );
 
   const options = specialties.map((s: ISpecialty) => ({
     value: String(s.specialtyId),
     label: s.specialtyName,
   }));
-
-  useEffect(() => {
-    if (specialtyId && !localStorage.getItem("bookingSuggestion")) {
-      localStorage.setItem("bookingSuggestion", JSON.stringify(suggestionData));
-    }
-  }, [specialtyId]);
 
   const currentSpecialty = options.find(
     (opt) => opt.value === String(specialtyId)
@@ -36,15 +32,15 @@ const SpecialtySelector = () => {
     selectedOption: { value: string; label: string } | null
   ) => {
     if (selectedOption) {
-      const selectedId = Number(selectedOption.value);
-      const suggestion: IBookingSuggestion = JSON.parse(
-        localStorage.getItem("bookingSuggestion") || "{}"
-      );
+      const selectedId = selectedOption.value;     
       dispatch(setSpecialtyId(selectedId));
-
+      dispatch(setServiceId(""));
+      dispatch(setDoctorId(""));
+      dispatch(setSelectedDate(""));
+      dispatch(setSelectedTime(""));
       dispatch(
         setIsShowRestoreSuggestion(
-          selectedId !== Number(suggestion.specialty.specialtyId)
+          selectedId !== suggestionData?.specialty.specialtyId
         )
       );
     }
@@ -52,38 +48,9 @@ const SpecialtySelector = () => {
 
   const handleRestoreSuggestion = () => {
     dispatch(restoreSuggestion());
-    // const suggestedId = Number(localStorage.getItem("suggestedSpecialtyId"));
-    // dispatch(setSpecialtyId(suggestedId));
   };
 
-  const customStyles: StylesConfig<{ value: string; label: string }, false> = {
-    control: (base, state) => ({
-      ...base,
-      backgroundColor: "white",
-      borderColor: state.isFocused ? "#67e8f9" : "#d1d5db",
-      borderRadius: "0.5rem",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#67e8f9",
-      },
-    }),
-    option: (base, state) => ({
-      ...base,
-      backgroundColor:
-        state.isSelected || state.isFocused ? "#f3f4f6" : "white",
-      color: "#374151",
-      padding: "10px 12px",
-      cursor: "pointer",
-    }),
-    singleValue: (base) => ({
-      ...base,
-      color: "#374151",
-      display: "flex",
-      alignItems: "center",
-    }),
-    input: (base) => ({ ...base, color: "#374151" }),
-    placeholder: (base) => ({ ...base, color: "#9ca3af" }),
-  };
+ 
 
   return (
     <div className="space-y-2">
@@ -110,7 +77,7 @@ const SpecialtySelector = () => {
         isDisabled={!options.length}
         placeholder="Chọn chuyên khoa"
         noOptionsMessage={() => "Không có chuyên khoa nào"}
-        styles={customStyles}
+        styles={customSelectStyles}
       />
     </div>
   );

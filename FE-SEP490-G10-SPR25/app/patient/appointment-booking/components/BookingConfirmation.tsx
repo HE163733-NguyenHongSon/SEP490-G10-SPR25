@@ -1,48 +1,24 @@
-import { useDispatch, useSelector } from "react-redux";
-import {
-  setSymptoms,
-} from "../redux/bookingSlice";
-import { RootState } from "../../store"; // Adjust the path to your store file
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import moment from "moment";
 
 const BookingConfirmation = () => {
-  const dispatch = useDispatch();
-
   const {
     symptoms,
     selectedPatient,
+    selectedDate,
+    selectedTime,
     specialties,
     services,
     doctors,
     doctorId,
     specialtyId,
     serviceId,
-    suggestionData
   } = useSelector((state: RootState) => state.booking);
-     
-  // Helper functions to get display values
-  const getSpecialtyName = () => {
-    const specialty = specialties.find(
-      (s) => s.specialtyId === specialtyId?.toString()
-    );
-    return specialty ? specialty.specialtyName : "";
-  };
 
-  const getService = () => {
-    const service = services.find((s) => s.serviceId === serviceId);
-    return service || suggestionData?.service;
-  };    
-              
-  const getDoctorName = () => {
-    const doctor = doctors.find((d) => d.value === doctorId);
-    return doctor ? doctor.label : "";
-  };              
-      
-  // const getFormattedDateTime = () => {
-  //   if (selectedDate && selectedTime) {
-  //     return `${formatAppointmentDate(selectedDate)} - ${selectedTime}`;
-  //   }
-  //   return "";
-  // };
+  const service = services.find(
+    (s) => String(s.serviceId) === String(serviceId)
+  );
 
   const calculateAge = (dob: string) => {
     if (!dob) return "";
@@ -58,10 +34,6 @@ const BookingConfirmation = () => {
     }
 
     return age;
-  };
-
-  const handleSymptomsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    dispatch(setSymptoms(e.target.value));
   };
 
   return (
@@ -217,7 +189,11 @@ const BookingConfirmation = () => {
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800">
-                      {getSpecialtyName() || "Không có thông tin"}
+                      {
+                        specialties.find(
+                          (s) => s.specialtyId == specialtyId?.toString()
+                        )?.specialtyName
+                      }
                     </p>
                   </div>
                 </div>
@@ -228,14 +204,12 @@ const BookingConfirmation = () => {
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800 ">
-                      {getService() && (
+                      {service && (
                         <div>
-                          <p className="font-bold">
-                            {getService()?.serviceName}
-                          </p>
+                          <p className="font-bold">{service?.serviceName}</p>
                           <p>
                             {" "}
-                            {Number(getService()?.price ?? 0).toLocaleString(
+                            {Number(service.price ?? 0).toLocaleString(
                               "en-US"
                             )}{" "}
                             VND{" "}
@@ -254,7 +228,7 @@ const BookingConfirmation = () => {
                   </label>
                   <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
                     <p className="text-gray-800">
-                      {getDoctorName() || "Không có thông tin"}
+                      {doctors.find((d) => d.value === doctorId)?.label}
                     </p>
                   </div>
                 </div>
@@ -263,11 +237,11 @@ const BookingConfirmation = () => {
                   <label className="block text-sm font-medium text-gray-600">
                     Thời gian hẹn
                   </label>
-                  {/* <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
-                    <p className="text-gray-800">
-                      {getFormattedDateTime() || "Không có thông tin"}
-                    </p>
-                  </div> */}
+                  <div className="mt-1 p-2 bg-gray-50 rounded border border-gray-200">
+                    <p className="text-gray-800">{`${moment(
+                      selectedDate
+                    ).format("DD-MM-YYYY")} vào lúc ${selectedTime}`}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -279,25 +253,41 @@ const BookingConfirmation = () => {
               <div className="mt-1">
                 <textarea
                   rows={4}
+                  disabled={true}
                   className="w-full text-gray-700 p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                   value={symptoms}
-                  onChange={handleSymptomsChange}
                   placeholder="Mô tả chi tiết triệu chứng hoặc lý do khám của bạn"
                 />
               </div>
             </div>
 
             <div className="mt-6">
-              <label className="block text-sm font-medium text-gray-600">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Giá dịch vụ / Tổng chi phí khám
               </label>
-              <div className="mt-2 px-4 py-3 border border-gray-300 rounded-md bg-gray-50">
-                <p className="text-gray-700 font-semibold text-lg">
-                  {Number(getService()?.price ?? 0).toLocaleString("en-US")} VND{" "}
+
+              <div className="px-4 py-4 border border-gray-300 rounded-lg bg-gray-50 space-y-2 shadow-sm">
+                <p className="text-gray-900 font-bold text-xl">
+                  {Number(service?.price ?? 0).toLocaleString("en-US")} VND
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Bao gồm phí khám, xét nghiệm cơ bản, và tư vấn chuyên khoa
+                <p className="text-sm text-gray-500">
+                  Gồm khám, xét nghiệm cơ bản, tư vấn chuyên khoa.
                 </p>
+
+                <div className="mt-3 bg-red-50 border-l-4 border-red-400 px-4 py-3 rounded-md text-sm text-red-800">
+                  <p className="font-semibold mb-1 text-xl">❗ Chính sách hoàn tiền:</p>
+                  <ul className="list-disc list-inside space-y-1 text-start ">
+                    <li>Liên hệ lễ tân để yêu cầu hoàn tiền hoặc nếu muốn dời lịch .</li>
+                    <li>Kể từ lúc bắt đầu đặt lịch:</li>
+                    <li>
+                      <strong>Trong 2 giờ:</strong> hoàn tiền đầy đủ.
+                    </li>
+                    <li>
+                      <strong>Sau 2 giờ:</strong> có thể trừ phí hoặc từ chối
+                      hoàn tiền.
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

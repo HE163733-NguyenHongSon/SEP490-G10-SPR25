@@ -1,28 +1,12 @@
-import React, { useEffect, useState } from "react";
-import reservationService from "@/services/reservationService";
-
 interface MessengerProps {
   reservation?: IReservation | null;
+  cancelledCountThisMonth: number | null;
 }
 
-const CancelReservationMessage: React.FC<MessengerProps> = ({ reservation }) => {
-  const [cancelCount, setCancelCount] = useState<number>(0);
-
-  useEffect(() => {
-    const fetchCancelledCount = async () => {
-      if (reservation?.patient?.userId) {
-        const { count } =
-          await reservationService.getCancelledReservationsThisMonth(
-            reservation.patient.userId
-          );
-
-        setCancelCount(count);
-      }
-    };
-
-    fetchCancelledCount();
-  }, [reservation]);
-
+const CancelReservationMessage: React.FC<MessengerProps> = ({
+  reservation,
+  cancelledCountThisMonth,
+}) => {
   return (
     <div
       style={{
@@ -33,7 +17,6 @@ const CancelReservationMessage: React.FC<MessengerProps> = ({ reservation }) => 
         borderRadius: "12px",
         boxShadow: "0 24px 26px -1px rgba(0, 0, 0, 0.1)",
         fontFamily: "Poppins, sans-serif",
-        
       }}
     >
       <h2
@@ -110,7 +93,8 @@ const CancelReservationMessage: React.FC<MessengerProps> = ({ reservation }) => 
                     "vi-VN"
                   )
                 : "N/A"}
-              {reservation?.doctorSchedule.slotStartTime && ` - ${reservation.doctorSchedule.slotEndTime}`}
+              {reservation?.doctorSchedule.slotStartTime &&
+                ` - ${reservation.doctorSchedule.slotEndTime}`}
             </td>
           </tr>
           <tr style={{ borderBottom: "1px solid #e0f2fe" }}>
@@ -169,16 +153,28 @@ const CancelReservationMessage: React.FC<MessengerProps> = ({ reservation }) => 
         }}
       >
         <p style={{ marginBottom: "8px" }}>
-          {cancelCount !== null ? (
+          {cancelledCountThisMonth === null ? (
+            <>Đang kiểm tra số lần hủy trong tháng này...</>
+          ) : (
             <>
-              Chú ý bạn còn <strong>{Math.max(3 - cancelCount, 0)}</strong> lần
-              hủy trong tháng này.
-              <br />
+              {cancelledCountThisMonth >= 0 && cancelledCountThisMonth < 2 ? (
+                <span>
+                  Chú ý: bạn còn{" "}
+                  <strong className="text-orange-600">
+                    {3 - (cancelledCountThisMonth +1)}
+                  </strong>{" "}
+                  lần hủy trong tháng này.
+                  <br />
+                </span>
+              ) : (
+                <span className="text-red-600 font-semibold">
+                  Bạn đã hết lượt hủy trong tháng.
+                  <br />
+                </span>
+              )}
               Vui lòng liên hệ chúng tôi nếu bạn cần hỗ trợ thêm hoặc muốn đặt
               lịch mới.
             </>
-          ) : (
-            <>Đang kiểm tra số lần hủy trong tháng này...</>
           )}
         </p>
 

@@ -79,7 +79,7 @@ const MedicalRecordDetail: React.FC<MedicalRecordDetailProps> = ({
                     ],
                     [
                       "Số điện thoại",
-                      medicalRecordDetail?.reservation.patient.phoneNumber,
+                      medicalRecordDetail?.reservation.patient.phone,
                     ],
                     [
                       "Giới tính",

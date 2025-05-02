@@ -42,7 +42,6 @@ namespace AppointmentSchedulingApp.Application.Profiles
             CreateMap<Service, ServiceDetailDTO>()
                 .IncludeBase<Service, ServiceDTO>()
                 .ForMember(dest => dest.SpecialtyName, opt => opt.MapFrom(src => src.Specialty.SpecialtyName))
-                .ForMember(dest => dest.IsPrepayment, opt => opt.MapFrom(src => src.IsPrepayment))
                 .ForMember(dest => dest.RelatedDoctors, opt => opt.MapFrom(src => src.Doctors))
                 .ForMember(dest => dest.RequiredDevices, opt => opt.Ignore()); // Will be set manually
 

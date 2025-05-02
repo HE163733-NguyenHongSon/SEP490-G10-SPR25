@@ -10,10 +10,12 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
     public class ReservationsController : ControllerBase
     {
         private IReservationService reservationService;
+        private IStorageService storageService;
 
-        public ReservationsController(IReservationService reservationService)
+        public ReservationsController(IReservationService reservationService, IStorageService storageService)
         {
             this.reservationService = reservationService;
+            this.storageService = storageService;
         }
 
         [HttpGet()]
@@ -23,21 +25,37 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             return Ok(await reservationService.GetListReservation());
         }
         [HttpPost("AddReservation")]
-        public async Task<IActionResult> AddReservation([FromBody] AddedReservationDTO reservationDto)
+        public async Task<IActionResult> AddReservation([FromForm] AddedReservationDTO reservationDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await reservationService.AddReservation(reservationDto);
+            var reservation = await reservationService.AddReservation(reservationDto);
 
-            if (result == null)
+            if (reservationDto.PriorExaminationImg != null)
             {
-                return BadRequest("Không thể tạo lịch hẹn.");
+                var files = new List<IFormFile> { reservationDto.PriorExaminationImg };
+
+                Func<IFormFile, string> renameFunc = (file) =>
+                {
+                    var fileExt = Path.GetExtension(file.FileName).ToLowerInvariant();
+                    return $"lichhen{reservation.ReservationId}_benhnhan{reservation.PatientId}_phacdotruoc{fileExt}";
+                };
+
+                var uploadResults = await storageService.UploadFilesAsync(files, renameFunc);
+
+                if (uploadResults.Any(r => r.StatusCode != 200))
+                {
+                    return BadRequest("File upload failed.");
+                }
+
+
+                await reservationService.UpdatePriorExaminationImg(reservation.ReservationId, uploadResults.FirstOrDefault()?.FileName);
             }
 
-            return Ok(result);
+            return Ok(true);
         }
 
         [HttpGet("{patientId}/{status}/{sortBy}")]
@@ -51,7 +69,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 {
                     return NotFound($"Bệnh nhân với Id={patientId} không tồn tại!");
                 }
-                if ( !reservations.Any()  )
+                if (!reservations.Any())
                 {
                     return Ok($"Lịch hẹn với trạng thái '{status}' của bệnh nhân Id={patientId} chưa có!");
                 }

@@ -239,5 +239,47 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500, $"Lỗi khi lấy lịch sử khám bệnh: {ex.Message}");
             }
         }
+
+        [HttpGet("{doctorId}/medicalrecords")]
+        //[Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> GetDoctorMedicalRecords(int doctorId)
+        {
+            try
+            {
+                var medicalRecords = await _doctorService.GetDoctorMedicalRecords(doctorId);
+                
+                if (medicalRecords == null || !medicalRecords.Any())
+                {
+                    return NoContent();
+                }
+                
+                return Ok(medicalRecords);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi khi lấy danh sách bệnh án: {ex.Message}");
+            }
+        }
+
+        [HttpGet("{doctorId}/patients/{patientId}/medicalrecords")]
+        //[Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> GetMedicalRecordsByPatientAndDoctorId(int doctorId, int patientId)
+        {
+            try
+            {
+                var medicalRecords = await _doctorService.GetMedicalRecordsByPatientAndDoctorId(doctorId, patientId);
+                
+                if (medicalRecords == null || !medicalRecords.Any())
+                {
+                    return NoContent();
+                }
+                
+                return Ok(medicalRecords);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi khi lấy danh sách bệnh án: {ex.Message}");
+            }
+        }
     }
 }

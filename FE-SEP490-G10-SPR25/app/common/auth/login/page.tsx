@@ -221,7 +221,7 @@ const LoginPage = () => {
           <p className="text-gray-600">
             Bạn chưa có tài khoản?{" "}
             <a
-              href="/auth/register"
+              href="/common/auth/register"
               className="text-blue-500 hover:text-blue-700"
             >
               Register

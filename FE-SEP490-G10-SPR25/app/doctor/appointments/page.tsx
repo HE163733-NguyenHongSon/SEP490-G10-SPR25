@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import {
   Calendar,
@@ -48,6 +48,9 @@ export default function DoctorAppointmentsPage() {
     console.log("Total appointments:", appointments.length);
     if (appointments.length > 0) {
       console.log("Sample appointment data:", appointments[0]);
+      // Debug thêm thông tin patientName
+      console.log("PatientName:", appointments[0].patientName);
+      console.log("Patient userName:", appointments[0].patient?.userName);
     }
   }, [appointments, appointmentsByDate]);
 
@@ -142,7 +145,9 @@ export default function DoctorAppointmentsPage() {
   };
 
   const filterAppointments = (appointment: IReservation) => {
-    const patientName = appointment.patient?.userName?.toLowerCase() || "";
+    const patientName = appointment.patientName?.toLowerCase() || 
+                        appointment.patient?.userName?.toLowerCase() || 
+                        "";
     return patientName.includes(searchTerm.toLowerCase());
   };
 
@@ -154,16 +159,37 @@ export default function DoctorAppointmentsPage() {
   const hasAppointments = Object.keys(appointmentsByDate).length > 0;
   console.log("Has appointments to render:", hasAppointments);
 
+  // Get current date in local date format (no time)
+  const today = useMemo(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate()).toLocaleDateString('vi-VN');
+  }, []);
+  
+  // Count appointments for today and future
+  const appointmentCounts = useMemo(() => {
+    const todayCount = appointments.filter(app => 
+      new Date(app.appointmentDate).toLocaleDateString('vi-VN') === today
+    ).length;
+    
+    const futureCount = appointments.length - todayCount;
+    
+    return { today: todayCount, future: futureCount };
+  }, [appointments, today]);
+
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Lịch Hẹn</h1>
+          <h1 className="text-2xl font-bold">Lịch Hẹn Sắp Tới</h1>
           <div className="flex space-x-2">
-            <button className="px-4 py-2 border rounded-md hover:bg-gray-50 flex items-center">
+            <div className="px-4 py-2 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-md flex items-center">
               <Calendar className="h-4 w-4 mr-2" />
-              Hôm nay
-            </button>
+              Từ {new Date().toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -192,7 +218,7 @@ export default function DoctorAppointmentsPage() {
                 <option value="Xác nhận">Đã xác nhận</option>
                 <option value="Đang chờ">Chờ xác nhận</option>
                 <option value="Hoàn thành">Đã hoàn thành</option>
-                <option value="Hủy">Đã hủy</option>
+                <option value="Đã hủy">Đã hủy</option>
               </select>
               <button className="p-2 border rounded-md hover:bg-gray-50">
                 <Filter className="h-5 w-5 text-gray-500" />
@@ -201,6 +227,24 @@ export default function DoctorAppointmentsPage() {
           </div>
         </div>
       </div>
+      
+      {appointments.length > 0 && !loading && !error && (
+        <div className="col-span-12 mb-2">
+          <div className="flex flex-wrap gap-3">
+            <div className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm border border-green-200">
+              Hôm nay: {appointmentCounts.today} cuộc hẹn
+            </div>
+            {appointmentCounts.future > 0 && (
+              <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm border border-blue-200">
+                Sắp tới: {appointmentCounts.future} cuộc hẹn
+              </div>
+            )}
+            <div className="bg-gray-50 text-gray-700 px-3 py-1 rounded-full text-sm border border-gray-200">
+              Tổng cộng: {appointments.length} cuộc hẹn
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="col-span-12 space-y-4">
         {loading ? (
@@ -213,7 +257,8 @@ export default function DoctorAppointmentsPage() {
           </div>
         ) : appointments.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-6 text-center">
-            <p>Không có lịch hẹn nào trong trạng thái {statusFilter}</p>
+            <p>Không có lịch hẹn nào trong trạng thái {statusFilter} từ ngày hôm nay trở đi</p>
+            <p className="text-sm text-gray-500 mt-2">Vui lòng kiểm tra lại sau hoặc chọn trạng thái khác</p>
           </div>
         ) : !hasAppointments ? (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
@@ -246,11 +291,11 @@ export default function DoctorAppointmentsPage() {
                       <div className="p-4 bg-gray-50 border-b flex flex-col md:flex-row md:items-center md:justify-between">
                         <div className="flex items-center">
                           <div className="h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 font-medium mr-3">
-                            {appointment.patient?.userName?.charAt(0) || "?"}
+                            {(appointment.patientName || appointment.patient?.userName || "?").charAt(0)}
                           </div>
                           <div>
-                            <h3 className="font-medium">
-                              {appointment.patient?.userName || "Không có tên"}
+                            <h3 className="font-medium text-indigo-700">
+                              Bệnh nhân: {appointment.patientName || appointment.patient?.userName || "Không có tên"}
                             </h3>
                             <p className="text-sm text-gray-500">
                               {appointment.patient?.dob &&
@@ -285,7 +330,9 @@ export default function DoctorAppointmentsPage() {
                                   ? "bg-blue-100 text-blue-800"
                                   : appointment.status === "Hoàn thành"
                                   ? "bg-gray-100 text-gray-800"
-                                  : "bg-red-100 text-red-800"
+                                  : appointment.status === "Đã hủy"
+                                  ? "bg-red-100 text-red-800"
+                                  : "bg-yellow-100 text-yellow-800"
                               }`}
                             >
                               {appointment.status}

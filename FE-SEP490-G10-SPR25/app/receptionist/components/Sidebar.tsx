@@ -19,14 +19,14 @@ interface NavItem {
 
 const navigation: NavItem[] = [
   { name: "Dashboard", href: "/receptionist", icon: HomeIcon },
-  { name: "Patients", href: "/receptionist/patient", icon: UserGroupIcon },
+  { name: "Quản lý Bệnh nhân", href: "/receptionist/patient", icon: UserGroupIcon },
   {
-    name: "Doctor Schedule",
+    name: "Quản lý lịch bác sĩ",
     href: "/receptionist/doctorSchedule",
     icon: CalendarIcon,
   },
   {
-    name: "Reservations",
+    name: "Quản lý lịch hẹn",
     href: "/receptionist/reservation",
     icon: ClipboardDocumentListIcon,
   },

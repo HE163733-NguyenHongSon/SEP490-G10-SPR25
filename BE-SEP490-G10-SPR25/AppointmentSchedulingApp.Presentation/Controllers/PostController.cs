@@ -37,16 +37,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             if (post == null) return NotFound();
             return Ok(post);
         }
-        //[HttpPost]
-        //public async Task<IActionResult> CreatePost([FromBody] PostDetailDTO postDTO)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-        //    await _postService.AddPostAsync(postDTO);
-        //    return Ok();
-        //}
+
         [HttpPost("test-upload")]
         public async Task<IActionResult> TestUpload([FromForm] UploadFileDTO dto)
         {
@@ -86,40 +77,6 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             return Ok(result);
         }
 
-        //public async Task<int> GetNextIndexOfSection()
-        //{
-        //    var awsKey = _configuration["AWS:AccessKey"];
-        //    var awsSecret = _configuration["AWS:SecretKey"];
-        //    var bucketName = _configuration["AWS:BucketName"];
-        //    var s3Client = new AmazonS3Client(
-        //    awsKey,
-        //    awsSecret,
-        //    new AmazonS3Config
-        //    {
-        //        RegionEndpoint = Amazon.RegionEndpoint.APSoutheast2
-        //    });
-
-        //    var listRequest = new ListObjectsV2Request
-        //    {
-        //        BucketName = bucketName,
-        //        Prefix = "phan_"
-        //    };
-
-        //    var listResponse = await s3Client.ListObjectsV2Async(listRequest);
-
-        //    int maxIndex = listResponse.S3Objects
-        //        .Select(obj =>
-        //        {
-        //            var name = Path.GetFileNameWithoutExtension(obj.Key); // ví dụ: phan_5
-        //            var parts = name.Split('_');
-        //            return parts.Length == 2 && int.TryParse(parts[1], out var idx) ? idx : -1;
-        //        })
-        //        .Where(i => i >= 0)
-        //        .DefaultIfEmpty(-1)
-        //        .Max();
-
-        //    return maxIndex + 1;
-        //}
 
         [HttpPost]
         public async Task<IActionResult> CreatePost([FromForm] IFormFileCollection files)
@@ -135,12 +92,9 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             var sections = JsonConvert.DeserializeObject<List<PostSectionDTO>>(postSectionsJson);
             if (sections == null || sections.Count == 0)
                 return BadRequest("Phải có ít nhất một section");
-
-            // Upload ảnh tương ứng
             var uploadedUrls = new List<string>();
-
             int sectionCount = await _postService.GetPostSectionsCountAsync();
-
+            Console.WriteLine($"id tác giả: {postAuthorId}");
             foreach (var file in files)
             {
                 var ext = Path.GetExtension(file.FileName);
@@ -174,6 +128,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                     var bucket = _configuration["AWS:BucketName"];
                     var url = $"https://{bucket}.s3.amazonaws.com/{uploaded.FileName}";
                     uploadedUrls.Add(uploaded.FileName);
+                    Console.WriteLine($"upload anh thanh cong {uploaded.FileName} {bucket}");
                 }
                 else
                 {
@@ -181,7 +136,6 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 }
             }
 
-            // Gắn URL ảnh vào đúng section
             int imgIndex = 0;
             for (int i = 0; i < sections.Count; i++)
             {
@@ -189,10 +143,11 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 {
                     if (imgIndex >= uploadedUrls.Count)
                         return BadRequest("Số lượng ảnh không khớp số section cần ảnh");
-
+                        
                     sections[i].PostImageUrl = uploadedUrls[imgIndex++];
                 }
             }
+
 
             // Gọi service để lưu bài viết
             var postDTO = new PostDetailDTO
@@ -203,58 +158,12 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 AuthorId = postAuthorId,
                 PostSections = sections
             };
+            Console.WriteLine($"tieu de bai viet {postDTO.PostTitle}");
 
             await _postService.AddPostAsync(postDTO);
 
             return Ok(new { message = "Tạo bài viết thành công" });
         }
-
-        //[HttpPost]
-        //[RequestSizeLimit(200_000_000)]
-        //public async Task<IActionResult> CreatePostWithImages([FromForm] IFormCollection form)
-        //{
-        //    try
-        //    {
-        //        var postTitle = form["postTitle"].ToString();
-        //        var postDescription = form["postDescription"].ToString();
-        //        var postSourceUrl = form["postSourceUrl"].ToString();
-        //        int.TryParse(form["postAuthorId"].ToString(), out int authorId);
-        //        var postSectionsJson = form["postSectionsJson"].ToString();
-
-        //        var files = form.Files;
-        //        var uploadedUrls = await _storageService.UploadFilesAsync(files.ToList());
-
-        //        var postSections = JsonSerializer.Deserialize<List<PostSectionDTO>>(postSectionsJson);
-        //        if (postSections == null) return BadRequest("Invalid post sections data");
-
-        //        var baseUrl = Environment.GetEnvironmentVariable("S3_BASE_URL") ?? "";
-
-        //        int imageIndex = 0;
-        //        foreach (var section in postSections)
-        //        {
-        //            if (!string.IsNullOrEmpty(section.PostImageUrl) && imageIndex < uploadedUrls.Count)
-        //            {
-        //                section.PostImageUrl = $"{baseUrl}/{uploadedUrls[imageIndex++].FileName}";
-        //            }
-        //        }
-
-        //        var postDTO = new PostDetailDTO
-        //        {
-        //            PostTitle = postTitle,
-        //            PostDescription = postDescription,
-        //            PostSourceUrl = postSourceUrl,
-        //            PostSections = postSections
-        //        };
-
-        //        await _postService.AddPostAsync(postDTO);
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Lỗi server: {ex.Message}");
-        //    }
-        //}
-
         [HttpPut("{id}")]
         public async Task<IActionResult> EditPost(int id, [FromForm] IFormFileCollection files)
         {

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { PlusCircle, Eye, Pencil, Trash2, Loader2 } from "lucide-react";
+import { getCurrentUser } from "@/common/services/authService";
 
 interface IApiPost {
   postId: number;
@@ -13,13 +14,21 @@ interface IApiPost {
   postSourceUrl: string;
   authorName: string | null;
   postImageUrl: string;
+  authorId?: number;
 }
 
 const DoctorBlogsPage = () => {
   const [posts, setPosts] = useState<IApiPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
+  useEffect(() => {
+    const user = getCurrentUser();
+    if (user && user.userId) {
+      setCurrentUserId(Number(user.userId));
+    }
+  }, []);
   const fetchPosts = async () => {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/post`);
@@ -158,10 +167,10 @@ const DoctorBlogsPage = () => {
                         href={`/doctor/blogs/${post.postId}`}
                         className="flex items-center justify-center gap-1 flex-1 px-3 py-2 text-sm font-medium bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200"
                       >
-                        <Eye className="h-4 w-4" />
+                      <Eye className="h-4 w-4" />
                         <span>Xem</span>
                       </Link>
-                      <Link
+                      {/* <Link
                         href={`/doctor/blogs/edit/${post.postId}`}
                         className="flex items-center justify-center gap-1 flex-1 px-3 py-2 text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white rounded-md transition-colors duration-200"
                       >
@@ -174,7 +183,25 @@ const DoctorBlogsPage = () => {
                       >
                         <Trash2 className="h-4 w-4" />
                         <span>Xoá</span>
-                      </button>
+                      </button> */}
+                      {post.authorId === currentUserId && (
+                        <>
+                          <Link
+                            href={`/doctor/blogs/edit/${post.postId}`}
+                            className="flex items-center justify-center gap-1 flex-1 px-3 py-2 text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white rounded-md transition-colors duration-200"
+                          >
+                            <Pencil className="h-4 w-4" />
+                            <span>Sửa</span>
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(post.postId)}
+                            className="flex items-center justify-center gap-1 flex-1 px-3 py-2 text-sm font-medium bg-red-500 hover:bg-red-600 text-white rounded-md transition-colors duration-200"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            <span>Xoá</span>
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -37,7 +37,19 @@ namespace AppointmentSchedulingApp.Application.Services
             var comments = await _unitOfWork.CommentRepository.GetCommentsByPostIdAsync(postId);
             return _mapper.Map<List<CommentDTO>>(comments);
         }
+        public async Task<CommentDTO?> EditCommentAsync(int commentId, string newContent)
+        {
+            var comment = await _unitOfWork.CommentRepository.GetByIdAsync(commentId);
+            if (comment == null) return null;
 
+            comment.Content = newContent;
+            comment.CommentOn = DateTime.Now;
+
+            _unitOfWork.CommentRepository.Update(comment);
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<CommentDTO>(comment);
+        }
         public async Task<bool> DeleteCommentAsync(int commentId)
         {
             try

@@ -81,6 +81,8 @@ namespace AppointmentSchedulingApp.Application.Services
             try
             {
                 var post = _mapper.Map<Post>(postDTO);
+                post.PostAuthorId = postDTO.AuthorId;
+                post.PostSections = _mapper.Map<List<PostSection>>(postDTO.PostSections);
                 post.PostCreatedDate = DateTime.Now;
                 await _postRepository.AddAsync(post);
             }

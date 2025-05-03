@@ -14,43 +14,13 @@ namespace AppointmentSchedulingApp.Application.Profiles
     {
         public PostProfile()
         {
-            //CreateMap<PostDetailDTO, Post>()
-            //    .ForMember(dest => dest.PostId, opt => opt.Ignore())
-            //    .ForMember(dest => dest.PostAuthor, opt => opt.Ignore())
-            //    .ForMember(dest => dest.PostSections, opt => opt.MapFrom(src => new List<PostSection>
-            //    {
-            //        new PostSection
-            //        {
-            //            PostImageUrl = src.PostImageUrl,
-            //            SectionTitle = src.PostCategory,
-            //            SectionContent = "Nội dung mặc định"
-            //        }
-            //    }));
-            //CreateMap<Post, PostDTO>();
+
             CreateMap<PostDetailDTO, Post>()
                 .ForMember(dest => dest.PostId, opt => opt.Ignore())
                 .ForMember(dest => dest.PostAuthor, opt => opt.Ignore())
                 .ForMember(dest => dest.PostSections, opt => opt.Ignore())
                 .ForMember(dest => dest.Comments, opt => opt.Ignore())
                 .ForMember(dest => dest.PostCreatedDate, opt => opt.Ignore());
-
-            //CreateMap<Post, PostDTO>()
-            //.ForMember(dest => dest.AuthorName,
-            //    opt => opt.MapFrom(src =>
-            //        src.PostAuthor != null && src.PostAuthor.User != null
-            //            ? src.PostAuthor.DoctorNavigation.UserName
-            //            : "Ẩn danh"))
-            //.ForMember(dest => dest.PostImageUrl,
-            //    opt => opt.MapFrom(src => src.PostImageUrl));
-
-            //CreateMap<Post, PostDetailDTO>()
-            //    .ForMember(dest => dest.AuthorBio,
-            //                opt => opt.MapFrom(src => src.PostAuthor!.DoctorDescription))
-            //    .ForMember(dest => dest.PostImageUrl,
-            //        opt => opt.MapFrom(src => src.PostSections
-            //            .OrderBy(s=>s.SectionIndex)
-            //            .Select(s => s.PostImageUrl)
-            //            .FirstOrDefault()));
 
             CreateMap<Post, PostDTO>()
             .ForMember(dest => dest.AuthorName,
@@ -61,7 +31,9 @@ namespace AppointmentSchedulingApp.Application.Profiles
                 opt => opt.MapFrom(src => src.PostSections
                     .OrderBy(s => s.SectionIndex)
                     .Select(s => s.PostImageUrl)
-                    .FirstOrDefault()));
+                    .FirstOrDefault()))
+            .ForMember(dest => dest.AuthorId,
+                opt => opt.MapFrom(src => src.PostAuthorId));
 
             CreateMap<Post, PostDetailDTO>()
                 .ForMember(dest => dest.AuthorName,
@@ -72,7 +44,9 @@ namespace AppointmentSchedulingApp.Application.Profiles
                     opt => opt.MapFrom(src => src.PostSections
                    .OrderBy(s => s.SectionIndex)
                 .Select(s => s.PostImageUrl)
-                .FirstOrDefault()));
+                .FirstOrDefault()))
+                .ForMember(dest => dest.AuthorId,
+                    opt => opt.MapFrom(src => src.PostAuthorId));
 
             CreateMap<PostSection, PostSectionDTO>();
             CreateMap<PostSectionDTO, PostSection>();

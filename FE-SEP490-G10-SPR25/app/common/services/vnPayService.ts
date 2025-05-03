@@ -22,7 +22,7 @@ export const handleVNPayPayment = async (paymentData: Partial<IPayment>) => {
     }
 
     window.location.href = data.paymentUrl;
-    return { ok: true, paymentUrl: data.paymentUrl };
+    // return { ok: true, paymentUrl: data.paymentUrl };
   } catch (error) {
     console.error("Payment error:", error);
     throw error; // Rethrow to handle in the component

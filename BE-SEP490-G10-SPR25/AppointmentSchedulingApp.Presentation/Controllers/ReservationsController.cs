@@ -24,39 +24,39 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         {
             return Ok(await reservationService.GetListReservation());
         }
-        [HttpPost("AddReservation")]
-        public async Task<IActionResult> AddReservation([FromForm] AddedReservationDTO reservationDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //[HttpPost("AddReservation")]
+        //public async Task<IActionResult> AddReservation([FromForm] AddedReservationDTO reservationDto)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var reservation = await reservationService.AddReservation(reservationDto);
+        //    var reservation = await reservationService.AddReservation(reservationDto);
 
-            if (reservationDto.PriorExaminationImg != null)
-            {
-                var files = new List<IFormFile> { reservationDto.PriorExaminationImg };
+        //    if (reservationDto.PriorExaminationImg != null)
+        //    {
+        //        var files = new List<IFormFile> { reservationDto.PriorExaminationImg };
 
-                Func<IFormFile, string> renameFunc = (file) =>
-                {
-                    var fileExt = Path.GetExtension(file.FileName).ToLowerInvariant();
-                    return $"lichhen{reservation.ReservationId}_benhnhan{reservation.PatientId}_phacdotruoc{fileExt}";
-                };
+        //        Func<IFormFile, string> renameFunc = (file) =>
+        //        {
+        //            var fileExt = Path.GetExtension(file.FileName).ToLowerInvariant();
+        //            return $"lichhen{reservation.ReservationId}_benhnhan{reservation.PatientId}_phacdotruoc{fileExt}";
+        //        };
 
-                var uploadResults = await storageService.UploadFilesAsync(files, renameFunc);
+        //        var uploadResults = await storageService.UploadFilesAsync(files, renameFunc);
 
-                if (uploadResults.Any(r => r.StatusCode != 200))
-                {
-                    return BadRequest("File upload failed.");
-                }
+        //        if (uploadResults.Any(r => r.StatusCode != 200))
+        //        {
+        //            return BadRequest("File upload failed.");
+        //        }
 
 
-                await reservationService.UpdatePriorExaminationImg(reservation.ReservationId, uploadResults.FirstOrDefault()?.FileName);
-            }
+        //        await reservationService.UpdatePriorExaminationImg(reservation.ReservationId, uploadResults.FirstOrDefault()?.FileName);
+        //    }
 
-            return Ok(true);
-        }
+        //    return Ok(true);
+        //}
 
         [HttpGet("{patientId}/{status}/{sortBy}")]
         public async Task<IActionResult> GetListReservationByFilter(int patientId, string? status = "Đang chờ", string? sortBy = "Giá dịch vụ tăng dần")
@@ -175,7 +175,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
             return Ok(reservations);
         }
-<<<<<<< HEAD
+
         [HttpGet("UpcomingReservationsAndMarkReminded")]
         public async Task<IActionResult> GetUpcomingReservationsAndMarkReminded()
         {
@@ -190,7 +190,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             }
         }
 
-=======
+
 
         [HttpPut("ReplaceDoctor")]
         [EnableQuery]
@@ -212,6 +212,6 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
->>>>>>> 3f7afd28dadd9e26926f81d157a042e2e16ae7ed
+
     }
 }

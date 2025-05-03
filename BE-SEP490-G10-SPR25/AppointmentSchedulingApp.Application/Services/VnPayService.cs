@@ -18,12 +18,14 @@ namespace AppointmentSchedulingApp.Application.Services
         private readonly IConfiguration _config;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        public IReservationService _reservationService;
 
-        public VnPayService(IConfiguration config, IUnitOfWork unitOfWork, IMapper mapper)
+        public VnPayService(IConfiguration config, IUnitOfWork unitOfWork, IMapper mapper,IReservationService reservationService)
         {
             _config = config;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _reservationService = reservationService;
         }
 
 
@@ -118,7 +120,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 };
             }
 
-            if (parts.Length >= 8)
+            if (parts.Length >= 7)
             {
                 try
                 {
@@ -129,9 +131,9 @@ namespace AppointmentSchedulingApp.Application.Services
                     int doctorScheduleId = int.Parse(parts[2]);
                     string reason = parts[3];
                     //string priorExaminationImg = parts[4];
-                    DateTime appointmentDate = DateTime.ParseExact(parts[5], "yyyyMMddHHmmss", null);
-                    int createdByUserId = int.Parse(parts[6]);
-                    int updatedByUserId = int.Parse(parts[7]);
+                    DateTime appointmentDate = DateTime.ParseExact(parts[4], "yyyyMMddHHmmss", null);
+                    int createdByUserId = int.Parse(parts[5]);
+                    int updatedByUserId = int.Parse(parts[6]);
 
                     var reservationDto = new AddedReservationDTO
                     {
@@ -147,23 +149,25 @@ namespace AppointmentSchedulingApp.Application.Services
                     var reservation = _mapper.Map<Reservation>(reservationDto);
                     await _unitOfWork.ReservationRepository.AddAsync(reservation);
                     await _unitOfWork.CommitAsync();
+                    await _reservationService.UpdatePriorExaminationImg(reservation.ReservationId, $"lichhen_{reservation.ReservationId}.jpg");
 
                     var payment = new Payment
                     {
+                        PayerId= payerId,
                         ReservationId = reservation.ReservationId,
                         TransactionId = vnp_TransactionId.ToString(),
                         Amount = vnp_Amount,
                         PaymentMethod = "VNPay",
-                        PaymentStatus = "Success"
+                        PaymentStatus = "Đã thanh toán"
                     };
 
                     await _unitOfWork.PaymentRepository.AddAsync(payment);
-                    await _unitOfWork.CommitAsync();
 
                     await _unitOfWork.CommitTransactionAsync();
 
                     return new PaymentDTO
                     {
+                        ReservationId=reservation.ReservationId,
                         VnPayResponseCode = vnp_ResponseCode,
                         Amount = vnp_Amount,
                         PaymentStatus = "Giao dịch thành công",

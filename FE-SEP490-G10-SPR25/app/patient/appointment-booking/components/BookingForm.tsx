@@ -6,7 +6,6 @@ import { emailService } from "@/common/services/emailService";
 import { Provider } from "react-redux";
 import { store } from "../../store";
 import SuccessReservationMessage from "./SuccessReservationMessage";
-import { useFileContext } from "../contexts/FileContext";
 
 import {
   setShowBookingForm,
@@ -37,7 +36,7 @@ const BookingForm = () => {
   const dispatch = useDispatch();
   const [isMounted, setIsMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { selectedFile } = useFileContext();
+  // const { selectedFile } = useFileContext();
 
   const {
     isShowBookingForm,
@@ -79,34 +78,17 @@ const BookingForm = () => {
         patientId: selectedPatient?.userId,
         doctorScheduleId: matchedSchedule?.doctorScheduleId?.toString(),
         reason: symptoms || "",
-        priorExaminationImg: selectedFile,
+        // priorExaminationImg: selectedFile,
         appointmentDate: matchedSchedule?.appointmentDate,
         createdByUserId: selectedPatient?.userId,
         updatedByUserId: selectedPatient?.userId,
       };
-      // let isSuccess = false;
-
-      // if (!service?.isPrepayment) {
-      //   isSuccess = await reservationService.addReservation(reservation);
-      //   if (!isSuccess) toast.error("Đặt lịch thất bại. Vui lòng thử lại!");
-      // } else {
-      //   try {
-      //
-      //     isSuccess = true;
-      //   } catch (paymentError) {
-      //     console.error("Payment error:", paymentError);
-      //     toast.error("Lỗi trong quá trình thanh toán. Vui lòng thử lại sau.");
-      //     throw paymentError;
-      //   }
-      // }
       await handleVNPayPayment({
         payerId: selectedPatient?.userId,
         reservation,
         paymentMethod: "VNPay",
         amount: service?.price,
       });
-      // if (isSuccess) {
-      // toast.success("Đặt lịch hẹn thành công!");
       toast.info("Đang chuyển hướng đến cổng thanh toán VNPay...");
 
       const htmlMessage = ReactDOMServer.renderToStaticMarkup(

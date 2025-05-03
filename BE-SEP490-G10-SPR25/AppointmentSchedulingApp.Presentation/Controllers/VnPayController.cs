@@ -42,6 +42,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             }
 
             return Redirect($"http://localhost:3000/patient/appointment-booking/vnpay-return?status=success" +
+                $"&reservationId={response.ReservationId}" +
                 $"&transactionId={response.TransactionId}" +
                 $"&amount={response.Amount}" +
                 $"&paymentMethod={response.PaymentMethod}" +

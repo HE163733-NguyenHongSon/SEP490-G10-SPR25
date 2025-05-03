@@ -10,6 +10,8 @@ namespace AppointmentSchedulingApp.Application.DTOs
     public  class PaymentDTO
     {
         [Key]
+        public int ReservationId { get; set; }
+
         public AddedReservationDTO Reservation { get; set; }
         public int PayerId { get; set; }
         public string? TransactionId { get; set; } = null!;

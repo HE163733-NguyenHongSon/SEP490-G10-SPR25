@@ -510,6 +510,13 @@ const Reservation = () => {
                 </label>
               </div>
             </Col>
+            <Col span={12}>
+              <div>
+                <label>
+                  Trạng thái thanh toán: {selectedReservation?.paymentStatus}{" "}
+                </label>
+              </div>
+            </Col>
           </Row>
           {selectedReservation?.status === "Xác nhận" &&
             showDoctorList &&

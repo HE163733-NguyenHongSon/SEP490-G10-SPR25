@@ -6,6 +6,11 @@ interface IMedicalRecord {
   treatmentPlan?: string;
   followUpDate?: string;  
   notes?: string;  
+  patientName?: string;
+  patientId?: number;
+  patientGender?: string;
+  patientDob?: string;
+  patientAge?: number;
   reservation?: {
     patient?: {
       userId?: number;

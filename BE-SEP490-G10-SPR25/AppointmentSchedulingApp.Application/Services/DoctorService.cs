@@ -272,11 +272,39 @@ namespace AppointmentSchedulingApp.Application.Services
 
             var scheduleIds = doctorSchedules.Select(ds => ds.DoctorScheduleId).ToList();
 
-            // Get relevant reservations
+            // Get today's date (only the date part, not time)
+            var today = DateTime.Today;
+            
+            // Get relevant reservations for today and future dates
             var reservations = await unitOfWork.ReservationRepository.GetAll(
-                r => scheduleIds.Contains(r.DoctorScheduleId) && r.Status == status);
+                r => scheduleIds.Contains(r.DoctorScheduleId) && 
+                     r.Status == status &&
+                     r.AppointmentDate.Date >= today);
+             
+            // Sort reservations by date in descending order (newest first)
+            var sortedReservations = reservations.OrderByDescending(r => r.AppointmentDate).ToList();
 
-            return mapper.Map<List<ReservationDTO>>(reservations);
+            // Map to DTO including patient information
+            var reservationDTOs = mapper.Map<List<ReservationDTO>>(sortedReservations);
+
+            // Ensure patient information is loaded for each reservation
+            foreach (var dto in reservationDTOs)
+            {
+                var reservation = sortedReservations.First(r => r.ReservationId == dto.ReservationId);
+                var patient = await unitOfWork.PatientRepository.Get(p => p.PatientId == reservation.PatientId);
+                if (patient != null)
+                {
+                    var patientUser = await unitOfWork.UserRepository.Get(u => u.UserId == patient.PatientId);
+                    if (patientUser != null)
+                    {
+                        dto.PatientName = patientUser.UserName;
+                        
+                        Console.WriteLine($"Set PatientName={patientUser.UserName} for ReservationId={dto.ReservationId}");
+                    }
+                }
+            }
+
+            return reservationDTOs;
         }
 
         public async Task<bool> CancelAppointment(int reservationId, string cancellationReason)
@@ -297,7 +325,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 }
 
                 // Update reservation status
-                reservation.Status = "Hủy";
+                reservation.Status = "Đã hủy";
                 reservation.CancellationReason = cancellationReason;
                 reservation.UpdatedDate = DateTime.Now;
 
@@ -329,6 +357,41 @@ namespace AppointmentSchedulingApp.Application.Services
                         var message = new Message(emailTo, subject, body);
 
                         _emailService.SendEmail(message);
+                    }
+                }
+
+                // Send notification to receptionists
+                var receptionistRole = await unitOfWork.RoleRepository.Get(r => r.RoleName == "Lễ tân");
+                if (receptionistRole != null)
+                {
+                    var receptionistUsers = await unitOfWork.UserRepository.GetAll(
+                        u => u.Roles.Any(r => r.RoleId == receptionistRole.RoleId) && u.IsActive);
+                    
+                    foreach (var receptionistUser in receptionistUsers)
+                    {
+                        if (!string.IsNullOrEmpty(receptionistUser.Email))
+                        {
+                            // Get doctor and patient information
+                            var doctorSchedule = await unitOfWork.DoctorScheduleRepository.Get(
+                                ds => ds.DoctorScheduleId == reservation.DoctorScheduleId);
+                            var doctor = await unitOfWork.UserRepository.Get(u => u.UserId == doctorSchedule.DoctorId);
+                            var patientInfo = await unitOfWork.PatientRepository.Get(p => p.PatientId == reservation.PatientId);
+                            var patientUser = await unitOfWork.UserRepository.Get(u => u.UserId == patientInfo.PatientId);
+
+                            // Send email notification
+                            string subject = "Thông báo bác sĩ hủy lịch khám";
+                            string body = $"Xin chào {receptionistUser.UserName},\n\n" +
+                                $"Bác sĩ {doctor.UserName} đã hủy lịch khám của bệnh nhân {patientUser.UserName} vào ngày {reservation.AppointmentDate.ToString("dd/MM/yyyy")}.\n" +
+                                $"Lý do: {cancellationReason}\n\n" +
+                                $"Vui lòng cập nhật lịch khám và liên hệ với bệnh nhân nếu cần thiết.\n\n" +
+                                $"Trân trọng,\nHệ thống quản lý phòng khám";
+
+                            // Create message object for email service
+                            var emailTo = new List<string> { receptionistUser.Email };
+                            var message = new Message(emailTo, subject, body);
+
+                            _emailService.SendEmail(message);
+                        }
                     }
                 }
 
@@ -383,6 +446,139 @@ namespace AppointmentSchedulingApp.Application.Services
                 .ToListAsync();
 
             return doctors;
+        }
+
+        public async Task<List<MedicalRecordDTO>> GetDoctorMedicalRecords(int doctorId)
+        {
+            try
+            {
+                // Get all doctor schedules for the specified doctor
+                var doctorSchedules = await unitOfWork.DoctorScheduleRepository
+                    .GetAll(ds => ds.DoctorId == doctorId);
+                    
+                if (doctorSchedules == null || !doctorSchedules.Any())
+                {
+                    return new List<MedicalRecordDTO>();
+                }
+
+                // Get all schedule IDs
+                var scheduleIds = doctorSchedules.Select(ds => ds.DoctorScheduleId).ToList();
+
+                // Get all reservations for these schedules
+                var reservations = await unitOfWork.ReservationRepository
+                    .GetAll(r => scheduleIds.Contains(r.DoctorScheduleId));
+                    
+                if (reservations == null || !reservations.Any())
+                {
+                    return new List<MedicalRecordDTO>();
+                }
+
+                // Get all reservation IDs
+                var reservationIds = reservations.Select(r => r.ReservationId).ToList();
+
+                // Get all patient IDs from reservations
+                var patientIds = reservations.Select(r => r.PatientId).Distinct().ToList();
+                
+                // Get all patients
+                var patients = await unitOfWork.PatientRepository.GetAll(p => patientIds.Contains(p.PatientId));
+                
+                // Get all user information
+                var userIds = patients.Select(p => p.PatientId).ToList();
+                var users = await unitOfWork.UserRepository.GetAll(u => userIds.Contains(u.UserId));
+
+                // Get all medical records for these reservations
+                var medicalRecords = await unitOfWork.MedicalRecordRepository
+                    .GetAll(mr => reservationIds.Contains(mr.ReservationId));
+
+                // Convert to DTOs
+                var result = mapper.Map<List<MedicalRecordDTO>>(medicalRecords);
+                
+                // Add patient information to each medical record
+                foreach (var record in result)
+                {
+                    var reservation = reservations.FirstOrDefault(r => r.ReservationId.ToString() == record.ReservationId);
+                    if (reservation != null)
+                    {
+                        var patient = patients.FirstOrDefault(p => p.PatientId == reservation.PatientId);
+                        if (patient != null)
+                        {
+                            var user = users.FirstOrDefault(u => u.UserId == patient.PatientId);
+                            if (user != null)
+                            {
+                                record.PatientName = user.UserName;
+                                record.PatientId = patient.PatientId;
+                                record.PatientGender = user.Gender;
+                                record.PatientDob = user.Dob.ToString("dd/MM/yyyy");
+                            }
+                        }
+                    }
+                }
+                
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving medical records for doctor {doctorId}: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<List<MedicalRecordDTO>> GetMedicalRecordsByPatientAndDoctorId(int doctorId, int patientId)
+        {
+            try
+            {
+                // Get all doctor schedules for the specified doctor
+                var doctorSchedules = await unitOfWork.DoctorScheduleRepository
+                    .GetAll(ds => ds.DoctorId == doctorId);
+                    
+                if (doctorSchedules == null || !doctorSchedules.Any())
+                {
+                    return new List<MedicalRecordDTO>();
+                }
+
+                // Get all schedule IDs
+                var scheduleIds = doctorSchedules.Select(ds => ds.DoctorScheduleId).ToList();
+
+                // Get all reservations for these schedules and the specific patient
+                var reservations = await unitOfWork.ReservationRepository
+                    .GetAll(r => scheduleIds.Contains(r.DoctorScheduleId) && r.PatientId == patientId);
+                    
+                if (reservations == null || !reservations.Any())
+                {
+                    return new List<MedicalRecordDTO>();
+                }
+
+                // Get all reservation IDs
+                var reservationIds = reservations.Select(r => r.ReservationId).ToList();
+                
+                // Get patient information
+                var patient = await unitOfWork.PatientRepository.Get(p => p.PatientId == patientId);
+                var user = patient != null ? await unitOfWork.UserRepository.Get(u => u.UserId == patient.PatientId) : null;
+
+                // Get all medical records for these reservations
+                var medicalRecords = await unitOfWork.MedicalRecordRepository
+                    .GetAll(mr => reservationIds.Contains(mr.ReservationId));
+
+                // Convert to DTOs
+                var result = mapper.Map<List<MedicalRecordDTO>>(medicalRecords);
+                
+                // Add patient information to each medical record
+                if (patient != null && user != null)
+                {
+                    foreach (var record in result)
+                    {
+                        record.PatientName = user.UserName;
+                        record.PatientId = patient.PatientId;
+                        record.PatientGender = user.Gender;
+                        record.PatientDob = user.Dob.ToString("dd/MM/yyyy");
+                    }
+                }
+                
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving medical records for patient {patientId} and doctor {doctorId}: {ex.Message}", ex);
+            }
         }
     }
 }

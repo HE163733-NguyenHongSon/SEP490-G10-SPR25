@@ -334,6 +334,21 @@ export const doctorService = {
         // Check if we have any items and log the structure of the first one
         if (data.length > 0) {
           console.log("First appointment structure:", JSON.stringify(data[0], null, 2));
+          
+          // Check if patientName is present
+          if (data[0].patientName) {
+            console.log("PatientName is present:", data[0].patientName);
+          } else {
+            console.warn("PatientName is missing from API response!");
+            
+            // Add patientName manually if possible
+            data.forEach(appointment => {
+              if (appointment.patient && appointment.patient.userName) {
+                appointment.patientName = appointment.patient.userName;
+                console.log(`Added patientName=${appointment.patientName} for appointment ID=${appointment.reservationId}`);
+              }
+            });
+          }
         }
         
         return data;

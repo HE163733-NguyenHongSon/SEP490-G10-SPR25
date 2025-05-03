@@ -6,6 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AppointmentSchedulingApp.Application.Services
 {
@@ -82,6 +83,24 @@ namespace AppointmentSchedulingApp.Application.Services
             }
 
         }
+        public async Task<bool> UpdateReservationStatusList(List<ReservationStatusDTO> reservationStatusDTOs)
+        {
+            foreach (var dto in reservationStatusDTOs)
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId == dto.ReservationId);
+
+                if (reservation == null)
+                    continue;
+
+
+                reservation.Status = dto.Status;
+
+                unitOfWork.ReservationRepository.Update(reservation);
+            }
+
+            await unitOfWork.CommitAsync();
+            return true;
+        }
 
         public async Task<ReservationDTO> GetReservationById(int reservationId)
         {
@@ -142,6 +161,35 @@ namespace AppointmentSchedulingApp.Application.Services
             await unitOfWork.CommitAsync();
 
             return reservation;
+        }
+         public async Task<List<ReservationDTO>> GetUpcomingReservationsAndMarkReminded()
+        {
+            var now = DateTime.UtcNow.AddHours(7);
+
+            var targetTimeStart = now.AddHours(5).AddMinutes(-10);
+            var targetTimeEnd = now.AddHours(5).AddMinutes(10);
+           
+            var reservations = await unitOfWork.ReservationRepository
+                .GetAll(r =>
+                    r.AppointmentDate >= targetTimeStart &&
+                    r.AppointmentDate <= targetTimeEnd &&
+                     r.Status == "Xác nhận");
+
+            if (reservations.Any())
+            {
+                foreach (var reservation in reservations)
+                {
+                    if (reservation.Status != "Đã nhắc")
+                    {
+                        reservation.Status = "Đã nhắc";
+                        unitOfWork.ReservationRepository.Update(reservation);
+                    }
+                }
+
+                await unitOfWork.CommitAsync();
+            }
+
+            return mapper.Map<List<ReservationDTO>>(reservations);
         }
 
         public async Task<bool> ReplaceDoctor(int reservationId, int doctorscheduleId)

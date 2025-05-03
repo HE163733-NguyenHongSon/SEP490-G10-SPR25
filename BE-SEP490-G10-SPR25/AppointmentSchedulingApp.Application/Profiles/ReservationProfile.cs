@@ -24,7 +24,6 @@ namespace AppointmentSchedulingApp.Application.Profiles
 
 
              CreateMap<Reservation, ReservationStatusDTO>()
-             //.ForMember(dest => dest.ReservationId, opt => opt.MapFrom(src => src.ReservationId))
              .ForMember(dest => dest.CancellationReason, opt => opt.MapFrom(src => src.CancellationReason))
              .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
              .ReverseMap();

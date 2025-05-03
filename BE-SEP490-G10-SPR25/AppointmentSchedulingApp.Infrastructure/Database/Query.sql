@@ -35,6 +35,13 @@ from  MedicalRecords mr inner join  Reservations r on mr.ReservationId=r.Reserva
 
 SELECT * FROM Reservations r WHERE r.DoctorScheduleId in (80, 40, 60, 20)
 
+SELECT *
+FROM Reservations r
+WHERE r.Status = N'Đang chờ'
+  AND CONVERT(DATE, r.CreatedDate) = CONVERT(DATE, GETDATE())
+  AND DATEDIFF(HOUR, r.CreatedDate, GETDATE()) >= 2;
+
+
 -----get doctor schedule active---------------
 SELECT * 
 FROM Reservations 

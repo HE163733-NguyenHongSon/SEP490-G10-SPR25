@@ -163,7 +163,7 @@ export default function RegisterPage() {
         window.scrollTo(0, 0);
         // Chuyển hướng đến trang đăng nhập sau 2 giây
         setTimeout(() => {
-          router.push("/auth/login");
+          router.push("/common/auth/login");
         }, 2000);
       } else {
         setError(
@@ -457,7 +457,7 @@ export default function RegisterPage() {
 
             <div className="flex items-center justify-between mt-6">
               <Link
-                href="/auth/login"
+                href="/common/auth/login"
                 className="text-sm text-blue-600 hover:underline"
               >
                 Đã có tài khoản? Đăng nhập

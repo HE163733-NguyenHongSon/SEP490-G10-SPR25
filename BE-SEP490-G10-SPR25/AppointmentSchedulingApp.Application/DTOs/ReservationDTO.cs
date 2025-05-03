@@ -27,7 +27,10 @@ namespace AppointmentSchedulingApp.Application.DTOs
         public DateTime UpdatedDate { get; set; }
 
         public int UpdatedByUserId { get; set; }
-        public PaymentDTO Payment { get; set; }
+
+        public string? PaymentStatus { get; set; } = null!;
+        
+        public string? PatientName { get; set; }
 
     }
 

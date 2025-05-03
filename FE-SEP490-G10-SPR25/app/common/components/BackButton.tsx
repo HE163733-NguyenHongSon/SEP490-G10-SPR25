@@ -1,15 +1,39 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
-export default function BackButton() {
+interface BackButtonProps {
+  fallbackPath?: string;
+}
+
+export default function BackButton({ fallbackPath }: BackButtonProps) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleBack = () => {
-    if (document.referrer) {
-      router.back();
+    // Quyết định đường dẫn quay lại dựa trên URL hiện tại
+    if (fallbackPath) {
+      router.push(fallbackPath);
+    } else if (pathname.includes('/guest/doctors/doctor-detail/')) {
+      router.push('/guest/doctors');
+    } else if (pathname.includes('/patient/doctors/doctor-detail/')) {
+      router.push('/patient/doctors');
+    } else if (pathname.includes('/guest/services/service-detail/')) {
+      router.push('/guest/services');
+    } else if (pathname.includes('/patient/services/service-detail/')) {
+      router.push('/patient/services');
+    } else if (pathname.includes('/guest/specialties/')) {
+      router.push('/guest/specialties');
+    } else if (pathname.includes('/patient/specialties/')) {
+      router.push('/patient/specialties');
+    } else if (pathname.includes('/guest/blogs/')) {
+      router.push('/guest/blogs');
+    } else if (pathname.includes('/patient/blogs/')) {
+      router.push('/patient/blogs');
+    } else if (pathname.includes('/guest/')) {
+      router.push('/guest');
     } else {
-      router.push("/patient/doctors");
+      router.push('/patient');
     }
   };
 

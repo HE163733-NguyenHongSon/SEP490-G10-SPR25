@@ -2,6 +2,7 @@ interface IReservation {
   reservationId: string;
   patient: IPatient;
   patientId?:string;
+  patientName?: string;
   appointmentDate: string;
   doctorSchedule:IDoctorSchedule
   doctorScheduleId:string;
@@ -13,4 +14,5 @@ interface IReservation {
   createdByUserId:string;
   updatedDate: string;
   updatedByUserId:string;
+  paymentStatus:string;
 }

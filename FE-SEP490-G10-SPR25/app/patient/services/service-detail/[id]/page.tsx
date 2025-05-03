@@ -59,7 +59,7 @@ const ServiceDetailPage = ({ params }: ServiceDetailPageProps) => {
       if (typeof window !== "undefined") {
         const currentPath = window.location.pathname;
         sessionStorage.setItem("redirectAfterLogin", currentPath);
-        router.push("/auth/login");
+        router.push("/common/auth/login");
       }
       return;
     }

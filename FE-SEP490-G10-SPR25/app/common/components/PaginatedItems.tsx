@@ -6,11 +6,9 @@ import ReactPaginate from "react-paginate";
 interface PaginatedItemsProps<T> {
   itemsPerPage: number;
   items: T[];
-  RenderComponent: React.ComponentType<{
-    items: T[];
-    displayView?: string;
-  }>;
+  RenderComponent: React.ComponentType<any>;
   displayView?: string;
+  [key: string]: any; // Allow for additional props
 }
 
 const PaginatedItems = <T,>({
@@ -18,6 +16,7 @@ const PaginatedItems = <T,>({
   items,
   RenderComponent,
   displayView,
+  ...restProps
 }: PaginatedItemsProps<T>) => {
   const [itemOffset, setItemOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
@@ -39,7 +38,7 @@ const PaginatedItems = <T,>({
 
   return (
     <div className="flex flex-col items-center mb-7 p-5  ">
-      <RenderComponent items={currentItems} displayView={displayView} />
+      <RenderComponent items={currentItems} displayView={displayView} {...restProps} />
 
       <div className="flex flex-row items-center justify-center mt-5">
         <ReactPaginate

@@ -1,24 +1,40 @@
 import React, { useState, useEffect, useRef } from "react";
 import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Button, Image, Typography } from "antd";
-import { useFileContext } from "../contexts/FileContext";
 
 const { Text } = Typography;
 
 const FileUpload: React.FC = () => {
-  const { selectedFile, setSelectedFile } = useFileContext();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Kiểm tra nếu có file đã được lưu trong localStorage
+    const storedFile = localStorage.getItem("uploadedFileBase64");
+    const storedFileName = localStorage.getItem("uploadedFileName");
+
+    if (storedFile && storedFileName) {
+      setPreview(storedFile);
+      setSelectedFile(new File([new Blob([storedFile])], storedFileName, { type: 'image/jpeg' }));
+    }
+  }, []);
 
   useEffect(() => {
     if (selectedFile) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result as string);
+        const base64File = reader.result as string;
+        // Lưu file vào localStorage
+        localStorage.setItem("uploadedFileBase64", base64File);
+        localStorage.setItem("uploadedFileName", selectedFile.name);
+        setPreview(base64File);
       };
       reader.readAsDataURL(selectedFile);
     } else {
-      setPreview(null);
+      setPreview(null);  // Xóa preview khi không còn file
+      localStorage.removeItem("uploadedFileBase64");
+      localStorage.removeItem("uploadedFileName");
     }
   }, [selectedFile]);
 
@@ -36,7 +52,7 @@ const FileUpload: React.FC = () => {
   const handleRemoveImage = () => {
     setSelectedFile(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // ⭐ Reset input để chọn lại cùng file
+      fileInputRef.current.value = ""; 
     }
   };
 

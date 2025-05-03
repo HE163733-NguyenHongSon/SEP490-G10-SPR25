@@ -124,6 +124,24 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpPut("UpdateReservationStatusList")]
+        public async Task<IActionResult> UpdateReservationStatusList([FromBody] List<ReservationStatusDTO> reservations)
+        {
+            if (reservations == null || !reservations.Any())
+            {
+                return BadRequest("Danh sách không được để trống.");
+            }
+
+            try
+            {
+                var result = await reservationService.UpdateReservationStatusList(reservations);
+                return Ok(result);
+            }
+            catch (Exception ex)   
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         [HttpGet("ViewReason{reservationId}")]
         [EnableQuery]

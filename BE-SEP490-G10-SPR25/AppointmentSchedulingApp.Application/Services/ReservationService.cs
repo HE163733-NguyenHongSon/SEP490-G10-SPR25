@@ -6,6 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AppointmentSchedulingApp.Application.Services
 {
@@ -81,6 +82,24 @@ namespace AppointmentSchedulingApp.Application.Services
                 throw;
             }
 
+        }
+        public async Task<bool> UpdateReservationStatusList(List<ReservationStatusDTO> reservationStatusDTOs)
+        {
+            foreach (var dto in reservationStatusDTOs)
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId == dto.ReservationId);
+
+                if (reservation == null)
+                    continue;
+
+
+                reservation.Status = dto.Status;
+
+                unitOfWork.ReservationRepository.Update(reservation);
+            }
+
+            await unitOfWork.CommitAsync();
+            return true;
         }
 
         public async Task<ReservationDTO> GetReservationById(int reservationId)

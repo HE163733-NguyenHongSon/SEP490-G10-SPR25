@@ -175,5 +175,19 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
             return Ok(reservations);
         }
+        [HttpGet("UpcomingReservationsAndMarkReminded")]
+        public async Task<IActionResult> GetUpcomingReservationsAndMarkReminded()
+        {
+            try
+            {
+                var result = await reservationService.GetUpcomingReservationsAndMarkReminded();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
+        }
+
     }
 }

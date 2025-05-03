@@ -162,6 +162,35 @@ namespace AppointmentSchedulingApp.Application.Services
 
             return reservation;
         }
+         public async Task<List<ReservationDTO>> GetUpcomingReservationsAndMarkReminded()
+        {
+            var now = DateTime.UtcNow.AddHours(7);
+
+            var targetTimeStart = now.AddHours(5).AddMinutes(-10);
+            var targetTimeEnd = now.AddHours(5).AddMinutes(10);
+           
+            var reservations = await unitOfWork.ReservationRepository
+                .GetAll(r =>
+                    r.AppointmentDate >= targetTimeStart &&
+                    r.AppointmentDate <= targetTimeEnd &&
+                     r.Status == "Xác nhận");
+
+            if (reservations.Any())
+            {
+                foreach (var reservation in reservations)
+                {
+                    if (reservation.Status != "Đã nhắc")
+                    {
+                        reservation.Status = "Đã nhắc";
+                        unitOfWork.ReservationRepository.Update(reservation);
+                    }
+                }
+
+                await unitOfWork.CommitAsync();
+            }
+
+            return mapper.Map<List<ReservationDTO>>(reservations);
+        }
 
     }
 }

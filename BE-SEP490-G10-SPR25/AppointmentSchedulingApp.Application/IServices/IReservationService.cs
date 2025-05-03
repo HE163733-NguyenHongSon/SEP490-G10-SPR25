@@ -23,6 +23,7 @@ namespace AppointmentSchedulingApp.Application.IServices
 
         Task UpdatePriorExaminationImg(int reservationId, string fileName);
         Task<bool> UpdateReservationStatusList(List<ReservationStatusDTO> reservationStatusDTOs);
+        Task<List<ReservationDTO>> GetUpcomingReservationsAndMarkReminded();
 
 
     }

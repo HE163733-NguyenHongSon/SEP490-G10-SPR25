@@ -32,6 +32,8 @@ namespace AppointmentSchedulingApp.Application.DTOs
         
         public string? PatientName { get; set; }
 
+
+
     }
 
 }

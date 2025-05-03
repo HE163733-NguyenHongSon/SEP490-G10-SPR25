@@ -1,3 +1,4 @@
+"use client";
 import * as Tabs from "@radix-ui/react-tabs";
 import Image from "next/image";
 import BackButton from "@/common/components/BackButton";

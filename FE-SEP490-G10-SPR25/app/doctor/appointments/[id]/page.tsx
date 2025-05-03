@@ -120,13 +120,41 @@ export default function AppointmentDetails() {
 
       // Nếu không tìm thấy trong history, thử lấy từ API
       try {
+        console.log(`Starting to check for medical record with reservation ID: ${reservationId}`);
+        // Tải bệnh án hiện tại nếu có
         const record = await medicalRecordService.getMedicalRecordDetailById(
-          reservationId
+          parseInt(reservationId)
         );
-        console.log("Found existing medical record from API:", record);
-        if (record) {
-          setExistingMedicalRecord(record);
-        }
+        console.log("Medical record API response:", record);
+        
+        // Chuyển đổi từ IMedicalRecordDetail sang IMedicalRecord
+        const medicalRecord: IMedicalRecord = {
+          reservationId: record.reservationId,
+          appointmentDate: record.appointmentDate,
+          symptoms: record.symptoms,
+          diagnosis: record.diagnosis,
+          treatmentPlan: record.treatmentPlan,
+          followUpDate: record.followUpDate,
+          notes: record.notes,
+          patientName: record.patientName || record.reservation?.patient?.userName,
+          patientGender: record.patientGender || record.reservation?.patient?.gender,
+          patientDob: record.patientDob,
+          patientId: record.patientId || 
+                    (record.reservation?.patient?.userId ? 
+                    parseInt(record.reservation.patient.userId.toString()) : undefined),
+          // Đảm bảo cấu trúc của reservation phù hợp với IMedicalRecord
+          reservation: record.reservation ? {
+            ...record.reservation,
+            patient: record.reservation.patient ? {
+              ...record.reservation.patient,
+              // Chuyển đổi string thành number nếu cần
+              userId: record.reservation.patient.userId ? 
+                     parseInt(record.reservation.patient.userId.toString()) : undefined
+            } : undefined
+          } : undefined
+        };
+        
+        setExistingMedicalRecord(medicalRecord);
       } catch (error) {
         console.log(
           "No existing medical record found via API, this is expected if none exists"
@@ -896,6 +924,34 @@ export default function AppointmentDetails() {
                         <p className="text-xs text-gray-500">Ngày tái khám</p>
                         <p className="font-medium">
                           {formatDate(existingMedicalRecord.followUpDate)}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* Hiển thị thông tin bệnh nhân từ medical record */}
+                    {existingMedicalRecord.patientName && (
+                      <div>
+                        <p className="text-xs text-gray-500">Bệnh nhân</p>
+                        <p className="font-medium text-indigo-700">
+                          {existingMedicalRecord.patientName}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {existingMedicalRecord.patientGender && (
+                      <div>
+                        <p className="text-xs text-gray-500">Giới tính</p>
+                        <p className="font-medium">
+                          {existingMedicalRecord.patientGender}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {existingMedicalRecord.patientDob && (
+                      <div>
+                        <p className="text-xs text-gray-500">Ngày sinh</p>
+                        <p className="font-medium">
+                          {existingMedicalRecord.patientDob}
                         </p>
                       </div>
                     )}

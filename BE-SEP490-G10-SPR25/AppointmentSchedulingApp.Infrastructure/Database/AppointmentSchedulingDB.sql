@@ -175,7 +175,7 @@ VALUES
 CREATE TABLE Receptionists (
     ReceptionistId INT NOT NULL,
     StartDate DATE NOT NULL,     
-    Shift NVARCHAR(20) DEFAULT N'Ca sáng',  
+    Shift NVARCHAR(20) ,  
     PRIMARY KEY (ReceptionistId),
     CONSTRAINT FK_Receptionists_User FOREIGN KEY (ReceptionistId) REFERENCES Users(UserId)
 );

@@ -183,5 +183,24 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+
+        [HttpGet("GetAlternativeDoctorList/{reservationId}")]
+        [EnableQuery]
+        public async Task<IActionResult> GetAlternativeDoctorList(int reservationId)
+        {
+            try
+            {
+                var doctorSchedules = await _doctorScheduleService.IsDoctorBusyAtReservation(reservationId);
+
+
+                return Ok(doctorSchedules);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }

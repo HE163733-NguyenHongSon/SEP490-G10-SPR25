@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AppointmentSchedulingApp.Application.DTOs;
+﻿using AppointmentSchedulingApp.Application.DTOs;
 using AppointmentSchedulingApp.Application.IServices;
 using AppointmentSchedulingApp.Domain.Entities;
 using AppointmentSchedulingApp.Domain.IUnitOfWork;
@@ -12,10 +7,16 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System;
+using System.Collections.Generic;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq;
+using System.Text;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace AppointmentSchedulingApp.Application.Services
 {
@@ -127,40 +128,6 @@ namespace AppointmentSchedulingApp.Application.Services
             var query = unitOfWork.DoctorScheduleRepository.GetQueryable();
             return await query.ProjectTo<DoctorScheduleDTO>(mapper.ConfigurationProvider).ToListAsync();
         }
-
-        //public async Task<List<DoctorScheduleDTO>> GetDoctorScheduleList()
-        //{
-        //    try
-        //    {
-        //        var doctorSchedule = await _dbcontext.DoctorSchedules.Include(d => d.Doctor)
-        //            .ThenInclude(u => u.DoctorNavigation)
-        //            .Include(d => d.Slot)
-        //            .Include(d => d.Service)
-        //            .Include(d => d.Room)
-        //            .Where(d => d.Doctor.DoctorNavigation.Roles.Any(r => r.RoleId.Equals(4)))
-        //            .Select(d => new DoctorScheduleDTO
-        //            {
-        //                DoctorScheduleId = d.DoctorScheduleId,
-        //                DoctorId = d.DoctorId,
-        //                ServiceId = d.ServiceId,
-        //                DayOfWeek = d.DayOfWeek,
-        //                RoomId = d.RoomId,
-        //                SlotId = d.SlotId,
-        //                DoctorName = d.Doctor.DoctorNavigation.UserName,
-        //                ServiceName = d.Service.ServiceName,
-        //                RoomName = d.Room.RoomName,
-        //                SlotStartTime = d.Slot.SlotStartTime,
-        //                SlotEndTime = d.Slot.SlotEndTime
-        //            })
-        //            .ToListAsync();
-
-        //        return doctorSchedule;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
-        //}
 
         public async Task<DoctorScheduleDTO> GetDoctorScheduleDetailById(int doctorScheduleId)
         {
@@ -345,5 +312,78 @@ namespace AppointmentSchedulingApp.Application.Services
             return doctorSchedules;
         }
 
+        public async Task<List<DoctorScheduleDTO>> GetAlternativeDoctorList(int doctorScheduleId)
+        {
+            try
+            {
+                var doctorSchedule = unitOfWork.DoctorScheduleRepository.Get(d => d.DoctorScheduleId.Equals(doctorScheduleId)).Result;
+
+                // danh sach bac si co the thay the
+                var doctorSchedules = unitOfWork.DoctorScheduleRepository
+                    .GetQueryable(d => d.DoctorId != doctorSchedule.DoctorId
+                                && d.ServiceId == doctorSchedule.ServiceId
+                                && d.DayOfWeek == doctorSchedule.DayOfWeek
+                                && d.SlotId == doctorSchedule.SlotId
+                                //&& d.RoomId != doctorSchedule.RoomId
+                                );
+
+                return await doctorSchedules.ProjectTo<DoctorScheduleDTO>(mapper.ConfigurationProvider).ToListAsync();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<DoctorScheduleDTO>> IsDoctorBusyAtReservation(int reservationId)
+        {
+            try
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId.Equals(reservationId));
+
+                if (reservation == null)
+                {
+                    return null;
+                }
+
+                // danh sach reservation cung ngay
+                var listReservationSameDay = (await unitOfWork.ReservationRepository
+                    .GetAll(d => d.AppointmentDate.Date == reservation.AppointmentDate.Date))
+                    .ToList();
+
+                // danh sach doctorschedule tuong tu voi doctor can thay the
+                var listDoctorSchedule = GetAlternativeDoctorList(reservation.DoctorScheduleId).Result;
+
+                // gan ket qua ban dau la toan bo danh sach
+                var result = new List<DoctorScheduleDTO>(listDoctorSchedule);
+
+                // duyet qua tung reservation cung ngay
+                foreach (var r in listReservationSameDay)
+                {
+                    // neu trong danh sach result co phan tu trung doctorscheduleId thi loai
+                    foreach(var ds in result)
+                    {
+                        if (ds.DoctorScheduleId == r.DoctorScheduleId)
+                        {
+                            result.Remove(ds);
+                        }
+                    }
+
+                    //var existed = result.FirstOrDefault(ds => ds.DoctorScheduleId == r.DoctorScheduleId);
+                    //if (existed != null)
+                    //{
+                    //    result.Remove(existed);
+                    //}
+                }
+
+                return result;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
     }
+
 }

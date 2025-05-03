@@ -41,6 +41,7 @@ interface IReservation {
   appointmentDate: string;
   updatedDate: string;
   status: string;
+  paymentStatus: string;
 }
 
 const statusFilters = [
@@ -57,6 +58,12 @@ const statusColors: Record<string, string> = {
   "Đã hủy": "red",
   "Hoàn thành": "green",
   "Không đến": "black",
+};
+
+const paymentStatusColors: Record<string, string> = {
+  "Đã thanh toán": "green",
+  "Đang xử lý": "orange",
+  "Đã hoàn tiền": "blue",
 };
 
 const Reservation = () => {
@@ -185,6 +192,36 @@ const Reservation = () => {
       message.error("Hủy lịch hẹn thất bại");
     }
   };
+  const handleConfirmCancel = async (record: IReservation) => {
+    Modal.confirm({
+      title: "Xác nhận hủy lịch hẹn",
+      content: `Bạn có chắc chắn muốn hủy và hoàn tiền cho lịch hẹn mã ${record.reservationId}?`,
+      okText: "Xác nhận",
+      cancelText: "Thoát",
+      onOk: async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:5220/api/Payments/UpdateStatus?reservationId=${record.reservationId}&status=Đã hoàn tiền`,
+            {
+              method: "PUT",
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Cập nhật thất bại");
+          }
+
+          message.success("Đã cập nhật trạng thái hoàn tiền thành công");
+
+          // Cập nhật lại danh sách (nếu có hàm load data thì gọi lại)
+          fetchReservations?.();
+        } catch (error) {
+          console.error("Lỗi khi cập nhật:", error);
+          message.error("Cập nhật trạng thái thất bại");
+        }
+      },
+    });
+  };
 
   const handleComplete = async (record: IReservation) => {
     try {
@@ -218,42 +255,23 @@ const Reservation = () => {
   };
 
   const renderActions = (record: IReservation) => {
-    // switch (record.status) {
-    // case "Đang chờ":
-    //   return (
-    //     <Space size="middle">
-    //       {/* <Button onClick={() => handleConfirm(record)} type="primary" size="small">
-    //         Xác nhận
-    //       </Button>
-    //       <Button onClick={() => handleCancel(record)} danger size="small">
-    //         Hủy
-    //       </Button> */}
-    //       <Button onClick={() => handleViewDetail(record)} size="small">
-    //         Chi tiết
-    //       </Button>
-    //     </Space>
-    //   );
-    // case "Xác nhận":
-    //   return (
-    //     <Space size="middle">
-    //       {/* <Button onClick={() => handleComplete(record)} type="primary" size="small">
-    //         Hoàn thành
-    //       </Button>
-    //       <Button onClick={() => handleCancel(record)} danger size="small">
-    //         Hủy
-    //       </Button> */}
-    //       <Button onClick={() => handleViewDetail(record)} size="small">
-    //         Chi tiết
-    //       </Button>
-    //     </Space>
-    //   );
-    // default:
     return (
-      <Button onClick={() => handleViewDetail(record)} size="small">
-        Chi tiết
-      </Button>
+      <Space>
+        <Button onClick={() => handleViewDetail(record)} size="small">
+          Chi tiết
+        </Button>
+
+        {record.paymentStatus === "Đang xử lý" && (
+          <Button
+            danger
+            size="small"
+            onClick={() => handleConfirmCancel(record)}
+          >
+            Xác nhận hủy
+          </Button>
+        )}
+      </Space>
     );
-    // }
   };
 
   const columns: ColumnsType<IReservation> = [
@@ -300,7 +318,7 @@ const Reservation = () => {
         new Date(a.updatedDate).getTime() - new Date(b.updatedDate).getTime(),
     },
     {
-      title: "Trạng thái",
+      title: "Trạng thái lịch hẹn",
       key: "status",
       render: (_, record) => (
         <Tag color={statusColors[record.status]}>{record.status}</Tag>
@@ -312,6 +330,21 @@ const Reservation = () => {
       title: "Tiền dịch vụ",
       key: "servicePrice",
       render: (_, record) => record.doctorSchedule.servicePrice,
+    },
+    {
+      title: "Trạng thái thanh toán",
+      key: "paymentStatus",
+      render: (_, record) => (
+        <Tag color={paymentStatusColors[record.paymentStatus]}>
+          {record.paymentStatus}
+        </Tag>
+      ),
+      filters: [
+        { text: "Đã thanh toán", value: "Đã thanh toán" },
+        { text: "Đang xử lý", value: "Đang xử lý" },
+        { text: "Đã hoàn tiền", value: "Đã hoàn tiền" },
+      ],
+      onFilter: (value, record) => record.paymentStatus === value,
     },
     {
       title: "Hành động",

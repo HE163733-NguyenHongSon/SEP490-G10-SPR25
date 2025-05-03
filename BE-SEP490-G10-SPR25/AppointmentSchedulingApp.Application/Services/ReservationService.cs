@@ -144,5 +144,27 @@ namespace AppointmentSchedulingApp.Application.Services
             return reservation;
         }
 
+        public async Task<bool> ReplaceDoctor(int reservationId, int doctorscheduleId)
+        {
+            try
+            {
+                var reservation = unitOfWork.ReservationRepository.Get(r => r.ReservationId.Equals(reservationId)).Result;
+
+                if (reservation == null)
+                {
+                    return false;
+                }
+
+                reservation.DoctorScheduleId = doctorscheduleId;
+                unitOfWork.ReservationRepository.Update(reservation);
+                await unitOfWork.CommitAsync();
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

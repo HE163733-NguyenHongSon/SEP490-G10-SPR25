@@ -23,5 +23,7 @@ namespace AppointmentSchedulingApp.Application.IServices
 
         Task UpdatePriorExaminationImg(int reservationId, string fileName);
 
+        Task<bool> ReplaceDoctor(int reservationId, int doctorscheduleId);
+
     }
 }

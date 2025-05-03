@@ -12,7 +12,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         private IReservationService reservationService;
         private IStorageService storageService;
 
-        public ReservationsController(IReservationService reservationService, IStorageService storageService)
+        public ReservationsController(IReservationService reservationService, IStorageService storageService) 
         {
             this.reservationService = reservationService;
             this.storageService = storageService;
@@ -156,6 +156,27 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             }
 
             return Ok(reservations);
+        }
+
+        [HttpPut("ReplaceDoctor")]
+        [EnableQuery]
+        public async Task<IActionResult> ReplaceDoctor(int reservationId, int doctorScheduleId)
+        {
+            try
+            {
+                var reservation = await reservationService.GetReservationById(reservationId);
+
+                if (reservation == null)
+                {
+                    return NotFound($"Cuộc hẹn với ID={reservationId} không tồn tại!");
+                }
+                var isTrue = await reservationService.ReplaceDoctor(reservationId, doctorScheduleId);
+                return Ok(isTrue);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

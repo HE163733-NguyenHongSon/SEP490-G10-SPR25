@@ -4,16 +4,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsCalendar } from "react-icons/bs";
 import { FaChevronRight, FaSearch, FaFilter, FaTimes } from "react-icons/fa";
-import { serviceService, IService } from "../../common/services/serviceService";
+import { serviceService } from "../../common/services/serviceService";
 import RatingStars from "../../common/components/RatingStars";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
 interface ServiceListProps {
   services: IService[];
+  showLoginButton?: boolean;
 }
 
-export function ServiceList({ services }: ServiceListProps) {
+export function ServiceList({ services, showLoginButton = false }: ServiceListProps) {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedSpecialty, setSelectedSpecialty] = useState<number | null>(
@@ -175,7 +175,7 @@ export function ServiceList({ services }: ServiceListProps) {
   //   }
   // };
 
-  const handleServiceClick = (serviceId: number) => {
+  const handleServiceClick = (serviceId: string) => {
     router.push(`/patient/services/service-detail/${serviceId}`);
   };
 
@@ -257,9 +257,9 @@ export function ServiceList({ services }: ServiceListProps) {
   };
 
   return (
-    <div className="relative w-full pt-10">
+    <div className="relative w-full pt-16">
       {/* Search Bar */}
-      <div className="flex justify-center mb-3">
+      <div className="flex justify-center mb-3 relative z-40">
         <div className="relative flex items-center w-[400px] bg-white rounded-full shadow-md border border-gray-300 overflow-hidden">
           <button className="flex items-center bg-blue-500 text-white px-3 py-2">
             Name <FaChevronRight className="ml-2" />
@@ -280,8 +280,20 @@ export function ServiceList({ services }: ServiceListProps) {
       {/* Content container */}
       <div className="relative z-1 mt-0 bg-white p-6 shadow-lg rounded-lg w-[105%] mx-auto flex flex-col">
         <h2 className="text-center text-xl font-semibold mb-1">
-          Service ({filteredServices.length} result)
+          Service
         </h2>
+        
+        {showLoginButton && (
+          <div className="text-center my-4">
+            <a
+              href="/common/auth/login"
+              className="bg-cyan-500 hover:bg-cyan-600 px-6 py-3 rounded-lg text-white text-lg font-medium"
+            >
+              Đăng nhập để đặt lịch khám
+            </a>
+          </div>
+        )}
+        
         <div className="flex">
           {/* Sidebar (Filter & Sort Panel) */}
           <div className="w-1/4 bg-white p-4 rounded-xl shadow-md text-sm">

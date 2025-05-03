@@ -1,16 +1,16 @@
 import DoctorsPage from "@/common/pages/DoctorsPage";
 
-export default function PatientDoctorsPage({
+export default function GuestDoctorsPage({
   searchParams,
 }: {
   searchParams: {
     specialties?: string;
     academicTitles?: string;
     degrees?: string;
-    sortBy: string;
+    sortBy?: string;
     searchValues?: string;
-    displayView: string;
+    displayView?: string;
   };
 }) {
-  return <DoctorsPage isGuest={false} basePath="/patient" searchParams={searchParams} />;
-}
+  return <DoctorsPage isGuest={true} basePath="/guest" searchParams={searchParams} />;
+} 

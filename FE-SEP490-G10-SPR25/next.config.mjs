@@ -28,19 +28,9 @@ const nextConfig = {
     return [
       {
         source: "/",
-        destination: "/patient",
+        destination: "/guest",
         permanent: true,
-      },
-      {
-        source: "/guest",
-        destination: "/patient",
-        permanent: true,
-      },
-      {
-        source: "/guest/:path*",
-        destination: "/patient/:path*",
-        permanent: true,
-      },
+      }
     ];
   },
 };

@@ -9,9 +9,10 @@ import Carousel from "react-multi-carousel";
 interface DoctorListProps {
   items: IDoctor[];
   displayView?: string;
+  userType?: 'guest' | 'patient';
 }
 
-export const DoctorList = ({ items, displayView }: DoctorListProps) => {
+export const DoctorList = ({ items, displayView, userType = 'patient' }: DoctorListProps) => {
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   // Cấu hình responsive cho carousel
@@ -33,8 +34,15 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
     },
   };
 
+  const getDoctorDetailUrl = (doctorId: number | string | undefined) => {
+    if (!doctorId) return '#';
+    return userType === 'guest' 
+      ? `/guest/doctors/doctor-detail/${doctorId}` 
+      : `/patient/doctors/doctor-detail/${doctorId}`;
+  };
+
   const DoctorCard = ({ doctor }: { doctor: IDoctor }) => (
-    <Link key={doctor.userId} href={`/patient/doctor-detail/${doctor.userId}`}>
+    <Link key={doctor.userId} href={getDoctorDetailUrl(doctor.userId)}>
       <h1 className="text-center font-semibold text-lg text-gray-700 mt-3">
         <span className="mr-2">
           {doctor.academicTitle},{doctor.degree}
@@ -53,7 +61,7 @@ export const DoctorList = ({ items, displayView }: DoctorListProps) => {
             />
           </div>
           <button className="bg-cyan-500 text-white px-3 rounded-full my-5">
-            Hẹn bác sĩ
+            {userType === 'guest' ? 'Xem chi tiết' : 'Hẹn bác sĩ'}
           </button>
         </div>
         <div className="col-span-2 flex flex-col items-start text-start justify-between font-sans pl-4">

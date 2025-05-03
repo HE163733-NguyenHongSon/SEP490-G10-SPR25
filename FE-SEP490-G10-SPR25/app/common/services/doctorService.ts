@@ -351,10 +351,16 @@ export const doctorService = {
     try {
       console.log(`Cancelling appointment with ID ${reservationId}`);
       
+      // Get current user ID for updatedByUserId
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const userId = user.userId || '';
+      
       const cancelData: IReservationStatus = {
         reservationId: reservationId.toString(),
         status: "Hủy",
-        cancellationReason: cancellationReason
+        cancellationReason: cancellationReason,
+        updatedByUserId: userId.toString(),
+        updatedDate: new Date().toISOString()
       };
       
       const res = await fetch(`${apiUrl}/api/Doctors/appointments/${reservationId}/cancel`, {
@@ -528,6 +534,131 @@ export const doctorService = {
     } catch (error) {
       console.error(`Error fetching medical history for patient ${patientId}:`, error);
       return [];
+    }
+  },
+
+  async getMedicalRecordsByPatientAndDoctorId(doctorId: number, patientId: number): Promise<IMedicalRecord[]> {
+    try {
+      console.log(`Fetching medical records for patient ${patientId} and doctor ${doctorId}`);
+      
+      const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}/patients/${patientId}/medicalrecords`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      
+      // Get response as text first
+      const text = await res.text();
+      
+      // Log raw response for debugging
+      console.log('Raw API response:', text);
+      
+      if (!res.ok) {
+        console.error(`Error fetching medical records: ${res.status} ${res.statusText}`, text);
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      
+      // If response is empty, return empty array
+      if (!text || text.trim() === '') {
+        console.log('Empty response received, returning empty array');
+        return [];
+      }
+      
+      // Try to parse as JSON
+      try {
+        const data = JSON.parse(text);
+        return Array.isArray(data) ? data : [];
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError, 'Raw response:', text);
+        return [];
+      }
+    } catch (error) {
+      console.error(`Error fetching medical records for patient ${patientId} and doctor ${doctorId}:`, error);
+      return [];
+    }
+  },
+
+  async getAllMedicalRecordsByDoctorId(doctorId: number): Promise<IMedicalRecord[]> {
+    try {
+      console.log(`Fetching all medical records for doctor ${doctorId}`);
+      
+      const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}/medicalrecords`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      
+      // Get response as text first
+      const text = await res.text();
+      
+      // Log raw response for debugging
+      console.log('Raw API response:', text);
+      
+      if (!res.ok) {
+        console.error(`Error fetching all medical records: ${res.status} ${res.statusText}`, text);
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      
+      // If response is empty, return empty array
+      if (!text || text.trim() === '') {
+        console.log('Empty response received, returning empty array');
+        return [];
+      }
+      
+      // Try to parse as JSON
+      try {
+        const data = JSON.parse(text);
+        return Array.isArray(data) ? data : [];
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError, 'Raw response:', text);
+        return [];
+      }
+    } catch (error) {
+      console.error(`Error fetching all medical records for doctor ${doctorId}:`, error);
+      return [];
+    }
+  },
+
+  async getDiagnostics(doctorId: number): Promise<any> {
+    try {
+      console.log(`Getting diagnostics for doctor ${doctorId}`);
+      
+      const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}/diagnostics`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      
+      // Get response as text first
+      const text = await res.text();
+      
+      // Log raw response for debugging
+      console.log('Raw diagnostics API response:', text);
+      
+      if (!res.ok) {
+        console.error(`Error getting diagnostics: ${res.status} ${res.statusText}`, text);
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      
+      // If response is empty, return empty object
+      if (!text || text.trim() === '') {
+        console.log('Empty response received, returning empty object');
+        return {};
+      }
+      
+      // Try to parse as JSON
+      try {
+        return JSON.parse(text);
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError, 'Raw response:', text);
+        return {};
+      }
+    } catch (error) {
+      console.error(`Error getting diagnostics for doctor ${doctorId}:`, error);
+      return {};
     }
   }
 };

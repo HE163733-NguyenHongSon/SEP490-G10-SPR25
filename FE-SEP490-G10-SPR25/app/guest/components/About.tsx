@@ -11,12 +11,13 @@ export const About = () => {
   const numberOfServices = serviceService.getNumberOfServices();
   const numberOfSpecialties = specialtyService.getNumberOfSpecialties();
   const numberOfExaminedPatients = patientService.getNumberOfExaminedPatients();
+
   return (
     <div
-      className="my-16 flex flex-col items-center justify-center container p-14 md:px-20 lg:px-32 w-full bg-white rounded-3xl"
+      className="my-16 flex flex-col items-center justify-center container p-14 md:px-20 lg:px-32 w-full bg-white rounded-3xl mx-auto"
       id="About"
     >
-      <h1 className="text-cyan-600 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2">
+      <h1 className="text-cyan-600 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 text-center">
         Tổng quan về
         <span className="ml-3 underline underline-offset-4 decoration-1 font-light">
           chúng tôi
@@ -37,32 +38,32 @@ export const About = () => {
         />
         <div className="flex flex-col items-center md:items-start mx-3 text-cyan-500">
           <div className="grid grid-cols-2 gap-6 md:gap-10 w-full 2xl:pr-28">
-            <div>
+            <div className="text-center md:text-left">
               <p className="text-4xl font-medium text-cyan-500">
                 {numberOfDoctors}
               </p>
               <p>Bác sĩ có trình độ</p>
             </div>
-            <div>
+            <div className="text-center md:text-left">
               <p className="text-4xl font-medium text-cyan-500">
                 {numberOfSpecialties}
               </p>
               <p>Chuyên khoa</p>
             </div>
-            <div>
+            <div className="text-center md:text-left">
               <p className="text-4xl font-medium text-cyan-500">
                 {numberOfServices}
               </p>
               <p>Dịch vụ y tế</p>
             </div>
-            <div>
+            <div className="text-center md:text-left">
               <p className="text-4xl font-medium text-cyan-500">
                 {numberOfExaminedPatients}
               </p>
               <p>Bệnh nhân đã khám</p>
             </div>
           </div>
-          <p className="m-4 max-w-lg">
+          <p className="m-4 max-w-lg text-center md:text-left">
             Với sứ mệnh mang đến giải pháp chăm sóc sức khỏe toàn diện, chúng
             tôi không ngừng nâng cao chất lượng dịch vụ và mở rộng hệ thống
             chuyên môn nhằm đáp ứng mọi nhu cầu của bệnh nhân.

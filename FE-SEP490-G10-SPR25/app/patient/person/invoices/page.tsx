@@ -15,7 +15,7 @@ import dayjs, { Dayjs } from "dayjs";
 import reservationService from "@/common/services/reservationService";
 import { useUser } from "@/common/contexts/UserContext";
 import PaginatedItems from "@/common/components/PaginatedItems";
-import InvoiceList from "@/patient/components/InvoiceList";
+import InvoiceList from "@/guest/components/InvoiceList";
 
 const { Title } = Typography;
 

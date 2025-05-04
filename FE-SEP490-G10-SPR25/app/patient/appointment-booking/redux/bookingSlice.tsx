@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../../store";
+import { RootState } from "@/store";
 import { addPatientAsync } from "./bookingThunks";
 import { StylesConfig } from "react-select";
 const customStyles: StylesConfig<{ value: string; label: string }, false> = {
@@ -58,6 +58,7 @@ const initialState: IBookingState = {
   selectedTime: "",
   selectedSlotId: "",
   isShowRestoreSuggestion: false,
+  isUseSuggestion: true,
   priorExaminationImgUrl: null,
   isSubmitting: false,
   isShowConfirmModal: false,
@@ -96,6 +97,9 @@ const bookingSlice = createSlice({
 
     setIsShowRestoreSuggestion: (state, action: PayloadAction<boolean>) => {
       state.isShowRestoreSuggestion = action.payload;
+    },
+    setIsUseSuggestion: (state, action: PayloadAction<boolean>) => {
+      state.isUseSuggestion = action.payload;
     },
     setServices: (state, action: PayloadAction<IService[]>) => {
       state.services = action.payload;
@@ -190,6 +194,7 @@ export const {
   setSelectedSlotId,
   setPriorExaminationImgUrl,
   setIsShowRestoreSuggestion,
+  setIsUseSuggestion,
   resetBookingState,
   setServices,
   setSpecialties,
@@ -235,7 +240,7 @@ export const selectedDate = (state: RootState) => state.booking.selectedDate;
 export const selectedTime = (state: RootState) => state.booking.selectedTime;
 export const selectedSlotId = (state: RootState) =>
   state.booking.selectedSlotId;
-export const showRestoreSuggestion = (state: RootState) =>
+export const isShowRestoreSuggestion = (state: RootState) =>
   state.booking.isShowRestoreSuggestion;
 export const priorExaminationImg = (state: RootState) =>
   state.booking.priorExaminationImgUrl;

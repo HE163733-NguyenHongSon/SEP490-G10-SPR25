@@ -12,7 +12,7 @@ import {
   setSelectedTime,
   setAvailableSchedules,
 } from "../redux/bookingSlice";
-import { RootState } from "../../store";
+import { RootState } from "@/store";;
 
 const DoctorSelector = () => {
   const dispatch = useDispatch();
@@ -71,7 +71,7 @@ const DoctorSelector = () => {
 
         dispatch(setDoctors(uniqueDoctors));
 
-        if (schedules.length && !isShowRestoreSuggestion) {
+        if (schedules.length && !isShowRestoreSuggestion && !doctorId) {
           applyFirstSchedule(schedules[0]);
         }
       } catch (error) {

@@ -6,8 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { ReactNode } from "react";
 import ProtectedRoute from "../common/components/ProtectedRoute";
 import { AppRole } from "../common/types/roles";
-import { Provider } from "react-redux";
-import { store } from "./store";
+
 
 interface PatientLayoutProps {
   children: ReactNode;
@@ -19,7 +18,7 @@ const queryClient = new QueryClient();
 export default function PatientLayout({ children }: PatientLayoutProps) {
   return (
     <ProtectedRoute allowedRoles={[AppRole.Patient, AppRole.Guardian]}>
-      <Provider store={store}>
+     
         <div className="min-h-screen bg-gray-50">
           <Navbar />
           <QueryClientProvider client={queryClient}>
@@ -27,7 +26,7 @@ export default function PatientLayout({ children }: PatientLayoutProps) {
           </QueryClientProvider>
           <Footer />
         </div>
-      </Provider>
+     
     </ProtectedRoute>
-  );
+  );       
 }

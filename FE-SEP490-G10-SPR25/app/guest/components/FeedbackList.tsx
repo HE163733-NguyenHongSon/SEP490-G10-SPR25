@@ -26,8 +26,9 @@ const FeedbackList: React.FC<FeedbackListProps> = ({
   const [expanded, setExpanded] = useState<Record<number, boolean>>({});
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
   const responsive = {
-    superLargeDesktop: { breakpoint: { max: 4000, min: 1536 }, items: 5 },
-    desktop: { breakpoint: { max: 1536, min: 1024 }, items: 4 },
+    ultraWide: { breakpoint: { max: 4000, min: 1920 }, items: 1 },
+    superLargeDesktop: { breakpoint: { max: 1920, min: 1536 }, items: 2 },
+    desktop: { breakpoint: { max: 1536, min: 1024 }, items: 3 },
     tablet: { breakpoint: { max: 1024, min: 640 }, items: 2 },
     mobile: { breakpoint: { max: 640, min: 0 }, items: 1 },
   };

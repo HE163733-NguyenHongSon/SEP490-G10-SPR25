@@ -5,9 +5,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 interface CheckboxListProps {
   items: ICheckboxOption[];
   searchParam: string;
+  basePath: string;
+
 }
 
-const CheckboxList = ({ items, searchParam }: CheckboxListProps) => {
+const CheckboxList = ({ items, searchParam ,basePath}: CheckboxListProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const checkboxRef = useRef<HTMLInputElement>(null);
@@ -40,7 +42,7 @@ const CheckboxList = ({ items, searchParam }: CheckboxListProps) => {
       newSearchParams.delete(searchParam);
     }
 
-    router.push(`/patient/doctors?${newSearchParams.toString()}`, {
+    router.push(`${basePath}/doctors?${newSearchParams.toString()}`, {
       scroll: false,
     });
 

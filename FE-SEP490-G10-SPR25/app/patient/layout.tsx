@@ -1,14 +1,13 @@
 "use client";
 import "@/globals.css";
-import Navbar from "@/patient/components/Navbar";
-import { Footer } from "@/patient/components/Footer";
+import Navbar from "@/guest/components/Navbar";
+import { Footer } from "@/guest/components/Footer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { ReactNode } from "react";
 import ProtectedRoute from "../common/components/ProtectedRoute";
 import { AppRole } from "../common/types/roles";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import { FileProvider } from "./appointment-booking/contexts/FileContext";
 
 interface PatientLayoutProps {
   children: ReactNode;
@@ -20,7 +19,6 @@ const queryClient = new QueryClient();
 export default function PatientLayout({ children }: PatientLayoutProps) {
   return (
     <ProtectedRoute allowedRoles={[AppRole.Patient, AppRole.Guardian]}>
-      <FileProvider>
       <Provider store={store}>
         <div className="min-h-screen bg-gray-50">
           <Navbar />
@@ -30,7 +28,6 @@ export default function PatientLayout({ children }: PatientLayoutProps) {
           <Footer />
         </div>
       </Provider>
-      </FileProvider>
     </ProtectedRoute>
   );
 }

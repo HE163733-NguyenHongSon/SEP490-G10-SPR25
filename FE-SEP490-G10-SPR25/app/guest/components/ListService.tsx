@@ -28,39 +28,35 @@ const ListService = ({ items, displayView }: ListServiceProps) => {
   const ServiceCard = ({ service }: { service: IService }) => (
     <Link
       href={`/patient/service-detail/${service.serviceId}`}
-      className="border border-gray-300 rounded-md shadow-md p-5 flex flex-col h-full"
+      className="border border-gray-300 rounded-lg shadow-sm p-4 flex flex-col h-full min-h-[300px]"
     >
-      <div className="relative h-32 w-full mb-2">
+      <div className="relative h-40 w-full mb-3 overflow-hidden group rounded-md">
         <Image
           src={`${imgUrl}/${service.image}`}
           alt={service.serviceName}
           fill
-          className="object-cover rounded-md"
+          className="object-cover transform transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg"
         />
       </div>
 
-      <h3 className="text-lg font-semibold mb-1">{service.serviceName}</h3>
+      <h3 className="text-lg font-semibold mb-2 line-clamp-2">
+        {service.serviceName}
+      </h3>
 
-      <p className="text-sm text-gray-600 mb-1 line-clamp-3">
+      <p className="text-sm text-gray-600 mb-2 line-clamp-3">
         {service.overview || "Không có mô tả"}
       </p>
 
-      <div className="flex items-center text-yellow-400 mt-2">
+      <div className="flex items-center text-yellow-400 mt-auto">
         <RatingStars rating={service.rating || 0} />
         <span className="text-xs text-gray-500 ml-1">
           ({service.ratingCount || 0} đánh giá)
         </span>
       </div>
 
-      <div className="flex flex-row items-center mt-2 gap-3">
-        <p className="text-gray-500 font-semibold">
-          {service.price.toLocaleString()} VNĐ
-        </p>
-        {service.estimatedTime && (
-          <p className="text-sm text-gray-600 mb-1">
-            ⏱ {service.estimatedTime}
-          </p>
-        )}
+      <div className="flex items-center justify-between mt-3 text-sm text-gray-700">
+        <p className="font-semibold">{service.price.toLocaleString()} VNĐ</p>
+        {service.estimatedTime && <p>⏱ {service.estimatedTime}</p>}
       </div>
     </Link>
   );

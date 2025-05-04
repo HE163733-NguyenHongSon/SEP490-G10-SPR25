@@ -1,4 +1,4 @@
-import { SpecialtyList } from "@/patient/components/SpecialtyList";
+import { SpecialtyList } from "@/guest/components/SpecialtyList";
 import { specialtyService } from "@/common/services/specialtyService";
 import PaginatedItems from "@/common/components/PaginatedItems";
 import Search from "@/common/components/Search";
@@ -65,4 +65,4 @@ const SpecialtiesPage = async ({
   );
 };
 
-export default SpecialtiesPage; 
+export default SpecialtiesPage;

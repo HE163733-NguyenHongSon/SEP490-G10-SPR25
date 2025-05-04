@@ -4,7 +4,6 @@ import { useRouter, usePathname } from "next/navigation";
 import Select, { SingleValue, GroupBase, OptionProps } from "react-select";
 import Image from "next/image";
 
-
 interface IFieldConfig {
   label: string;
   value: string;
@@ -143,7 +142,7 @@ const HomeSearch = ({
               setSearchField(e.target.value);
               setSelectedOption(null);
             }}
-            className="w-full border h-[50px] rounded-md p-2 text-sm text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full border h-[40px] rounded-md p-2 text-sm text-gray-700 font-semibold focus:outline-none focus:ring-2 focus:ring-cyan-500"
           >
             {fields.map((field) => (
               <option key={field.value} value={field.value}>
@@ -169,7 +168,7 @@ const HomeSearch = ({
             styles={{
               control: (base) => ({
                 ...base,
-                minHeight: "50px",
+                minHeight: "40px", // Giảm chiều cao cho hộp Select
                 boxShadow: "none",
                 borderColor: "#D1D5DB",
                 "&:hover": { borderColor: "#374151" },
@@ -180,7 +179,7 @@ const HomeSearch = ({
               }),
               valueContainer: (base) => ({
                 ...base,
-                height: "50px",
+                height: "40px", // Giảm chiều cao cho phần chứa giá trị
                 display: "flex",
                 alignItems: "center",
                 overflow: "hidden",

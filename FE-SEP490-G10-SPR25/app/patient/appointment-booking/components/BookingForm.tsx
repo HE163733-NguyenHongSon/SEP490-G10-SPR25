@@ -2,6 +2,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { useEffect, useCallback, useState } from "react";
+import { emailService } from "@/common/services/emailService";
+import { Provider } from "react-redux";
+import { store } from "../../store";
+import SuccessReservationMessage from "./SuccessReservationMessage";
+import { useFileContext } from "../contexts/FileContext";
+
 import {
   setShowBookingForm,
   setCurrentStep,
@@ -23,13 +29,15 @@ import PatientInfor from "./PatientInfor";
 import BookingInfor from "./BookingInfor";
 import BookingConfirmation from "./BookingConfirmation";
 import BookingStepper from "./BookingStepper";
-import { doctorScheduleService } from "@/services/doctorScheduleService";
-import { handleVNPayPayment } from "@/services/vnPayService";
-
+import { handleVNPayPayment } from "@/common/services/vnPayService";
+// import reservationService from "@/common/services/reservationService";
+import { toast } from "react-toastify";
+import ReactDOMServer from "react-dom/server";
 const BookingForm = () => {
   const dispatch = useDispatch();
   const [isMounted, setIsMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { selectedFile } = useFileContext();
 
   const {
     isShowBookingForm,
@@ -38,139 +46,92 @@ const BookingForm = () => {
     selectedDate,
     selectedTime,
     symptoms,
-    priorExaminationImg,
     services,
     serviceId,
     doctorId,
     isSubmitting,
     isShowConfirmModal,
+    availableSchedules,
   } = useSelector((state: RootState) => state.booking);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      setError(null);
-      dispatch(setIsSubmitting(true));
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+    dispatch(setIsSubmitting(true));
 
-      try {
-        // Validate required fields
-        if (!selectedPatient?.userId) {
-          throw new Error("Vui lòng chọn bệnh nhân");
-        }
-        if (!serviceId) {
-          throw new Error("Vui lòng chọn dịch vụ");
-        }
-        if (!doctorId) {
-          throw new Error("Vui lòng chọn bác sĩ");
-        }
-        if (!selectedDate || !selectedTime) {
-          throw new Error("Vui lòng chọn thời gian khám");
-        }
+    try {
+      const scheduleDateTime = `${selectedDate}T${selectedTime}`;
+      const matchedSchedule = availableSchedules?.find(
+        (s) =>
+          s.doctorId?.toString() === doctorId &&
+          s.appointmentDate === scheduleDateTime
+      );
 
-        console.log("Fetching schedules for service:", serviceId);
+      const service = services.find(
+        (s) => String(s.serviceId) === String(serviceId)
+      );
 
-        // Get available schedules
-        let schedules;
-        try {
-          schedules =
-            await doctorScheduleService.getAvailableSchedulesByServiceId(
-              serviceId
-            );
-          console.log("Retrieved schedules:", schedules);
-        } catch (scheduleError) {
-          console.error("Schedule fetch error:", scheduleError);
-          throw new Error(
-            "Không thể lấy thông tin lịch khám. Vui lòng thử lại sau."
-          );
-        }
+      const reservation: IAddedReservation = {
+        patientId: selectedPatient?.userId,
+        doctorScheduleId: matchedSchedule?.doctorScheduleId?.toString(),
+        reason: symptoms || "",
+        priorExaminationImg: selectedFile,
+        appointmentDate: matchedSchedule?.appointmentDate,
+        createdByUserId: selectedPatient?.userId,
+        updatedByUserId: selectedPatient?.userId,
+      };
+      // let isSuccess = false;
 
-        const matchedSchedule = schedules?.find((s) => {
-          const scheduleDateTime = `${selectedDate}T${selectedTime}`;
-          console.log("Comparing:", {
-            scheduleDoctorId: s.doctorId?.toString(),
-            selectedDoctorId: doctorId,
-            scheduleDateTime: s.appointmentDate,
-            selectedDateTime: scheduleDateTime,
-          });
-          return (
-            s.doctorId?.toString() === doctorId &&
-            s.appointmentDate === scheduleDateTime
-          );
-        });
+      // if (!service?.isPrepayment) {
+      //   isSuccess = await reservationService.addReservation(reservation);
+      //   if (!isSuccess) toast.error("Đặt lịch thất bại. Vui lòng thử lại!");
+      // } else {
+      //   try {
+      //
+      //     isSuccess = true;
+      //   } catch (paymentError) {
+      //     console.error("Payment error:", paymentError);
+      //     toast.error("Lỗi trong quá trình thanh toán. Vui lòng thử lại sau.");
+      //     throw paymentError;
+      //   }
+      // }
+      await handleVNPayPayment({
+        payerId: selectedPatient?.userId,
+        reservation,
+        paymentMethod: "VNPay",
+        amount: service?.price,
+      });
+      // if (isSuccess) {
+      // toast.success("Đặt lịch hẹn thành công!");
+      toast.info("Đang chuyển hướng đến cổng thanh toán VNPay...");
 
-        console.log("Matched schedule:", matchedSchedule);
+      const htmlMessage = ReactDOMServer.renderToStaticMarkup(
+        <Provider store={store}>
+          <SuccessReservationMessage />
+        </Provider>
+      );
+      console.log("fdfd", selectedPatient?.email);
+      await emailService.sendEmail({
+        toEmail: selectedPatient?.email || "",
+        subject: "Thông báo đặt lịch thành công!",
+        message: htmlMessage,
+      });
 
-        if (!matchedSchedule) {
-          throw new Error(
-            "Lịch khám này không còn trống hoặc đã được đặt. Vui lòng chọn thời gian khác."
-          );
-        }
-
-        const service = services.find((s) => s.serviceId === serviceId);
-        if (!service?.price) {
-          throw new Error(
-            "Không tìm thấy thông tin giá dịch vụ. Vui lòng thử lại."
-          );
-        }
-
-        const bookingPayload = {
-          paymentId: 0,
-          payerId: selectedPatient.userId,
-          reservation: {
-            patientId: selectedPatient.userId,
-            doctorScheduleId: matchedSchedule.doctorScheduleId?.toString(),
-            reason: symptoms || "",
-            priorExaminationImg: Array.isArray(priorExaminationImg)
-              ? priorExaminationImg[0] || null
-              : priorExaminationImg || null,
-            appointmentDate: matchedSchedule.appointmentDate,
-            createdByUserId: selectedPatient.userId,
-            updatedByUserId: selectedPatient.userId,
-          },
-          paymentMethod: "VNPay",
-          amount: service.price,
-        };
-
-        console.log("Submitting booking payload:", bookingPayload);
-
-        try {
-          const paymentResult = await handleVNPayPayment(bookingPayload);
-          if (!paymentResult?.ok) {
-            throw new Error(
-              "Không thể xử lý thanh toán. Vui lòng thử lại sau."
-            );
-          }
-        } catch (paymentError) {
-          console.error("Payment error:", paymentError);
-          throw new Error(
-            "Lỗi trong quá trình thanh toán. Vui lòng thử lại sau."
-          );
-        }
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : "Đã xảy ra lỗi khi đặt lịch";
-        setError(errorMessage);
-        console.error("Booking error:", err);
-      } finally {
-        dispatch(setIsSubmitting(false));
-      }
-    },
-    [
-      dispatch,
-      selectedPatient,
-      doctorId,
-      serviceId,
-      selectedDate,
-      selectedTime,
-      symptoms,
-      priorExaminationImg,
-      services,
-    ]
-  );
+      setTimeout(() => confirmCancel(), 1000);
+      // }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Đã xảy ra lỗi khi đặt lịch";
+      setError(errorMessage);
+      console.error("Booking error:", err);
+    } finally {
+      dispatch(setIsSubmitting(false));
+    }
+  };
 
   const handleBack = useCallback(() => {
     if (currentStep === 1) {
@@ -189,7 +150,7 @@ const BookingForm = () => {
     dispatch(setServiceId(""));
     dispatch(setIsSubmitting(false));
     dispatch(setSpecialties([]));
-    dispatch(setSpecialtyId(0));
+    dispatch(setSpecialtyId(""));
     dispatch(setDoctors([]));
     dispatch(setDoctorId(""));
     dispatch(setSelectedDate(""));
@@ -210,7 +171,7 @@ const BookingForm = () => {
         onClick={() => dispatch(setShowConfirmModal(true))}
       />
       <div
-        className={`relative z-50 top-12 w-[90%] md:w-2/3 lg:w-1/2 h-[90vh] bg-white rounded-2xl shadow-2xl p-6 flex flex-col transition-opacity duration-300 ${
+        className={`relative z-50 top-14 w-full md:w-2/3 lg:w-2/3 h-[90vh] bg-white rounded-2xl shadow-2xl p-6 flex flex-col transition-opacity duration-300 ${
           isMounted ? "opacity-100" : "opacity-0"
         }`}
       >

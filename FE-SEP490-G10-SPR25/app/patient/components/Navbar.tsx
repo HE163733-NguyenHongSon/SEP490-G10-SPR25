@@ -7,10 +7,14 @@ import { usePathname } from "next/navigation";
 import { assets } from "@/public/images/assets";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getCurrentUser, logout, User } from "../../services/authService";
-import { specialtyService } from "@/services/specialtyService";
-import { doctorService } from "@/services/doctorService";
-import { serviceService } from "@/services/serviceService";
+import {
+  getCurrentUser,
+  logout,
+  User,
+} from "../../common/services/authService";
+import { specialtyService } from "@/common/services/specialtyService";
+import { doctorService } from "@/common/services/doctorService";
+import { serviceService } from "@/common/services/serviceService";
 import HomeSearch from "./HomeSearch";
 const Navbar: React.FC = () => {
   const [isShowMobileMenu, setIsShowMobileMenu] = useState(false);
@@ -30,7 +34,7 @@ const Navbar: React.FC = () => {
             label: s.specialtyName,
             value: s.specialtyId?.toString() || "",
             image: s.image || "",
-            type: "specialty" ,
+            type: "specialty",
           })),
           ...doctors.map((d: IDoctor) => ({
             label: d.userName,
@@ -44,7 +48,7 @@ const Navbar: React.FC = () => {
             image: s.image || "",
             type: "service",
           })),
-        ].filter(item => item.value !== "");
+        ].filter((item) => item.value !== "");
 
         setSuggestedData(suggestedData);
       } catch (error) {
@@ -93,7 +97,7 @@ const Navbar: React.FC = () => {
       onClose: () => {
         // Chuyển hướng sau khi toast đóng hoặc sau thời gian ngắn
         setTimeout(() => {
-          window.location.href = "/auth/login";
+          window.location.href = "/common/auth/login";
         }, 1000); // Đợi 1 giây sau thông báo để người dùng thấy thông báo
       },
     });
@@ -197,7 +201,7 @@ const Navbar: React.FC = () => {
                   href="/patient/person"
                   className="text-white hover:text-cyan-400 transition-colors duration-200 text-sm font-medium"
                 >
-                 {currentUser.userName}
+                  {currentUser.userName}
                 </Link>
                 <button
                   onClick={handleLogout}
@@ -210,13 +214,13 @@ const Navbar: React.FC = () => {
           ) : (
             <div className="flex items-center gap-4">
               <Link
-                href="/auth/login"
+                href="/common/auth/login"
                 className="text-white hover:text-cyan-400 font-medium transition-colors duration-200"
               >
                 Đăng nhập
               </Link>
               <Link
-                href="/auth/register"
+                href="/common/auth/register"
                 className="bg-cyan-500 hover:bg-cyan-600 px-4 py-2 rounded-lg text-white font-medium transition-colors duration-200"
               >
                 Đăng ký
@@ -310,14 +314,14 @@ const Navbar: React.FC = () => {
             ) : (
               <div className="px-4 flex flex-col space-y-3">
                 <Link
-                  href="/auth/login"
+                  href="/common/auth/login"
                   className="w-full px-3 py-2 rounded-md text-base font-medium text-center text-white bg-cyan-600 hover:bg-cyan-700"
                   onClick={() => setIsShowMobileMenu(false)}
                 >
                   Đăng nhập
                 </Link>
                 <Link
-                  href="/auth/register"
+                  href="/common/auth/register"
                   className="w-full px-3 py-2 rounded-md text-base font-medium text-center text-cyan-600 border border-cyan-600 hover:bg-cyan-50"
                   onClick={() => setIsShowMobileMenu(false)}
                 >

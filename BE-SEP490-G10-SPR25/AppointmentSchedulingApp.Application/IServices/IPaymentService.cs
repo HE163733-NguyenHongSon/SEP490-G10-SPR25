@@ -9,7 +9,6 @@ namespace AppointmentSchedulingApp.Application.IServices
 {
     public  interface IPaymentService
     {
-         Task<bool> AddPayment(PaymentDTO paymentDTO);
-
+        Task<bool> UpdatePaymentStatusByReservationId(int reservationId, string status);
     }
 }

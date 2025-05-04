@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import MedicalRecordDetail from "./MedicalRecordDetail";
-import { medicalRecordService } from "@/services/medicalRecordService";
+import { medicalRecordService } from "@/common/services/medicalRecordService";
 interface MedicalRecordListProps {
   medicalRecordList: IMedicalRecord[] | undefined;
   searchTerm?: string;

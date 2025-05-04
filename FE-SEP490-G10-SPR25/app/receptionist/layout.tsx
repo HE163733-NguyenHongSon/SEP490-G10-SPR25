@@ -2,24 +2,26 @@
 
 "use client";
 
-import React, { ReactNode } from 'react';
-import ProtectedRoute from '../components/ProtectedRoute';
-import { AppRole } from '../types/roles';
-import { useSidebar } from "@/contexts/SidebarContext";
+import React, { ReactNode } from "react";
+import ProtectedRoute from "../common/components/ProtectedRoute";
+import { AppRole } from "../common/types/roles";
+import { useSidebar } from "@/common/contexts/SidebarContext";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Backdrop from "./components/Backdrop";
 
 import "@/globals.css";
 
-import { SidebarProvider } from "@/contexts/SidebarContext";
-import { ThemeProvider } from "@/contexts/ThemeContext";
+import { SidebarProvider } from "@/common/contexts/SidebarContext";
+import { ThemeProvider } from "@/common/contexts/ThemeContext";
 
 interface ReceptionistLayoutProps {
   children: ReactNode;
 }
 
-export default function ReceptionistLayout({ children }: ReceptionistLayoutProps) {
+export default function ReceptionistLayout({
+  children,
+}: ReceptionistLayoutProps) {
   return (
     <ProtectedRoute allowedRoles={[AppRole.Receptionist]}>
       <div>

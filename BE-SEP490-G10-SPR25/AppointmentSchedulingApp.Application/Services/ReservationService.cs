@@ -6,6 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AppointmentSchedulingApp.Application.Services
 {
@@ -19,6 +20,20 @@ namespace AppointmentSchedulingApp.Application.Services
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
         }
+        public async Task UpdatePriorExaminationImg(int reservationId, string fileName)
+        {
+            var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId == reservationId);
+            if (reservation == null)
+            {
+                throw new Exception($"Reservation with ID {reservationId} not found.");
+            }
+
+            reservation.PriorExaminationImg = fileName;
+
+            unitOfWork.ReservationRepository.Update(reservation);
+            await unitOfWork.CommitAsync();
+        }
+
         public async Task<List<ReservationDTO>> GetListReservation()
         {
             var query = unitOfWork.ReservationRepository.GetQueryable();
@@ -67,6 +82,24 @@ namespace AppointmentSchedulingApp.Application.Services
                 throw;
             }
 
+        }
+        public async Task<bool> UpdateReservationStatusList(List<ReservationStatusDTO> reservationStatusDTOs)
+        {
+            foreach (var dto in reservationStatusDTOs)
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId == dto.ReservationId);
+
+                if (reservation == null)
+                    continue;
+
+
+                reservation.Status = dto.Status;
+
+                unitOfWork.ReservationRepository.Update(reservation);
+            }
+
+            await unitOfWork.CommitAsync();
+            return true;
         }
 
         public async Task<ReservationDTO> GetReservationById(int reservationId)
@@ -118,17 +151,68 @@ namespace AppointmentSchedulingApp.Application.Services
 
         }
 
-        public async Task<bool> AddReservation(AddedReservationDTO reservationDTO)
+        public async Task<Reservation> AddReservation(AddedReservationDTO reservationDTO)
         {
             var reservation = mapper.Map<Reservation>(reservationDTO);
 
 
             await unitOfWork.ReservationRepository.AddAsync(reservation);
 
-             await unitOfWork.CommitAsync();
+            await unitOfWork.CommitAsync();
 
-            return true;
+            return reservation;
+        }
+         public async Task<List<ReservationDTO>> GetUpcomingReservationsAndMarkReminded()
+        {
+            var now = DateTime.UtcNow.AddHours(7);
+
+            var targetTimeStart = now.AddHours(5).AddMinutes(-10);
+            var targetTimeEnd = now.AddHours(5).AddMinutes(10);
+           
+            var reservations = await unitOfWork.ReservationRepository
+                .GetAll(r =>
+                    r.AppointmentDate >= targetTimeStart &&
+                    r.AppointmentDate <= targetTimeEnd &&
+                     r.Status == "Xác nhận");
+
+            if (reservations.Any())
+            {
+                foreach (var reservation in reservations)
+                {
+                    if (reservation.Status != "Đã nhắc")
+                    {
+                        reservation.Status = "Đã nhắc";
+                        unitOfWork.ReservationRepository.Update(reservation);
+                    }
+                }
+
+                await unitOfWork.CommitAsync();
+            }
+
+            return mapper.Map<List<ReservationDTO>>(reservations);
         }
 
+        public async Task<bool> ReplaceDoctor(int reservationId, int doctorscheduleId)
+        {
+            try
+            {
+                var reservation = unitOfWork.ReservationRepository.Get(r => r.ReservationId.Equals(reservationId)).Result;
+
+                if (reservation == null)
+                {
+                    return false;
+                }
+
+                reservation.DoctorScheduleId = doctorscheduleId;
+                unitOfWork.ReservationRepository.Update(reservation);
+                await unitOfWork.CommitAsync();
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

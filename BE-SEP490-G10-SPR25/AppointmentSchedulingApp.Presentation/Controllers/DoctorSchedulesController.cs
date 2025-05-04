@@ -21,28 +21,28 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
         }
 
-        //[HttpGet]
-        //[EnableQuery]
-        //public async Task<IActionResult> Get()
-        //{
-        //    try
-        //    {
-        //        var doctorSchedules = await _doctorScheduleService.GetDoctorScheduleList();
+        [HttpGet("GetAvailableSchedulesByServiceId/{serviceId}")]
+        [EnableQuery]
+        public async Task<IActionResult> GetAvailableSchedulesByServiceId(int serviceId)
+        {
+            try
+            {
+                var availableSchedules = await _doctorScheduleService.GetAvailableSchedulesByServiceId (serviceId);
 
-        //        if (doctorSchedules == null || !doctorSchedules.Any())
-        //        {
-        //              return NoContent();
-        //        }
+                if (availableSchedules == null || !availableSchedules.Any())
+                {
+                    return NoContent();
+                }
 
-        //        return Ok(doctorSchedules);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+                return Ok(availableSchedules);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
-        
+
 
 
         [HttpGet]
@@ -183,5 +183,24 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+
+        [HttpGet("GetAlternativeDoctorList/{reservationId}")]
+        [EnableQuery]
+        public async Task<IActionResult> GetAlternativeDoctorList(int reservationId)
+        {
+            try
+            {
+                var doctorSchedules = await _doctorScheduleService.IsDoctorBusyAtReservation(reservationId);
+
+
+                return Ok(doctorSchedules);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }

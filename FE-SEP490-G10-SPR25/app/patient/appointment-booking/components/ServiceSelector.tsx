@@ -3,19 +3,14 @@ import React, { useEffect } from "react";
 import Select from "react-select";
 import { User } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { serviceService } from "@/services/serviceService";
-import {
-  setServices,
-  setServiceId,
-  setLoading,
-} from "../redux/bookingSlice";
+import { serviceService } from "@/common/services/serviceService";
+import { setServices, setServiceId, setIsLoading } from "../redux/bookingSlice";
 import { RootState } from "../../store";
-import { StylesConfig } from "react-select";
 
 const ServiceSelector = () => {
   const dispatch = useDispatch();
 
-  const { services, serviceId, suggestionData, specialtyId } = useSelector(
+  const { services, serviceId, suggestionData, specialtyId,isShowRestoreSuggestion,customSelectStyles } = useSelector(
     (state: RootState) => state.booking
   );
 
@@ -31,52 +26,24 @@ const ServiceSelector = () => {
       : null;
   };
 
-  const customStyles: StylesConfig<{ value: string; label: string }, false> = {
-    control: (base, state) => ({
-      ...base,
-      backgroundColor: "white",
-      borderColor: state.isFocused ? "#67e8f9" : "#d1d5db",
-      borderRadius: "0.5rem",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#67e8f9",
-      },
-    }),
-    option: (base, state) => ({
-      ...base,
-      backgroundColor:
-        state.isSelected || state.isFocused ? "#f3f4f6" : "white",
-      color: "#374151",
-      padding: "10px 12px",
-      cursor: "pointer",
-    }),
-    singleValue: (base) => ({
-      ...base,
-      color: "#374151",
-      display: "flex",
-      alignItems: "center",
-    }),
-    input: (base) => ({
-      ...base,
-      color: "#374151",
-    }),
-    placeholder: (base) => ({
-      ...base,
-      color: "#9ca3af",
-    }),
-  };
+ 
 
   useEffect(() => {
     const fetchServices = async () => {
-      dispatch(setLoading(true));
+      dispatch(setIsLoading(true));
+      console.log(serviceId);
       try {
-        const data = await serviceService.getServicesBySpecialty(specialtyId);
+        const data = await serviceService.getServicesBySpecialty(
+          Number(specialtyId)
+        );
         dispatch(setServices(data));
-        dispatch(setServiceId(String(suggestionData?.service.serviceId)));
+        if (suggestionData && !isShowRestoreSuggestion) {
+          dispatch(setServiceId(String(suggestionData?.service.serviceId)));
+        }
       } catch (error) {
         console.error("Error fetching services:", error);
       } finally {
-        dispatch(setLoading(false));
+        dispatch(setIsLoading(false));
       }
     };
 
@@ -104,7 +71,7 @@ const ServiceSelector = () => {
         isDisabled={!options.length}
         placeholder="Chọn dịch vụ"
         noOptionsMessage={() => "Không có dịch vụ khả dụng"}
-        styles={customStyles}
+        styles={customSelectStyles}
       />
     </div>
   );

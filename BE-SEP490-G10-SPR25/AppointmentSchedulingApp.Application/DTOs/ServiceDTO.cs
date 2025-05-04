@@ -43,6 +43,9 @@ namespace AppointmentSchedulingApp.Application.DTOs
 
         [JsonPropertyOrder(11)]
         public string? EstimatedTime { get; set; }
+
+        [JsonPropertyOrder(12)]
+        public bool? IsPrepayment { get; set; }
     }
 
 

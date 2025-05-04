@@ -90,6 +90,39 @@ namespace AppointmentSchedulingApp.Application.Services
             }
             
         }
+        public async Task UpdatePostAsync(PostDetailDTO postDTO)
+        {
+            var postEntity = await _postRepository.GetPostDetailById(postDTO.PostId);
+            if (postEntity == null) throw new Exception("Không tìm thấy bài viết");
+            _mapper.Map(postDTO, postEntity);
+            var newSections = postDTO.PostSections;
+            var existingSections = postEntity.PostSections.ToList();
+            foreach(var oldSection in existingSections)
+            {
+                if (!newSections.Any(s => s.SectionIndex == oldSection.SectionIndex))
+                {
+                    _postRepository.DeletePostSection(oldSection);
+                }   
+            }
+            foreach (var newSection in newSections)
+            {
+                var existing = existingSections.FirstOrDefault(s => s.SectionIndex == newSection.SectionIndex);
+                if (existing != null)
+                {
+                    existing.SectionTitle = newSection.SectionTitle;
+                    existing.SectionContent = newSection.SectionContent;
+                    existing.PostImageUrl = newSection.PostImageUrl;
+                }
+                else
+                {
+                    var sectionEntity = _mapper.Map<PostSection>(newSection);
+                    sectionEntity.PostId = postEntity.PostId;
+                    await _postRepository.AddPostSectionAsync(sectionEntity);
+                }
+            }
+            _postRepository.Update(postEntity);
+            await unitOfWork.CommitAsync();
+        }
         public async Task<bool> DeletePostAsync(int id)
         {
             var post = await _postRepository.GetPostById(id);

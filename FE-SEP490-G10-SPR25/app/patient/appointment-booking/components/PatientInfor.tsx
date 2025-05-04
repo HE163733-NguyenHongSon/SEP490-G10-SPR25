@@ -5,19 +5,19 @@ import { CheckCircle2 as CheckCircle } from "lucide-react";
 import AddPatientForm from "./AddPatientForm";
 import {
   setSelectedPatient,
-  setAddingPatient,
+  setIsAddingPatient,
   setCurrentStep,
 } from "../redux/bookingSlice";
 import { RootState } from "../../store";
 
 const PatientInfor = () => {
   const dispatch = useDispatch();
-  const { patients, selectedPatient, addingPatient } = useSelector(
+  const { patients, selectedPatient, isAddingPatient, doctorId } = useSelector(
     (state: RootState) => state.booking
   );
 
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
-
+  console.log("prious doctor", doctorId);
   return (
     <div className="p-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-6">
@@ -62,7 +62,10 @@ const PatientInfor = () => {
                 {/* Patient Name, Date of Birth, and Phone Number in separate lines */}
                 <div className="flex justify-start flex-col">
                   <h3 className="text-lg font-semibold text-gray-800 text-left">
-                    {patient.userName}
+                    {patient.userName}{" "}
+                    <span className="text-white bg-cyan-500 font-normal text-base p-1 px-2 rounded-md">
+                      {patient.relationship}
+                    </span>
                   </h3>
                   <div className="flex flex-row">
                     <p className="font-medium text-gray-500">Ngày sinh :</p>
@@ -89,15 +92,15 @@ const PatientInfor = () => {
         ))}
 
         {/* Add New Patient Button */}
-        {addingPatient && (
+        {isAddingPatient && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <AddPatientForm onClose={() => dispatch(setAddingPatient(false))} />
+            <AddPatientForm onClose={() => dispatch(setIsAddingPatient(false))} />
           </div>
         )}
 
         <div className="flex mt-6">
           <button
-            onClick={() => dispatch(setAddingPatient(true))}
+            onClick={() => dispatch(setIsAddingPatient(true))}
             className="w-full py-3 text-white bg-cyan-500 border-2 border-dashed border-white rounded-lg hover:bg-cyan-600 transition-all duration-300"
           >
             + Thêm bệnh nhân mới

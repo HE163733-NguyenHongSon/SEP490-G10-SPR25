@@ -11,11 +11,11 @@ namespace AppointmentSchedulingApp.Application.DTOs
     {
         [Key]
         public int ReservationId { get; set; }
-        public string CancellationReason { get; set; }
+        public string? CancellationReason { get; set; }
         public string Status { get; set; }
 
-        public int UpdatedByUserId { get; set; }
-        public DateTime UpdatedDate { get; set; }
+        public int? UpdatedByUserId { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
     }
 }

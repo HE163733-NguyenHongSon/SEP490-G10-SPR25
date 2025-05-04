@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useSidebar } from '@/contexts/SidebarContext';
+import { useSidebar } from '@/common/contexts/SidebarContext';
 import { Menu, Bell, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useUser } from '@/contexts/UserContext';
-import { logout } from '@/services/authService';
+import { useUser } from '@/common/contexts/UserContext';
+import { logout } from '@/common/services/authService';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -33,7 +33,7 @@ export default function Header() {
       await logout();
       setUser(null);
       toast.success("Đăng xuất thành công!");
-      router.replace('/auth/login');
+      router.replace('/common/auth/login');
     } catch (error) {
       toast.error("Có lỗi xảy ra khi đăng xuất");
     }

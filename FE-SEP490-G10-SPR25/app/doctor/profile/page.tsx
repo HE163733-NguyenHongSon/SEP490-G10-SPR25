@@ -1,16 +1,25 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import type { Metadata } from "next";
-import { Mail, Phone, Calendar, MapPin, Globe, Award, Bookmark, Edit } from 'lucide-react';
-import Link from 'next/link';
-import axios from 'axios';
-import { useUser } from '@/contexts/UserContext';
-import { Image } from 'antd';
+import {
+  Mail,
+  Phone,
+  Calendar,
+  MapPin,
+  Globe,
+  Award,
+  Bookmark,
+  Edit,
+} from "lucide-react";
+import Link from "next/link";
+import axios from "axios";
+import { useUser } from "@/common/contexts/UserContext";
+import { Image } from "antd";
 // export const metadata: Metadata = {
 //   title: "Hồ Sơ Bác Sĩ",
 //   description: "Xem và chỉnh sửa thông tin hồ sơ của bạn",
 // };
-interface IDoctor{
+interface IDoctor {
   userName: string;
   currentWork: string;
   avatarUrl: string;
@@ -21,23 +30,24 @@ interface IDoctor{
   degree: string;
   doctorDescription: string;
   workExperience: string;
-
 }
 const DoctorProfilePage = () => {
   const [doctorData, setDoctorData] = useState<IDoctor | null>(null);
-  const { user } = useUser()
+  const { user } = useUser();
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const response = await axios.get(`http://localhost:5220/api/Doctors/${user?.userId}`);
+        const response = await axios.get(
+          `http://localhost:5220/api/Doctors/${user?.userId}`
+        );
         setDoctorData(response.data);
         console.log("Doctor Data:", response.data);
       } catch (error) {
         console.error("Lỗi khi fetch bác sĩ:", error);
       }
     };
-  
+
     fetchDoctor();
   }, []);
   return (
@@ -64,11 +74,13 @@ const DoctorProfilePage = () => {
                   alt="Doctor"
                   width={256}
                   className="w-full h-full object-cover rounded-lg shadow"
-                  style={{ borderRadius: '50%'}}
+                  style={{ borderRadius: "50%" }}
                 />
               </div>
               <h2 className="text-xl font-semibold">{doctorData?.userName}</h2>
-              <p className="text-indigo-600 font-medium">{doctorData?.currentWork}</p>
+              <p className="text-indigo-600 font-medium">
+                {doctorData?.currentWork}
+              </p>
               <div className="mt-4 flex justify-center space-x-3">
                 <span className="px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full">
                   {doctorData?.workExperience}
@@ -97,7 +109,9 @@ const DoctorProfilePage = () => {
                   <MapPin className="h-5 w-5 text-gray-500 mr-3 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium">Địa chỉ</p>
-                    <p className="text-sm text-gray-600">{doctorData?.address}</p>
+                    <p className="text-sm text-gray-600">
+                      {doctorData?.address}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -139,16 +153,16 @@ const DoctorProfilePage = () => {
           <h2 className="text-xl font-semibold mb-4">Học Vấn</h2>
           <div className="space-y-4">
             {/* {doctorData.education.map((edu, index) => ( */}
-              <div  className="flex items-start">
-                <div className="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center">
-                  <Award className="h-5 w-5 text-indigo-600" />
-                </div>
-                <div className="ml-4">
-                  <h3 className="font-medium">{doctorData?.degree}</h3>
-                  {/* <p className="text-sm text-gray-600">{edu.institution}</p>
-                  <p className="text-sm text-gray-500">{edu.year}</p> */}
-                </div>
+            <div className="flex items-start">
+              <div className="flex-shrink-0 h-10 w-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                <Award className="h-5 w-5 text-indigo-600" />
               </div>
+              <div className="ml-4">
+                <h3 className="font-medium">{doctorData?.degree}</h3>
+                {/* <p className="text-sm text-gray-600">{edu.institution}</p>
+                  <p className="text-sm text-gray-500">{edu.year}</p> */}
+              </div>
+            </div>
             {/* ))} */}
           </div>
         </div>
@@ -181,9 +195,13 @@ const DoctorProfilePage = () => {
           </div>
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-sm text-gray-700 mb-2">
-              Bạn có thể cập nhật chi tiết giờ làm việc và lịch khám từ trang Lịch làm việc.
+              Bạn có thể cập nhật chi tiết giờ làm việc và lịch khám từ trang
+              Lịch làm việc.
             </p>
-            <Link href="/doctor/schedule" className="text-sm text-indigo-600 hover:text-indigo-800">
+            <Link
+              href="/doctor/schedule"
+              className="text-sm text-indigo-600 hover:text-indigo-800"
+            >
               Xem lịch đầy đủ của bạn →
             </Link>
           </div>
@@ -191,5 +209,5 @@ const DoctorProfilePage = () => {
       </div>
     </div>
   );
-} 
+};
 export default DoctorProfilePage;

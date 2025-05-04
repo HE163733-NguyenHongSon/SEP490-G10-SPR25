@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import { adminService } from "@/services/adminService";
+import { adminService } from "@/common/services/adminService";
 
 export const ExportButton = () => {
   const handleExport = async () => {

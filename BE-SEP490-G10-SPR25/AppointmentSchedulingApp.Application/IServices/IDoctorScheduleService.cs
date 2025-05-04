@@ -11,6 +11,10 @@ namespace AppointmentSchedulingApp.Application.IServices
     public interface IDoctorScheduleService
     {
         Task<List<DoctorScheduleDTO>> GetDoctorScheduleListByServiceId(int serviceId);
+        Task<List<AvailableScheduleDTO>> GetProposedDoctorSchedulesByServiceId(int serviceId);
+
+        Task<List<AvailableScheduleDTO>> GetAvailableSchedulesByServiceId(int serviceId);
+
         Task<List<DoctorScheduleDTO>> GetDoctorScheduleList();
         Task<DoctorScheduleDTO> GetDoctorScheduleDetailById(int doctorScheduleId);
 
@@ -20,5 +24,8 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<List<DoctorScheduleDTO>> FilterAndSearchDoctorSchedule(string? doctorName, int? serviceId,string? day ,int? roomId ,int? slotId);
 
         Task<List<DoctorScheduleDTO>> SearchDoctorScheduleByDoctorName(string? doctorName);
+
+        Task<List<DoctorScheduleDTO>> GetAlternativeDoctorList(int doctorScheduleId);
+        Task<List<DoctorScheduleDTO>> IsDoctorBusyAtReservation(int reservationId);
     }
 }

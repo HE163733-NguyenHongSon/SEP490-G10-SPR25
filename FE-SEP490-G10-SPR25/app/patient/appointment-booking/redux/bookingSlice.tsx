@@ -1,14 +1,40 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-
-// import {
-//   restoreSuggestion,
-//   fetchServices,
-//   fetchSpecialties,
-//   fetchDoctors,
-//   fetchAvailableDates,
-//   submitBooking,
-// } from "./bookingThunks";
+import { addPatientAsync } from "./bookingThunks";
+import { StylesConfig } from "react-select";
+const customStyles: StylesConfig<{ value: string; label: string }, false> = {
+  control: (base, state) => ({
+    ...base,
+    backgroundColor: "white",
+    borderColor: state.isFocused ? "#67e8f9" : "#d1d5db",
+    borderRadius: "0.5rem",
+    boxShadow: "none",
+    "&:hover": {
+      borderColor: "#67e8f9",
+    },
+  }),
+  option: (base, state) => ({
+    ...base,
+    backgroundColor: state.isSelected || state.isFocused ? "#f3f4f6" : "white",
+    color: "#374151",
+    padding: "10px 12px",
+    cursor: "pointer",
+  }),
+  singleValue: (base) => ({
+    ...base,
+    color: "#374151",
+    display: "flex",
+    alignItems: "center",
+  }),
+  input: (base) => ({
+    ...base,
+    color: "#374151",
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: "#9ca3af",
+  }),
+};
 
 const initialState: IBookingState = {
   symptoms: "",
@@ -19,25 +45,25 @@ const initialState: IBookingState = {
   addedPatient: null,
   patients: [],
   selectedPatient: null,
-  addingPatient: false,
+  isAddingPatient: false,
   suggestionData: null,
   services: [],
   serviceId: "",
   specialties: [],
-  specialtyId: 0,
+  specialtyId: "",
   doctors: [],
-  doctorId: undefined,
+  doctorId: "",
   availableDates: [],
   selectedDate: "",
   selectedTime: "",
   selectedSlotId: "",
   isShowRestoreSuggestion: false,
-  priorExaminationImg: null,
-  // schedules: [],
+  priorExaminationImgUrl: null,
   isSubmitting: false,
   isShowConfirmModal: false,
-  customSelectStyles: {},
   availableSchedules: [],
+  customSelectStyles: customStyles,
+
 };
 
 const bookingSlice = createSlice({
@@ -47,9 +73,10 @@ const bookingSlice = createSlice({
     setSymptoms: (state, action: PayloadAction<string>) => {
       state.symptoms = action.payload;
     },
-    setLoading: (state, action: PayloadAction<boolean>) => {
+    setIsLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
+
     setStep: (state, action: PayloadAction<number>) => {
       state.currentStep = action.payload;
     },
@@ -66,12 +93,7 @@ const bookingSlice = createSlice({
     setSelectedSlotId: (state, action: PayloadAction<string>) => {
       state.selectedSlotId = action.payload;
     },
-    setPriorExaminationImg: (
-      state,
-      action: PayloadAction<string | null | File>
-    ) => {
-      state.priorExaminationImg = action.payload;
-    },
+
     setIsShowRestoreSuggestion: (state, action: PayloadAction<boolean>) => {
       state.isShowRestoreSuggestion = action.payload;
     },
@@ -81,9 +103,7 @@ const bookingSlice = createSlice({
     setSpecialties: (state, action: PayloadAction<ISpecialty[]>) => {
       state.specialties = action.payload;
     },
-    // setPatient: (state, action: PayloadAction<IPatient>) => {
-    //   state.patient = action.payload;
-    // },
+ 
     setPatients: (state, action: PayloadAction<IPatient[]>) => {
       state.patients = action.payload;
     },
@@ -105,13 +125,13 @@ const bookingSlice = createSlice({
     ) => {
       state.suggestionData = action.payload;
     },
-    setSpecialtyId: (state, action: PayloadAction<number>) => {
+    setSpecialtyId: (state, action: PayloadAction<string>) => {
       state.specialtyId = action.payload;
     },
     setServiceId: (state, action: PayloadAction<string>) => {
       state.serviceId = action.payload;
     },
-    setDoctorId: (state, action: PayloadAction<string | undefined>) => {
+    setDoctorId: (state, action: PayloadAction<string>) => {
       state.doctorId = action.payload;
     },
     resetBookingState(state) {
@@ -120,8 +140,8 @@ const bookingSlice = createSlice({
     addPatient: (state, action: PayloadAction<IAddedPatient>) => {
       state.addedPatient = action.payload;
     },
-    setAddingPatient: (state, action: PayloadAction<boolean>) => {
-      state.addingPatient = action.payload;
+    setIsAddingPatient: (state, action: PayloadAction<boolean>) => {
+      state.isAddingPatient = action.payload;
     },
     setSelectedPatient: (state, action: PayloadAction<IPatient | null>) => {
       state.selectedPatient = action.payload;
@@ -135,67 +155,40 @@ const bookingSlice = createSlice({
     setShowConfirmModal: (state, action: PayloadAction<boolean>) => {
       state.isShowConfirmModal = action.payload;
     },
-    clearPriorExaminationImg: (state) => {
-      state.priorExaminationImg = [];
+    setPriorExaminationImgUrl: (
+      state,
+      action: PayloadAction<string | null>
+    ) => {
+      state.priorExaminationImgUrl = action.payload;
+    },
+    clearPriorExaminationImgUrl: (state) => {
+      state.priorExaminationImgUrl = null;
     },
   },
-
-  // extraReducers: (builder) => {
-  //   builder
-  //     .addCase(restoreSuggestion.fulfilled, (state) => {
-  //       state.showRestoreSuggestion = false;
-  //     })
-  //     .addMatcher(
-  //       (action) =>
-  //         action.type.startsWith("booking/") &&
-  //         action.type.endsWith("/pending"),
-  //       (state) => {
-  //         state.loading = true;
-  //         state.error = null;
-  //       }
-  //     )
-  //     .addMatcher(
-  //       (action) =>
-  //         action.type.startsWith("booking/") &&
-  //         action.type.endsWith("/fulfilled"),
-  //       (state) => {
-  //         state.loading = false;
-  //       }
-  //     )
-  //     .addMatcher(
-  //       (action) =>
-  //         action.type.startsWith("booking/") &&
-  //         action.type.endsWith("/rejected"),
-  //       (state, action) => {
-  //         state.loading = false;
-  //         state.error = action.error?.message || "Something went wrong";
-  //       }
-  //     )
-  //     .addCase(submitBooking.pending, (state) => {
-  //       state.isSubmitting = true;
-  //       state.error = null;
-  //     })
-  //     .addCase(submitBooking.fulfilled, (state) => {
-  //       state.isSubmitting = false;
-  //       state.showConfirmModal = true;
-  //     })
-  //     .addCase(submitBooking.rejected, (state, action) => {
-  //       state.isSubmitting = false;
-  //       state.error = action.error.message || "Failed to submit booking";
-  //     });
-  // },
+  extraReducers: (builder) => {
+    builder
+      .addCase(addPatientAsync.fulfilled, (state, action) => {
+        state.addedPatient = action.payload;
+        state.isAddingPatient = false;
+      })
+      .addCase(addPatientAsync.pending, (state) => {
+        state.isAddingPatient = true;
+      })
+      .addCase(addPatientAsync.rejected, (state) => {
+        state.isAddingPatient = false;
+      });
+  },
 });
 
 export const {
   setSymptoms,
-  setLoading,
+  setIsLoading,
   setStep,
-  // setPatient,
   setSelectedDate,
   setSelectedTime,
   setShowBookingForm,
   setSelectedSlotId,
-  setPriorExaminationImg,
+  setPriorExaminationImgUrl,
   setIsShowRestoreSuggestion,
   resetBookingState,
   setServices,
@@ -209,12 +202,12 @@ export const {
   setDoctorId,
   setPatients,
   addPatient,
-  setAddingPatient,
+  setIsAddingPatient,
   setSelectedPatient,
   setCurrentStep,
   setIsSubmitting,
   setShowConfirmModal,
-  clearPriorExaminationImg,
+  clearPriorExaminationImgUrl,
 } = bookingSlice.actions;
 
 export const symptoms = (state: RootState) => state.booking.symptoms;
@@ -226,7 +219,8 @@ export const currentStep = (state: RootState) => state.booking.currentStep;
 export const patients = (state: RootState) => state.booking.patients;
 export const selectedPatient = (state: RootState) =>
   state.booking.selectedPatient;
-export const addingPatient = (state: RootState) => state.booking.addingPatient;
+export const isAddingPatient = (state: RootState) =>
+  state.booking.isAddingPatient;
 export const suggestionData = (state: RootState) =>
   state.booking.suggestionData;
 export const services = (state: RootState) => state.booking.services;
@@ -244,7 +238,7 @@ export const selectedSlotId = (state: RootState) =>
 export const showRestoreSuggestion = (state: RootState) =>
   state.booking.isShowRestoreSuggestion;
 export const priorExaminationImg = (state: RootState) =>
-  state.booking.priorExaminationImg;
+  state.booking.priorExaminationImgUrl;
 // export const schedules = (state: RootState) => state.booking.schedules;
 export const isSubmitting = (state: RootState) => state.booking.isSubmitting;
 export const isShowConfirmModal = (state: RootState) =>

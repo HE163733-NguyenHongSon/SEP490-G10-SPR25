@@ -9,51 +9,42 @@ const FileUpload: React.FC = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Load file từ localStorage khi load component
   useEffect(() => {
-    // Kiểm tra nếu có file đã được lưu trong localStorage
-    const storedFile = localStorage.getItem("uploadedFileBase64");
-    const storedFileName = localStorage.getItem("uploadedFileName");
+    const base64 = localStorage.getItem("uploadedFileBase64");
+    const name = localStorage.getItem("uploadedFileName");
 
-    if (storedFile && storedFileName) {
-      setPreview(storedFile);
-      setSelectedFile(new File([new Blob([storedFile])], storedFileName, { type: 'image/jpeg' }));
+    if (base64 && name) {
+      setPreview(base64);
     }
   }, []);
 
+  // Khi file được chọn => tạo preview và lưu localStorage
   useEffect(() => {
     if (selectedFile) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const base64File = reader.result as string;
-        // Lưu file vào localStorage
-        localStorage.setItem("uploadedFileBase64", base64File);
+        const base64 = reader.result as string;
+        setPreview(base64);
+        localStorage.setItem("uploadedFileBase64", base64);
         localStorage.setItem("uploadedFileName", selectedFile.name);
-        setPreview(base64File);
       };
       reader.readAsDataURL(selectedFile);
     } else {
-      setPreview(null);  // Xóa preview khi không còn file
+      setPreview(null);
       localStorage.removeItem("uploadedFileBase64");
       localStorage.removeItem("uploadedFileName");
     }
   }, [selectedFile]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setSelectedFile(file);
   };
 
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleRemoveImage = () => {
+  const handleRemove = () => {
     setSelectedFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""; 
-    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -71,12 +62,12 @@ const FileUpload: React.FC = () => {
           <Button
             icon={<UploadOutlined />}
             type="dashed"
-            onClick={handleUploadClick}
+            onClick={() => fileInputRef.current?.click()}
           >
             Tải lên file
           </Button>
         ) : (
-          <div style={{ marginTop: 10 }}>
+          <>
             {preview && (
               <Image
                 src={preview}
@@ -86,15 +77,10 @@ const FileUpload: React.FC = () => {
               />
             )}
             <br />
-            <Button
-              type="primary"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={handleRemoveImage}
-            >
+            <Button danger icon={<DeleteOutlined />} onClick={handleRemove}>
               Xóa file
             </Button>
-          </div>
+          </>
         )}
       </div>
     </div>

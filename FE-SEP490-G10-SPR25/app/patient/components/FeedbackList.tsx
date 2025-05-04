@@ -83,7 +83,7 @@ const FeedbackList: React.FC<FeedbackListProps> = ({
               </button>
             )}
             <p className="font-light text-gray-500 mt-2">
-              Nhận xét về "{feedback.targetName}"
+              Nhận xét về &quot;{feedback.targetName}&quot;
             </p>
           </div>
         </div>

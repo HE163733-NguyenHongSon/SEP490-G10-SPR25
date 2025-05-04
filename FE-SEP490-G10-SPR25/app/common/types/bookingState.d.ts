@@ -20,6 +20,7 @@ interface IBookingState {
   selectedTime: string;
   selectedSlotId: string;
   isShowRestoreSuggestion: boolean;
+  isUseSuggestion:boolean;
   priorExaminationImgUrl: string | null;
   isSubmitting: boolean;
   isShowConfirmModal: boolean;

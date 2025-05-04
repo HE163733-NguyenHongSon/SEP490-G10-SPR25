@@ -201,9 +201,9 @@ const DatetimeSelector = () => {
         </div>
       )}
 
-      {availableDates.length === 0 && !isLoading && (
+      {/* {availableDates.length === 0 && !isLoading && (
         <div className="text-sm text-red-500">Không có lịch khả dụng.</div>
-      )}
+      )} */}
     </div>
   );
 };

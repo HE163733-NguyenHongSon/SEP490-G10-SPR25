@@ -23,8 +23,13 @@ import { RootState } from "../../store";
 const BookingInfor = () => {
   const dispatch = useDispatch();
 
-  const { symptoms, isLoading, selectedPatient, isShowRestoreSuggestion } =
-    useSelector((state: RootState) => state.booking);
+  const {
+    symptoms,
+    isLoading,
+    selectedPatient,
+    isShowRestoreSuggestion,
+    isUseSuggestion,
+  } = useSelector((state: RootState) => state.booking);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,8 +39,10 @@ const BookingInfor = () => {
           reservationService.getBookingSuggestion(symptoms),
           specialtyService.getSpecialtyList(),
         ]);
+        console.log("Fetching data...", symptoms,suggestion);
         dispatch(setSpecialties(specialtyList));
         dispatch(setSuggestionData(suggestion));
+
         if (suggestion && !isShowRestoreSuggestion) {
           dispatch(setSpecialtyId(suggestion?.specialty.specialtyId || ""));
         }
@@ -48,10 +55,22 @@ const BookingInfor = () => {
       }
     };
 
-    if (selectedPatient?.userId && symptoms.length > 0) {
-      fetchData();
+    const fetchSpecialtyList = async () => {
+      dispatch(setIsLoading(true));
+      try {
+        const specialtyList = await specialtyService.getSpecialtyList();
+        dispatch(setSpecialties(specialtyList));
+      } catch (error) {
+        console.error("Error fetching specialties:", error);
+      } finally {
+        dispatch(setIsLoading(false));
+      }
+    };
+
+    if (selectedPatient?.userId) {
+      isUseSuggestion ? fetchData() : fetchSpecialtyList();
     }
-  }, [symptoms, dispatch]);
+  }, [symptoms, dispatch, selectedPatient?.userId]);
 
   return (
     <div className="relative border-b border-gray-200 py-6 md:py-8 px-2 md:px-4 rounded-lg bg-white shadow-sm transition-all duration-300">

@@ -33,7 +33,7 @@ const SpecialtySelector = () => {
   ) => {
     if (selectedOption) {
       const selectedId = selectedOption.value;     
-      dispatch(setSpecialtyId(selectedId));
+      dispatch(setSpecialtyId(selectedId));  
       dispatch(setServiceId(""));
       dispatch(setDoctorId(""));
       dispatch(setSelectedDate(""));
@@ -59,7 +59,7 @@ const SpecialtySelector = () => {
           <StethoscopeIcon className="w-4 h-4 mr-2" />
           Chuyên khoa
         </label>
-        {isShowRestoreSuggestion && (
+        {suggestionData &&  isShowRestoreSuggestion && (
           <button
             onClick={handleRestoreSuggestion}
             className="text-xs text-cyan-600 hover:text-cyan-700 flex items-center"

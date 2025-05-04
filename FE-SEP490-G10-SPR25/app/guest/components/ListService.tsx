@@ -10,9 +10,10 @@ import RatingStars from "@/common/components/RatingStars";
 interface ListServiceProps {
   items: IService[];
   displayView?: string;
+  isBooking?: boolean;
 }
 
-const ListService = ({ items, displayView }: ListServiceProps) => {
+const ListService = ({ items, displayView,isBooking }: ListServiceProps) => {
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   const responsive = {
@@ -26,10 +27,7 @@ const ListService = ({ items, displayView }: ListServiceProps) => {
   };
 
   const ServiceCard = ({ service }: { service: IService }) => (
-    <Link
-      href={`/patient/service-detail/${service.serviceId}`}
-      className="border border-gray-300 rounded-lg shadow-sm p-4 flex flex-col h-full min-h-[300px]"
-    >
+    <div className="border border-gray-300 rounded-lg shadow-sm p-4 flex flex-col h-full min-h-[300px]">
       <div className="relative h-40 w-full mb-3 overflow-hidden group rounded-md">
         <Image
           src={`${imgUrl}/${service.image}`}
@@ -58,7 +56,25 @@ const ListService = ({ items, displayView }: ListServiceProps) => {
         <p className="font-semibold">{service.price.toLocaleString()} VNĐ</p>
         {service.estimatedTime && <p>⏱ {service.estimatedTime}</p>}
       </div>
-    </Link>
+
+      <div className="mt-4">
+        {isBooking ? (
+          <Link
+            href={`/patient/booking/${service.serviceId}`}
+            className="inline-block w-full text-center bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-md transition"
+          >
+            Đặt dịch vụ
+          </Link>
+        ) : (
+          <Link
+            href={`/patient/service-detail/${service.serviceId}`}
+            className="inline-block w-full text-center bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-md transition"
+          >
+            Xem chi tiết
+          </Link>
+        )}
+      </div>
+    </div>
   );
 
   if (displayView === "slider") {

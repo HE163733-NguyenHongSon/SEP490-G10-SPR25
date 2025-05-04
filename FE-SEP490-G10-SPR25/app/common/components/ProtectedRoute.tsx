@@ -34,18 +34,28 @@ export const ProtectedRoute = ({
       try {
         setIsLoading(true);
 
-        // Public patient routes check
+        // Redirect non-logged-in users from /patient/ to /guest/
         if (
           window.location.pathname.startsWith("/patient") &&
           !window.location.pathname.includes("/appointment-booking") &&
           !window.location.pathname.includes("/person")
         ) {
+          const isUserAuthenticated = isAuthenticated();
+          
+          if (!isUserAuthenticated) {
+            // Redirect to equivalent guest page
+            const guestPath = window.location.pathname.replace("/patient", "/guest");
+            const queryString = window.location.search || '';
+            window.location.href = guestPath + queryString;
+            return;
+          }
+          
           setIsAllowed(true);
           setIsLoading(false);
           return;
         }
 
-        // Authentication check
+        // Authentication check for protected routes
         const isUserAuthenticated = isAuthenticated();
 
         if (!isUserAuthenticated) {

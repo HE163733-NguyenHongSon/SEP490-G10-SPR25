@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import moment from "moment";
 import ReactDOMServer from "react-dom/server";
@@ -9,8 +9,10 @@ import reservationService from "@/common/services/reservationService";
 import { Modal } from "./Modal";
 import CancelReservationMessage from "./CancelReservationMessage";
 import { emailService } from "@/common/services/emailService";
+import { paymentService } from "@/common/services/paymentService";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
+import { useUser } from "@/common/contexts/UserContext";
 interface ReservationListProps {
   items: IReservation[];
   onCancelSuccess: (reservationId: string) => void;
@@ -25,57 +27,37 @@ const ReservationList: React.FC<ReservationListProps> = ({
   const [showModal, setShowModal] = useState(false);
   const [reservationToCancel, setReservationToCancel] =
     useState<IReservation | null>();
-  const [cancelledCountThisMonth, setCancelledCountThisMonth] = useState<
-    number | null
-  >(null);
+
   const [cancellationReason, setCancellationReason] = useState("");
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
-
-  const canCancel = async (reservation: IReservation): Promise<boolean> => {
-    const { count } =
-      await reservationService.getCancelledReservationsThisMonth(
-        reservation.patient.userId
+  const [cancelInfo, setCancelInfo] = useState<Record<string, boolean>>({});
+  const [cancelCountThisMonth, setCancelCountThisMonth] = useState<number>(0);
+  const { user } = useUser();
+  useEffect(() => {
+    const checkAllCancelConditions = async () => {
+      const { count } = await reservationService.getCancelCountThisMonth(
+        user?.userId
       );
-    setCancelledCountThisMonth(count);
-    if (count >= 3 || reservation.status !== "Đang chờ") return false;
+      console.log("Cancel count this month:", count);
+      setCancelCountThisMonth(count);
+      const updatedMap: Record<string, boolean> = {};
 
-    const now = moment();
+      for (const reservation of items) {
+        const now = moment();
+        const created = moment(reservation.createdDate);
 
-    // Gộp appointmentDate + startTime đúng định dạng
-    const appointmentTime = moment(
-      `${moment(reservation.appointmentDate).format("YYYY-MM-DD")} ${
-        reservation.doctorSchedule.slotStartTime
-      }`,
-      "YYYY-MM-DD hh:mm A"
-    );
+        const canCancel =
+          count < 3 &&
+          reservation.status === "Đang chờ" &&
+          now.diff(created, "hours", true) <= 2;
 
-    const reservationTime = moment(
-      reservation.createdDate,
-      "DD/MM/YYYY HH:mm:ss"
-    );
+        updatedMap[reservation.reservationId] = canCancel;
+      }
+      setCancelInfo(updatedMap);
+    };
 
-    const hoursUntilAppointment = appointmentTime.diff(now, "hours", true);
-    const hoursSinceReservation = now.diff(reservationTime, "hours", true);
-
-    return (
-      hoursUntilAppointment >= 24 ||
-      (hoursUntilAppointment < 24 && hoursSinceReservation <= 1)
-    );
-  };
-  //set reservation được hủy
-  const handleCancel = async (reservation: IReservation) => {
-    const isCancelable = await canCancel(reservation);
-
-    if (!isCancelable) {
-      onCancelFailed?.(
-        new Error("Hủy thất bại vì bạn đã hủy quá 3 lần trên tháng !")
-      );
-      return;
-    }
-
-    setReservationToCancel(reservation);
-    setShowModal(true);
-  };
+    checkAllCancelConditions();
+  }, [items, reservationToCancel?.patient.userId]);
 
   const handleModalConfirm = async (reason: string) => {
     if (!reservationToCancel) return;
@@ -88,11 +70,15 @@ const ReservationList: React.FC<ReservationListProps> = ({
         updatedByUserId: reservationToCancel.patient.userId || "",
         updatedDate: new Date().toISOString(),
       });
-      reservationToCancel.cancellationReason = reason;
+      await paymentService.updatePaymentStatusByReservationId(
+        Number(reservationToCancel.reservationId),
+        "Đang xử lý"
+      );
+      // reservationToCancel.cancellationReason = reason;
       const htmlMessage = ReactDOMServer.renderToStaticMarkup(
         <CancelReservationMessage
           reservation={reservationToCancel}
-          cancelledCountThisMonth={cancelledCountThisMonth}
+          cancelledCountThisMonth={cancelCountThisMonth}
         />
       );
       await emailService.sendEmail({
@@ -127,7 +113,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
                   "Mã đặt lịch",
                   "Thông tin đặt lịch",
                   "Lý do đặt lịch",
-                  "Ngày cập nhật",
+                  "Ngày tạo",
                   items.some((item) => item.status === "Đã hủy")
                     ? "Lý do hủy"
                     : "Ảnh phác đồ điều trị trước",
@@ -214,17 +200,32 @@ const ReservationList: React.FC<ReservationListProps> = ({
                     {reservation.reason}
                   </td>
                   <td className="border border-gray-300 px-4">
-                    {new Date(reservation.updatedDate).toLocaleDateString(
-                      "vi-VN"
-                    )}
+                    {(() => {
+                      const date = new Date(reservation.createdDate);
+                      const day = date.getDate().toString().padStart(2, "0");
+                      const month = (date.getMonth() + 1)
+                        .toString()
+                        .padStart(2, "0");
+                      const year = date.getFullYear();
+                      const hour = date.getHours();
+                      const minute = date
+                        .getMinutes()
+                        .toString()
+                        .padStart(2, "0");
+                      const period =
+                        hour < 12 ? "sáng" : hour < 18 ? "chiều" : "tối";
+                      const hourStr = hour.toString().padStart(2, "0");
+                      return `${day}-${month}-${year} ${hourStr}:${minute} ${period}`;
+                    })()}
                   </td>
+
                   <td className="border border-gray-300 px-4 ">
                     <div className=" overflow-hidden rounded-md  flex items-center justify-center">
                       {reservation.status === "Đã hủy" ? (
                         <div className="flex items-center justify-center w-full h-full">
                           <span className="text-sm text-gray-700 text-center px-2">
                             {reservation.cancellationReason ||
-                              "Không có lý do hủy"}
+                              "Không có lý do hủy"}    
                           </span>
                         </div>
                       ) : reservation.priorExaminationImg ? (
@@ -257,8 +258,8 @@ const ReservationList: React.FC<ReservationListProps> = ({
                     </div>
                   </td>
 
-                  <td className="border border-gray-300 px-4 text-center">
-                    {reservation.doctorSchedule.isPrepayment ? (
+                  <td className="border border-gray-300 px-4 text-center   ">
+                    {reservation.paymentStatus === "Đã thanh toán" ? (
                       <span className="inline-flex items-center text-green-600 font-medium">
                         <svg
                           className="w-5 h-5 mr-1 text-green-500"
@@ -275,10 +276,10 @@ const ReservationList: React.FC<ReservationListProps> = ({
                         </svg>
                         Đã thanh toán
                       </span>
-                    ) : (
-                      <span className="inline-flex items-center text-red-500 font-medium">
+                    ) : reservation.paymentStatus === "Đang xử lý" ? (
+                      <span className="inline-flex items-center text-yellow-500 font-medium">
                         <svg
-                          className="w-5 h-5 mr-1 text-red-400"
+                          className="w-5 h-5 mr-1 text-yellow-400"
                           fill="none"
                           stroke="currentColor"
                           strokeWidth={2}
@@ -287,27 +288,50 @@ const ReservationList: React.FC<ReservationListProps> = ({
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            d="M6 18L18 6M6 6l12 12"
+                            d="M12 8v4l3 3"
+                          />
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="2"
                           />
                         </svg>
-                        Chưa thanh toán
+                        Đang xử lý
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center text-blue-500 font-medium">
+                        <svg
+                          className="w-5 h-5 mr-1 text-blue-400"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M4 6h16M4 12h16M4 18h16"
+                          />
+                        </svg>
+                        Đã hoàn tiền
                       </span>
                     )}
                   </td>
 
                   <td className="border border-gray-300 px-4">
                     <button
-                      onClick={() => handleCancel(reservation)}
+                      onClick={() => {
+                        setReservationToCancel(reservation);
+                        setShowModal(true);
+                      }}
                       className={`px-4 py-1 rounded-full transition-all duration-200 ${
-                        reservation.status !== "Đang chờ" ||
-                        reservation.doctorSchedule.isPrepayment
+                        !cancelInfo[reservation.reservationId]
                           ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                           : "bg-white text-black border border-gray-300 hover:bg-cyan-600 hover:text-white"
                       }`}
-                      disabled={
-                        reservation.status !== "Đang chờ" ||
-                        reservation.doctorSchedule.isPrepayment
-                      }
+                      disabled={!cancelInfo[reservation.reservationId]}
                     >
                       Hủy
                     </button>
@@ -319,7 +343,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
 
           {showModal && reservationToCancel && (
             <Modal
-              message="Nhập lý do hủy lịch hẹn"
+              message="Nhập lý do hủy lịch hẹn. "
               onConfirm={(reason) => handleModalConfirm(reason)}
               onCancel={handleModalCancel}
               onChangeReason={setCancellationReason}

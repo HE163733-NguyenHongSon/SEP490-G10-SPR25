@@ -18,16 +18,16 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             _storageService = storageService;
         }
 
-        [HttpPost("multi")]
+        [HttpPost("UploadFiles")]
         [RequestSizeLimit(200_000_000)]
-        public async Task<IActionResult> UploadFiles(List<IFormFile> files)
+        public async Task<IActionResult> UploadFiles([FromForm] List<IFormFile> files)
         {
             if (files == null || !files.Any())
                 return BadRequest("No files uploaded");
 
             var results = await _storageService.UploadFilesAsync(files);
 
-            return Ok(results);
+            return Ok(results); 
         }
 
 

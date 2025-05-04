@@ -21,5 +21,11 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<bool> IsFirstTimePatient(int patientId);
         Task<List<MedicalRecordDTO>> GetPatientPreviousMedicalRecords(int patientId);
         Task<IEnumerable<DoctorDTO>> GetDoctorListByServiceId(int serviceId);
+        
+        // New method to get all medical records for a doctor
+        Task<List<MedicalRecordDTO>> GetDoctorMedicalRecords(int doctorId);
+        
+        // New method to get medical records for a specific patient seen by a doctor
+        Task<List<MedicalRecordDTO>> GetMedicalRecordsByPatientAndDoctorId(int doctorId, int patientId);
     }
 }

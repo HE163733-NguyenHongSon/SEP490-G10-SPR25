@@ -12,7 +12,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         private IReservationService reservationService;
         private IStorageService storageService;
 
-        public ReservationsController(IReservationService reservationService, IStorageService storageService)
+        public ReservationsController(IReservationService reservationService, IStorageService storageService) 
         {
             this.reservationService = reservationService;
             this.storageService = storageService;
@@ -24,39 +24,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
         {
             return Ok(await reservationService.GetListReservation());
         }
-        [HttpPost("AddReservation")]
-        public async Task<IActionResult> AddReservation([FromForm] AddedReservationDTO reservationDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var reservation = await reservationService.AddReservation(reservationDto);
-
-            if (reservationDto.PriorExaminationImg != null)
-            {
-                var files = new List<IFormFile> { reservationDto.PriorExaminationImg };
-
-                Func<IFormFile, string> renameFunc = (file) =>
-                {
-                    var fileExt = Path.GetExtension(file.FileName).ToLowerInvariant();
-                    return $"lichhen{reservation.ReservationId}_benhnhan{reservation.PatientId}_phacdotruoc{fileExt}";
-                };
-
-                var uploadResults = await storageService.UploadFilesAsync(files, renameFunc);
-
-                if (uploadResults.Any(r => r.StatusCode != 200))
-                {
-                    return BadRequest("File upload failed.");
-                }
-
-
-                await reservationService.UpdatePriorExaminationImg(reservation.ReservationId, uploadResults.FirstOrDefault()?.FileName);
-            }
-
-            return Ok(true);
-        }
+       
 
         [HttpGet("{patientId}/{status}/{sortBy}")]
         public async Task<IActionResult> GetListReservationByFilter(int patientId, string? status = "Đang chờ", string? sortBy = "Giá dịch vụ tăng dần")
@@ -124,6 +92,24 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpPut("UpdateReservationStatusList")]
+        public async Task<IActionResult> UpdateReservationStatusList([FromBody] List<ReservationStatusDTO> reservations)
+        {
+            if (reservations == null || !reservations.Any())
+            {
+                return BadRequest("Danh sách không được để trống.");
+            }
+
+            try
+            {
+                var result = await reservationService.UpdateReservationStatusList(reservations);
+                return Ok(result);
+            }
+            catch (Exception ex)   
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         [HttpGet("ViewReason{reservationId}")]
         [EnableQuery]
@@ -157,5 +143,43 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
             return Ok(reservations);
         }
+
+        [HttpGet("UpcomingReservationsAndMarkReminded")]
+        public async Task<IActionResult> GetUpcomingReservationsAndMarkReminded()
+        {
+            try
+            {
+                var result = await reservationService.GetUpcomingReservationsAndMarkReminded();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Đã xảy ra lỗi trong quá trình xử lý!");
+            }
+        }
+
+
+
+        [HttpPut("ReplaceDoctor")]
+        [EnableQuery]
+        public async Task<IActionResult> ReplaceDoctor(int reservationId, int doctorScheduleId)
+        {
+            try
+            {
+                var reservation = await reservationService.GetReservationById(reservationId);
+
+                if (reservation == null)
+                {
+                    return NotFound($"Cuộc hẹn với ID={reservationId} không tồn tại!");
+                }
+                var isTrue = await reservationService.ReplaceDoctor(reservationId, doctorScheduleId);
+                return Ok(isTrue);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }

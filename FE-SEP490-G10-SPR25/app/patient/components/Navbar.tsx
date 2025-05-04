@@ -97,7 +97,7 @@ const Navbar: React.FC = () => {
       onClose: () => {
         // Chuyển hướng sau khi toast đóng hoặc sau thời gian ngắn
         setTimeout(() => {
-          window.location.href = "/auth/login";
+          window.location.href = "/common/auth/login";
         }, 1000); // Đợi 1 giây sau thông báo để người dùng thấy thông báo
       },
     });
@@ -214,13 +214,13 @@ const Navbar: React.FC = () => {
           ) : (
             <div className="flex items-center gap-4">
               <Link
-                href="/auth/login"
+                href="/common/auth/login"
                 className="text-white hover:text-cyan-400 font-medium transition-colors duration-200"
               >
                 Đăng nhập
               </Link>
               <Link
-                href="/auth/register"
+                href="/common/auth/register"
                 className="bg-cyan-500 hover:bg-cyan-600 px-4 py-2 rounded-lg text-white font-medium transition-colors duration-200"
               >
                 Đăng ký
@@ -314,14 +314,14 @@ const Navbar: React.FC = () => {
             ) : (
               <div className="px-4 flex flex-col space-y-3">
                 <Link
-                  href="/auth/login"
+                  href="/common/auth/login"
                   className="w-full px-3 py-2 rounded-md text-base font-medium text-center text-white bg-cyan-600 hover:bg-cyan-700"
                   onClick={() => setIsShowMobileMenu(false)}
                 >
                   Đăng nhập
                 </Link>
                 <Link
-                  href="/auth/register"
+                  href="/common/auth/register"
                   className="w-full px-3 py-2 rounded-md text-base font-medium text-center text-cyan-600 border border-cyan-600 hover:bg-cyan-50"
                   onClick={() => setIsShowMobileMenu(false)}
                 >

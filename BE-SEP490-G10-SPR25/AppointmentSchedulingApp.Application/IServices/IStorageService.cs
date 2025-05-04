@@ -13,6 +13,6 @@ namespace AppointmentSchedulingApp.Application.IServices
 
     {
         Task<S3DTO> UploadFileAsync(S3 s3);
-        Task<List<S3DTO>> UploadFilesAsync(List<IFormFile> files, Func<IFormFile, string> renameFunc = null);
+        Task<List<S3DTO>> UploadFilesAsync(List<IFormFile> files);
     }
 }

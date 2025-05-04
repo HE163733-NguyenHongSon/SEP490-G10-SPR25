@@ -8,14 +8,16 @@ import { LoadingTable } from "@/common/components/LoadingTable";
 
 interface TabsGroupProps<T> {
   tabs: ITabItem[];
-  RenderComponent: React.ComponentType<{ items: T[] }>;
+  RenderComponent: React.ComponentType<{ items: T[], displayView?: string, userType?: 'guest' | 'patient' }>;
   displayView?: string;
+  userType?: 'guest' | 'patient';
 }
 
 export const TabsGroup = <T,>({
   tabs,
   RenderComponent,
   displayView,
+  userType = 'patient',
 }: TabsGroupProps<T>) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -60,6 +62,7 @@ export const TabsGroup = <T,>({
               <RenderComponent
                 items={data || []}
                 {...(displayView ? { displayView } : {})}
+                userType={userType}
               />
             )}
           </div>

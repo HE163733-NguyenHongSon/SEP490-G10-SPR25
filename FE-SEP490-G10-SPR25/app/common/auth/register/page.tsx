@@ -22,16 +22,16 @@ interface RegistrationData {
 export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState<RegistrationData>({
-    name: "",
-    userName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    phoneNumber: "",
-    gender: "male",
-    dob: "",
-    address: "",
-    citizenId: "",
+    name: '',
+    userName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    phoneNumber: '',
+    gender: 'nam',
+    dob: '',
+    address: '',
+    citizenId: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -122,7 +122,7 @@ export default function RegisterPage() {
     if (!formData.citizenId) {
       errors.citizenId = "Vui lòng nhập số CCCD/CMND";
     } else if (!/^[0-9]{9}([0-9]{3})?$/.test(formData.citizenId)) {
-      errors.citizenId = "Số CCCD/CMND không hợp lệ (9 hoặc 12 số)";
+      errors.citizenId = 'Số CCCD/CMND không hợp lệ (9 hoặc 12 số - không bắt đầu bằng "0")';
     }
 
     setFieldErrors(errors);
@@ -163,7 +163,7 @@ export default function RegisterPage() {
         window.scrollTo(0, 0);
         // Chuyển hướng đến trang đăng nhập sau 2 giây
         setTimeout(() => {
-          router.push("/auth/login");
+          router.push("/common/auth/login");
         }, 2000);
       } else {
         setError(
@@ -238,12 +238,7 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Họ và tên *
-                </label>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Họ và tên <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   id="name"
@@ -264,12 +259,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label
-                  htmlFor="userName"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Tên đăng nhập *
-                </label>
+                <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-1">Tên đăng nhập <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   id="userName"
@@ -291,12 +281,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Email *
-              </label>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email <span className="text-red-500">*</span></label>
               <input
                 type="email"
                 id="email"
@@ -316,12 +301,7 @@ export default function RegisterPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Mật khẩu *
-                </label>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu <span className="text-red-500">*</span></label>
                 <input
                   type="password"
                   id="password"
@@ -343,12 +323,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Xác nhận mật khẩu *
-                </label>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">Xác nhận mật khẩu <span className="text-red-500">*</span></label>
                 <input
                   type="password"
                   id="confirmPassword"
@@ -373,12 +348,7 @@ export default function RegisterPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label
-                  htmlFor="phoneNumber"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Số điện thoại *
-                </label>
+                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại <span className="text-red-500">*</span></label>
                 <input
                   type="tel"
                   id="phoneNumber"
@@ -401,12 +371,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label
-                  htmlFor="citizenId"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  CCCD/CMND *
-                </label>
+                <label htmlFor="citizenId" className="block text-sm font-medium text-gray-700 mb-1">CCCD/CMND <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   id="citizenId"
@@ -429,12 +394,7 @@ export default function RegisterPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label
-                  htmlFor="gender"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Giới tính *
-                </label>
+                <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">Giới tính <span className="text-red-500">*</span></label>
                 <select
                   id="gender"
                   name="gender"
@@ -445,8 +405,8 @@ export default function RegisterPage() {
                   } rounded-md`}
                   required
                 >
-                  <option value="male">Nam</option>
-                  <option value="female">Nữ</option>
+                  <option value="nam">Nam</option>
+                  <option value="nữ">Nữ</option>
                 </select>
                 {fieldErrors.gender && (
                   <p className="mt-1 text-sm text-red-600">
@@ -456,12 +416,7 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label
-                  htmlFor="dob"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Ngày sinh *
-                </label>
+                <label htmlFor="dob" className="block text-sm font-medium text-gray-700 mb-1">Ngày sinh <span className="text-red-500">*</span></label>
                 <input
                   type="date"
                   id="dob"
@@ -480,12 +435,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label
-                htmlFor="address"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Địa chỉ *
-              </label>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">Địa chỉ <span className="text-red-500">*</span></label>
               <textarea
                 id="address"
                 name="address"
@@ -507,7 +457,7 @@ export default function RegisterPage() {
 
             <div className="flex items-center justify-between mt-6">
               <Link
-                href="/auth/login"
+                href="/common/auth/login"
                 className="text-sm text-blue-600 hover:underline"
               >
                 Đã có tài khoản? Đăng nhập

@@ -1,43 +1,50 @@
 import React, { useState, useEffect, useRef } from "react";
 import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Button, Image, Typography } from "antd";
-import { useFileContext } from "../contexts/FileContext";
 
 const { Text } = Typography;
 
 const FileUpload: React.FC = () => {
-  const { selectedFile, setSelectedFile } = useFileContext();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Load file từ localStorage khi load component
+  useEffect(() => {
+    const base64 = localStorage.getItem("uploadedFileBase64");
+    const name = localStorage.getItem("uploadedFileName");
+
+    if (base64 && name) {
+      setPreview(base64);
+    }
+  }, []);
+
+  // Khi file được chọn => tạo preview và lưu localStorage
   useEffect(() => {
     if (selectedFile) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result as string);
+        const base64 = reader.result as string;
+        setPreview(base64);
+        localStorage.setItem("uploadedFileBase64", base64);
+        localStorage.setItem("uploadedFileName", selectedFile.name);
       };
       reader.readAsDataURL(selectedFile);
     } else {
       setPreview(null);
+      localStorage.removeItem("uploadedFileBase64");
+      localStorage.removeItem("uploadedFileName");
     }
   }, [selectedFile]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setSelectedFile(file);
   };
 
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleRemoveImage = () => {
+  const handleRemove = () => {
     setSelectedFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // ⭐ Reset input để chọn lại cùng file
-    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -55,12 +62,12 @@ const FileUpload: React.FC = () => {
           <Button
             icon={<UploadOutlined />}
             type="dashed"
-            onClick={handleUploadClick}
+            onClick={() => fileInputRef.current?.click()}
           >
             Tải lên file
           </Button>
         ) : (
-          <div style={{ marginTop: 10 }}>
+          <>
             {preview && (
               <Image
                 src={preview}
@@ -70,15 +77,10 @@ const FileUpload: React.FC = () => {
               />
             )}
             <br />
-            <Button
-              type="primary"
-              danger
-              icon={<DeleteOutlined />}
-              onClick={handleRemoveImage}
-            >
+            <Button danger icon={<DeleteOutlined />} onClick={handleRemove}>
               Xóa file
             </Button>
-          </div>
+          </>
         )}
       </div>
     </div>

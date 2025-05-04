@@ -21,41 +21,19 @@ namespace AppointmentSchedulingApp.Application.Services
             mapper = _mapper;
         }
 
-        public async Task<bool> AddPayment(PaymentDTO paymentDTO)
+
+        public async Task<bool> UpdatePaymentStatusByReservationId(int reservationId, string status)
         {
-            if (paymentDTO == null)
+            var payment = await unitOfWork.PaymentRepository.Get(x => x.ReservationId == reservationId);
+            if (payment != null)
             {
-                throw new ArgumentNullException(nameof(paymentDTO), "paymentDTO cannot be null");
-            }
-
-            var payment = new Payment
-            {
-                PayerId = paymentDTO.PayerId,
-                Amount = paymentDTO.Amount,
-                PaymentStatus = paymentDTO.PaymentStatus,
-                TransactionId = paymentDTO.TransactionId,
-                PaymentMethod = paymentDTO.PaymentMethod,
-            };
-
-            try
-            {
-                await unitOfWork.PaymentRepository.AddAsync(payment);
+                payment.PaymentStatus = status;
+                unitOfWork.PaymentRepository.Update(payment);
                 await unitOfWork.CommitAsync();
                 return true;
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred while adding checkout: {ex.Message}");
-                throw;
-            }
+            return false;
         }
-
-
-
-        //public List<PaymentDTO> GetPaymentList()
-        //{
-        //    return mapper.Map<List<CheckoutDTO>>(unitOfWork.CheckoutRepository.GetListCheckoutByInclude().ToList());
-        //}
     }
 }
 

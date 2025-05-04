@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import * as signalR from "@microsoft/signalr";
 import { getCurrentUser } from "@/common/services/authService";
 import { Trash2, Edit2, Reply, Send } from "lucide-react";
+import BackButton from "@/common/components/BackButton";
 
 interface PostSection {
   sectionTitle: string;
@@ -427,17 +428,32 @@ const PatientBlogDetailPage = () => {
     }
   };
 
-  if (loading) return <div className="text-center mt-10">Đang tải...</div>;
-  if (error || !post)
+  if (loading) {
     return (
-      <div className="text-center text-red-500 mt-10">
-        {error || "Không tìm thấy bài viết"}
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
+  }
+
+  if (error || !post) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <p className="text-red-500 text-xl mb-4">{error || "Bài viết không tồn tại"}</p>
+        <button
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+          onClick={() => window.location.href = "/patient/blogs"}
+        >
+          Quay lại danh sách bài viết
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-gray-100 min-h-screen py-10 px-4">
-      <div className="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg">
+    <div className="container mx-auto px-4 py-10 max-w-4xl pt-24 relative">
+      <BackButton fallbackPath="/patient/blogs" />
+      <article className="mt-8">
         <h1 className="text-3xl font-bold mb-3">{post.postTitle}</h1>
         <p className="text-gray-500 text-sm mb-4">
           {new Date(post.postCreatedDate).toLocaleDateString("vi-VN")} -{" "}
@@ -529,7 +545,7 @@ const PatientBlogDetailPage = () => {
             )}
           </div>
         </div>
-      </div>
+      </article>
     </div>
   );
 };

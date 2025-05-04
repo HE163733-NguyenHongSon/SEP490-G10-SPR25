@@ -14,5 +14,17 @@ namespace AppointmentSchedulingApp.Application.DTOs
         [Key]
         [JsonPropertyOrder(8)]
         public ReservationDTO Reservation { get; set; }
+        
+        [JsonPropertyOrder(12)]
+        public string PatientName { get; set; }
+        
+        [JsonPropertyOrder(13)]
+        public int? PatientId { get; set; }
+        
+        [JsonPropertyOrder(14)]
+        public string PatientGender { get; set; }
+        
+        [JsonPropertyOrder(15)]
+        public string PatientDob { get; set; }
     }
 }

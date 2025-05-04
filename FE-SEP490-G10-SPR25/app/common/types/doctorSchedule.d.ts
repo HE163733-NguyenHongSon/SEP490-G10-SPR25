@@ -3,6 +3,8 @@ interface IDoctorSchedule {
   doctorId: number;
   doctorName: string;
   doctorImage: string;
+  degree: string;
+  academicTitle: string;
   serviceId: number;
   serviceName: string;
   servicePrice: string;

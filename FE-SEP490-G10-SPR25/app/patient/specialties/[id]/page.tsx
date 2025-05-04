@@ -66,7 +66,7 @@ export default function SpecialtyDetails() {
               clipRule="evenodd"
             />
           </svg>
-          Back
+          Trở về
         </button>
 
         {loading ? (
@@ -91,7 +91,7 @@ export default function SpecialtyDetails() {
                     · Doctor take on
                   </Link> */}
                   <button className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
-                    Book appointment
+                    Đặt Lịch Khám
                   </button>
                 </div>
               </div>
@@ -115,19 +115,19 @@ export default function SpecialtyDetails() {
                 className={`pb-2 ${activeTab === 'overall' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
                 onClick={() => setActiveTab('overall')}
               >
-                Overall
+                Tổng quan
               </button>
               <button 
                 className={`pb-2 ${activeTab === 'doctors' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
                 onClick={() => setActiveTab('doctors')}
               >
-                Doctors
+                Bác sĩ
               </button>
               <button 
                 className={`pb-2 ${activeTab === 'services' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
                 onClick={() => setActiveTab('services')}
               >
-                Services
+                Dịch vụ
               </button>
             </div>
 
@@ -136,7 +136,7 @@ export default function SpecialtyDetails() {
               <div>
                 {/* Description */}
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold mb-2 text-black">Description</h2>
+                  <h2 className="text-lg font-semibold mb-2 text-black">Mô tả</h2>
                   <p className="text-gray-700">
                     {specialty?.specialtyDescription || "No description available."}
                   </p>
@@ -144,7 +144,7 @@ export default function SpecialtyDetails() {
 
                 {/* Devices */}
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold mb-2 text-black">Devices</h2>
+                  <h2 className="text-lg font-semibold mb-2 text-black">Thiết bị</h2>
                   {specialty?.devices && specialty.devices.length > 0 ? (
                     <ul className="text-gray-700 list-disc pl-5">
                       {specialty.devices.map((device, index) => (
@@ -152,28 +152,28 @@ export default function SpecialtyDetails() {
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-gray-700">No devices information available.</p>
+                    <p className="text-gray-700">Không có thông tin về thiết bị nào.</p>
                   )}
                 </div>
 
                 {/* Process - Hiển thị process từ dịch vụ đầu tiên nếu có */}
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold mb-2 text-black">Process</h2>
+                  <h2 className="text-lg font-semibold mb-2 text-black">Quá trình</h2>
                   {specialty?.services && specialty.services.length > 0 && specialty.services[0].process ? (
                     <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: specialty.services[0].process }} />
                   ) : (
                     <ul className="text-gray-700 list-disc pl-5">
-                      <li>Registration via hotline or hospital.</li>
+                      {/* <li>Registration via hotline or hospital.</li>
                       <li>Receive confirmation and prepare documents.</li>
                       <li>Consult with a doctor and perform necessary medical actions.</li>
-                      <li>Receive prescriptions and medications.</li>
+                      <li>Receive prescriptions and medications.</li> */}
                     </ul>
                   )}
                 </div>
 
                 {/* Relevant Services */}
                 <div>
-                  <h2 className="text-lg font-semibold mb-4 text-black">Relevant Services</h2>
+                  <h2 className="text-lg font-semibold mb-4 text-black">Dịch vụ liên quan</h2>
                   {specialty?.services && specialty.services.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                       {specialty.services.map((service) => (
@@ -199,7 +199,7 @@ export default function SpecialtyDetails() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-700">No services available for this specialty.</p>
+                    <p className="text-gray-700">Không có dịch vụ nào cho chuyên ngành này.</p>
                   )}
                 </div>
               </div>

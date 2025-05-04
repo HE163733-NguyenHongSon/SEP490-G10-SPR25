@@ -45,6 +45,7 @@ const Reservation = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [reservations, setReservations] = useState<IReservation[]>([]);
   const { user } = useUser();
+  
   useEffect(() => {
     const fetchReservations = async () => {
       const response = await axios.get(
@@ -73,9 +74,9 @@ const Reservation = () => {
       setReservations((prev) =>
         prev.filter((r) => r.reservationId !== record.reservationId)
       );
-      message.success(`Confirmed reservation ID: ${record.reservationId}`);
+      message.success(`Đã xác nhận lịch hẹn ID: ${record.reservationId}`);
     } catch (error) {
-      message.error("Failed to confirm reservation");
+      message.error("Xác nhận thất bại");
     }
   };
 
@@ -94,28 +95,28 @@ const Reservation = () => {
       setReservations((prev) =>
         prev.filter((r) => r.reservationId !== record.reservationId)
       );
-      message.warning(`Cancelled reservation ID: ${record.reservationId}`);
+      message.warning(`Đã hủy lịch hẹn ID: ${record.reservationId}`);
     } catch (error) {
-      message.error("Failed to cancel reservation");
+      message.error("Hủy lịch thất bại");
     }
   };
 
   const handleViewDetail = (record: IReservation) => {
     setSelectedReservation(record);
-    form.setFieldsValue(record); // Đặt giá trị vào form
+    form.setFieldsValue(record);
     setIsModalVisible(true);
   };
 
   const columns = [
     {
-      title: "ReservationId",
+      title: "Mã đặt lịch",
       dataIndex: "reservationId",
       key: "reservationId",
       sorter: (a: IReservation, b: IReservation) =>
         a.reservationId - b.reservationId,
     },
     {
-      title: "Name",
+      title: "Họ tên",
       key: "name",
       sorter: (a: IReservation, b: IReservation) =>
         a.patient.userName.localeCompare(b.patient.userName),
@@ -127,7 +128,7 @@ const Reservation = () => {
       render: (_: any, record: IReservation) => record.patient.citizenId,
     },
     {
-      title: "Phone number",
+      title: "Số điện thoại",
       key: "phone",
       render: (_: any, record: IReservation) => record.patient.phone,
     },
@@ -137,7 +138,7 @@ const Reservation = () => {
       render: (_: any, record: IReservation) => record.patient.email,
     },
     {
-      title: "Appointment date",
+      title: "Ngày hẹn",
       dataIndex: "appointmentDate",
       key: "appointmentDate",
       sorter: (a: IReservation, b: IReservation) =>
@@ -145,14 +146,14 @@ const Reservation = () => {
         new Date(b.appointmentDate).getTime(),
     },
     {
-      title: "Update date",
+      title: "Ngày cập nhật",
       dataIndex: "updatedDate",
       key: "updatedDate",
       sorter: (a: IReservation, b: IReservation) =>
         new Date(a.updatedDate).getTime() - new Date(b.updatedDate).getTime(),
     },
     {
-      title: "Action",
+      title: "Thao tác",
       key: "action",
       render: (_: any, record: IReservation) => (
         <Space size="middle">
@@ -161,13 +162,13 @@ const Reservation = () => {
             type="primary"
             size="small"
           >
-            Confirm
+            Xác nhận
           </Button>
           <Button onClick={() => handleCancel(record)} danger size="small">
-            Cancel
+            Hủy
           </Button>
           <Button onClick={() => handleViewDetail(record)} size="small">
-            Edit
+            Xem chi tiết
           </Button>
         </Space>
       ),
@@ -177,7 +178,7 @@ const Reservation = () => {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Reservation Management</h1>
+        <h1 className="text-2xl font-bold">Quản lý lịch hẹn</h1>
       </div>
 
       <Table
@@ -191,148 +192,76 @@ const Reservation = () => {
       />
 
       <Modal
-        title="Edit Reservation"
+        title="Chi tiết đặt lịch"
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
-        onOk={() => form.submit()}
+        footer={[
+          <Button key="close" onClick={() => setIsModalVisible(false)}>
+            Đóng
+          </Button>,
+        ]}
         width={700}
       >
-        <Form
-          layout="vertical"
-          form={form}
-          initialValues={selectedReservation || {}}
-          onFinish={(values) => {
-            console.log("Updated values:", values);
-            message.success("Reservation updated successfully!");
-            setIsModalVisible(false);
-          }}
-        >
+        <Form layout="vertical" form={form} initialValues={selectedReservation || {}}>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item
-                label="Name"
-                name={["patient", "userName"]}
-                rules={[{ required: true, message: "Please enter name" }]}
-              >
-                <Input />
+              <Form.Item label="Họ tên" name={["patient", "userName"]}>
+                <Input disabled />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                label="CCCD"
-                name={["patient", "citizenId"]}
-                rules={[{ required: true, message: "Please enter CCCD" }]}
-              >
-                <Input />
+              <Form.Item label="CCCD" name={["patient", "citizenId"]}>
+                <Input disabled />
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item
-                label="Phone Number"
-                name={["patient", "phone"]}
-                rules={[
-                  { required: true, message: "Please enter phone number" },
-                ]}
-              >
-                <Input />
+              <Form.Item label="Số điện thoại" name={["patient", "phone"]}>
+                <Input disabled />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                label="Email"
-                name={["patient", "email"]}
-                rules={[{ required: true, message: "Please enter email" }]}
-              >
-                <Input />
+              <Form.Item label="Email" name={["patient", "email"]}>
+                <Input disabled />
               </Form.Item>
             </Col>
           </Row>
 
-          <Form.Item
-            label="Doctor Name"
-            name={["doctorSchedule", "doctorName"]}
-            rules={[{ required: true, message: "Please enter doctor name" }]}
-          >
-            <Input />
+          <Form.Item label="Tên bác sĩ" name={["doctorSchedule", "doctorName"]}>
+            <Input disabled />
+          </Form.Item>
+          <Form.Item label="Bằng cấp" name={["doctorSchedule", "degree"]}>
+            <Input disabled />
+          </Form.Item>
+          <Form.Item label="Phòng khám" name={["doctorSchedule", "roomName"]}>
+            <Input disabled />
+          </Form.Item>
+          <Form.Item label="Địa chỉ" name={["doctorSchedule", "location"]}>
+            <Input disabled />
+          </Form.Item>
+          <Form.Item label="Dịch vụ" name={["doctorSchedule", "serviceName"]}>
+            <Input disabled />
+          </Form.Item>
+          <Form.Item label="Giá dịch vụ" name={["doctorSchedule", "servicePrice"]}>
+            <Input disabled />
+          </Form.Item>
+          <Form.Item label="Ngày trong tuần" name={["doctorSchedule", "dayOfWeek"]}>
+            <Input disabled />
           </Form.Item>
 
-          <Form.Item
-            label="Degree"
-            name={["doctorSchedule", "degree"]}
-            rules={[{ required: true, message: "Please enter degree" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Degree"
-            name={["doctorSchedule", "roomName"]}
-            rules={[{ required: true, message: "Please enter degree" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Degree"
-            name={["doctorSchedule", "location"]}
-            rules={[{ required: true, message: "Please enter degree" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Degree"
-            name={["doctorSchedule", "serviceName"]}
-            rules={[{ required: true, message: "Please enter degree" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Degree"
-            name={["doctorSchedule", "servicePrice"]}
-            rules={[{ required: true, message: "Please enter degree" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Degree"
-            name={["doctorSchedule", "dayOfWeek"]}
-            rules={[{ required: true, message: "Please enter degree" }]}
-          >
-            <Input />
-          </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item
-                label="Start Time"
-                name={["doctorSchedule", "slotStartTime"]}
-                rules={[{ required: true, message: "Please enter start time" }]}
-              >
-                <Input />
+              <Form.Item label="Giờ bắt đầu" name={["doctorSchedule", "slotStartTime"]}>
+                <Input disabled />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item
-                label="End Time"
-                name={["doctorSchedule", "slotEndTime"]}
-                rules={[{ required: true, message: "Please enter end time" }]}
-              >
-                <Input />
+              <Form.Item label="Giờ kết thúc" name={["doctorSchedule", "slotEndTime"]}>
+                <Input disabled />
               </Form.Item>
             </Col>
           </Row>
-
-          {/* <Form.Item>
-            <div className="flex justify-end">
-              <Button onClick={() => setIsModalVisible(false)} style={{ marginRight: 8 }}>
-                Cancel
-              </Button>
-              <Button type="primary" htmlType="submit">
-                Save Changes
-              </Button>
-            </div>
-          </Form.Item> */}
         </Form>
       </Modal>
     </div>

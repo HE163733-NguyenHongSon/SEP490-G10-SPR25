@@ -18,7 +18,7 @@ import {
   setSpecialtyId,
   setSuggestionData,
 } from "../redux/bookingSlice";
-import { RootState } from "../../store";
+import { RootState } from "@/store";
 
 const BookingInfor = () => {
   const dispatch = useDispatch();
@@ -68,7 +68,11 @@ const BookingInfor = () => {
     };
 
     if (selectedPatient?.userId) {
-      isUseSuggestion ? fetchData() : fetchSpecialtyList();
+      if (isUseSuggestion) {
+        fetchData();
+      } else {
+        fetchSpecialtyList();
+      }
     }
   }, [symptoms, dispatch, selectedPatient?.userId]);
 

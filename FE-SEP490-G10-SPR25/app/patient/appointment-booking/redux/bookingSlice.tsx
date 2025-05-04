@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../../store";
+import { RootState } from "@/store";
 import { addPatientAsync } from "./bookingThunks";
 import { StylesConfig } from "react-select";
 const customStyles: StylesConfig<{ value: string; label: string }, false> = {

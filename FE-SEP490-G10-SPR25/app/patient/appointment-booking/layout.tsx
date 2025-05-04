@@ -1,17 +1,11 @@
 "use client";
 import React from "react";
-import { assets } from "@/public/images/assets";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import Image from "next/image";
 
-const PersonLayout = ({
+const BookingLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const currentPath = usePathname();
-
   return (
     <div
       className=" min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center z-10 "
@@ -23,4 +17,4 @@ const PersonLayout = ({
   );
 };
 
-export default PersonLayout;
+export default BookingLayout;

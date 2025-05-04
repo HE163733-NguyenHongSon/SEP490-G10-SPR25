@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FileText, Edit } from "lucide-react";
-import { RootState } from "@/patient/store";
+import { RootState } from "@/store";
 import { setSymptoms } from "../redux/bookingSlice";
 import debounce from "lodash.debounce";
 

@@ -11,7 +11,7 @@ import {
   setSelectedTime,
 } from "../redux/bookingSlice";
 import { restoreSuggestion } from "../redux/bookingThunks";
-import type { RootState, AppDispatch } from "../../store";
+import type { RootState, AppDispatch } from "@/store";
 
 const SpecialtySelector = () => {
   const dispatch: AppDispatch = useDispatch();

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import Image from "next/image";
 import Link from "next/link";
-import BackButton from "@/common/components/BackButton";
 import { doctorService } from "@/common/services/doctorService";
 import CollapsibleSection from "@/common/components/CollapsibleSection";
 import { assets } from "@/public/images/assets";

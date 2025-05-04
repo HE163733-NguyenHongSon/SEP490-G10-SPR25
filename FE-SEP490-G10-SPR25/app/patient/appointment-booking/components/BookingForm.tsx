@@ -1,10 +1,10 @@
 // BookingForm.tsx
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { RootState } from "@/store";
 import { useEffect, useCallback, useState } from "react";
 import { emailService } from "@/common/services/emailService";
 import { Provider } from "react-redux";
-import { store } from "../../store";
+import { store } from "@/store";
 import SuccessReservationMessage from "./SuccessReservationMessage";
 import { useRouter } from "next/navigation";
 

@@ -12,7 +12,7 @@ import {
   setPatients,
   setShowBookingForm,
 } from "./redux/bookingSlice";
-import { RootState } from "../store";
+import { RootState } from "@/store";
 
 const SymptomPopup = () => {
   const { user } = useUser();

@@ -4,7 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useUser } from "@/common/contexts/UserContext";
 import { useDispatch, useSelector } from "react-redux";
 import { addPatientAsync } from "../redux/bookingThunks";
-import type { AppDispatch, RootState } from "../../store";
+import type { AppDispatch, RootState } from "@/store";
 
 import { setIsAddingPatient, setPatients } from "../redux/bookingSlice";
 import { format } from "date-fns";

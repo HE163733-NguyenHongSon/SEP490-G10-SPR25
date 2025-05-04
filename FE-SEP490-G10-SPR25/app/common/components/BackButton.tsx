@@ -14,9 +14,9 @@ export default function BackButton({ fallbackPath }: BackButtonProps) {
     // Quyết định đường dẫn quay lại dựa trên URL hiện tại
     if (fallbackPath) {
       router.push(fallbackPath);
-    } else if (pathname.includes('/guest/doctors/doctor-detail/')) {
+    } else if (pathname.includes('/guest/doctors')) {
       router.push('/guest/doctors');
-    } else if (pathname.includes('/patient/doctors/doctor-detail/')) {
+    } else if (pathname.includes('/patient/doctors')) {
       router.push('/patient/doctors');
     } else if (pathname.includes('/guest/services/service-detail/')) {
       router.push('/guest/services');

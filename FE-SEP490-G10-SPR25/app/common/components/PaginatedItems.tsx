@@ -6,9 +6,9 @@ import ReactPaginate from "react-paginate";
 interface PaginatedItemsProps<T> {
   itemsPerPage: number;
   items: T[];
-  RenderComponent: React.ComponentType<any>;
+  RenderComponent: React.ComponentType<{ items: T[]; displayView?: string }>;
   displayView?: string;
-  [key: string]: any; // Allow for additional props
+  [key: string]: unknown; // Allow for additional props
 }
 
 const PaginatedItems = <T,>({

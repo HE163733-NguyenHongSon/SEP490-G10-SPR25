@@ -151,17 +151,7 @@ namespace AppointmentSchedulingApp.Application.Services
 
         }
 
-        public async Task<Reservation> AddReservation(AddedReservationDTO reservationDTO)
-        {
-            var reservation = mapper.Map<Reservation>(reservationDTO);
 
-
-            await unitOfWork.ReservationRepository.AddAsync(reservation);
-
-            await unitOfWork.CommitAsync();
-
-            return reservation;
-        }
          public async Task<List<ReservationDTO>> GetUpcomingReservationsAndMarkReminded()
         {
             var now = DateTime.UtcNow.AddHours(7);

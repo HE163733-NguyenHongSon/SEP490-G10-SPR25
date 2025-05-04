@@ -7,8 +7,8 @@ import { TabsGroup } from "@/common/components/TabsGroup";
 import ListService from "@/patient/components/ListService";
 import FeedbackList from "@/patient/components/FeedbackList";
 import VideoPlayer from "../patient/components/VideoPlayer";
-
-const GuestHomePage = async () => {
+import SymptomPopup from "../patient/appointment-booking/SymptomPopup";
+const GuestHomePage = async ({ isGuest }: { isGuest: boolean }) => {
   const specialties = await specialtyService.getSpecialtyList();
 
   const feedbacks = await feedbackService.getFeedbackList();
@@ -51,14 +51,18 @@ const GuestHomePage = async () => {
             xem kết quả xét nghiệm trực tuyến mọi lúc, mọi nơi.
           </h2>
 
-          <div className="mt-10">
-            <a 
-              href="/common/auth/login" 
-              className="bg-cyan-500 hover:bg-cyan-600 px-6 py-3 rounded-lg text-white text-lg font-medium transition-colors duration-200"
-            >
-              Đăng nhập để đặt lịch khám
-            </a>
-          </div>
+          {isGuest === false ? (
+            <SymptomPopup />
+          ) : (
+            <div className="mt-10">
+              <a
+                href="/common/auth/login"
+                className="bg-cyan-500 hover:bg-cyan-600 px-6 py-3 rounded-lg text-white text-lg font-medium transition-colors duration-200"
+              >
+                Đăng nhập để đặt lịch khám
+              </a>
+            </div>
+          )}
 
           <VideoPlayer />
         </div>
@@ -116,4 +120,4 @@ const GuestHomePage = async () => {
   );
 };
 
-export default GuestHomePage; 
+export default GuestHomePage;

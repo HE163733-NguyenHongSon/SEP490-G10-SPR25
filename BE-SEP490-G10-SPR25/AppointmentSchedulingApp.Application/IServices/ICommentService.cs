@@ -12,6 +12,7 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<List<CommentDTO>> GetCommentsByPostIdAsync(int postId);
         Task<CommentDTO> AddCommentAsync(CommentDTO commentDTO);
         Task<bool> DeleteCommentAsync(int commentId);
+        Task<CommentDTO?> EditCommentAsync(int commentId, string newContent);
         //Task<bool> LikeCommentAsync(int commentId);
     }
 }

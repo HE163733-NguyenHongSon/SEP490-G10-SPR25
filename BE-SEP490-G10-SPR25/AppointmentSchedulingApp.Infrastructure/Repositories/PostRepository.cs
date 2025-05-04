@@ -69,5 +69,12 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
         {
             return await _context.PostSections.CountAsync();
         }
+        public async Task<List<string>> GetAllPostSectionImageNamesAsync()
+        {
+            return await _context.PostSections
+                .Where(s => s.PostImageUrl != null && s.PostImageUrl.StartsWith("phan_"))
+                .Select(s => s.PostImageUrl)
+                .ToListAsync();
+        }
     }
 }

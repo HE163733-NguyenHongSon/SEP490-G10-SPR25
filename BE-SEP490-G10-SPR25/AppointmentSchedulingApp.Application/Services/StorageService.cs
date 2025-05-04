@@ -101,9 +101,7 @@ namespace AppointmentSchedulingApp.Application.Services
             return response;
         }
 
-        public async Task<List<S3DTO>> UploadFilesAsync(
-         List<IFormFile> files,
-             Func<IFormFile, string> renameFunc = null)
+        public async Task<List<S3DTO>> UploadFilesAsync(List<IFormFile> files)
         {
             var results = new List<S3DTO>();
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".pdf", ".mp4" };
@@ -124,7 +122,7 @@ namespace AppointmentSchedulingApp.Application.Services
                     continue;
                 }
 
-                var newFileName = renameFunc?.Invoke(file) ?? file.FileName;
+                var newFileName = file.FileName; 
 
                 await using var memoryStream = new MemoryStream();
                 await file.CopyToAsync(memoryStream);
@@ -144,6 +142,7 @@ namespace AppointmentSchedulingApp.Application.Services
 
             return results;
         }
+
 
     }
 

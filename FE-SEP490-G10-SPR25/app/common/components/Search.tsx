@@ -114,7 +114,7 @@ const Search = ({
     }
   };
   return (
-    <div className="flex w-[525px]  ">
+    <div className="flex min-w-[700px] mx-auto">
       <Select
         closeMenuOnSelect={true}
         components={{ ClearIndicator }}

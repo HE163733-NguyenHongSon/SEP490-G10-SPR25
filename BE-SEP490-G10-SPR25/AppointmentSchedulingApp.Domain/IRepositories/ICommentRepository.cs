@@ -12,5 +12,6 @@ namespace AppointmentSchedulingApp.Domain.IRepositories
         Task AddAsync(Comment comment);
         Task<List<Comment>> GetCommentsByPostIdAsync(int postId);
         Task DeleteAsync(int commentId);
+        Task<Comment?> GetByIdAsync(int commentId);
     }
 }

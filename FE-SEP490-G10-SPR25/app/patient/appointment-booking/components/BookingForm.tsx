@@ -6,7 +6,6 @@ import { emailService } from "@/common/services/emailService";
 import { Provider } from "react-redux";
 import { store } from "../../store";
 import SuccessReservationMessage from "./SuccessReservationMessage";
-import { useFileContext } from "../contexts/FileContext";
 
 import {
   setShowBookingForm,
@@ -24,20 +23,19 @@ import {
   setSuggestionData,
   setSelectedDate,
   setSelectedTime,
+  setSymptoms,
 } from "../redux/bookingSlice";
 import PatientInfor from "./PatientInfor";
 import BookingInfor from "./BookingInfor";
 import BookingConfirmation from "./BookingConfirmation";
 import BookingStepper from "./BookingStepper";
 import { handleVNPayPayment } from "@/common/services/vnPayService";
-// import reservationService from "@/common/services/reservationService";
 import { toast } from "react-toastify";
 import ReactDOMServer from "react-dom/server";
 const BookingForm = () => {
   const dispatch = useDispatch();
   const [isMounted, setIsMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { selectedFile } = useFileContext();
 
   const {
     isShowBookingForm,
@@ -79,34 +77,16 @@ const BookingForm = () => {
         patientId: selectedPatient?.userId,
         doctorScheduleId: matchedSchedule?.doctorScheduleId?.toString(),
         reason: symptoms || "",
-        priorExaminationImg: selectedFile,
         appointmentDate: matchedSchedule?.appointmentDate,
         createdByUserId: selectedPatient?.userId,
         updatedByUserId: selectedPatient?.userId,
       };
-      // let isSuccess = false;
-
-      // if (!service?.isPrepayment) {
-      //   isSuccess = await reservationService.addReservation(reservation);
-      //   if (!isSuccess) toast.error("Đặt lịch thất bại. Vui lòng thử lại!");
-      // } else {
-      //   try {
-      //
-      //     isSuccess = true;
-      //   } catch (paymentError) {
-      //     console.error("Payment error:", paymentError);
-      //     toast.error("Lỗi trong quá trình thanh toán. Vui lòng thử lại sau.");
-      //     throw paymentError;
-      //   }
-      // }
       await handleVNPayPayment({
         payerId: selectedPatient?.userId,
         reservation,
         paymentMethod: "VNPay",
         amount: service?.price,
       });
-      // if (isSuccess) {
-      // toast.success("Đặt lịch hẹn thành công!");
       toast.info("Đang chuyển hướng đến cổng thanh toán VNPay...");
 
       const htmlMessage = ReactDOMServer.renderToStaticMarkup(
@@ -114,7 +94,6 @@ const BookingForm = () => {
           <SuccessReservationMessage />
         </Provider>
       );
-      console.log("fdfd", selectedPatient?.email);
       await emailService.sendEmail({
         toEmail: selectedPatient?.email || "",
         subject: "Thông báo đặt lịch thành công!",
@@ -122,7 +101,7 @@ const BookingForm = () => {
       });
 
       setTimeout(() => confirmCancel(), 1000);
-      // }
+     
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Đã xảy ra lỗi khi đặt lịch";
@@ -157,6 +136,7 @@ const BookingForm = () => {
     dispatch(setSelectedTime(""));
     dispatch(setSelectedPatient(null));
     dispatch(setSuggestionData(null));
+    dispatch(setSymptoms(""));
     dispatch(setIsShowRestoreSuggestion(false));
   }, [dispatch]);
 

@@ -17,5 +17,6 @@ namespace AppointmentSchedulingApp.Domain.IRepositories
         Task<int> GetPostSectionsCountAsync();
         void DeletePostSection(PostSection section);
         Task AddPostSectionAsync(PostSection section);
+        Task<List<string>> GetAllPostSectionImageNamesAsync();
     }
 }

@@ -17,5 +17,6 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task AddPostAsync(PostDetailDTO postDetailDTO);
         Task <bool> DeletePostAsync(int id);
         Task<int> GetPostSectionsCountAsync();
+        Task<string> FindFirstUnusedFileName(string extension);
     }
 }

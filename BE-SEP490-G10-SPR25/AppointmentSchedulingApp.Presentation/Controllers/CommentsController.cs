@@ -20,6 +20,15 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             var added = await _commentService.AddCommentAsync(comment);
             return Ok(added);
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditComment(int id, [FromBody] string newContent)
+        {
+            var result = await _commentService.EditCommentAsync(id, newContent);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
 
         [HttpDelete("{commentId}")]
         public async Task<IActionResult> DeleteComment(int commentId)

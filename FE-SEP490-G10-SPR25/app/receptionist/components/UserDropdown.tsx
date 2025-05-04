@@ -29,7 +29,7 @@ export default function UserDropdown() {
       await logout();
       setUser(null);
       toast.success("Đăng xuất thành công!");
-      router.replace('/auth/login');
+      router.replace('/common/auth/login');
     } catch (error) {
       toast.error("Có lỗi xảy ra khi đăng xuất");
     }

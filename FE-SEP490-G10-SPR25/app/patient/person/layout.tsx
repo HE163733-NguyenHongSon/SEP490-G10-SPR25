@@ -25,12 +25,11 @@ const PersonLayout = ({
       Image: assets.medical_report,
     },
     {
-      path: "/patient/person/invoice",
+      path: "/patient/person/invoices",
       name: "Hóa đơn",
       Image: assets.medical_report,
     },
   ];
-
 
   return (
     <div

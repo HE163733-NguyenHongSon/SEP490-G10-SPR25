@@ -9,14 +9,13 @@ namespace AppointmentSchedulingApp.Application.DTOs
 {
     public class AddedReservationDTO
     {
-
         public int PatientId { get; set; }
 
         public int DoctorScheduleId { get; set; }
 
         public string? Reason { get; set; }
 
-        public IFormFile? PriorExaminationImg { get; set; }
+        //public IFormFile? PriorExaminationImg { get; set; }
 
         public DateTime AppointmentDate { get; set; }
 

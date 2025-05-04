@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import BookingForm from "./components/BookingForm";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
-import { FileProvider } from "./contexts/FileContext";
 
 import {
   setSymptoms,
@@ -54,7 +53,7 @@ const PopupBody = () => {
   };
 
   return (
-    <div className="relative w-full max-w-full p-4">
+    <div className="relative w-full max-w-2xl p-4">
       <div className="relative w-full h-15">
         <input
           type="text"
@@ -71,9 +70,7 @@ const PopupBody = () => {
           <PaperAirplaneIcon className="w-6 h-6 text-cyan-500" />
         </button>
       </div>
-      <FileProvider>
-        <BookingForm />
-      </FileProvider>
+      <BookingForm />
     </div>
   );
 };

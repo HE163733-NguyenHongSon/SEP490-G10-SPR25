@@ -44,12 +44,21 @@ export default function DoctorDashboardPage() {
         setAppointments(data);
 
         // Filter for today's appointments
-        const today = new Date().toISOString().split("T")[0];
+        // Create today date object for comparison - using only date part, no time
+        const today = new Date();
+        const todayDateStr = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
+        
+        console.log(`Today's date for comparison: ${todayDateStr}`);
+        
         const todayAppts = data.filter((appointment) => {
-          const apptDate = new Date(appointment.appointmentDate)
-            .toISOString()
-            .split("T")[0];
-          return apptDate === today;
+          // Chuyển đổi ngày trong appointment thành định dạng dd/MM/yyyy để so sánh
+          const apptDate = new Date(appointment.appointmentDate);
+          const apptDateStr = `${apptDate.getDate().toString().padStart(2, '0')}/${(apptDate.getMonth() + 1).toString().padStart(2, '0')}/${apptDate.getFullYear()}`;
+          
+          // Log để debug
+          console.log(`Comparing appointment date: ${apptDateStr} with today: ${todayDateStr}`);
+          
+          return apptDateStr === todayDateStr;
         });
 
         setTodayAppointments(todayAppts);

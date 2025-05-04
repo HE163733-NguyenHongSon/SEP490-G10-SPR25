@@ -14,7 +14,6 @@ namespace AppointmentSchedulingApp.Application.IServices
         public Task<List<ReservationDTO>> GetListReservationByFilter(int patientId, string status, string sortBy);
 
         Task<bool> UpdateReservationStatus(ReservationStatusDTO reservationStatusDTO);
-        Task<Reservation> AddReservation(AddedReservationDTO reservationDTO);
 
         Task<ReservationDTO> GetReservationById(int reservationId);
         Task<ReservationStatusDTO> ViewCancellationReason(int reservationId);
@@ -22,6 +21,11 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<List<ReservationDTO>> GetActiveReservationsForThisWeek();
 
         Task UpdatePriorExaminationImg(int reservationId, string fileName);
+        Task<bool> UpdateReservationStatusList(List<ReservationStatusDTO> reservationStatusDTOs);
+        Task<List<ReservationDTO>> GetUpcomingReservationsAndMarkReminded();
+
+
+        Task<bool> ReplaceDoctor(int reservationId, int doctorscheduleId);
 
     }
 }

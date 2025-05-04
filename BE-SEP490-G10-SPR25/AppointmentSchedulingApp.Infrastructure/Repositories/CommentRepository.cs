@@ -27,6 +27,14 @@ namespace AppointmentSchedulingApp.Infrastructure.Repositories
                 .OrderBy(c => c.CommentOn)
                 .ToListAsync();
         }
+        public void Update(Comment comment)
+        {
+            _dbContext.Comments.Update(comment);
+        }
+        public async Task<Comment?> GetByIdAsync(int commentId)
+        {
+            return await _dbContext.Comments.FindAsync(commentId);
+        }
         public async Task DeleteAsync(int commentId)
         {
             var comment = await _dbContext.Comments.FindAsync(commentId);

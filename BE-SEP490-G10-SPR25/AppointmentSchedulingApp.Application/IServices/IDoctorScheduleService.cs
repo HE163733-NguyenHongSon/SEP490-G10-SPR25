@@ -24,5 +24,8 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<List<DoctorScheduleDTO>> FilterAndSearchDoctorSchedule(string? doctorName, int? serviceId,string? day ,int? roomId ,int? slotId);
 
         Task<List<DoctorScheduleDTO>> SearchDoctorScheduleByDoctorName(string? doctorName);
+
+        Task<List<DoctorScheduleDTO>> GetAlternativeDoctorList(int doctorScheduleId);
+        Task<List<DoctorScheduleDTO>> IsDoctorBusyAtReservation(int reservationId);
     }
 }

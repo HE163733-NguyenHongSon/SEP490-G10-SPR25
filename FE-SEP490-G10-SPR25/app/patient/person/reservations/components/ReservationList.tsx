@@ -225,7 +225,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
                         <div className="flex items-center justify-center w-full h-full">
                           <span className="text-sm text-gray-700 text-center px-2">
                             {reservation.cancellationReason ||
-                              "Không có lý do hủy"}
+                              "Không có lý do hủy"}    
                           </span>
                         </div>
                       ) : reservation.priorExaminationImg ? (

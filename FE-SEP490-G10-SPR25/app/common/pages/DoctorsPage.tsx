@@ -2,7 +2,7 @@ import { doctorService } from "@/common/services/doctorService";
 import PaginatedItems from "@/common/components/PaginatedItems";
 import Search from "@/common/components/Search";
 import SelectSort from "@/common/components/SelectSort";
-import { DoctorList } from "@/patient/components/DoctorList";
+import { DoctorList } from "@/guest/components/DoctorList";
 
 interface DoctorsPageProps {
   isGuest?: boolean;
@@ -51,6 +51,7 @@ const DoctorsPage = async ({
   } else {
     doctors = await doctorService.getDoctorList();
   }
+
   const searchOptions: ISearchOption[] = (await doctorService.getDoctorList())
     .map((d: IDoctor) => ({
       label: d.userName,
@@ -59,53 +60,47 @@ const DoctorsPage = async ({
     .filter((option) => option.value !== undefined) as ISearchOption[];
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center py-6 bg-gray-50 pt-20">
-      <div className="container mx-auto px-4 max-w-screen-xl">
-        {/* Header section */}
-        <div className="w-full bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="w-full flex flex-col md:flex-row gap-4 mb-2">
-            <div className="flex flex-wrap gap-3">
-              <SelectSort
-                options={sortOptions}
-                path={`${basePath}/doctors`}
-                initialSelectedValue="highest_rated"
-              />
-              <div className="flex-grow">
-                <Search
-                  suggestedData={searchOptions}
-                  placeholder="Tìm kiếm bác sĩ theo tên"
-                  path={`${basePath}/doctors`}
-                />
-              </div>
-            </div>
+    <div className="container  max-w-screen-xl">
+      {/* Header Section */}
+      <div className="w-full flex flex-col md:flex-row gap-4 my-5  items-center justify-center ">
+        <div className="flex flex-wrap gap-3 justify-between items-center w-full md:w-auto">
+          <SelectSort
+            options={sortOptions}
+            path={`${basePath}/doctors`}
+            initialSelectedValue="highest_rated"
+          />
+          <div className="flex-grow md:flex-shrink-0">
+            <Search
+              suggestedData={searchOptions}
+              placeholder="Tìm kiếm bác sĩ theo tên"
+              path={`${basePath}/doctors`}
+            />
           </div>
         </div>
+      </div>
 
-        {/* Main content */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h1 className="text-2xl font-bold mb-4 text-gray-800">
+      {/* Main Content Section */}
+
+      {doctors.length === 0 ? (
+        <div className="text-center py-10">
+          <p className="text-gray-500 text-lg">
+            Không tìm thấy bác sĩ nào phù hợp.
+          </p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <h1 className="text-2xl font-bold my-4 text-gray-800 text-center">
             Danh sách Bác sĩ
           </h1>
-
-          {doctors.length === 0 ? (
-            <div className="text-center py-10">
-              <p className="text-gray-500 text-lg">
-                Không tìm thấy bác sĩ nào phù hợp.
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <PaginatedItems
-                items={doctors}
-                itemsPerPage={6}
-                displayView="grid"
-                RenderComponent={DoctorList}
-                userType={isGuest ? "guest" : "patient"}
-              />
-            </div>
-          )}
+          <PaginatedItems
+            items={doctors}
+            itemsPerPage={6}
+            displayView="grid"
+            RenderComponent={DoctorList}
+            userType={isGuest ? "guest" : "patient"}
+          />
         </div>
-      </div>
+      )}
     </div>
   );
 };

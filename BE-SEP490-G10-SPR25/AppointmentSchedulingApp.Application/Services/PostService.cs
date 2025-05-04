@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AppointmentSchedulingApp.Application.Services
@@ -137,5 +138,21 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             return _postRepository.GetPostSectionsCountAsync();
         }
+        public async Task<string> FindFirstUnusedFileName(string extension)
+        {
+            var usedNames = await _postRepository.GetAllPostSectionImageNamesAsync(); // ví dụ ["phan_1.png", "phan_2.jpg"]
+            var usedSet = new HashSet<string>(usedNames.Select(x => x.ToLower()));
+
+            int index = 1;
+            while (true)
+            {
+                string name = $"phan_{index}{extension}".ToLower();
+                if (!usedSet.Contains(name))
+                    return name;
+                index++;
+            }
+        }
+
+
     }
 }

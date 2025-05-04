@@ -38,45 +38,6 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             return Ok(post);
         }
 
-        [HttpPost("test-upload")]
-        public async Task<IActionResult> TestUpload([FromForm] UploadFileDTO dto)
-        {
-            if (dto.File == null || dto.File.Length == 0)
-                return BadRequest("No file uploaded");
-            var extension = Path.GetExtension(dto.File.FileName);
-            var newFileName = $"post-{Guid.NewGuid()}{extension}";
-            await using var stream = new MemoryStream();
-            await dto.File.CopyToAsync(stream);
-            stream.Position = 0;
-
-            var formFileWithNewName = new FormFile(stream, 0, stream.Length, dto.File.Name, newFileName)
-            {
-                Headers = dto.File.Headers,
-                ContentType = dto.File.ContentType
-            };
-
-            // ✨ Upload bằng StorageService
-            var resultList = await _storageService.UploadFilesAsync(new List<IFormFile> { formFileWithNewName });
-            var result = resultList.First();
-
-            // ✨ Dựng URL thủ công
-            if (result.StatusCode == 200 && !string.IsNullOrEmpty(result.FileName))
-            {
-                var bucketName = _configuration["AWS:BucketName"];
-                var url = $"https://{bucketName}.s3.amazonaws.com/{result.FileName}";
-
-                return Ok(new
-                {
-                    result.StatusCode,
-                    result.Message,
-                    result.FileName,
-                    Url = url
-                });
-            }
-
-            return Ok(result);
-        }
-
 
         [HttpPost]
         public async Task<IActionResult> CreatePost([FromForm] IFormFileCollection files)
@@ -93,7 +54,6 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             if (sections == null || sections.Count == 0)
                 return BadRequest("Phải có ít nhất một section");
             var uploadedUrls = new List<string>();
-            int sectionCount = await _postService.GetPostSectionsCountAsync();
             Console.WriteLine($"id tác giả: {postAuthorId}");
             foreach (var file in files)
             {
@@ -107,8 +67,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 if (matchingSection == null)
                     return BadRequest("Không tìm thấy section tương ứng để đặt tên ảnh");
 
-                var fileIndex = sectionCount + matchingSection.SectionIndex;
-                var fileName = $"phan_{fileIndex}{ext}";
+                var fileName = await _postService.FindFirstUnusedFileName(ext.ToString());
 
                 await using var ms = new MemoryStream();
                 await file.CopyToAsync(ms);
@@ -148,8 +107,6 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 }
             }
 
-
-            // Gọi service để lưu bài viết
             var postDTO = new PostDetailDTO
             {
                 PostTitle = postTitle,
@@ -179,8 +136,6 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             if (sections == null || sections.Count == 0)
                 return BadRequest("Phải có ít nhất một section");
 
-            // Lấy tổng số PostSections hiện tại
-            int sectionCount = await _postService.GetPostSectionsCountAsync();
 
             var uploadedUrls = new List<string>();
             int fileIndex = 0;
@@ -189,17 +144,15 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             {
                 var ext = Path.GetExtension(file.FileName);
 
-                // Tìm section cần gán ảnh (section mới)
                 var matchingSection = sections
                     .Where(s => string.IsNullOrEmpty(s.PostImageUrl))
                     .OrderBy(s => s.SectionIndex)
-                    .Skip(fileIndex)
                     .FirstOrDefault();
 
                 if (matchingSection == null)
                     return BadRequest("Không tìm thấy section tương ứng để đặt tên ảnh");
 
-                var fileName = $"phan_{sectionCount + matchingSection.SectionIndex}{ext}";
+                var fileName = await _postService.FindFirstUnusedFileName(ext.ToString());
 
                 await using var ms = new MemoryStream();
                 await file.CopyToAsync(ms);

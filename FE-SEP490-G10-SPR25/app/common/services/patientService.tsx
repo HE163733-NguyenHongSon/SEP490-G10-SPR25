@@ -6,7 +6,7 @@ export const patientService = {
     try {
       const url = `${apiUrl}/api/Reservations?$filter=status eq 'Hoàn thành'`;
       console.log('Fetching examined patients from:', url);
-      
+
       const res = await fetch(url, {
         method: 'GET',
         headers: {
@@ -15,18 +15,18 @@ export const patientService = {
         },
         cache: 'no-store'
       });
-      
+
       console.log('Examined patients response status:', res.status);
-      
+
       if (!res.ok) {
         console.error(`Error response for examined patients: ${res.statusText}`);
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
-    
+
       const data: IReservation[] = await res.json();
       const uniquePatients = new Set(data.map((r: IReservation) => r.patient.userId));
       console.log(`Found ${uniquePatients.size} unique examined patients`);
-    
+
       return uniquePatients.size;
     } catch (error) {
       console.error('Error getting number of examined patients:', error);
@@ -42,12 +42,12 @@ export const patientService = {
         },
         body: JSON.stringify(patientData),
       });
-  
+
       if (!response.ok) {
         console.error("Lỗi khi thêm bệnh nhân:", await response.text());
-        return null; 
+        return null;
       }
-  
+
       const data: IPatient = await response.json();
       console.log("Kết quả:", data);
       return data;
@@ -56,12 +56,12 @@ export const patientService = {
       return null;
     }
   },
-  
+
   async getPatientList(): Promise<IPatient[]> {
     try {
       const url = `${apiUrl}/api/Patients`;
       console.log('Fetching patient list from:', url);
-      
+
       const res = await fetch(url, {
         method: 'GET',
         headers: {
@@ -70,14 +70,14 @@ export const patientService = {
         },
         cache: 'no-store'
       });
-      
+
       console.log('Patient list response status:', res.status);
-      
+
       if (!res.ok) {
         console.error(`Error response for patient list: ${res.statusText}`);
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
-  
+
       const data = await res.json();
       console.log(`Retrieved ${data.length} patients`);
       return data;
@@ -87,11 +87,11 @@ export const patientService = {
     }
   },
 
-  async getPatientDetailById(patientId?: string | number  ): Promise<IPatientDetail> {
+  async getPatientDetailById(patientId?: string | number): Promise<IPatientDetail> {
     try {
       const url = `${apiUrl}/api/Patients/${patientId}`;
       console.log(`Fetching patient detail from: ${url}`);
-      
+
       const res = await fetch(url, {
         method: 'GET',
         headers: {
@@ -100,14 +100,14 @@ export const patientService = {
         },
         cache: 'no-store'
       });
-      
+
       console.log(`Patient detail response status: ${res.status}`);
-      
+
       if (!res.ok) {
         console.error(`Error response for patient detail: ${res.statusText}`);
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
-  
+
       const data = await res.json();
       console.log(`Retrieved details for patient ID: ${patientId}`);
       return data;
@@ -116,13 +116,18 @@ export const patientService = {
       throw error; // We might need to throw here as the UI likely needs this data
     }
   },
-  
+
   async getPatientListBySearch(field: string, value: string): Promise<IPatient[]> {
     try {
-      const encodedValue = encodeURIComponent(value.trim());
-      const url = `${apiUrl}/api/Patients?$filter=contains(tolower(${field}), '${encodedValue}')`;
+      // const encodedValue = encodeURIComponent(value.trim());
+      // const url = `${apiUrl}/api/Patients?$filter=contains(tolower(${field}), '${encodedValue}')`;
+      const cleanedValue = value.trim().replace(/\s+/g, ' '); // loại bỏ thừa khoảng trắng
+      const encodedValue = encodeURIComponent(cleanedValue);
+
+      const url = `${apiUrl}/api/Patients?$filter=contains(tolower(${field}), tolower('${encodedValue}'))`;
+
       console.log(`Searching patients with ${field}='${encodedValue}' from: ${url}`);
-      
+
       const res = await fetch(url, {
         method: 'GET',
         headers: {
@@ -131,14 +136,14 @@ export const patientService = {
         },
         cache: 'no-store'
       });
-  
+
       console.log('Patient search response status:', res.status);
-      
+
       if (!res.ok) {
         console.error(`Error response for patient search: ${res.statusText}`);
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
-  
+
       const data = await res.json();
       console.log(`Found ${data.length} patients matching search criteria`);
       return data;
@@ -147,14 +152,14 @@ export const patientService = {
       return []; // Return empty array instead of throwing
     }
   },
-  
+
   // Update bằng user
   async updatePatientContact(updatedData: IUser): Promise<void> {
     try {
       const url = `${apiUrl}/api/Patients/UpdatePatientInformationByReceptionist`;
       console.log("Updating patient contact at:", url);
       console.log("Updated data:", JSON.stringify(updatedData));
-      
+
       const res = await fetch(url, {
         method: "PUT",
         headers: {
@@ -163,21 +168,21 @@ export const patientService = {
         },
         body: JSON.stringify(updatedData),
       });
- 
+
       console.log('Update patient contact response status:', res.status);
-      
+
       if (!res.ok) {
         console.error(`Error response for update patient contact: ${res.statusText}`);
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
-      
+
       console.log("Patient contact updated successfully");
     } catch (error) {
       console.error(`Error updating patient contact:`, error);
       throw error; // Rethrow as caller needs to know if update failed
     }
   },
-  
+
   // Update bằng patient
   async updateGuardianOfPatient(data: {
     patientId: number;
@@ -187,7 +192,7 @@ export const patientService = {
       const url = `${apiUrl}/api/Patients/UpdateGuardianOfPatientByReceptionist`;
       console.log("Updating patient guardian at:", url);
       console.log("Guardian update data:", JSON.stringify(data));
-      
+
       const res = await fetch(url, {
         method: "PUT",
         headers: {
@@ -199,14 +204,14 @@ export const patientService = {
           guardianId: data.guardianId
         })
       });
-  
+
       console.log('Update guardian response status:', res.status);
-      
+
       if (!res.ok) {
         console.error(`Error response for update guardian: ${res.statusText}`);
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
-      
+
       console.log("Patient guardian updated successfully");
     } catch (error) {
       console.error(`Error updating patient guardian:`, error);

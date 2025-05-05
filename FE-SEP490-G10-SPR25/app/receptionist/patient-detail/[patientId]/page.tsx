@@ -3,6 +3,11 @@ import React, { useEffect, useState } from "react";
 import { patientService } from "@/common/services/patientService";
 import Image from "next/image";
 import Link from "next/link";
+import PatientDetailModal from "@/receptionist/components/PatientDetailModal";
+import MedicalRecordDetail from "@/patient/person/medical-report/components/MedicalRecordDetail";
+import { medicalRecordService } from "@/common/services/medicalRecordService";
+
+
 
 export default function PatientDetailPage({
   params,
@@ -14,6 +19,45 @@ export default function PatientDetailPage({
   const [medicalRecords, setMedicalRecords] = useState<IMedicalRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [medicalRecordDetail, setMedicalRecordDetail] =
+      useState<IMedicalRecordDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+  
+
+
+  const fetchMedicalRecordDetail = async (reservationId: string) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await medicalRecordService.getMedicalRecordDetailById(
+          reservationId
+        );
+  
+        if (response) {
+          setMedicalRecordDetail(response);
+        } else {
+          setError("Không tìm thấy chi tiết hồ sơ.");
+          setMedicalRecordDetail(null);
+        }
+      } catch (err) {
+        setError("Không thể tải chi tiết lịch hẹn. Vui lòng thử lại.");
+        console.error("Error fetching reservation details:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+      
+    const handleViewDetails = async (record: IMedicalRecord) => {
+      fetchMedicalRecordDetail(record.reservationId);
+      setIsPopupOpen(true);
+    };
+  
+    const closePopup = () => {
+      setIsPopupOpen(false);
+      setMedicalRecordDetail(null);
+    };
 
   useEffect(() => {
     const fetchPatientData = async () => {
@@ -266,10 +310,8 @@ export default function PatientDetailPage({
                             <td className="py-3 px-4">{record.diagnosis}</td>
                             <td className="py-3 px-4">
                               <button
-                                onClick={() =>
-                                  (window.location.href = `/medical-records/${record.reservationId}`)
-                                }
-                                className="px-3 py-1 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors"
+                                onClick={() => handleViewDetails(record)}
+                                className="mt-4 px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700"
                               >
                                 Chi tiết
                               </button>
@@ -319,26 +361,20 @@ export default function PatientDetailPage({
                 Chỉnh sửa hồ sơ
               </button>
             </Link>
-            <button className="flex items-center px-5 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition-colors">
-              <svg
-                className="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
-                />
-              </svg>
-              In hồ sơ
-            </button>
+            
           </div>
         </div>
       </div>
+      {isPopupOpen && (
+        <MedicalRecordDetail
+          medicalRecordDetail={medicalRecordDetail}
+          isLoading={isLoading}
+          error={error || ""}
+          closePopup={closePopup}
+        />
+      )}
     </div>
+
   );
 }
 
@@ -353,9 +389,8 @@ const InfoItem = ({
   highlight?: boolean;
 }) => (
   <div
-    className={`flex justify-between items-center ${
-      highlight ? "bg-cyan-50 px-4 py-2 rounded-lg" : ""
-    }`}
+    className={`flex justify-between items-center ${highlight ? "bg-cyan-50 px-4 py-2 rounded-lg" : ""
+      }`}
   >
     <dt className="text-gray-600">{label}:</dt>
     <dd

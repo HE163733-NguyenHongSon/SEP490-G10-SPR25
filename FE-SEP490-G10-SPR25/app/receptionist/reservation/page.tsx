@@ -92,19 +92,46 @@ const Reservation = () => {
     }
 
     try {
-      const url = `http://localhost:5220/api/Reservations/ReplaceDoctor?reservationId=${selectedReservation.reservationId}&doctorScheduleId=${selectedDoctorId}`;
+      const originalDoctorName = selectedReservation.doctorSchedule.doctorName;
+      const selectedDoctor = alternativeDoctors.find(d => d.doctorScheduleId === selectedDoctorId);
+      const newDoctorName = selectedDoctor ? selectedDoctor.doctorName : "bác sĩ mới";
 
-      await axios.put(url);
-      setShowDoctorList(false);
+      Modal.confirm({
+        title: "Xác nhận chuyển ca khám",
+        content: (
+          <div>
+            <p>Bạn có chắc chắn muốn chuyển ca khám này?</p>
+            <p>- Từ: <b>{originalDoctorName}</b></p>
+            <p>- Sang: <b>{newDoctorName}</b></p>
+            <p className="text-red-500">Lưu ý: Ca khám với bác sĩ hiện tại sẽ được chuyển sang trạng thái "Hủy".</p>
+          </div>
+        ),
+        okText: "Xác nhận",
+        cancelText: "Hủy bỏ",
+        onOk: async () => {
+          const url = `http://localhost:5220/api/Reservations/ReplaceDoctor?reservationId=${selectedReservation.reservationId}&doctorScheduleId=${selectedDoctorId}`;
 
-      message.success("Đã cập nhật bác sĩ thành công!");
-
-      setAlternativeDoctors([]);
-      setSelectedDoctorId(null);
-      setIsModalVisible(false);
-
-      // ✅ Gọi lại hàm lấy danh sách lịch hẹn
-      fetchReservations(); // <- bạn phải có sẵn hàm này
+          try {
+            const response = await axios.put(url);
+            console.log("API Response:", response);
+            
+            if (response.data === true) {
+              setShowDoctorList(false);
+              message.success(`Đã chuyển ca khám từ ${originalDoctorName} sang ${newDoctorName}!`);
+              setAlternativeDoctors([]);
+              setSelectedDoctorId(null);
+              setIsModalVisible(false);
+              // Gọi lại hàm lấy danh sách lịch hẹn
+              fetchReservations();
+            } else {
+              message.error("Không thể chuyển ca khám. Vui lòng thử lại sau.");
+            }
+          } catch (error: any) {
+            console.error("API Error:", error);
+            message.error("Lỗi khi cập nhật bác sĩ: " + (error.response?.data || error.message));
+          }
+        }
+      });
     } catch (error) {
       message.error("Lỗi khi cập nhật bác sĩ.");
     }
@@ -261,6 +288,7 @@ const Reservation = () => {
           Chi tiết
         </Button>
 
+        {/* Nút xác nhận hủy cho lịch hẹn đang chờ hoàn tiền */}
         {record.paymentStatus === "Đang xử lý" && (
           <Button
             danger
@@ -268,6 +296,17 @@ const Reservation = () => {
             onClick={() => handleConfirmCancel(record)}
           >
             Xác nhận hủy
+          </Button>
+        )}
+
+        {/* Thêm nút hủy lịch cho các lịch hẹn có trạng thái 'Xác nhận' */}
+        {record.status === "Xác nhận" && (
+          <Button
+            danger
+            size="small"
+            onClick={() => handleCancel(record)}
+          >
+            Hủy lịch
           </Button>
         )}
       </Space>
@@ -381,10 +420,10 @@ const Reservation = () => {
               key="change-doctor"
               type="default"
               onClick={() => {
-                handleChangeDoctor(); // Gọi API lấy danh sách bác sĩ thay thế
-                // setShowDoctorList(true);    // Cho phép hiển thị nút cập nhật + select
+                handleChangeDoctor();
               }}
               style={{ backgroundColor: "#4CAF50", color: "#fff" }}
+              title="Chuyển ca khám cho bác sĩ khác và hủy lịch ở bác sĩ hiện tại"
             >
               Danh sách bác sĩ có thể đổi ca
             </Button>

@@ -339,32 +339,15 @@ export default function DoctorAppointmentsPage() {
                             </span>
                           </div>
                           <div className="flex space-x-2">
-                            <Link
-                              href={`/doctor/appointments/${appointment.reservationId}`}
-                            >
-                              <button className="px-3 py-1 border border-indigo-600 text-indigo-600 rounded hover:bg-indigo-50">
-                                Xem
-                              </button>
-                            </Link>
                             {appointment.status === "Xác nhận" && (
-                              <>
-                                <button
-                                  className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                                  onClick={() =>
-                                    handleStartExamination(appointment)
-                                  }
-                                >
-                                  Bắt đầu
-                                </button>
-                                <button
-                                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-                                  onClick={() =>
-                                    handleOpenCancelModal(appointment)
-                                  }
-                                >
-                                  Hủy
-                                </button>
-                              </>
+                              <button
+                                className="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                                onClick={() =>
+                                  handleStartExamination(appointment)
+                                }
+                              >
+                                Bắt đầu
+                              </button>
                             )}
                           </div>
                         </div>

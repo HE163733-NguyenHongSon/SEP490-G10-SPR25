@@ -306,111 +306,6 @@ namespace AppointmentSchedulingApp.Application.Services
 
             return reservationDTOs;
         }
-
-        public async Task<bool> CancelAppointment(int reservationId, string cancellationReason)
-        {
-            try
-            {
-                await unitOfWork.BeginTransactionAsync();
-
-                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId == reservationId);
-                if (reservation == null)
-                {
-                    throw new ValidationException("Lịch hẹn không tồn tại");
-                }
-
-                if (reservation.Status == "Hoàn thành" || reservation.Status == "Hủy")
-                {
-                    throw new ValidationException("Không thể hủy lịch hẹn đã hoàn thành hoặc đã hủy");
-                }
-
-                // Update reservation status
-                reservation.Status = "Đã hủy";
-                reservation.CancellationReason = cancellationReason;
-                reservation.UpdatedDate = DateTime.Now;
-
-                unitOfWork.ReservationRepository.Update(reservation);
-                await unitOfWork.CommitAsync();
-
-                // Get patient information for notification
-                var patient = await unitOfWork.PatientRepository.Get(p => p.PatientId == reservation.PatientId);
-                if (patient != null)
-                {
-                    var user = await unitOfWork.UserRepository.Get(u => u.UserId == patient.PatientId);
-                    if (user != null && !string.IsNullOrEmpty(user.Email))
-                    {
-                        // Get doctor information
-                        var doctorSchedule = await unitOfWork.DoctorScheduleRepository.Get(
-                            ds => ds.DoctorScheduleId == reservation.DoctorScheduleId);
-                        var doctor = await unitOfWork.UserRepository.Get(u => u.UserId == doctorSchedule.DoctorId);
-
-                        // Send email notification
-                        string subject = "Thông báo hủy lịch khám";
-                        string body = $"Xin chào {user.UserName},\n\n" +
-                            $"Bác sĩ {doctor.UserName} đã hủy lịch khám của bạn vào ngày {reservation.AppointmentDate.ToString("dd/MM/yyyy")}.\n" +
-                            $"Lý do: {cancellationReason}\n\n" +
-                            $"Vui lòng đặt lịch khám mới.\n\n" +
-                            $"Trân trọng,\nPhòng khám";
-
-                        // Create message object for email service with correct constructor
-                        var emailTo = new List<string> { user.Email };
-                        var message = new Message(emailTo, subject, body);
-
-                        _emailService.SendEmail(message);
-                    }
-                }
-
-                // Send notification to receptionists
-                var receptionistRole = await unitOfWork.RoleRepository.Get(r => r.RoleName == "Lễ tân");
-                if (receptionistRole != null)
-                {
-                    var receptionistUsers = await unitOfWork.UserRepository.GetAll(
-                        u => u.Roles.Any(r => r.RoleId == receptionistRole.RoleId) && u.IsActive);
-                    
-                    foreach (var receptionistUser in receptionistUsers)
-                    {
-                        if (!string.IsNullOrEmpty(receptionistUser.Email))
-                        {
-                            // Get doctor and patient information
-                            var doctorSchedule = await unitOfWork.DoctorScheduleRepository.Get(
-                                ds => ds.DoctorScheduleId == reservation.DoctorScheduleId);
-                            var doctor = await unitOfWork.UserRepository.Get(u => u.UserId == doctorSchedule.DoctorId);
-                            var patientInfo = await unitOfWork.PatientRepository.Get(p => p.PatientId == reservation.PatientId);
-                            var patientUser = await unitOfWork.UserRepository.Get(u => u.UserId == patientInfo.PatientId);
-
-                            // Send email notification
-                            string subject = "Thông báo bác sĩ hủy lịch khám";
-                            string body = $"Xin chào {receptionistUser.UserName},\n\n" +
-                                $"Bác sĩ {doctor.UserName} đã hủy lịch khám của bệnh nhân {patientUser.UserName} vào ngày {reservation.AppointmentDate.ToString("dd/MM/yyyy")}.\n" +
-                                $"Lý do: {cancellationReason}\n\n" +
-                                $"Vui lòng cập nhật lịch khám và liên hệ với bệnh nhân nếu cần thiết.\n\n" +
-                                $"Trân trọng,\nHệ thống quản lý phòng khám";
-
-                            // Create message object for email service
-                            var emailTo = new List<string> { receptionistUser.Email };
-                            var message = new Message(emailTo, subject, body);
-
-                            _emailService.SendEmail(message);
-                        }
-                    }
-                }
-
-                await unitOfWork.CommitTransactionAsync();
-                return true;
-            }
-            catch (ValidationException)
-            {
-                await unitOfWork.RollbackTransactionAsync();
-                throw;
-            }
-            catch (Exception ex)
-            {
-                await unitOfWork.RollbackAsync();
-                await unitOfWork.RollbackTransactionAsync();
-                throw new Exception($"Lỗi khi hủy lịch hẹn: {ex.Message}", ex);
-            }
-        }
-
         public async Task<MedicalRecordDTO> CreateMedicalRecord(int reservationId, MedicalRecordDTO medicalRecordDTO)
         {
             var createDTO = new MedicalRecordCreateDTO
@@ -578,6 +473,127 @@ namespace AppointmentSchedulingApp.Application.Services
             catch (Exception ex)
             {
                 throw new Exception($"Error retrieving medical records for patient {patientId} and doctor {doctorId}: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<ReservationDTO> GetAppointmentById(int reservationId)
+        {
+            try
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId == reservationId);
+                
+                if (reservation == null)
+                {
+                    return null;
+                }
+                
+                var reservationDTO = mapper.Map<ReservationDTO>(reservation);
+                
+                // Ensure patient name is set
+                if (reservation.Patient != null && reservation.Patient.PatientNavigation != null)
+                {
+                    reservationDTO.PatientName = reservation.Patient.PatientNavigation.UserName;
+                }
+                
+                return reservationDTO;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting appointment by ID: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> RequestCancellation(int reservationId, string cancellationReason)
+        {
+            try
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId == reservationId);
+                
+                if (reservation == null)
+                {
+                    return false;
+                }
+                
+                // Update the cancellation reason but don't change status yet
+                reservation.CancellationReason = cancellationReason;
+                
+                unitOfWork.ReservationRepository.Update(reservation);
+                await unitOfWork.CommitAsync();
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error requesting cancellation: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> CancelAppointment(int reservationId, string cancellationReason)
+        {
+            try
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId == reservationId);
+                
+                if (reservation == null)
+                {
+                    return false;
+                }
+                
+                // Cập nhật trạng thái thành "Hủy" và lưu lý do hủy
+                reservation.Status = "Hủy";
+                reservation.CancellationReason = cancellationReason;
+                reservation.UpdatedDate = DateTime.Now;
+                
+                unitOfWork.ReservationRepository.Update(reservation);
+                await unitOfWork.CommitAsync();
+                
+                // Log thông tin hủy lịch
+                Console.WriteLine($"Appointment {reservationId} cancelled with reason: {cancellationReason}");
+
+                // Thông tin bệnh nhân bị hủy lịch
+                if (reservation.Patient?.PatientNavigation != null)
+                {
+                    var patientName = reservation.Patient.PatientNavigation.UserName;
+                    var patientEmail = reservation.Patient.PatientNavigation.Email;
+                    Console.WriteLine($"Notification should be sent to patient: {patientName} ({patientEmail})");
+                }
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error cancelling appointment: {ex.Message}");
+                throw;
+            }
+        }
+
+        // Thêm phương thức mới để cập nhật trạng thái lịch hẹn
+        public async Task<bool> UpdateAppointmentStatus(int reservationId, string status)
+        {
+            try
+            {
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId == reservationId);
+                
+                if (reservation == null)
+                {
+                    return false;
+                }
+                
+                // Cập nhật trạng thái
+                reservation.Status = status;
+                reservation.UpdatedDate = DateTime.Now;
+                
+                unitOfWork.ReservationRepository.Update(reservation);
+                await unitOfWork.CommitAsync();
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating appointment status: {ex.Message}");
+                throw;
             }
         }
     }

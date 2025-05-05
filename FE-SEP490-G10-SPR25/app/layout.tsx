@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { UserProvider } from "@/common/contexts/UserContext";
+import { SignalRProvider } from '@/common/contexts/SignalRContext';
 
 import "./globals.css";
 
@@ -18,9 +19,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <UserProvider>
-        <body className={inter.className}>{children}</body>
-      </UserProvider>
+      <body className={inter.className}>
+        <SignalRProvider hubUrl="http://localhost:5220/hubs/notifications">
+          <UserProvider>
+            {children}
+          </UserProvider>
+        </SignalRProvider>
+      </body>
     </html>
   );
 }

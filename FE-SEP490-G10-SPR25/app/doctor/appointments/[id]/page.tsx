@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 import dayjs from "dayjs";
 import Image from "next/image";
+import AppointmentCancellationModal from '../../components/AppointmentCancellationModal';
+import { toast } from 'react-toastify';
 
 export default function AppointmentDetails() {
   const params = useParams();
@@ -51,6 +53,8 @@ export default function AppointmentDetails() {
   const [selectedRecord, setSelectedRecord] = useState<IMedicalRecord | null>(
     null
   );
+  // New state for cancellation modal
+  const [showCancellationModal, setShowCancellationModal] = useState(false);
 
   // Form state
   const [symptoms, setSymptoms] = useState("");
@@ -60,6 +64,7 @@ export default function AppointmentDetails() {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [noShowSuccess, setNoShowSuccess] = useState(false);
 
   // Get current user ID from auth
   useEffect(() => {
@@ -350,6 +355,50 @@ export default function AppointmentDetails() {
     }
   };
 
+  // Handle appointment cancellation
+  const handleCancelAppointment = () => {
+    setShowCancellationModal(true);
+  };
+
+  // After cancellation requested
+  const handleCancellationRequested = () => {
+    // Chỉ thông báo, không chuyển hướng vì lịch chưa được hủy
+    toast.success("Yêu cầu hủy lịch đã được gửi đến lễ tân");
+  };
+
+  // Thêm hàm xử lý khi bệnh nhân không đến
+  const handlePatientNoShow = async () => {
+    if (!appointment) return;
+    
+    if (!confirm('Xác nhận bệnh nhân không đến cuộc hẹn này?')) {
+      return;
+    }
+    
+    try {
+      setSubmitting(true);
+      
+      // Gọi API để cập nhật trạng thái "Không đến"
+      const result = await doctorService.updateAppointmentStatus(
+        parseInt(appointment.reservationId),
+        "Không đến"
+      );
+      
+      if (result) {
+        setNoShowSuccess(true);
+        
+        // Redirect after short delay
+        setTimeout(() => {
+          router.push("/doctor/appointments");
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Error updating to no-show status:", error);
+      alert(`Lỗi khi cập nhật trạng thái: ${error instanceof Error ? error.message : 'Lỗi không xác định'}`);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-6">
@@ -439,6 +488,29 @@ export default function AppointmentDetails() {
             </button>
           </div>
         </div>
+      ) : noShowSuccess ? (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+          <div className="flex items-center">
+            <CheckCircle className="h-6 w-6 text-yellow-500 mr-2" />
+            <h2 className="text-xl font-semibold text-yellow-800">
+              Đã xác nhận bệnh nhân không đến
+            </h2>
+          </div>
+          <p className="mt-2 text-yellow-700">
+            Trạng thái lịch hẹn đã được cập nhật thành "Không đến".
+          </p>
+          <p className="mt-4 text-yellow-700">
+            Đang chuyển hướng về trang danh sách lịch hẹn...
+          </p>
+          <div className="mt-4">
+            <button
+              onClick={() => router.push("/doctor/appointments")}
+              className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700"
+            >
+              Quay lại danh sách lịch hẹn
+            </button>
+          </div>
+        </div>
       ) : (
         <>
           {/* Header với tiêu đề và thông tin */}
@@ -447,10 +519,33 @@ export default function AppointmentDetails() {
               <h1 className="text-2xl font-bold text-gray-800">
                 Chi tiết cuộc hẹn
               </h1>
-              <div className="flex items-center">
+              <div className="flex items-center space-x-3">
                 <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
                   {appointment.status || "Đang xử lý"}
                 </span>
+                
+                {/* Thêm nút "Bệnh nhân không đến" */}
+                {appointment.status !== 'Hoàn thành' && appointment.status !== 'Không đến' && appointment.status !== 'Cancelled' && (
+                  <button 
+                    onClick={handlePatientNoShow}
+                    disabled={submitting}
+                    className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium hover:bg-yellow-200 transition-colors flex items-center"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="17" y1="8" x2="23" y2="14"></line><line x1="23" y1="8" x2="17" y2="14"></line></svg>
+                    Bệnh nhân không đến
+                  </button>
+                )}
+                
+                {/* Nút yêu cầu hủy lịch hiện tại */}
+                {appointment.status !== 'Hoàn thành' && appointment.status !== 'Cancelled' && (
+                  <button 
+                    onClick={handleCancelAppointment}
+                    className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium hover:bg-red-200 transition-colors flex items-center"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+                    Yêu cầu hủy lịch
+                  </button>
+                )}
               </div>
             </div>
 
@@ -1287,6 +1382,15 @@ export default function AppointmentDetails() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Add the cancellation modal */}
+      {showCancellationModal && appointment && (
+        <AppointmentCancellationModal
+          reservationId={parseInt(appointment.reservationId)}
+          onClose={() => setShowCancellationModal(false)}
+          onCancellationRequested={handleCancellationRequested}
+        />
       )}
     </div>
   );

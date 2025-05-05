@@ -675,5 +675,34 @@ export const doctorService = {
       console.error(`Error getting diagnostics for doctor ${doctorId}:`, error);
       return {};
     }
+  },
+  
+
+  async updateAppointmentStatus(reservationId: number, status: string): Promise<boolean> {
+    try {
+      console.log(`Updating appointment ${reservationId} status to ${status}`);
+      
+      const url = `${apiUrl}/api/Doctors/appointments/${reservationId}/status`;
+      
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ status }) 
+      });
+      
+      if (!res.ok) {
+        const errorText = await res.text().catch(() => "Unknown error");
+        console.error(`Error updating appointment status: ${res.status} ${res.statusText}`, errorText);
+        throw new Error(`HTTP error! Status: ${res.status}, Details: ${errorText}`);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error(`Error updating appointment status for reservation ${reservationId}:`, error);
+      throw error;
+    }
   }
 };

@@ -9,9 +9,12 @@ import {
   Card,
   Spin,
   DatePicker,
+  Typography,
+  Modal,
 } from "antd";
 import PageBreadCrumb from "../../../components/PageBreadCrumb";
 import { doctorService } from "@/common/services/doctorService";
+import { specialtyService } from "@/common/services/specialtyService";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
@@ -54,6 +57,9 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
   const router = useRouter();
   const doctorId = parseInt(params.doctorId);
   const [editingUserId, setEditingUserId] = useState<number | null>(null);
+  const [specialties, setSpecialties] = useState<ISpecialty[]>([]);
+  const [selectedSpecialties, setSelectedSpecialties] = useState<number[]>([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -68,6 +74,28 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
           "API response data:",
           JSON.stringify(fetchedDoctorDetail, null, 2)
         );
+
+        const specialtyList = await specialtyService.getSpecialtyList();
+        setSpecialties(specialtyList);
+        
+        if (fetchedDoctorDetail.specialtyNames && fetchedDoctorDetail.specialtyNames.length > 0) {
+          try {
+            const matchedSpecialties = specialtyList.filter(s => 
+              fetchedDoctorDetail.specialtyNames.includes(s.specialtyName)
+            );
+            
+            if (matchedSpecialties.length > 0) {
+              const numericIds = matchedSpecialties
+                .map(s => s.specialtyId)
+                .map(id => typeof id === 'string' ? parseInt(id) : id)
+                .filter(id => !isNaN(id));
+              
+              setSelectedSpecialties(numericIds);
+            }
+          } catch (error) {
+            console.error("Error processing specialties:", error);
+          }
+        }
 
         const doctors = await doctorService.getDoctorList();
 
@@ -154,6 +182,7 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
           gender: fetchedDoctorDetail.gender,
           dateOfBirth: dobValue,
           address: fetchedDoctorDetail.address,
+          specialtyIds: selectedSpecialties,
         });
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
@@ -192,14 +221,19 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         }
       }
 
-      const citizenId = values.citizenId ? values.citizenId.toString() : "";
+      // Chuyển đổi citizenId thành số nguyên
+      const citizenIdNum = values.citizenId ? parseInt(values.citizenId.toString()) : 0;
+      if (isNaN(citizenIdNum)) {
+        message.error("Số CMND/CCCD không hợp lệ. Vui lòng nhập đúng định dạng số.");
+        return;
+      }
 
       if (!doctorDetail) {
         message.error("Không có thông tin bác sĩ!");
         return;
       }
 
-      const doctorData: IDoctorDetailDTO = {
+      const doctorData = {
         userId: doctorId.toString(),
         userName: values.userName,
         academicTitle: values.academicTitle,
@@ -227,7 +261,7 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         gender: values.gender,
         dob: dobValue,
         address: values.address,
-        citizenId: parseInt(citizenId) || 0,
+        citizenId: citizenIdNum,
         password:
           !values.password || values.password.trim() === ""
             ? actualPassword
@@ -235,9 +269,10 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         roleNames: "Doctor",
         isVerify: doctorDetail.isVerify,
         isActive: doctorDetail.isActive,
+        specialtyIds: values.specialtyIds,
       };
 
-      await doctorService.updateDoctor(doctorId, doctorData);
+      await doctorService.updateDoctor(doctorId, doctorData as any);
       message.success("Cập nhật thông tin bác sĩ thành công!");
       router.push("/admin/doctors");
     } catch (error) {
@@ -431,8 +466,24 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
               <Input placeholder="Nhập nơi công tác hiện tại" />
             </Form.Item>
 
-            <Form.Item name="organization" label="Tổ chức">
+            <Form.Item
+              name="organization"
+              label="Tổ chức"
+            >
               <Input placeholder="Nhập tổ chức" />
+            </Form.Item>
+
+            <Form.Item
+              name="specialtyIds"
+              label="Chuyên khoa"
+              rules={[{ required: true, message: "Vui lòng chọn ít nhất một chuyên khoa" }]}
+            >
+              <Select
+                mode="multiple"
+                placeholder="Chọn chuyên khoa"
+                style={{ width: '100%' }}
+                options={specialties.map(s => ({ label: s.specialtyName, value: s.specialtyId }))}
+              />
             </Form.Item>
           </div>
 

@@ -16,7 +16,7 @@ namespace AppointmentSchedulingApp.Application.IServices
         
         // New methods for doctor appointments
         Task<List<ReservationDTO>> GetDoctorAppointments(int doctorId, string status = "Xác nhận");
-        Task<bool> CancelAppointment(int reservationId, string cancellationReason);
+    
         Task<MedicalRecordDTO> CreateMedicalRecord(int reservationId, MedicalRecordDTO medicalRecordDTO);
         Task<bool> IsFirstTimePatient(int patientId);
         Task<List<MedicalRecordDTO>> GetPatientPreviousMedicalRecords(int patientId);
@@ -27,5 +27,12 @@ namespace AppointmentSchedulingApp.Application.IServices
         
         // New method to get medical records for a specific patient seen by a doctor
         Task<List<MedicalRecordDTO>> GetMedicalRecordsByPatientAndDoctorId(int doctorId, int patientId);
+
+        Task<ReservationDTO> GetAppointmentById(int reservationId);
+        Task<bool> RequestCancellation(int reservationId, string cancellationReason);
+        Task<bool> CancelAppointment(int reservationId, string cancellationReason);
+        
+        // Thêm phương thức mới
+        Task<bool> UpdateAppointmentStatus(int reservationId, string status);
     }
 }

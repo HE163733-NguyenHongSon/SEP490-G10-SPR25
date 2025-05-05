@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { RootState } from "@/patient/store";
+import { RootState } from "@/store";
 import {
   setSpecialtyId,
   setServiceId,

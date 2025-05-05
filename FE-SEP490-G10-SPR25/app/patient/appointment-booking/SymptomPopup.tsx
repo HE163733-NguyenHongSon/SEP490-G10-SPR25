@@ -12,9 +12,9 @@ import {
   setPatients,
   setShowBookingForm,
 } from "./redux/bookingSlice";
-import { RootState } from "../store";
+import { RootState } from "@/store";
 
-const PopupBody = () => {
+const SymptomPopup = () => {
   const { user } = useUser();
   const dispatch = useDispatch();
   const { symptoms, isLoading } = useSelector(
@@ -34,6 +34,7 @@ const PopupBody = () => {
   const handleSubmit = async () => {
     if (symptoms.trim().length > 2) {
       dispatch(setSymptoms(symptoms.trim()));
+      console.log("symptoms",symptoms.trim());
       const guardian: IPatient = {
         userId: patientDetail?.userId,
         userName: patientDetail?.userName,
@@ -70,9 +71,9 @@ const PopupBody = () => {
           <PaperAirplaneIcon className="w-6 h-6 text-cyan-500" />
         </button>
       </div>
-      <BookingForm />
+      <BookingForm  isUseSuggestion={true}/>
     </div>
   );
 };
 
-export default PopupBody;
+export default SymptomPopup;

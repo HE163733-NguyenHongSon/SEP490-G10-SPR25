@@ -4,17 +4,26 @@ import Image from "next/image";
 import Link from "next/link";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-
+import { useDispatch } from "react-redux";
 import RatingStars from "@/common/components/RatingStars";
+import { useRouter, useParams } from "next/navigation";
+import { useUser } from "@/common/contexts/UserContext";
+import { toast } from "react-toastify";
 
+import {
+  setSpecialtyId,
+  setDoctorId,
+  setServiceId,
+} from "@/patient/appointment-booking/redux/bookingSlice";
 interface ListServiceProps {
   items: IService[];
   displayView?: string;
+  isBooking?: boolean;
 }
 
-const ListService = ({ items, displayView }: ListServiceProps) => {
+const ListService = ({ items, displayView, isBooking }: ListServiceProps) => {
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
-
+  const { user } = useUser();
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -24,12 +33,35 @@ const ListService = ({ items, displayView }: ListServiceProps) => {
     tablet: { breakpoint: { max: 1024, min: 640 }, items: 2, slidesToSlide: 1 },
     mobile: { breakpoint: { max: 640, min: 0 }, items: 1, slidesToSlide: 1 },
   };
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const params = useParams();
+  const doctorId = params.doctorId as string;
+
+  const handleBooking = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    service: IService
+  ) => {
+    if (user) {
+      const button = e.currentTarget;
+      dispatch(setServiceId(button.value));
+      dispatch(setDoctorId(doctorId || ""));
+      dispatch(setSpecialtyId(String(service.specialtyId)));
+
+      router.push(`/patient/appointment-booking`);
+    } else {
+      toast.info("Vui lòng đăng nhập hoặc đăng ký để đặt khám.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      setTimeout(() => {
+        router.push("/common/auth/login");
+      }, 3000);
+    }
+  };
 
   const ServiceCard = ({ service }: { service: IService }) => (
-    <Link
-      href={`/patient/service-detail/${service.serviceId}`}
-      className="border border-gray-300 rounded-lg shadow-sm p-4 flex flex-col h-full min-h-[300px]"
-    >
+    <div className="border border-gray-300 rounded-lg shadow-sm p-4 flex flex-col h-full min-h-[300px]">
       <div className="relative h-40 w-full mb-3 overflow-hidden group rounded-md">
         <Image
           src={`${imgUrl}/${service.image}`}
@@ -58,7 +90,27 @@ const ListService = ({ items, displayView }: ListServiceProps) => {
         <p className="font-semibold">{service.price.toLocaleString()} VNĐ</p>
         {service.estimatedTime && <p>⏱ {service.estimatedTime}</p>}
       </div>
-    </Link>
+
+      <div className="mt-4">
+        {isBooking ? (
+          <button
+            value={service.serviceId}
+            type="button"
+            onClick={(e) => handleBooking(e, service)}
+            className="inline-block w-full text-center bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-md transition"
+          >
+            Đặt dịch vụ
+          </button>
+        ) : (
+          <Link
+            href={`/patient/service-detail/${service.serviceId}`}
+            className="inline-block w-full text-center bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-md transition"
+          >
+            Chi tiết
+          </Link>
+        )}
+      </div>
+    </div>
   );
 
   if (displayView === "slider") {

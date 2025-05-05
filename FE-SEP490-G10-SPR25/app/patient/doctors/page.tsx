@@ -1,4 +1,5 @@
 import DoctorsPage from "@/common/pages/DoctorsPage";
+import DoctorsLayout from "@/common/layouts/DoctorsLayout";
 
 export default function PatientDoctorsPage({
   searchParams,
@@ -12,5 +13,13 @@ export default function PatientDoctorsPage({
     displayView: string;
   };
 }) {
-  return <DoctorsPage isGuest={false} basePath="/patient" searchParams={searchParams} />;
+  return (
+    <DoctorsLayout basePath="/patient">
+      <DoctorsPage
+        isGuest={false}
+        basePath="/patient"
+        searchParams={searchParams}
+      />
+    </DoctorsLayout>
+  );
 }

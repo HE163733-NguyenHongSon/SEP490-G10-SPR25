@@ -1,11 +1,12 @@
 // BookingForm.tsx
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { RootState } from "@/store";
 import { useEffect, useCallback, useState } from "react";
 import { emailService } from "@/common/services/emailService";
 import { Provider } from "react-redux";
-import { store } from "../../store";
+import { store } from "@/store";
 import SuccessReservationMessage from "./SuccessReservationMessage";
+import { useRouter } from "next/navigation";
 
 import {
   setShowBookingForm,
@@ -24,6 +25,8 @@ import {
   setSelectedDate,
   setSelectedTime,
   setSymptoms,
+  setIsLoading,
+  setIsUseSuggestion,
 } from "../redux/bookingSlice";
 import PatientInfor from "./PatientInfor";
 import BookingInfor from "./BookingInfor";
@@ -32,10 +35,11 @@ import BookingStepper from "./BookingStepper";
 import { handleVNPayPayment } from "@/common/services/vnPayService";
 import { toast } from "react-toastify";
 import ReactDOMServer from "react-dom/server";
-const BookingForm = () => {
+const BookingForm = ({ isUseSuggestion }: { isUseSuggestion: boolean }) => {
   const dispatch = useDispatch();
   const [isMounted, setIsMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const {
     isShowBookingForm,
@@ -54,6 +58,7 @@ const BookingForm = () => {
 
   useEffect(() => {
     setIsMounted(true);
+    dispatch(setIsUseSuggestion(isUseSuggestion));
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -101,7 +106,6 @@ const BookingForm = () => {
       });
 
       setTimeout(() => confirmCancel(), 1000);
-     
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Đã xảy ra lỗi khi đặt lịch";
@@ -137,7 +141,9 @@ const BookingForm = () => {
     dispatch(setSelectedPatient(null));
     dispatch(setSuggestionData(null));
     dispatch(setSymptoms(""));
+    dispatch(setIsLoading(false));
     dispatch(setIsShowRestoreSuggestion(false));
+    router.push("/patient");
   }, [dispatch]);
 
   if (!isShowBookingForm) return null;
@@ -175,7 +181,7 @@ const BookingForm = () => {
             </svg>
             Quay lại
           </button>
-          {currentStep < 3 && (
+          {currentStep < 3 && symptoms && (
             <button
               onClick={() => dispatch(setCurrentStep(currentStep + 1))}
               className="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700 transition"

@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import { RootState } from "../../store";
+import { RootState } from"@/store";
 
 const SuccessReservationMessage = () => {
   const {

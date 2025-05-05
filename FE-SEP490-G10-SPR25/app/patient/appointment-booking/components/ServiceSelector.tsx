@@ -5,7 +5,7 @@ import { User } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { serviceService } from "@/common/services/serviceService";
 import { setServices, setServiceId, setIsLoading } from "../redux/bookingSlice";
-import { RootState } from "../../store";
+import { RootState } from "@/store";
 
 const ServiceSelector = () => {
   const dispatch = useDispatch();

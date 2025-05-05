@@ -34,12 +34,12 @@ interface PostDetail {
   authorName?: string;
   postSections: PostSection[];
   comments: Comment[];
+  authorId?: number;
 }
 
 const DoctorBlogDetailPage = () => {
   const params = useParams();
   const id = params?.id;
-
   const [post, setPost] = useState<PostDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +52,6 @@ const DoctorBlogDetailPage = () => {
   const [editedContent, setEditedContent] = useState("");
   const [replyingToId, setReplyingToId] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState("");
-
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -164,10 +163,7 @@ const DoctorBlogDetailPage = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            content: editedContent,
-            userId: currentUserId,
-          }),
+          body: JSON.stringify(editedContent),
         }
       );
 
@@ -447,7 +443,7 @@ const DoctorBlogDetailPage = () => {
           {post.authorName ?? "Ẩn danh"}
         </p>
 
-        {post.postImageUrl && (
+        {/* {post.postImageUrl && (
           <div className="relative w-full h-[400px] mb-8 rounded-xl overflow-hidden shadow-lg">
             <img
               src={`${process.env.NEXT_PUBLIC_S3_BASE_URL}/${post.postImageUrl}`}
@@ -455,7 +451,7 @@ const DoctorBlogDetailPage = () => {
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
             />
           </div>
-        )}
+        )} */}
 
         <p className="text-lg text-gray-700 mb-8 leading-relaxed">
           {post.postDescription}

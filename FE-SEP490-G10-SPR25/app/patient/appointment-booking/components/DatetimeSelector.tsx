@@ -10,7 +10,7 @@ import {
   setAvailableDates,
 } from "../redux/bookingSlice";
 import { FaCalendar as Calendar, FaClock as Clock } from "react-icons/fa";
-import { RootState } from "../../store";
+import { RootState } from "@/store";;
 
 interface ITimeOption {
   value: string;
@@ -37,7 +37,6 @@ const DatetimeSelector = () => {
     suggestionData,
     availableSchedules,
     availableDates,
-    isLoading,
     isShowRestoreSuggestion,
     customSelectStyles,
   } = useSelector((state: RootState) => state.booking);
@@ -201,9 +200,9 @@ const DatetimeSelector = () => {
         </div>
       )}
 
-      {availableDates.length === 0 && !isLoading && (
+      {/* {availableDates.length === 0 && !isLoading && (
         <div className="text-sm text-red-500">Không có lịch khả dụng.</div>
-      )}
+      )} */}
     </div>
   );
 };

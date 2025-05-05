@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { ServiceList } from "../../patient/components/ServiceList";
-import ListService from "../../patient/components/ListService";
+import { ServiceList } from "../../guest/components/ServiceList";
+import ListService from "../../guest/components/ListService";
 import { serviceService } from "../services/serviceService";
 
 interface ServicesPageProps {
@@ -60,4 +60,4 @@ const ServicesPage = ({ isGuest = false, basePath }: ServicesPageProps) => {
   );
 };
 
-export default ServicesPage; 
+export default ServicesPage;

@@ -1,29 +1,101 @@
+"use client";
+import React, { useEffect, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import Image from "next/image";
-import BackButton from "@/common/components/BackButton";
+import Link from "next/link";
 import { doctorService } from "@/common/services/doctorService";
 import CollapsibleSection from "@/common/components/CollapsibleSection";
 import { assets } from "@/public/images/assets";
-import ScheduleTab from "@/patient/doctors/components/ScheduleTab";
-import { DoctorList } from "@/patient/components/DoctorList";
-import ListService from "@/patient/components/ListService";
+import { DoctorList } from "@/guest/components/DoctorList";
+import ListService from "@/guest/components/ListService";
 import { feedbackService } from "@/common/services/feedbackService";
-import FeedbackList from "@/patient/components/FeedbackList";
+import FeedbackList from "@/guest/components/FeedbackList";
 
-export default async function DoctorDetails({
-  params,
-}: {
-  params: { doctorId: string };
-}) {
-  const doctorDetail: IDoctorDetailDTO =
-    await doctorService.getDoctorDetailById(params.doctorId);
+interface DoctorDetailPageProps {
+  params: {
+    doctorId: string;
+  };
+}
+
+const DoctorDetailPage = ({ params }: DoctorDetailPageProps) => {
+  const [doctorDetail, setDoctorDetail] = useState<IDoctorDetailDTO | null>(
+    null
+  );
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("overview");
+  const [retries, setRetries] = useState(0);
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
+
   const routes = [
     { value: "overview", name: "Tổng quan" },
-    { value: "schedule", name: "Lịch bác sĩ" },
     { value: "services", name: "Dịch vụ đảm nhận" },
     { value: "reviews", name: "Bình luận đánh giá" },
   ];
+
+  useEffect(() => {
+    const fetchDoctorDetail = async () => {
+      try {
+        setLoading(true);
+        const doctorId = parseInt(params.doctorId);
+        if (isNaN(doctorId)) {
+          setError("ID bác sĩ không hợp lệ");
+          setLoading(false);
+          return;
+        }
+
+        const doctorData = await doctorService.getDoctorDetailById(doctorId);
+        setDoctorDetail(doctorData);
+        setError(null);
+        setLoading(false);
+      } catch (error: unknown) {
+        console.error("Lỗi khi tải chi tiết bác sĩ:", error);
+        const errorMessage =
+          error instanceof Error && error.message.includes("404")
+            ? "Không tìm thấy bác sĩ"
+            : "Không thể tải thông tin bác sĩ. Vui lòng thử lại sau.";
+        setError(errorMessage);
+        setLoading(false);
+      }
+    };
+
+    fetchDoctorDetail();
+  }, [params.doctorId, retries]);
+
+  const handleRetry = () => {
+    setRetries((prev) => prev + 1);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center pt-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
+      </div>
+    );
+  }
+
+  if (error || !doctorDetail) {
+    return (
+      <div className="min-h-screen w-full flex flex-col items-center justify-center pt-20">
+        <p className="text-red-500">{error || "Không tìm thấy bác sĩ"}</p>
+        <div className="mt-4 flex space-x-4">
+          <button
+            onClick={handleRetry}
+            className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600"
+          >
+            Thử lại
+          </button>
+          <Link
+            href="/guest/doctors"
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+          >
+            Quay lại danh sách bác sĩ
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const doctorFeedbacks = feedbackService.extractDoctorFeedback(
     doctorDetail.feedbacks
   );
@@ -31,15 +103,20 @@ export default async function DoctorDetails({
   return (
     <div
       className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center z-10"
+      style={{ backgroundImage: 'url("/images/background_doctors.jpeg")' }}
     >
+      <div className="absolute inset-0 bg-black bg-opacity-50 z-20"></div>
 
-      <div className="border border-gray-300 relative container w-90 text-gray-600 p-5 mt-10 mb-5 z-30 bg-white rounded-xl shadow-2xl">
+      <div className="relative container w-90 text-gray-600 p-5 mt-20 mb-5 z-30 bg-white rounded-xl shadow-2xl">
         <div className="flex flex-row p-6">
-          <BackButton />
           <div className="relative h-[100px] w-[100px]">
             <Image
               className="rounded-lg object-cover"
-              src={`${imgUrl}/${doctorDetail.avatarUrl}`}
+              src={
+                doctorDetail.avatarUrl
+                  ? `${imgUrl}/${doctorDetail.avatarUrl}`
+                  : "/images/placeholder-doctor.png"
+              }
               fill
               alt="avatar doctor"
             />
@@ -98,14 +175,21 @@ export default async function DoctorDetails({
                 bệnh nhân đã khám
               </p>
             </div>
-            <button className="px-3 w-fit bg-cyan-500 text-white rounded-full">
-              Hẹn bác sĩ
-            </button>
+
+            {/* <Link href="/common/auth/login">
+              <button className="px-4 py-2 bg-cyan-500 text-white rounded-full hover:bg-cyan-600 transition">
+                Đăng nhập để đặt lịch
+              </button>
+            </Link> */}
           </div>
         </div>
 
         {/* Tabs */}
-        <Tabs.Root defaultValue="overview">
+        <Tabs.Root
+          defaultValue="overview"
+          onValueChange={setActiveTab}
+          value={activeTab}
+        >
           <Tabs.List className="flex border-b border-gray-300 px-6">
             {routes.map((route) => (
               <Tabs.Trigger
@@ -145,27 +229,56 @@ export default async function DoctorDetails({
                 titleImage={assets.research_work}
               />
             </Tabs.Content>
-            <Tabs.Content value="schedule">
-              <ScheduleTab />
-            </Tabs.Content>
+
+            {/* <Tabs.Content value="schedule">
+              <div className="text-center py-6">
+                <p className="text-lg mb-4">
+                  Bạn cần đăng nhập để xem lịch của bác sĩ
+                </p>
+                <Link href="/common/auth/login">
+                  <button className="px-6 py-2 bg-cyan-500 text-white rounded-full hover:bg-cyan-600 transition">
+                    Đăng nhập ngay
+                  </button>
+                </Link>
+              </div>
+            </Tabs.Content> */}
+
             <Tabs.Content value="services">
-              <ListService items={doctorDetail.services} displayView="slider" />
+              <ListService
+                items={doctorDetail.services}
+                displayView="slider"
+                isBooking={true}
+              />
             </Tabs.Content>
             <Tabs.Content value="reviews">
               <FeedbackList feedbacks={doctorFeedbacks} displayView="list" />
             </Tabs.Content>
           </div>
-          <div className=" h-[60vh] overflow-y-auto flex flex-col  items-center justify-center">
-            <h6 className="max-w-fit text-xl  font-bold text-center   text-gray-600   drop-shadow-sm">
+          <div className="h-[60vh] overflow-y-auto flex flex-col items-center justify-center">
+            <h6 className="max-w-fit text-xl font-bold text-center text-gray-600 drop-shadow-sm">
               Các bác sĩ cùng chuyên khoa
             </h6>
             <DoctorList
               items={doctorDetail.relevantDoctors}
               displayView="slider"
+              userType="guest"
             />
           </div>
         </Tabs.Root>
+
+        {/* <div className="text-center mt-6 pb-4">
+          <p className="text-lg mb-4">
+            Hãy đăng nhập để đặt lịch khám với bác sĩ {doctorDetail.userName}
+          </p>
+          <Link href="/common/auth/login">
+            <button className="bg-cyan-500 hover:bg-cyan-600 px-6 py-3 rounded-lg text-white text-lg font-medium">
+              Đăng nhập để đặt lịch khám
+            </button>
+          </Link>
+        </div> */}
       </div>
     </div>
   );
-}
+};
+
+export default DoctorDetailPage;

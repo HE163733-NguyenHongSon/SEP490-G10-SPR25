@@ -1,7 +1,7 @@
 "use client";
 import { useSelector } from "react-redux";
 import { CheckCircle, User, Calendar, Check } from "lucide-react";
-import { RootState } from "../../store";
+import { RootState } from "@/store";
 
 const BookingStepper = () => {
   const currentStep = useSelector(

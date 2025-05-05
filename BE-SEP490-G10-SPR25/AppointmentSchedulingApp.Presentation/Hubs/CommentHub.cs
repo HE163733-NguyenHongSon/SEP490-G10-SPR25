@@ -6,11 +6,13 @@ namespace AppointmentSchedulingApp.Presentation.Hubs
     {
         public async Task SendComment(object message)
         {
-            // ✅ In ra console trước khi gửi
             Console.WriteLine($"[Hub] Received comment: {message}");
-
-            // ✅ Gửi lại message tới tất cả client
             await Clients.All.SendAsync("ReceiveComment", message);
+        }
+        public async Task UpdateComment(object updatedComment)
+        {
+            Console.WriteLine($"[Hub] Update comment: {updatedComment}");
+            await Clients.All.SendAsync("UpdateComment", updatedComment);
         }
         public async Task DeleteComment(int commentId)
         {

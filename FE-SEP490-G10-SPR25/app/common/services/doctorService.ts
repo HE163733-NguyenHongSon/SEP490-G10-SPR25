@@ -107,7 +107,6 @@ export const doctorService = {
         throw new Error("API URL is not configured");
       }
       
-      console.log(`Fetching doctor detail from: ${apiUrl}/api/Doctors/${doctorId}`);
       const res = await fetch(`${apiUrl}/api/Doctors/${doctorId}`, {
         cache: 'no-store',
         headers: {

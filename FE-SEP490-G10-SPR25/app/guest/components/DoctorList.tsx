@@ -9,10 +9,16 @@ import Carousel from "react-multi-carousel";
 interface DoctorListProps {
   items: IDoctor[];
   displayView?: string;
-  userType?: 'guest' | 'patient';
+  userType?: "guest" | "patient";
+  isBooking?: boolean;
 }
 
-export const DoctorList = ({ items, displayView, userType = 'patient' }: DoctorListProps) => {
+export const DoctorList = ({
+  items,
+  displayView,
+  userType = "patient",
+  isBooking = false,
+}: DoctorListProps) => {
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
   // Cấu hình responsive cho carousel
@@ -35,10 +41,10 @@ export const DoctorList = ({ items, displayView, userType = 'patient' }: DoctorL
   };
 
   const getDoctorDetailUrl = (doctorId: number | string | undefined) => {
-    if (!doctorId) return '#';
-    return userType === 'guest' 
-      ? `/guest/doctors/doctor-detail/${doctorId}` 
-      : `/patient/doctors/doctor-detail/${doctorId}`;
+    if (!doctorId) return "#";
+    return userType === "guest"
+      ? `/guest/doctors/${doctorId}`
+      : `/patient/doctors/${doctorId}`;
   };
 
   const DoctorCard = ({ doctor }: { doctor: IDoctor }) => (
@@ -51,17 +57,17 @@ export const DoctorList = ({ items, displayView, userType = 'patient' }: DoctorL
       </h1>
 
       <div className="grid grid-cols-3 my-3">
-        <div className="gap-3 col-span-1 flex flex-col items-center justify-start p-2 border-r border-gray-300">
-          <div className="relative h-[100px] w-[100px]">
+        <div className="gap-3 col-span-1 flex flex-col items-center justify-start px-5 border-r border-gray-300">
+          <div className="relative h-40 w-full mb-3 overflow-hidden group rounded-md">
             <Image
-              className="rounded-lg object-cover"
+              className="object-cover transform transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg"
               src={`${imgUrl}/${doctor.avatarUrl}`}
               fill
               alt="avatar doctor"
             />
           </div>
           <button className="bg-cyan-500 text-white px-3 rounded-full my-5">
-            {userType === 'guest' ? 'Xem chi tiết' : 'Hẹn bác sĩ'}
+            {!isBooking ? "Chi tiết" : "Hẹn bác sĩ"}
           </button>
         </div>
         <div className="col-span-2 flex flex-col items-start text-start justify-between font-sans pl-4">

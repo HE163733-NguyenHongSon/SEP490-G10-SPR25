@@ -66,22 +66,22 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     icon: <DashboardIcon />,
-    name: "Dashboard",
+    name: "Trang Chủ",
     path: "/admin",
   },
   {
     icon: <AccountIcon />,
-    name: "Accounts",
+    name: "Tài Khoản",
     path: "/admin/accounts",
   },
   {
     icon: <DoctorIcon />,
-    name: "Doctors",
+    name: "Bác Sĩ",
     path: "/admin/doctors",
   },
   {
     icon: <ServiceIcon />,
-    name: "Services",
+    name: "Dịch Vụ",
     path: "/admin/services",
   },
   {

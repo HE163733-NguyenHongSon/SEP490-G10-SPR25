@@ -109,7 +109,7 @@ const ServicesManagement = () => {
       if (editingService) {
         const payload = {
           ...values,
-          serviceId: Number(editingService.serviceId),
+          serviceId: String(editingService.serviceId),
           overview: values.overview || "",
           process: values.process || "",
           treatmentTechniques: values.treatmentTechniques || "",

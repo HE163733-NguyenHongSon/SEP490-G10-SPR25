@@ -109,7 +109,7 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Edit profile
+              Chỉnh sửa hồ sơ
             </DropdownItem>
           </li>
           <li>
@@ -134,7 +134,7 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Account settings
+              Cài đặt tài khoản
             </DropdownItem>
           </li>
           <li>
@@ -159,7 +159,7 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Support
+              Hỗ trợ
             </DropdownItem>
           </li>
         </ul>

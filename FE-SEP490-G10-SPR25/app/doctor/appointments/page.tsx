@@ -44,20 +44,14 @@ export default function DoctorAppointmentsPage() {
 
   // Debug: Log the grouped appointments
   useEffect(() => {
-    console.log("Grouped appointments:", Object.keys(appointmentsByDate));
-    console.log("Total appointments:", appointments.length);
     if (appointments.length > 0) {
-      console.log("Sample appointment data:", appointments[0]);
-      // Debug thêm thông tin patientName
-      console.log("PatientName:", appointments[0].patientName);
-      console.log("Patient userName:", appointments[0].patient?.userName);
+     
     }
   }, [appointments, appointmentsByDate]);
 
   // Get current user ID from auth
   useEffect(() => {
     const user = getCurrentUser();
-    console.log("Current logged in user:", user);
     setCurrentDoctor(user);
   }, []);
 
@@ -77,21 +71,15 @@ export default function DoctorAppointmentsPage() {
         setLoading(true);
         setError(null);
         const doctorId = getUserId();
-        console.log(
-          `Starting to fetch appointments for doctor ${doctorId} with status ${statusFilter}`
-        );
+        
 
         const data = await doctorService.getDoctorAppointments(
           doctorId,
           statusFilter
         );
-        console.log(
-          `Fetch complete. Received ${data.length} appointments from service`
-        );
-
+       
         setAppointments(data);
         if (data.length === 0) {
-          console.log("No appointments found for the selected status");
         }
       } catch (error) {
         console.error("Error fetching appointments:", error);
@@ -140,7 +128,6 @@ export default function DoctorAppointmentsPage() {
   };
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log("Changing status filter to:", e.target.value);
     setStatusFilter(e.target.value);
   };
 
@@ -157,7 +144,6 @@ export default function DoctorAppointmentsPage() {
 
   // Debug: Check if we have any dates to render
   const hasAppointments = Object.keys(appointmentsByDate).length > 0;
-  console.log("Has appointments to render:", hasAppointments);
 
   // Get current date in local date format (no time)
   const today = useMemo(() => {

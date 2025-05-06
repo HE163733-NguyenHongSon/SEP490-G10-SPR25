@@ -33,13 +33,11 @@ export default function DoctorDashboardPage() {
         setLoading(true);
         setError(null);
         const doctorId = getUserId();
-        console.log(`Fetching appointments for doctor ${doctorId}`);
 
         const data = await doctorService.getDoctorAppointments(
           doctorId,
           "Xác nhận"
         );
-        console.log(`Received ${data.length} appointments from service`);
 
         setAppointments(data);
 
@@ -48,7 +46,6 @@ export default function DoctorDashboardPage() {
         const today = new Date();
         const todayDateStr = `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
         
-        console.log(`Today's date for comparison: ${todayDateStr}`);
         
         const todayAppts = data.filter((appointment) => {
           // Chuyển đổi ngày trong appointment thành định dạng dd/MM/yyyy để so sánh
@@ -56,13 +53,11 @@ export default function DoctorDashboardPage() {
           const apptDateStr = `${apptDate.getDate().toString().padStart(2, '0')}/${(apptDate.getMonth() + 1).toString().padStart(2, '0')}/${apptDate.getFullYear()}`;
           
           // Log để debug
-          console.log(`Comparing appointment date: ${apptDateStr} with today: ${todayDateStr}`);
           
           return apptDateStr === todayDateStr;
         });
 
         setTodayAppointments(todayAppts);
-        console.log(`Found ${todayAppts.length} appointments for today`);
       } catch (error) {
         console.error("Error fetching appointments:", error);
         setError(
@@ -79,21 +74,9 @@ export default function DoctorDashboardPage() {
   }, []);
 
   return (
-    <div className="grid grid-cols-12 gap-4 md:gap-6">
-      <div className="col-span-12">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Trang Quản Lý Bác Sĩ</h1>
-          <div className="flex space-x-2">
-            <Link href="/doctor/appointments">
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                Xem Lịch Hẹn
-              </button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      <div className="col-span-12 p-6 bg-white rounded-lg shadow">
+    <div className="space-y-6">
+      {/* Lịch hẹn hôm nay - full width */}
+      <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold mb-4">Lịch Hẹn Hôm Nay</h2>
         <div className="border rounded-lg overflow-hidden">
           {loading ? (
@@ -198,287 +181,192 @@ export default function DoctorDashboardPage() {
         </div>
       </div>
 
-      <div className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-6 bg-white rounded-lg shadow">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Thao Tác Nhanh</h2>
-          </div>
-          <div className="space-y-3">
-            <Link
-              href="/doctor/schedule"
-              className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
-            >
-              <div className="bg-blue-100 p-2 rounded-full mr-3">
-                <Clock className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="font-medium">Cập Nhật Lịch Làm Việc</p>
-                <p className="text-sm text-gray-500">
-                  Quản lý thời gian làm việc
-                </p>
-              </div>
-            </Link>
-            <Link
-              href="/doctor/profile"
-              className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
-            >
-              <div className="bg-green-100 p-2 rounded-full mr-3">
-                <User className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <p className="font-medium">Chỉnh Sửa Hồ Sơ</p>
-                <p className="text-sm text-gray-500">
-                  Cập nhật thông tin cá nhân
-                </p>
-              </div>
-            </Link>
-            <Link
-              href="/doctor/blogs/new"
-              className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
-            >
-              <div className="bg-blue-100 p-2 rounded-full mr-3">
-                <BookOpen className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="font-medium">Viết Bài Cẩm Nang</p>
-                <p className="text-sm text-gray-500">
-                  Chia sẻ kiến thức y khoa
-                </p>
-              </div>
-            </Link>
-          </div>
-        </div>
-
-        <div className="p-6 bg-white rounded-lg shadow">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Đánh Giá Của Tôi</h2>
-            <Link
-              href="/doctor/ratings"
-              className="text-sm text-blue-600 hover:text-blue-800"
-            >
-              Xem Tất Cả
-            </Link>
-          </div>
-          <div className="flex items-center mb-4">
-            <div className="bg-yellow-50 p-4 rounded-full mr-3">
-              <Star className="h-6 w-6 text-yellow-500 fill-yellow-500" />
+      {/* Grid 2 cột bên dưới */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Cột trái */}
+        <div className="space-y-6">
+          {/* Lịch sắp tới */}
+          <div className="p-6 bg-white rounded-lg shadow">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">Lịch Sắp Tới</h2>
+              <Link href="/doctor/appointments" className="text-sm text-blue-600 hover:text-blue-800">Xem Lịch</Link>
             </div>
-            <div>
-              <div className="flex items-center">
-                <span className="text-3xl font-bold">4.8</span>
-                <span className="text-sm text-gray-500 ml-2">/ 5.0</span>
+            {loading ? (
+              <div className="p-4 text-center">
+                <p>Đang tải dữ liệu...</p>
               </div>
-              <p className="text-sm text-gray-500">Dựa trên 157 đánh giá</p>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center text-sm">
-              <span className="w-14">5 sao</span>
-              <div className="flex-1 mx-2 bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-blue-600 h-2 rounded-full"
-                  style={{ width: "75%" }}
-                ></div>
+            ) : error ? (
+              <div className="p-4 text-center text-red-600">
+                <p>{error}</p>
               </div>
-              <span className="w-9 text-right">75%</span>
-            </div>
-            <div className="flex items-center text-sm">
-              <span className="w-14">4 sao</span>
-              <div className="flex-1 mx-2 bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-blue-600 h-2 rounded-full"
-                  style={{ width: "20%" }}
-                ></div>
+            ) : appointments.length === 0 ? (
+              <div className="p-4 text-center text-gray-600">
+                <p>Không có lịch hẹn nào sắp tới</p>
               </div>
-              <span className="w-9 text-right">20%</span>
-            </div>
-            <div className="flex items-center text-sm">
-              <span className="w-14">3 sao</span>
-              <div className="flex-1 mx-2 bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-blue-600 h-2 rounded-full"
-                  style={{ width: "5%" }}
-                ></div>
-              </div>
-              <span className="w-9 text-right">5%</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="p-6 bg-white rounded-lg shadow">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Hồ Sơ Y Tế</h2>
-            <Link
-              href="/doctor/medical-records"
-              className="text-sm text-blue-600 hover:text-blue-800"
-            >
-              Xem Tất Cả
-            </Link>
-          </div>
-          <div className="space-y-3">
-            <div className="p-3 border rounded-lg">
-              <div className="flex justify-between">
-                <p className="font-medium">John Smith</p>
-                <span className="text-xs text-gray-500">Hôm nay</span>
-              </div>
-              <p className="text-sm text-gray-500">Tạo hồ sơ y tế mới</p>
-            </div>
-            <div className="p-3 border rounded-lg">
-              <div className="flex justify-between">
-                <p className="font-medium">Mary Johnson</p>
-                <span className="text-xs text-gray-500">Hôm qua</span>
-              </div>
-              <p className="text-sm text-gray-500">
-                Cập nhật kế hoạch điều trị
-              </p>
-            </div>
-            <div className="p-3 border rounded-lg">
-              <div className="flex justify-between">
-                <p className="font-medium">Robert Brown</p>
-                <span className="text-xs text-gray-500">2 ngày trước</span>
-              </div>
-              <p className="text-sm text-gray-500">Thêm ghi chú tái khám</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="col-span-12 md:col-span-6 p-6 bg-white rounded-lg shadow">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">Lịch Sắp Tới</h2>
-          <Link
-            href="/doctor/appointments"
-            className="text-sm text-blue-600 hover:text-blue-800"
-          >
-            Xem Lịch
-          </Link>
-        </div>
-        {loading ? (
-          <div className="p-4 text-center">
-            <p>Đang tải dữ liệu...</p>
-          </div>
-        ) : error ? (
-          <div className="p-4 text-center text-red-600">
-            <p>{error}</p>
-          </div>
-        ) : appointments.length === 0 ? (
-          <div className="p-4 text-center text-gray-600">
-            <p>Không có lịch hẹn nào sắp tới</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {/* Group appointments by date */}
-            {Object.entries(
-              appointments.reduce(
-                (groups: Record<string, IReservation[]>, appointment) => {
-                  const date = new Date(
-                    appointment.appointmentDate
-                  ).toLocaleDateString("vi-VN");
-                  if (!groups[date]) {
-                    groups[date] = [];
-                  }
-                  groups[date].push(appointment);
-                  return groups;
-                },
-                {}
-              )
-            )
-              .slice(0, 3)
-              .map(([date, dateAppointments]) => (
-                <div
-                  key={date}
-                  className="p-3 border rounded-lg flex justify-between items-center"
-                >
-                  <div className="flex items-start space-x-3">
-                    <div className="bg-blue-100 p-2 rounded-full">
-                      <Calendar className="h-5 w-5 text-blue-600" />
+            ) : (
+              <div className="space-y-3">
+                {/* Group appointments by date */}
+                {Object.entries(
+                  appointments.reduce(
+                    (groups: Record<string, IReservation[]>, appointment) => {
+                      const date = new Date(
+                        appointment.appointmentDate
+                      ).toLocaleDateString("vi-VN");
+                      if (!groups[date]) {
+                        groups[date] = [];
+                      }
+                      groups[date].push(appointment);
+                      return groups;
+                    },
+                    {}
+                  )
+                )
+                  .slice(0, 3)
+                  .map(([date, dateAppointments]) => (
+                    <div
+                      key={date}
+                      className="p-3 border rounded-lg flex justify-between items-center"
+                    >
+                      <div className="flex items-start space-x-3">
+                        <div className="bg-blue-100 p-2 rounded-full">
+                          <Calendar className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium">
+                            {date} - {dateAppointments.length} Cuộc hẹn
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {dateAppointments.length > 0 &&
+                              dateAppointments[0].doctorSchedule?.slotStartTime?.substring(
+                                0,
+                                5
+                              )}{" "}
+                            -
+                            {dateAppointments.length > 0 &&
+                              dateAppointments[
+                                dateAppointments.length - 1
+                              ].doctorSchedule?.slotEndTime?.substring(0, 5)}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium">
-                        {date} - {dateAppointments.length} Cuộc hẹn
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {dateAppointments.length > 0 &&
-                          dateAppointments[0].doctorSchedule?.slotStartTime?.substring(
-                            0,
-                            5
-                          )}{" "}
-                        -
-                        {dateAppointments.length > 0 &&
-                          dateAppointments[
-                            dateAppointments.length - 1
-                          ].doctorSchedule?.slotEndTime?.substring(0, 5)}
-                      </p>
+                  ))}
+              </div>
+            )}
+          </div>
+          {/* Thao tác nhanh */}
+          <div className="p-6 bg-white rounded-lg shadow">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">Thao Tác Nhanh</h2>
+            </div>
+            <div className="space-y-3">
+              <Link
+                href="/doctor/schedule"
+                className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
+              >
+                <div className="bg-blue-100 p-2 rounded-full mr-3">
+                  <Clock className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-medium">Cập Nhật Lịch Làm Việc</p>
+                  <p className="text-sm text-gray-500">
+                    Quản lý thời gian làm việc
+                  </p>
+                </div>
+              </Link>
+              <Link
+                href="/doctor/profile"
+                className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
+              >
+                <div className="bg-green-100 p-2 rounded-full mr-3">
+                  <User className="h-5 w-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="font-medium">Chỉnh Sửa Hồ Sơ</p>
+                  <p className="text-sm text-gray-500">
+                    Cập nhật thông tin cá nhân
+                  </p>
+                </div>
+              </Link>
+              <Link
+                href="/doctor/blogs/new"
+                className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
+              >
+                <div className="bg-blue-100 p-2 rounded-full mr-3">
+                  <BookOpen className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-medium">Viết Bài Cẩm Nang</p>
+                  <p className="text-sm text-gray-500">
+                    Chia sẻ kiến thức y khoa
+                  </p>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+        {/* Cột phải */}
+        <div className="space-y-6">
+          {/* Cẩm nang gần đây */}
+          <div className="p-6 bg-white rounded-lg shadow">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">Cẩm Nang Gần Đây</h2>
+              <Link href="/doctor/blogs" className="text-sm text-blue-600 hover:text-blue-800">Xem Tất Cả</Link>
+            </div>
+            <div className="space-y-4">
+              <div className="border rounded-lg overflow-hidden">
+                <div className="p-4">
+                  <h3 className="font-medium mb-1">
+                    Hiểu Về Tăng Huyết Áp: Nguyên Nhân và Phòng Ngừa
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-2">Đăng ngày 10/05/2023</p>
+                  <p className="text-sm text-gray-700 line-clamp-2">
+                    Tăng huyết áp ảnh hưởng đến hàng triệu người trên toàn thế giới
+                    và là nguyên nhân hàng đầu gây bệnh tim. Trong bài viết này,
+                    chúng tôi thảo luận về các nguyên nhân phổ biến và chiến lược
+                    phòng ngừa...
+                  </p>
+                  <div className="mt-3 flex justify-between items-center">
+                    <div className="flex items-center text-xs text-gray-500">
+                      <span>542 lượt xem</span>
+                      <span className="mx-2">•</span>
+                      <span>15 bình luận</span>
                     </div>
+                    <Link
+                      href="/doctor/blogs/edit/1"
+                      className="text-blue-600 hover:text-blue-800 text-sm"
+                    >
+                      Chỉnh sửa
+                    </Link>
                   </div>
                 </div>
-              ))}
-          </div>
-        )}
-      </div>
-
-      <div className="col-span-12 md:col-span-6 p-6 bg-white rounded-lg shadow">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">Cẩm Nang Gần Đây</h2>
-          <Link
-            href="/doctor/blogs"
-            className="text-sm text-blue-600 hover:text-blue-800"
-          >
-            Xem Tất Cả
-          </Link>
-        </div>
-        <div className="space-y-4">
-          <div className="border rounded-lg overflow-hidden">
-            <div className="p-4">
-              <h3 className="font-medium mb-1">
-                Hiểu Về Tăng Huyết Áp: Nguyên Nhân và Phòng Ngừa
-              </h3>
-              <p className="text-sm text-gray-500 mb-2">Đăng ngày 10/05/2023</p>
-              <p className="text-sm text-gray-700 line-clamp-2">
-                Tăng huyết áp ảnh hưởng đến hàng triệu người trên toàn thế giới
-                và là nguyên nhân hàng đầu gây bệnh tim. Trong bài viết này,
-                chúng tôi thảo luận về các nguyên nhân phổ biến và chiến lược
-                phòng ngừa...
-              </p>
-              <div className="mt-3 flex justify-between items-center">
-                <div className="flex items-center text-xs text-gray-500">
-                  <span>542 lượt xem</span>
-                  <span className="mx-2">•</span>
-                  <span>15 bình luận</span>
-                </div>
-                <Link
-                  href="/doctor/blogs/edit/1"
-                  className="text-blue-600 hover:text-blue-800 text-sm"
-                >
-                  Chỉnh sửa
-                </Link>
               </div>
-            </div>
-          </div>
 
-          <div className="border rounded-lg overflow-hidden">
-            <div className="p-4">
-              <h3 className="font-medium mb-1">
-                Hướng Dẫn Dinh Dưỡng Cho Bệnh Nhân Tiểu Đường
-              </h3>
-              <p className="text-sm text-gray-500 mb-2">Đăng ngày 05/05/2023</p>
-              <p className="text-sm text-gray-700 line-clamp-2">
-                Chế độ ăn uống đóng vai trò quan trọng trong việc kiểm soát bệnh
-                tiểu đường. Bài viết này cung cấp các hướng dẫn cụ thể về những
-                loại thực phẩm nên ăn và nên tránh...
-              </p>
-              <div className="mt-3 flex justify-between items-center">
-                <div className="flex items-center text-xs text-gray-500">
-                  <span>328 lượt xem</span>
-                  <span className="mx-2">•</span>
-                  <span>7 bình luận</span>
+              <div className="border rounded-lg overflow-hidden">
+                <div className="p-4">
+                  <h3 className="font-medium mb-1">
+                    Hướng Dẫn Dinh Dưỡng Cho Bệnh Nhân Tiểu Đường
+                  </h3>
+                  <p className="text-sm text-gray-500 mb-2">Đăng ngày 05/05/2023</p>
+                  <p className="text-sm text-gray-700 line-clamp-2">
+                    Chế độ ăn uống đóng vai trò quan trọng trong việc kiểm soát bệnh
+                    tiểu đường. Bài viết này cung cấp các hướng dẫn cụ thể về những
+                    loại thực phẩm nên ăn và nên tránh...
+                  </p>
+                  <div className="mt-3 flex justify-between items-center">
+                    <div className="flex items-center text-xs text-gray-500">
+                      <span>328 lượt xem</span>
+                      <span className="mx-2">•</span>
+                      <span>7 bình luận</span>
+                    </div>
+                    <Link
+                      href="/doctor/blogs/edit/2"
+                      className="text-blue-600 hover:text-blue-800 text-sm"
+                    >
+                      Chỉnh sửa
+                    </Link>
+                  </div>
                 </div>
-                <Link
-                  href="/doctor/blogs/edit/2"
-                  className="text-blue-600 hover:text-blue-800 text-sm"
-                >
-                  Chỉnh sửa
-                </Link>
               </div>
             </div>
           </div>

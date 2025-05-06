@@ -52,7 +52,7 @@ const Header: React.FC = () => {
             <Bars3Icon className="w-6 h-6" />
           </button>
           <h1 className="ml-4 text-xl font-semibold text-gray-800">
-            Receptionist Dashboard
+            Quản Lý Lễ Tân
           </h1>
         </div>
         <div className="flex items-center space-x-4">

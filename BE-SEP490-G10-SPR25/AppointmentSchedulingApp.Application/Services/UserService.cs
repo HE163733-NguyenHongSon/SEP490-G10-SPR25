@@ -473,6 +473,18 @@ namespace AppointmentSchedulingApp.Application.Services
             {
                 errors.Add("Dob", new[] { "Ngày sinh không hợp lệ" });
             }
+            else
+            {
+                // Kiểm tra tuổi >= 18
+                var today = DateTime.Today;
+                var birthDate = registrationDTO.Dob.ToDateTime(TimeOnly.MinValue);
+                var age = today.Year - birthDate.Year;
+                if (birthDate > today.AddYears(-age)) age--;
+                if (age < 18)
+                {
+                    errors.Add("Dob", new[] { "Bạn phải đủ 18 tuổi trở lên để đăng ký tài khoản." });
+                }
+            }
             
             // Kiểm tra địa chỉ
             if (string.IsNullOrWhiteSpace(registrationDTO.Address))

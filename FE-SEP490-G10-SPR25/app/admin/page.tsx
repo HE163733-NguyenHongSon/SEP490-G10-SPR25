@@ -33,13 +33,7 @@ export default async function AnalyticsPage() {
         {/* <MonthlySalesChart /> */}
       </div>
 
-      <div className="col-span-12 xl:col-span-5">
-        <MonthlyTarget items={dashboardData} />
-      </div>
-
-      <div className="col-span-12">
-        <StatisticsChart items={statistics} />
-      </div>
+     
       {/* 
       <div className="col-span-12 xl:col-span-5">
         <DemographicCard />

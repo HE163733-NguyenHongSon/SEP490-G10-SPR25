@@ -4,7 +4,6 @@ export const doctorScheduleService = {
   async getDoctorScheduleList(): Promise<IDoctorSchedule[]> {
     try {
       const url = `${apiUrl}/api/DoctorSchedules`;
-      console.log("Fetching DoctorSchedules list from:", url);
 
       const res = await fetch(url, {
         method: "GET",
@@ -15,7 +14,6 @@ export const doctorScheduleService = {
         cache: "no-store",
       });
 
-      console.log("DoctorSchedules list response status:", res.status);
 
       if (!res.ok) {
         console.error(
@@ -25,7 +23,6 @@ export const doctorScheduleService = {
       }
 
       const data = await res.json();
-      console.log(`Retrieved ${data.length} DoctorSchedules`);
       return data;
     } catch (error) {
       console.error("Error fetching DoctorSchedules list:", error);
@@ -46,9 +43,7 @@ export const doctorScheduleService = {
       }
 
       const result = await res.json();
-      console.log(
-        `Retrieved ${result} available schedules for service ${serviceId}`
-      );
+    
       return result;
     } catch (error) {
       console.error(
@@ -64,7 +59,6 @@ export const doctorScheduleService = {
   ): Promise<IDoctorSchedule> {
     try {
       const url = `${apiUrl}/api/DoctorSchedules/GetDoctorScheduleDetailById/${doctorScheduleId}`;
-      console.log(`Fetching DoctorSchedule detail from: ${url}`);
 
       const res = await fetch(url, {
         method: "GET",
@@ -75,7 +69,6 @@ export const doctorScheduleService = {
         cache: "no-store",
       });
 
-      console.log(`DoctorSchedule detail response status: ${res.status}`);
 
       if (!res.ok) {
         console.error(
@@ -85,15 +78,10 @@ export const doctorScheduleService = {
       }
 
       const data = await res.json();
-      console.log(
-        `Retrieved details for DoctorSchedule ID: ${doctorScheduleId}`
-      );
+   
       return data;
     } catch (error) {
-      console.error(
-        `Error fetching DoctorSchedule details for ID ${doctorScheduleId}:`,
-        error
-      );
+     
       throw error; // We might need to throw here as the UI likely needs this data
     }
   },
@@ -107,7 +95,6 @@ export const doctorScheduleService = {
   }): Promise<IDoctorSchedule> {
     try {
       const url = `${apiUrl}/api/DoctorSchedules`;
-      console.log(`Updating DoctorSchedule at: ${url}`);
 
       const res = await fetch(url, {
         method: "PUT",
@@ -119,7 +106,6 @@ export const doctorScheduleService = {
         cache: "no-store",
       });
 
-      console.log(`Update response status: ${res.status}`);
 
       if (!res.ok) {
         const errorResponse = await res.json();
@@ -132,15 +118,10 @@ export const doctorScheduleService = {
       }
 
       const data = await res.json();
-      console.log(
-        `Successfully updated DoctorSchedule ID: ${updateData.doctorScheduleId}`
-      );
+      
       return data;
     } catch (error) {
-      console.error(
-        `Error updating DoctorSchedule ID ${updateData.doctorScheduleId}:`,
-        error
-      );
+     
       throw error;
     }
   },
@@ -153,7 +134,6 @@ export const doctorScheduleService = {
   }): Promise<IDoctorSchedule> {
     try {
       const url = `${apiUrl}/api/DoctorSchedules`;
-      console.log(`Creating new DoctorSchedule at: ${url}`);
 
       const res = await fetch(url, {
         method: "POST",
@@ -165,7 +145,6 @@ export const doctorScheduleService = {
         cache: "no-store",
       });
 
-      console.log(`Create response status: ${res.status}`);
 
       if (!res.ok) {
         const errorResponse = await res.json();
@@ -178,7 +157,6 @@ export const doctorScheduleService = {
       }
 
       const data = await res.json();
-      console.log(`Successfully created new DoctorSchedule`);
       return data;
     } catch (error) {
       console.error(`Error creating new DoctorSchedule:`, error);
@@ -212,7 +190,6 @@ export const doctorScheduleService = {
       }
 
       const url = `${apiUrl}/api/DoctorSchedules/filter&search?${queryParams.toString()}`;
-      console.log(`Fetching filtered DoctorSchedules from: ${url}`);
 
       const res = await fetch(url, {
         method: "GET",
@@ -235,7 +212,6 @@ export const doctorScheduleService = {
       }
 
       const data = JSON.parse(text);
-      console.log("Successfully fetched filtered DoctorSchedules.");
       return data;
     } catch (error) {
       console.error("Error fetching filtered DoctorSchedules:", error);

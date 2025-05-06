@@ -18,7 +18,7 @@ interface NavItem {
 }
 
 const navigation: NavItem[] = [
-  { name: "Dashboard", href: "/receptionist", icon: HomeIcon },
+  { name: "Trang Chủ ", href: "/receptionist", icon: HomeIcon },
   { name: "Quản lý Bệnh nhân", href: "/receptionist/patient", icon: UserGroupIcon },
   {
     name: "Quản lý lịch bác sĩ",
@@ -53,7 +53,7 @@ export default function Sidebar() {
               !isExpanded && !isHovered ? "hidden" : ""
             }`}
           >
-            Receptionist
+          Quản Lý Lễ Tân 
           </h1>
         </div>
         <nav className="flex-1 px-2 py-4 space-y-1">

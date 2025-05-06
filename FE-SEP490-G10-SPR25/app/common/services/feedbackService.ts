@@ -1,5 +1,4 @@
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-console.log('Feedback API URL base:', apiUrl);
 
 
 
@@ -48,7 +47,6 @@ export const feedbackService = {
   async getFeedbackList(): Promise<IFeedback[]> {
     try {
       const url = `${apiUrl}/api/Feedbacks`;
-      console.log('Fetching feedback list from:', url);
       
       const res = await fetch(url, {
         method: 'GET',
@@ -65,7 +63,6 @@ export const feedbackService = {
       }
 
       const data = await res.json();
-      console.log(`Successfully retrieved ${data.length} feedback items`);
       return data;
     } catch (error) {
       console.error('Error fetching feedback list:', error);

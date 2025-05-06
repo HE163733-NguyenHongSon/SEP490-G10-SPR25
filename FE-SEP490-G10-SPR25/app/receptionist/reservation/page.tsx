@@ -373,7 +373,11 @@ const Reservation = () => {
         title="Chi tiết lịch hẹn"
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
-        onOk={() => form.submit()}
+        footer={[
+          <Button key="close" onClick={() => setIsModalVisible(false)}>
+            Đóng
+          </Button>,
+        ]}
         width={700}
         footer={[
           selectedReservation?.status === "Xác nhận" && !showDoctorList && (

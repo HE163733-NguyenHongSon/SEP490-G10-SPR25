@@ -62,10 +62,9 @@ const initialState: IBookingState = {
   priorExaminationImgUrl: null,
   isSubmitting: false,
   isShowConfirmModal: false,
-  isFormValid: false,
+  isFormValid: true,
   availableSchedules: [],
   customSelectStyles: customStyles,
-
 };
 
 const bookingSlice = createSlice({
@@ -111,7 +110,7 @@ const bookingSlice = createSlice({
     setSpecialties: (state, action: PayloadAction<ISpecialty[]>) => {
       state.specialties = action.payload;
     },
- 
+
     setPatients: (state, action: PayloadAction<IPatient[]>) => {
       state.patients = action.payload;
     },
@@ -217,7 +216,7 @@ export const {
   setIsSubmitting,
   setIsShowConfirmModal,
   clearPriorExaminationImgUrl,
-  setIsFormValid
+  setIsFormValid,
 } = bookingSlice.actions;
 
 export const symptoms = (state: RootState) => state.booking.symptoms;
@@ -248,8 +247,7 @@ export const selectedSlotId = (state: RootState) =>
 
 export const isShowRestoreSuggestion = (state: RootState) =>
   state.booking.isShowRestoreSuggestion;
-export const isFormValid = (state: RootState) =>
-  state.booking.isFormValid;
+export const isFormValid = (state: RootState) => state.booking.isFormValid;
 export const priorExaminationImg = (state: RootState) =>
   state.booking.priorExaminationImgUrl;
 // export const schedules = (state: RootState) => state.booking.schedules;

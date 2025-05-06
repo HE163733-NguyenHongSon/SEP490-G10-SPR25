@@ -12,6 +12,8 @@ namespace AppointmentSchedulingApp.Domain.IRepositories
         IQueryable<T> GetQueryable();
         IQueryable<T> GetQueryable(Expression<Func<T, bool>> expression);
 
+        Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
+
         Task<IEnumerable<T>> GetAll();
         Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> expression);
         Task AddAsync(T entity);

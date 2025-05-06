@@ -14,6 +14,8 @@ import {
   setSelectedDate,
   setSelectedTime,
   setIsLoading,
+  setSymptoms,
+  setIsFormValid
 } from "../redux/bookingSlice";
 import { restoreSuggestion } from "../redux/bookingThunks";
 import type { RootState, AppDispatch } from "@/store";
@@ -27,6 +29,7 @@ const SpecialtySelector = () => {
     isUseSuggestion,
     suggestionData,
     customSelectStyles,
+    symptoms,
   } = useSelector((state: RootState) => state.booking);
 
   const options = specialties.map((s: ISpecialty) => ({
@@ -53,6 +56,9 @@ const SpecialtySelector = () => {
           selectedId !== suggestionData?.specialty.specialtyId
         )
       );
+      console.log("symptoms", symptoms);
+      dispatch(setSymptoms(""));
+      dispatch(setIsFormValid(true));
     }
   };
 

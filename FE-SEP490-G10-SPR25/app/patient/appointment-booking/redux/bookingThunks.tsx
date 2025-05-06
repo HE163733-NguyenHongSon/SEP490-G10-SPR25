@@ -13,6 +13,8 @@ import {
   setAvailableDates,
   setSelectedDate,
   setSelectedTime,
+  setSymptoms,
+  setIsFormValid,
 } from "./bookingSlice";
 import api from "@/common/services/api";
 
@@ -43,6 +45,8 @@ export const restoreSuggestion = createAsyncThunk(
           )
         );
         dispatch(setIsShowRestoreSuggestion(false));
+        dispatch(setSymptoms(suggestionData.symptoms ?? ""));
+        dispatch(setIsFormValid(true));
       } catch (error) {
         console.error("Error restoring suggestion data:", error);
       }

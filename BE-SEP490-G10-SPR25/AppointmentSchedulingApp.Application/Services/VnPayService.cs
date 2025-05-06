@@ -51,8 +51,9 @@ namespace AppointmentSchedulingApp.Application.Services
                     model.Reservation.PatientId.ToString(),
                     "Lịch hẹn này đã được giữ chỗ. Vui lòng chọn thời gian khác.");
 
-                throw new InvalidOperationException("Lịch hẹn này đang được xử lý bởi người khác.");
+                throw new InvalidOperationException("Lịch hẹn đã được người khác chọn. Vui lòng thử lại với thời gian khác.");
             }
+
 
             await _cache.SetStringAsync(lockKey, "locked", new DistributedCacheEntryOptions
             {
@@ -109,7 +110,6 @@ namespace AppointmentSchedulingApp.Application.Services
                 }
             }
 
-            // Lấy thông tin cần thiết
             var vnp_orderId = Convert.ToInt64(vnpay.GetResponseData("vnp_TxnRef"));
             var vnp_TransactionId = Convert.ToInt64(vnpay.GetResponseData("vnp_TransactionNo"));
             var vnp_SecureHash = collections.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
@@ -117,12 +117,11 @@ namespace AppointmentSchedulingApp.Application.Services
             var vnp_Amount = decimal.Parse(vnpay.GetResponseData("vnp_Amount")) / 100;
             bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, _config["VnPay:HashSecret"]);
 
-            // Giải mã thông tin đơn hàng
             string rawOrderInfo = vnpay.GetResponseData("vnp_OrderInfo");
             string decodedOrderInfo = Uri.UnescapeDataString(rawOrderInfo);
             var parts = decodedOrderInfo.Split('|');
 
-            // Nếu chữ ký không hợp lệ => thoát sớm
+            // Nếu chữ ký không hợp lệ
             if (!checkSignature)
             {
                 return new PaymentDTO
@@ -132,9 +131,17 @@ namespace AppointmentSchedulingApp.Application.Services
                 };
             }
 
-            // Nếu giao dịch không thành công => không thêm vào DB, chỉ trả về thông tin
+            // Nếu giao dịch không thành công
             if (vnp_ResponseCode != "00")
             {
+                if (parts.Length >= 5)
+                {
+                    int doctorScheduleId = int.Parse(parts[2]);
+                    DateTime appointmentDate = DateTime.ParseExact(parts[4], "yyyyMMddHHmmss", null);
+                    string lockKey = $"hold_schedule_{doctorScheduleId}_{appointmentDate:yyyyMMddHHmm}";
+                    await _cache.RemoveAsync(lockKey);
+                }
+
                 return new PaymentDTO
                 {
                     PaymentStatus = GetPaymentStatusMessage(vnp_ResponseCode),
@@ -145,17 +152,21 @@ namespace AppointmentSchedulingApp.Application.Services
                 };
             }
 
+            string finalLockKey = null;
+
             if (parts.Length >= 7)
             {
+                int doctorScheduleId = int.Parse(parts[2]);
+                DateTime appointmentDate = DateTime.ParseExact(parts[4], "yyyyMMddHHmmss", null);
+                finalLockKey = $"hold_schedule_{doctorScheduleId}_{appointmentDate:yyyyMMddHHmm}";
+
                 try
                 {
                     await _unitOfWork.BeginTransactionAsync();
 
                     int payerId = int.Parse(parts[0]);
                     int patientId = int.Parse(parts[1]);
-                    int doctorScheduleId = int.Parse(parts[2]);
                     string reason = parts[3];
-                    DateTime appointmentDate = DateTime.ParseExact(parts[4], "yyyyMMddHHmmss", null);
                     int createdByUserId = int.Parse(parts[5]);
                     int updatedByUserId = int.Parse(parts[6]);
 
@@ -169,7 +180,6 @@ namespace AppointmentSchedulingApp.Application.Services
                         UpdatedByUserId = updatedByUserId
                     };
 
-
                     var reservation = _mapper.Map<Reservation>(reservationDto);
                     await _unitOfWork.ReservationRepository.AddAsync(reservation);
                     await _unitOfWork.CommitAsync();
@@ -177,7 +187,7 @@ namespace AppointmentSchedulingApp.Application.Services
 
                     var payment = new Payment
                     {
-                        PayerId= payerId,
+                        PayerId = payerId,
                         ReservationId = reservation.ReservationId,
                         TransactionId = vnp_TransactionId.ToString(),
                         Amount = vnp_Amount,
@@ -186,18 +196,11 @@ namespace AppointmentSchedulingApp.Application.Services
                     };
 
                     await _unitOfWork.PaymentRepository.AddAsync(payment);
-
-
-
                     await _unitOfWork.CommitTransactionAsync();
-
-                    // Xoá key giữ chỗ
-                    string lockKey = $"hold_schedule_{doctorScheduleId}_{appointmentDate:yyyyMMddHHmm}";
-                    await _cache.RemoveAsync(lockKey);
 
                     return new PaymentDTO
                     {
-                        ReservationId=reservation.ReservationId,
+                        ReservationId = reservation.ReservationId,
                         VnPayResponseCode = vnp_ResponseCode,
                         Amount = vnp_Amount,
                         PaymentStatus = "Giao dịch thành công",
@@ -210,6 +213,13 @@ namespace AppointmentSchedulingApp.Application.Services
                     await _unitOfWork.RollbackTransactionAsync();
                     throw;
                 }
+                finally
+                {
+                    if (!string.IsNullOrEmpty(finalLockKey))
+                    {
+                        await _cache.RemoveAsync(finalLockKey);
+                    }
+                }
             }
 
             return new PaymentDTO
@@ -218,6 +228,7 @@ namespace AppointmentSchedulingApp.Application.Services
                 VnPayResponseCode = vnp_ResponseCode
             };
         }
+
 
         private string GetPaymentStatusMessage(string responseCode)
         {

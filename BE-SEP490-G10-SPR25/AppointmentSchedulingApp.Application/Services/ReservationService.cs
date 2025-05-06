@@ -158,7 +158,9 @@ namespace AppointmentSchedulingApp.Application.Services
 
             var targetTimeStart = now.AddHours(5).AddMinutes(-10);
             var targetTimeEnd = now.AddHours(5).AddMinutes(10);
-           
+
+
+
             var reservations = await unitOfWork.ReservationRepository
                 .GetAll(r =>
                     r.AppointmentDate >= targetTimeStart &&

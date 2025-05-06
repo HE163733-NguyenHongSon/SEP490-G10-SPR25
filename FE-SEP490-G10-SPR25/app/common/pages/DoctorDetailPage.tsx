@@ -10,6 +10,7 @@ import { DoctorList } from "@/guest/components/DoctorList";
 import ListService from "@/guest/components/ListService";
 import { feedbackService } from "@/common/services/feedbackService";
 import FeedbackList from "@/guest/components/FeedbackList";
+import { usePathname } from "next/navigation";
 
 interface DoctorDetailPageProps {
   params: {
@@ -32,7 +33,8 @@ const DoctorDetailPage = ({ params }: DoctorDetailPageProps) => {
     { value: "services", name: "Dịch vụ đảm nhận" },
     { value: "reviews", name: "Bình luận đánh giá" },
   ];
-
+  const pathname = usePathname();
+  const userType = pathname.startsWith("/patient") ? "patient" : "guest";
   useEffect(() => {
     const fetchDoctorDetail = async () => {
       try {
@@ -200,7 +202,7 @@ const DoctorDetailPage = ({ params }: DoctorDetailPageProps) => {
                 {route.name}
               </Tabs.Trigger>
             ))}
-          </Tabs.List>        
+          </Tabs.List>
 
           <div className="px-5 py-4 h-fit overflow-y-auto">
             <Tabs.Content value="overview">
@@ -261,7 +263,7 @@ const DoctorDetailPage = ({ params }: DoctorDetailPageProps) => {
             <DoctorList
               items={doctorDetail.relevantDoctors}
               displayView="slider"
-              userType="guest"
+              userType={userType}
             />
           </div>
         </Tabs.Root>

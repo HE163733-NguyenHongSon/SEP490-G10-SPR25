@@ -143,7 +143,6 @@ const CreateBlogDoctorPage = () => {
       // 👇 Thêm file vào formData với tên duy nhất
       if (sec.postImageFile) {
         formData.append("files", sec.postImageFile, `section_${idx}_${sec.postImageFile.name}`);
-        console.log("Đã thêm file:", sec.postImageFile?.name);
       }
   
       return {

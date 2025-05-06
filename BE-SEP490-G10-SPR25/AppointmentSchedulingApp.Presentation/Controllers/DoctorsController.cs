@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using AppointmentSchedulingApp.Application.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using AppointmentSchedulingApp.Presentation.Hubs;
 
 namespace AppointmentSchedulingApp.Presentation.Controllers
 {
@@ -11,10 +13,12 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
     public class DoctorsController : ControllerBase
     {
         private readonly IDoctorService _doctorService;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public DoctorsController(IDoctorService doctorService)
+        public DoctorsController(IDoctorService doctorService, IHubContext<NotificationHub> hubContext)
         {
             _doctorService = doctorService;
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -43,6 +47,25 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             try
             {
                 var doctors = await _doctorService.GetDoctorListByServiceId(serviceId);
+
+                if (doctors == null || !doctors.Any())
+                {
+                    return NoContent();
+                }
+
+                return Ok(doctors);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpGet("GetDoctorsBySpecialtyId/{specialtyId}")]
+        public async Task<IActionResult> GetDoctorsBySpecialtyId(int specialtyId)
+        {
+            try
+            {
+                var doctors = await _doctorService.GetDoctorsBySpecialtyId(specialtyId);
 
                 if (doctors == null || !doctors.Any())
                 {
@@ -153,35 +176,7 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
             {
                 return StatusCode(500, $"Lỗi khi lấy danh sách lịch hẹn: {ex.Message}");
             }
-        }
-        
-
-        [HttpPost("appointments/{reservationId}/cancel")]
-        //[Authorize(Roles = "Doctor")]
-        public async Task<IActionResult> CancelAppointment(int reservationId, [FromBody] ReservationStatusDTO cancellationInfo)
-        {
-            try
-            {
-                if (reservationId != cancellationInfo.ReservationId)
-                {
-                    return BadRequest("ID lịch hẹn không khớp");
-                }
-
-                var result = await _doctorService.CancelAppointment(reservationId, cancellationInfo.CancellationReason);
-                
-                if (result)
-                {
-                    return Ok("Đã hủy lịch hẹn thành công");
-                }
-                
-                return NotFound($"Không tìm thấy lịch hẹn với ID={reservationId}");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Lỗi khi hủy lịch hẹn: {ex.Message}");
-            }
-        }
-
+        }       
         [HttpPost("appointments/{reservationId}/medicalrecord")]
         //[Authorize(Roles = "Doctor")]
         public async Task<IActionResult> CreateMedicalRecord(int reservationId, [FromBody] MedicalRecordDTO medicalRecordDTO)
@@ -281,5 +276,82 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500, $"Lỗi khi lấy danh sách bệnh án: {ex.Message}");
             }
         }
+
+        [HttpPost("appointments/{reservationId}/cancel-request")]
+        //[Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> RequestAppointmentCancellation(int reservationId, [FromBody] CancellationRequestDTO request)
+        {
+            try
+            {
+                if (reservationId != request.ReservationId)
+                {
+                    return BadRequest("Reservation ID mismatch");
+                }
+
+                // Get reservation details
+                var reservation = await _doctorService.GetAppointmentById(reservationId);
+                if (reservation == null)
+                {
+                    return NotFound($"Appointment with ID={reservationId} not found");
+                }
+
+                // Chỉ lưu yêu cầu hủy lịch, KHÔNG hủy trực tiếp
+                var updateResult = await _doctorService.RequestCancellation(reservationId, request.CancellationReason);
+                if (!updateResult)
+                {
+                    return StatusCode(500, "Không thể gửi yêu cầu hủy lịch hẹn");
+                }
+
+                // Gửi thông báo đến lễ tân thông qua NotificationHub
+                var notification = new CancellationNotificationDTO
+                {
+                    NotificationId = new Random().Next(1000, 9999), // Tạm thời sử dụng random ID
+                    ReservationId = reservationId,
+                    DoctorName = reservation.DoctorSchedule != null ? "Dr. " + reservation.DoctorSchedule.DoctorName : "Unknown Doctor",
+                    PatientName = reservation.PatientName ?? "Unknown Patient",
+                    AppointmentDate = reservation.AppointmentDate,
+                    CancellationReason = request.CancellationReason,
+                    RequestTime = DateTime.Now,
+                    Status = "Pending" // Đang chờ xử lý, không phải đã hủy
+                };
+
+                // Gửi thông báo qua hub
+                await _hubContext.Clients.All.SendAsync("ReceiveCancellationNotification", notification);
+                
+                return Ok(new { message = "Yêu cầu hủy lịch hẹn đã được gửi đến lễ tân", notification });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error sending cancellation request: {ex.Message}");
+            }
+        }
+
+        // Tạo lại endpoint để chỉ cập nhật trạng thái
+        [HttpPut("appointments/{reservationId}/status")]
+        //[Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> UpdateAppointmentStatus(int reservationId, [FromBody] UpdateStatusDTO updateStatusDTO)
+        {
+            try
+            {
+                var result = await _doctorService.UpdateAppointmentStatus(reservationId, updateStatusDTO.Status);
+                
+                if (result)
+                {
+                    return Ok(result);
+                }
+                
+                return NotFound("Không tìm thấy lịch hẹn");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Lỗi khi cập nhật trạng thái lịch hẹn: {ex.Message}");
+            }
+        }
+    }
+
+    // Thêm lại DTO đơn giản chỉ chứa trường Status chỉ để cập nhật Status 
+    public class UpdateStatusDTO
+    {
+        public string Status { get; set; }
     }
 }

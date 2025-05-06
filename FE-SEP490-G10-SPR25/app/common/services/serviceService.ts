@@ -12,7 +12,6 @@ import axios from "axios";
 
 
 const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/Services`;
-console.log("Service API URL:", apiUrl);
 
 
 
@@ -22,7 +21,6 @@ export const serviceService = {
       const url = `${
         process.env.NEXT_PUBLIC_API_URL
       }/odata/Services/$count`;
-      console.log("Fetching count from:", url);
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -46,7 +44,6 @@ export const serviceService = {
     try {
       // Sử dụng API URL từ env hoặc fallback
       const url = apiUrl 
-      console.log("Fetching all services from:", url);
 
       const response = await fetch(url, {
         method: "GET",
@@ -62,7 +59,6 @@ export const serviceService = {
       }
 
       const data = await response.json();
-      console.log(`Successfully retrieved ${data.length} services`);
       return data;
     } catch (error) {
       console.error("Error fetching services:", error);

@@ -359,34 +359,25 @@ namespace AppointmentSchedulingApp.Application.Services
                     .ToList();
 
                 // danh sach doctorschedule tuong tu voi doctor can thay the
-                var listDoctorSchedule = GetAlternativeDoctorList(reservation.DoctorScheduleId).Result;
+                var listDoctorSchedule = await GetAlternativeDoctorList(reservation.DoctorScheduleId);
 
-                // gan ket qua ban dau la toan bo danh sach
-                var result = new List<DoctorScheduleDTO>(listDoctorSchedule);
+                // Lấy danh sách DoctorScheduleId đã được đặt trong ngày
+                var busyDoctorScheduleIds = listReservationSameDay
+                    .Where(r => r.Status != "Đã hủy") // Chỉ xét các lịch hẹn chưa hủy
+                    .Select(r => r.DoctorScheduleId)
+                    .ToHashSet();
 
-                // duyet qua tung reservation cung ngay
-                foreach (var r in listReservationSameDay)
-                {
-                    // neu trong danh sach result co phan tu trung doctorscheduleId thi loai
-                    foreach(var ds in result)
-                    {
-                        if (ds.DoctorScheduleId == r.DoctorScheduleId)
-                        {
-                            result.Remove(ds);
-                        }
-                    }
+                // Lọc ra các bác sĩ chưa có lịch hẹn trong ngày này
+                var availableDoctors = listDoctorSchedule
+                    .Where(ds => !busyDoctorScheduleIds.Contains(ds.DoctorScheduleId))
+                    .ToList();
 
-                    //var existed = result.FirstOrDefault(ds => ds.DoctorScheduleId == r.DoctorScheduleId);
-                    //if (existed != null)
-                    //{
-                    //    result.Remove(existed);
-                    //}
-                }
-
-                return result;
+                return availableDoctors;
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"Lỗi trong IsDoctorBusyAtReservation: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
                 throw;
             }
         }

@@ -100,7 +100,6 @@ export const chatService = {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 giây
       
-      console.log(`Sending request to API: ${process.env.NEXT_PUBLIC_API_URL}/api/Chat/send`);
       
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/Chat/send`, {
         message,
@@ -109,7 +108,6 @@ export const chatService = {
       }, { signal: controller.signal });
       
       clearTimeout(timeoutId);
-      console.log('API response:', response.data);
       return response.data;
     } catch (error: any) {
       console.error('Error sending message:', error);

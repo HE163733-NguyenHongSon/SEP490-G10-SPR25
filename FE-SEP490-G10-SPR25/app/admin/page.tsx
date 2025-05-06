@@ -10,8 +10,8 @@ import { adminService } from "@/common/services/adminService";
 import { ExportButton } from "./components/ExportButton";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard",
-  description: "Admin dashboard page",
+  title: "Trang Quản Trị",
+  description: "Trang quản trị hệ thống",
 };
 
 export default async function AnalyticsPage() {
@@ -22,7 +22,7 @@ export default async function AnalyticsPage() {
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
+          <h1 className="text-2xl font-bold">Bảng Điều Khiển</h1>
 
           <ExportButton />
         </div>
@@ -33,13 +33,7 @@ export default async function AnalyticsPage() {
         {/* <MonthlySalesChart /> */}
       </div>
 
-      <div className="col-span-12 xl:col-span-5">
-        <MonthlyTarget items={dashboardData} />
-      </div>
-
-      <div className="col-span-12">
-        <StatisticsChart items={statistics} />
-      </div>
+     
       {/* 
       <div className="col-span-12 xl:col-span-5">
         <DemographicCard />

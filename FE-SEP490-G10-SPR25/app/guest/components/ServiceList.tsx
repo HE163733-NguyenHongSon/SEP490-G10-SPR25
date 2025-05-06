@@ -62,23 +62,8 @@ export function ServiceList({ services, showLoginButton = false }: ServiceListPr
       }
     };
 
-    // Fetch categories (mocked for now, replace with actual API endpoint when available)
-    const fetchCategories = async () => {
-      try {
-        // Mocked categories - replace with actual API call when available
-        setCategories([
-          { id: 1, name: "Surgery" },
-          { id: 2, name: "Diagnostic" },
-          { id: 3, name: "Consultation" },
-          { id: 4, name: "Treatment" },
-        ]);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
     fetchSpecialties();
-    fetchCategories();
+
   }, []);
 
   useEffect(() => {
@@ -113,28 +98,6 @@ export function ServiceList({ services, showLoginButton = false }: ServiceListPr
           }
         }
 
-        // Apply category filter
-        if (selectedCategory) {
-          try {
-            const categoryServices = await serviceService.getServicesByCategory(
-              selectedCategory
-            );
-            filteredData = categoryServices.filter(
-              (service) =>
-                (!search ||
-                  service.serviceName
-                    .toLowerCase()
-                    .includes(search.toLowerCase())) &&
-                (!selectedSpecialty ||
-                  service.specialtyId === selectedSpecialty)
-            );
-          } catch (error) {
-            console.error(
-              `Error filtering services for category ${selectedCategory}:`,
-              error
-            );
-          }
-        }
 
         // Apply sorting
         if (sortBy === "rating") {
@@ -207,11 +170,9 @@ export function ServiceList({ services, showLoginButton = false }: ServiceListPr
   // Format date for display
   const formatDate = (date: Date | null): string => {
     if (!date) return "Select date and time";
-    return `${date.getDate()}/${
-      date.getMonth() + 1
-    }/${date.getFullYear()} - ${date.getHours()}:${
-      date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
-    }`;
+    return `${date.getDate()}/${date.getMonth() + 1
+      }/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
+      }`;
   };
 
   // Filter options handlers
@@ -261,12 +222,12 @@ export function ServiceList({ services, showLoginButton = false }: ServiceListPr
       {/* Search Bar */}
       <div className="flex justify-center mb-3 relative z-40">
         <div className="relative flex items-center w-[400px] bg-white rounded-full shadow-md border border-gray-300 overflow-hidden">
-          <button className="flex items-center bg-blue-500 text-white px-3 py-2">
-            Name <FaChevronRight className="ml-2" />
-          </button>
+        <button className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 whitespace-nowrap">
+  Tìm kiếm <FaChevronRight />
+</button>
           <input
             type="text"
-            placeholder="Enter the service's name to search"
+            placeholder="Nhập tên dịch vụ"
             className="w-full px-3 py-2 outline-none"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -282,7 +243,7 @@ export function ServiceList({ services, showLoginButton = false }: ServiceListPr
         <h2 className="text-center text-xl font-semibold mb-1">
           Service
         </h2>
-        
+
         {showLoginButton && (
           <div className="text-center my-4">
             <a
@@ -293,26 +254,12 @@ export function ServiceList({ services, showLoginButton = false }: ServiceListPr
             </a>
           </div>
         )}
-        
+
         <div className="flex">
           {/* Sidebar (Filter & Sort Panel) */}
           <div className="w-1/4 bg-white p-4 rounded-xl shadow-md text-sm">
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="text-base font-semibold">Filter & Sort</h2>
-              <button className="text-blue-500 text-xs" onClick={handleClear}>
-                Clear
-              </button>
-            </div>
             <div className="space-y-3">
-              {/* Filter options button - updated to be interactive */}
               <div className="relative">
-                <button
-                  className="flex items-center gap-2 px-3 py-2 border rounded-xl w-full"
-                  onClick={() => setShowFilterOptions(!showFilterOptions)}
-                >
-                  <FaFilter /> Filter ({activeFilters} options)
-                </button>
-
                 {/* Filter dropdown panel */}
                 {showFilterOptions && (
                   <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-xl p-4 z-10 mt-1 border">
@@ -358,7 +305,6 @@ export function ServiceList({ services, showLoginButton = false }: ServiceListPr
                         />
                       </div>
                     </div>
-
                     {/* Minimum rating filter */}
                     <div className="mb-3">
                       <h4 className="text-sm mb-1">Minimum Rating</h4>
@@ -383,7 +329,6 @@ export function ServiceList({ services, showLoginButton = false }: ServiceListPr
                         </span>
                       </div>
                     </div>
-
                     <button
                       className="w-full bg-blue-500 text-white rounded-lg py-1 mt-2"
                       onClick={applyFilters}
@@ -393,112 +338,54 @@ export function ServiceList({ services, showLoginButton = false }: ServiceListPr
                   </div>
                 )}
               </div>
-
               {/* Sort by - unchanged */}
               <div>
-                <h3 className="font-medium mb-1">Sort by</h3>
+                <h3 className="font-medium mb-1">Sắp xếp </h3>
                 <button
-                  className={`w-full px-3 py-2 ${
-                    sortBy === "rating"
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-200"
-                  } rounded-xl mb-1`}
+                  className={`w-full px-3 py-2 ${sortBy === "rating"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200"
+                    } rounded-xl mb-1`}
                   onClick={() => handleSortChange("rating")}
                 >
-                  Rating
+                  Đánh giá 
                 </button>
                 <button
-                  className={`w-full px-3 py-2 ${
-                    sortBy === "price_asc"
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-200"
-                  } rounded-xl mb-1`}
+                  className={`w-full px-3 py-2 ${sortBy === "price_asc"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200"
+                    } rounded-xl mb-1`}
                   onClick={() => handleSortChange("price_asc")}
                 >
-                  Price (Low to High)
+                  Giá cả (Thấp đến Cao)
                 </button>
                 <button
-                  className={`w-full px-3 py-2 ${
-                    sortBy === "price_desc"
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-200"
-                  } rounded-xl`}
+                  className={`w-full px-3 py-2 ${sortBy === "price_desc"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200"
+                    } rounded-xl`}
                   onClick={() => handleSortChange("price_desc")}
                 >
-                  Price (High to Low)
+                  Giá cả (Cao đến Thấp)
                 </button>
               </div>
 
               {/* Specialty - unchanged */}
               <div>
-                <h3 className="font-medium mb-1">Specialty</h3>
+                <h3 className="font-medium mb-1">Chuyên khoa</h3>
                 <div className="space-y-1">
                   {specialties.map((specialty) => (
                     <button
                       key={specialty.id}
-                      className={`w-full px-3 py-2 ${
-                        selectedSpecialty === specialty.id
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-200"
-                      } rounded-xl`}
+                      className={`w-full px-3 py-2 ${selectedSpecialty === specialty.id
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200"
+                        } rounded-xl`}
                       onClick={() => setSelectedSpecialty(specialty.id)}
                     >
                       {specialty.name}
                     </button>
                   ))}
-                </div>
-              </div>
-
-              {/* Category - unchanged */}
-              <div>
-                <h3 className="font-medium mb-1">Category</h3>
-                <div className="space-y-1">
-                  {categories.map((category) => (
-                    <button
-                      key={category.id}
-                      className={`w-full px-3 py-2 ${
-                        selectedCategory === category.id
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-200"
-                      } rounded-xl`}
-                      onClick={() => setSelectedCategory(category.id)}
-                    >
-                      {category.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Date and time - updated to use DatePicker */}
-              <div>
-                <h3 className="font-medium mb-1">Date and time</h3>
-                <div className="relative">
-                  <button
-                    className={`w-full px-3 py-2 ${
-                      selectedDate ? "bg-blue-500 text-white" : "bg-blue-100"
-                    } rounded-xl flex justify-between items-center`}
-                    onClick={() =>
-                      document.getElementById("service-date-picker")?.click()
-                    }
-                  >
-                    <span>
-                      {selectedDate
-                        ? formatDate(selectedDate)
-                        : "Select date and time"}
-                    </span>
-                    <BsCalendar />
-                  </button>
-                  <div className="absolute opacity-0 pointer-events-none">
-                    <DatePicker
-                      id="service-date-picker"
-                      selected={selectedDate}
-                      onChange={handleDateChange}
-                      showTimeSelect
-                      dateFormat="dd/MM/yyyy - HH:mm"
-                      minDate={new Date()}
-                      className="w-full"
-                    />
-                  </div>
                 </div>
               </div>
             </div>
@@ -538,18 +425,13 @@ export function ServiceList({ services, showLoginButton = false }: ServiceListPr
                     <p className="text-sm text-gray-600 mb-1 line-clamp-3">
                       {service.overview || "No description available"}
                     </p>
-                    <p className="text-sm text-gray-600 mb-1">
-                      {service.estimatedTime
-                        ? `${service.estimatedTime} doctor take on`
-                        : ""}
-                    </p>
                     <p className="text-blue-500 font-semibold">
                       {service.price.toLocaleString()}vnđ
                     </p>
                     <div className="flex text-yellow-400 mt-2">
                       <RatingStars rating={service.rating || 0} />
                       <span className="text-xs text-gray-500 ml-1">
-                        ({service.ratingCount || 0} rating)
+                        ({service.ratingCount || 0} đánh giá)
                       </span>
                     </div>
                   </div>
@@ -565,11 +447,10 @@ export function ServiceList({ services, showLoginButton = false }: ServiceListPr
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-1 rounded-full ${
-                        currentPage === page
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-200"
-                      }`}
+                      className={`px-3 py-1 rounded-full ${currentPage === page
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200"
+                        }`}
                     >
                       {page}
                     </button>

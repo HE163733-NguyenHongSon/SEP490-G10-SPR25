@@ -308,7 +308,7 @@ const AccountManagement = () => {
 
   const columns = [
     {
-      title: "Username",
+      title: "Tên",
       dataIndex: "userName",
       key: "userName",
     },
@@ -318,12 +318,12 @@ const AccountManagement = () => {
       key: "email",
     },
     {
-      title: "Phone",
+      title: "Số điện thoại ",
       dataIndex: "phone",
       key: "phone",
     },
     {
-      title: "Roles",
+      title: "Vai trò",
       dataIndex: "roleNames",
       key: "roleNames",
       render: (roleNames: any) => {
@@ -336,7 +336,7 @@ const AccountManagement = () => {
       },
     },
     {
-      title: "Is Active",
+      title: "Trạng thái",
       key: "isActive",
       render: (_: any, record: IUser) => (
         <Switch
@@ -348,7 +348,7 @@ const AccountManagement = () => {
       ),
     },
     {
-      title: "Actions",
+      title: "Hành động",
       key: "actions",
       render: (_: any, record: IUser) => (
         <Space>
@@ -357,16 +357,16 @@ const AccountManagement = () => {
             onClick={() => handleEdit(record)}
             type="primary"
           >
-            Edit
+            Chỉnh sửa 
           </Button>
           <Popconfirm
-            title="Are you sure you want to delete this account?"
+            title="Bạn có chắc chắn muốn xóa tài khoản này?"
             onConfirm={() => handleDelete(Number(record.userId))}
             okText="Yes"
             cancelText="No"
           >
             <Button icon={<DeleteOutlined />} danger>
-              Delete
+              Xóa
             </Button>
           </Popconfirm>
         </Space>
@@ -379,7 +379,7 @@ const AccountManagement = () => {
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-4">
           <Image src="/images/logo.png" alt="Logo" width={50} height={50} />
-          <h1 className="text-2xl font-bold">Account Management</h1>
+          <h1 className="text-2xl font-bold">Quản lý tài khoản</h1>
         </div>
         <Button
           type="primary"
@@ -390,12 +390,12 @@ const AccountManagement = () => {
             setIsModalVisible(true);
           }}
         >
-          Create Account
+          Thêm tài khoản
         </Button>
       </div>
 
       <Tabs defaultActiveKey="staff" className="mb-6">
-        <TabPane tab="Hospital Staff" key="staff">
+        <TabPane tab="Nhân viên" key="staff">
           <Table
             columns={columns}
             dataSource={staffAccounts}
@@ -403,7 +403,7 @@ const AccountManagement = () => {
             loading={loading}
           />
         </TabPane>
-        <TabPane tab="Patients & Guardians" key="customers">
+        <TabPane tab="Khách hàng" key="customers">
           <Table
             columns={columns}
             dataSource={customerAccounts}

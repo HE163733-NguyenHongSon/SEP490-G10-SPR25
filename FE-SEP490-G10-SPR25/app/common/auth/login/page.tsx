@@ -182,7 +182,7 @@ const LoginPage = () => {
                   // Handle forgot password here
                 }}
               >
-                Forgot password?
+             
               </a>
             </div>
           </div>
@@ -196,25 +196,8 @@ const LoginPage = () => {
             >
               {loading ? "Logging in..." : "Login"}
             </button>
-            <div className="text-center">
-              <span className="text-gray-600">Or</span>
-            </div>
-            <button
-              type="button"
-              className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-white border border-gray-300 rounded shadow-sm text-gray-700 hover:bg-gray-100 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-              onClick={() => {
-                // Handle Google login here
-              }}
-            >
-              <Image
-                src="/images/google.png"
-                alt="Google"
-                width={20}
-                height={20}
-                className="w-5 h-5"
-              />
-              Login via Google
-            </button>
+           
+           
           </div>
         </form>
         <div className="text-center mt-6">
@@ -228,12 +211,6 @@ const LoginPage = () => {
             </a>
           </p>
         </div>
-
-        {apiStatus && (
-          <div className="mt-4 text-xs text-gray-500 text-center">
-            <p>System Status: {apiStatus}</p>
-          </div>
-        )}
       </div>
     </div>
   );

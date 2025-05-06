@@ -109,7 +109,7 @@ const ServicesManagement = () => {
       if (editingService) {
         const payload = {
           ...values,
-          serviceId: Number(editingService.serviceId),
+          serviceId: String(editingService.serviceId),
           overview: values.overview || "",
           process: values.process || "",
           treatmentTechniques: values.treatmentTechniques || "",
@@ -153,13 +153,13 @@ const ServicesManagement = () => {
       width: "10%",
     },
     {
-      title: "Service Name",
+      title: "Tên dịch vụ",
       dataIndex: "serviceName",
       key: "serviceName",
       width: "20%",
     },
     {
-      title: "Specialty",
+      title: "Chuyên khoa",
       dataIndex: "specialtyId",
       key: "specialtyId",
       width: "15%",
@@ -171,19 +171,19 @@ const ServicesManagement = () => {
       },
     },
     {
-      title: "Price ($)",
+      title: "Giá",
       dataIndex: "price",
       key: "price",
       width: "15%",
     },
     {
-      title: "Estimated Time",
+      title: "Thời gian ước tính",
       dataIndex: "estimatedTime",
       key: "estimatedTime",
       width: "15%",
     },
     {
-      title: "Actions",
+      title: "Hành động",
       key: "actions",
       width: "25%",
       render: (_: unknown, record: IService) => (
@@ -194,16 +194,16 @@ const ServicesManagement = () => {
             type="primary"
             size="small"
           >
-            Edit
+            Chỉnh sửa
           </Button>
           <Popconfirm
-            title="Are you sure you want to delete this service?"
+            title="Bạn có chắc chắn muốn xóa dịch vụ này?"
             onConfirm={() => handleDelete(Number(record.serviceId))}
             okText="Yes"
             cancelText="No"
           >
             <Button icon={<DeleteOutlined />} danger size="small">
-              Delete
+              Xóa
             </Button>
           </Popconfirm>
         </Space>
@@ -215,14 +215,14 @@ const ServicesManagement = () => {
     <div className="p-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-          Service Management
+          Quản lý dịch vụ
         </h1>
       </div>
 
       <div className="mb-6 flex justify-between items-center">
-        <PageBreadCrumb pageTitle="Service Management" />
+        <PageBreadCrumb pageTitle="Quản lý dịch vụ" />
         <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
-          Add New Service
+          Thêm dịch vụ
         </Button>
       </div>
 

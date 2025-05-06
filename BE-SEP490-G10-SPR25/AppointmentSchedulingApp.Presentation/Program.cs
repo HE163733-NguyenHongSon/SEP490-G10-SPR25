@@ -50,17 +50,17 @@ builder.Services.AddCors(options =>
     });   
 });
 
+// Cấu hình CORS tùy chỉnh cho SignalR
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("SignalRCorsPolicy", policy =>
+    // Chính sách cho API
+    options.AddPolicy("AllowAll", builder =>
     {
-        policy.WithOrigins("http://localhost:3000")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials(); // cần cho SignalR dùng WebSocket
+        builder.AllowAnyMethod()
+               .AllowAnyHeader()
+               .SetIsOriginAllowed(origin => true)
+               .AllowCredentials();
     });
-
-    // Giữ nguyên DefaultPolicy nếu cần
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -238,7 +238,14 @@ builder.Services.AddScoped<IAIAgentService, AIAgentService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 
 //Đăng ký SignalR
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true;
+    options.ClientTimeoutInterval = TimeSpan.FromMinutes(30);
+    options.KeepAliveInterval = TimeSpan.FromMinutes(15);
+    options.HandshakeTimeout = TimeSpan.FromMinutes(5);
+    options.MaximumReceiveMessageSize = 1024 * 1024; // 1MB
+});
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -247,7 +254,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors("SignalRCorsPolicy");
+// Sử dụng chính sách CORS mới
+app.UseCors("AllowAll");
 app.MapGet("/healthz", () => "Healthy");
 
 // app.UseHttpsRedirection(); // Tạm thời vô hiệu hóa để tránh lỗi HTTPS port
@@ -257,7 +265,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapHub<CommentHub>("/hubs/comments")
-   .RequireCors("SignalRCorsPolicy");
+   .RequireCors("AllowAll");
+
+app.MapHub<NotificationHub>("/hubs/notifications")
+   .RequireCors("AllowAll");
 
 app.MapHub<NotificationHub>("/hubs/notification")
    .RequireCors("SignalRCorsPolicy");

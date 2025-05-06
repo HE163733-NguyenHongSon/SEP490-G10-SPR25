@@ -26,9 +26,7 @@ export const paymentService = {
         return false;
       }
 
-      console.log(
-        `Payment status for reservation ${reservationId} updated to "${status}"`
-      );
+   
       return true;
     } catch (error) {
       console.error("Error updating payment status:", error);

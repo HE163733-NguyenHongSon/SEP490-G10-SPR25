@@ -159,7 +159,6 @@ export default function RegisterPage() {
 
       if (result.success) {
         setSuccess(true);
-        console.log("Registration successful!");
         window.scrollTo(0, 0);
         // Chuyển hướng đến trang đăng nhập sau 2 giây
         setTimeout(() => {

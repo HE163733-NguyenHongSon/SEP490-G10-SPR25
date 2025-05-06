@@ -56,7 +56,7 @@ export const adminService = {
             : accountData.citizenId,
       };
 
-      console.log("Creating doctor account with data:", formattedData);
+
       const response = await axios.post(
         `${API_URL}/api/Admin/accounts/doctor`,
         formattedData
@@ -80,8 +80,7 @@ export const adminService = {
             : accountData.citizenId,
       };
 
-      console.log("Creating receptionist account with data:", formattedData);
-      console.log("API URL:", `${API_URL}/api/Admin/accounts/receptionist`);
+    
 
       const response = await axios.post(
         `${API_URL}/api/Admin/accounts/receptionist`,
@@ -136,13 +135,7 @@ export const adminService = {
         formattedData.role = accountData.role;
       }
 
-      console.log("------------- ACCOUNT UPDATE REQUEST -------------");
-      console.log("Request URL:", `${API_URL}/api/Admin/accounts/${userId}`);
-      console.log("Request Method: PUT");
-      console.log("Request Headers:", { "Content-Type": "application/json" });
-      console.log("Original account data:", accountData);
-      console.log("Formatted account data being sent:", formattedData);
-      console.log("User ID:", userId);
+
 
       // Check for missing required fields according to backend DTO
       const requiredFields = [
@@ -168,7 +161,6 @@ export const adminService = {
       }
 
       // Đảm bảo trường mật khẩu được gửi đúng cách - log chi tiết để debug
-      console.log("Password being sent:", formattedData.Password);
 
       const response = await axios.put(
         `${API_URL}/api/Admin/accounts/${userId}`,
@@ -185,7 +177,7 @@ export const adminService = {
                 const cleanData = { ...data };
                 if ("allowAbsoluteUrls" in cleanData) {
                   delete cleanData.allowAbsoluteUrls;
-                  console.log("Đã loại bỏ trường allowAbsoluteUrls");
+
                 }
                 return JSON.stringify(cleanData);
               }
@@ -195,10 +187,6 @@ export const adminService = {
         }
       );
 
-      console.log("------------- ACCOUNT UPDATE RESPONSE -------------");
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
-      console.log("Response data:", response.data);
 
       return response.data;
     } catch (error: any) {

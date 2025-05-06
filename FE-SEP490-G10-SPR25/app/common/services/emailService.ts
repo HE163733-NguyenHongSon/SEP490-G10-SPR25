@@ -17,7 +17,6 @@ export const emailService = {
       }
 
       const result = await res.json();
-      console.log(result.message);
       return true;
     } catch (err) {
       console.error("Lỗi gửi email:", err);

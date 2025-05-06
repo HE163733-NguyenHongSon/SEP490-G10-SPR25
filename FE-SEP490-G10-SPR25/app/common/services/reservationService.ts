@@ -39,7 +39,6 @@ const reservationService = {
       `status eq 'Đã hủy' and ` +
       `year(createdDate) eq ${year} and ` +
       `month(createdDate) eq ${month}`;
-    console.log(url);
     const response = await fetch(url, {
       next: { revalidate: 0 },
     });
@@ -127,7 +126,6 @@ const reservationService = {
   },
 
   async updateReservationStatus(rs: IReservationStatus) {
-    console.log(rs);
     const response = await fetch(
       `${apiUrl}/api/Reservations/UpdateReservationStatus`,
       {

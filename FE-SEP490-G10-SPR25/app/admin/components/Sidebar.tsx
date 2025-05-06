@@ -4,8 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-
-import SidebarWidget from "./SidebarWidget";
 const DashboardIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -66,22 +64,22 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     icon: <DashboardIcon />,
-    name: "Dashboard",
+    name: "Trang Chủ",
     path: "/admin",
   },
   {
     icon: <AccountIcon />,
-    name: "Accounts",
+    name: "Tài Khoản",
     path: "/admin/accounts",
   },
   {
     icon: <DoctorIcon />,
-    name: "Doctors",
+    name: "Bác Sĩ",
     path: "/admin/doctors",
   },
   {
     icon: <ServiceIcon />,
-    name: "Services",
+    name: "Dịch Vụ",
     path: "/admin/services",
   },
   {
@@ -364,13 +362,11 @@ const Sidebar: React.FC = () => {
                     : "justify-start"
                 }`}
               >
-                {isExpanded || isHovered || isMobileOpen ? "Others" : "Others2"}
               </h2>
               {/* {renderMenuItems(othersItems, "others")} */}
             </div>
           </div>
         </nav>
-        {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
       </div>
     </aside>
   );

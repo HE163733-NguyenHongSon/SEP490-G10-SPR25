@@ -122,6 +122,14 @@ namespace AppointmentSchedulingApp.Application.Services
                     throw new ValidationException("Email đã tồn tại trong hệ thống");
                 }
 
+                // Validate tuổi >= 18
+                var today = DateTime.Today;
+                var birthDate = dob.ToDateTime(TimeOnly.MinValue);
+                var age = today.Year - birthDate.Year;
+                if (birthDate > today.AddYears(-age)) age--;
+                if (age < 18)
+                    throw new ValidationException("Ngày sinh không hợp lệ");
+
                 // Create user account
                 var user = new User
                 {
@@ -187,6 +195,14 @@ namespace AppointmentSchedulingApp.Application.Services
                 // Validate date format
                 if (!DateOnly.TryParse(adminDTO.Dob, out DateOnly dob))
                     throw new ValidationException("Invalid date format for Date of Birth");
+
+                // Validate tuổi >= 18
+                var today = DateTime.Today;
+                var birthDate = dob.ToDateTime(TimeOnly.MinValue);
+                var age = today.Year - birthDate.Year;
+                if (birthDate > today.AddYears(-age)) age--;
+                if (age < 18)
+                    throw new ValidationException("Ngày sinh không hợp lệ");
 
                 // Validate email format
                 if (!IsValidEmail(adminDTO.Email))
@@ -281,6 +297,13 @@ namespace AppointmentSchedulingApp.Application.Services
                 // Parse date string to DateOnly
                 if (DateOnly.TryParse(adminDTO.Dob, out DateOnly dob))
                 {
+                    // Validate tuổi >= 18
+                    var today = DateTime.Today;
+                    var birthDate = dob.ToDateTime(TimeOnly.MinValue);
+                    var age = today.Year - birthDate.Year;
+                    if (birthDate > today.AddYears(-age)) age--;
+                    if (age < 18)
+                        throw new ValidationException("Ngày sinh không hợp lệ");
                     user.Dob = dob;
                 }
 

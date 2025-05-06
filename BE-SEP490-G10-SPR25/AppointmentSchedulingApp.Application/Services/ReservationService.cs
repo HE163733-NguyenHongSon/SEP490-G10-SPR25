@@ -186,22 +186,89 @@ namespace AppointmentSchedulingApp.Application.Services
         {
             try
             {
-                var reservation = unitOfWork.ReservationRepository.Get(r => r.ReservationId.Equals(reservationId)).Result;
+                var reservation = await unitOfWork.ReservationRepository.Get(r => r.ReservationId.Equals(reservationId));
 
                 if (reservation == null)
                 {
+                    Console.WriteLine($"Không tìm thấy reservation với ID: {reservationId}");
                     return false;
                 }
 
-                reservation.DoctorScheduleId = doctorscheduleId;
+                // Kiểm tra xem doctorSchedule mới có tồn tại không
+                var newDoctorSchedule = await unitOfWork.DoctorScheduleRepository.Get(ds => ds.DoctorScheduleId == doctorscheduleId);
+                if (newDoctorSchedule == null)
+                {
+                    Console.WriteLine($"Không tìm thấy doctorSchedule với ID: {doctorscheduleId}");
+                    return false;
+                }
+
+                // Nếu doctorSchedule trùng với doctorSchedule hiện tại
+                if (reservation.DoctorScheduleId == doctorscheduleId)
+                {
+                    Console.WriteLine("DoctorScheduleId mới trùng với DoctorScheduleId hiện tại");
+                    return false;
+                }
+
+                // Lấy thông tin thanh toán của reservation cũ
+                var payment = await unitOfWork.PaymentRepository.Get(p => p.ReservationId == reservationId);
+                
+                // Lưu thông tin của lịch hẹn hiện tại
+                var oldDoctorScheduleId = reservation.DoctorScheduleId;
+                
+                // Tạo một bản ghi mới với thông tin từ bản ghi cũ nhưng với bác sĩ mới
+                var newReservation = new Reservation
+                {
+                    PatientId = reservation.PatientId,
+                    DoctorScheduleId = doctorscheduleId,
+                    AppointmentDate = reservation.AppointmentDate,
+                    Status = "Xác nhận",
+                    PriorExaminationImg = reservation.PriorExaminationImg,
+                    Reason = reservation.Reason, // Sao chép lý do khám
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now,
+                    CreatedByUserId = reservation.UpdatedByUserId, // Sử dụng UpdatedByUserId hiện tại làm người tạo
+                    UpdatedByUserId = reservation.UpdatedByUserId
+                };
+                
+                // Thêm bản ghi mới với bác sĩ mới
+                await unitOfWork.ReservationRepository.AddAsync(newReservation);
+                await unitOfWork.CommitAsync(); // Commit để lấy ID của reservation mới
+                
+                // Nếu có thông tin thanh toán, sao chép thông tin thanh toán sang reservation mới
+                if (payment != null)
+                {
+                    var newPayment = new Payment
+                    {
+                        ReservationId = newReservation.ReservationId,
+                        PaymentMethod = payment.PaymentMethod,
+                        PaymentStatus = payment.PaymentStatus,
+                        Amount = payment.Amount,
+                        PaymentDate = payment.PaymentDate,
+                        PayerId = payment.PayerId,
+                        ReceptionistId = payment.ReceptionistId,
+                        TransactionId = payment.TransactionId
+                    };
+                    
+                    await unitOfWork.PaymentRepository.AddAsync(newPayment);
+                }
+                
+                // Cập nhật bản ghi cũ thành trạng thái đã hủy
+                reservation.Status = "Đã hủy";
+                reservation.CancellationReason = "Bác sĩ được chuyển sang lịch khám khác";
+                reservation.UpdatedDate = DateTime.Now;
+                
                 unitOfWork.ReservationRepository.Update(reservation);
                 await unitOfWork.CommitAsync();
+                
+                Console.WriteLine($"Đã chuyển ca khám thành công: Từ bác sĩ (ScheduleId: {oldDoctorScheduleId}) sang bác sĩ (ScheduleId: {doctorscheduleId})");
                 return true;
-
             }
             catch (Exception ex)
             {
-                throw;
+                // Log exception
+                Console.WriteLine($"Lỗi trong ReplaceDoctor: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                return false;
             }
         }
     }

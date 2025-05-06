@@ -31,8 +31,6 @@ export const medicalRecordService = {
 
   async createMedicalRecord(medicalRecord: IMedicalRecordCreate): Promise<IMedicalRecord> {
     try {
-      console.log("Creating medical record via medicalRecordService");
-      console.log("Medical record data:", JSON.stringify(medicalRecord, null, 2));
       
       // Make sure reservationId is a string for the API
       const reservationId = medicalRecord.reservationId;
@@ -56,14 +54,12 @@ export const medicalRecordService = {
       
       // Get response as text for error checking
       const text = await res.text();
-      console.log("API response:", text);
       
       if (!res.ok) {
         throw new Error(`HTTP error! Status: ${res.status}, Details: ${text}`);
       }
       
       if (!text || text.trim() === '') {
-        console.log('Empty response received, returning input data');
         return {
           reservationId: medicalRecord.reservationId.toString(),
           appointmentDate: new Date().toISOString(),

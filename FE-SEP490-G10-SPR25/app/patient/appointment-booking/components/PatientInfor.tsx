@@ -8,7 +8,7 @@ import {
   setIsAddingPatient,
   setCurrentStep,
 } from "../redux/bookingSlice";
-import { RootState } from "../../store";
+import { RootState } from "@/store";
 
 const PatientInfor = () => {
   const dispatch = useDispatch();

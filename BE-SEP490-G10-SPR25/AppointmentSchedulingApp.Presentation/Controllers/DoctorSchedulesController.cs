@@ -21,13 +21,13 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
 
         }
 
-        [HttpGet("GetAvailableSchedulesByServiceId/{serviceId}")]
+        [HttpGet("GetAvailableSchedulesByServiceIdAndPatientId/{serviceId}/{patientId}")]
         [EnableQuery]
-        public async Task<IActionResult> GetAvailableSchedulesByServiceId(int serviceId)
+        public async Task<IActionResult> GetAvailableSchedulesByServiceIdAndPatientId(int serviceId,int patientId)
         {
             try
             {
-                var availableSchedules = await _doctorScheduleService.GetAvailableSchedulesByServiceId (serviceId);
+                var availableSchedules = await _doctorScheduleService.GetAvailableSchedulesByServiceIdAndPatientId(serviceId,patientId);
 
                 if (availableSchedules == null || !availableSchedules.Any())
                 {

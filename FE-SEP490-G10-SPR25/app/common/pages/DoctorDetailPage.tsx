@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
 import Image from "next/image";
 import Link from "next/link";
-import BackButton from "@/common/components/BackButton";
 import { doctorService } from "@/common/services/doctorService";
 import CollapsibleSection from "@/common/components/CollapsibleSection";
 import { assets } from "@/public/images/assets";
@@ -30,7 +29,6 @@ const DoctorDetailPage = ({ params }: DoctorDetailPageProps) => {
 
   const routes = [
     { value: "overview", name: "Tổng quan" },
-    { value: "schedule", name: "Lịch bác sĩ" },
     { value: "services", name: "Dịch vụ đảm nhận" },
     { value: "reviews", name: "Bình luận đánh giá" },
   ];
@@ -202,7 +200,7 @@ const DoctorDetailPage = ({ params }: DoctorDetailPageProps) => {
                 {route.name}
               </Tabs.Trigger>
             ))}
-          </Tabs.List>
+          </Tabs.List>        
 
           <div className="px-5 py-4 h-fit overflow-y-auto">
             <Tabs.Content value="overview">
@@ -231,7 +229,8 @@ const DoctorDetailPage = ({ params }: DoctorDetailPageProps) => {
                 titleImage={assets.research_work}
               />
             </Tabs.Content>
-            <Tabs.Content value="schedule">
+
+            {/* <Tabs.Content value="schedule">
               <div className="text-center py-6">
                 <p className="text-lg mb-4">
                   Bạn cần đăng nhập để xem lịch của bác sĩ
@@ -242,9 +241,14 @@ const DoctorDetailPage = ({ params }: DoctorDetailPageProps) => {
                   </button>
                 </Link>
               </div>
-            </Tabs.Content>
+            </Tabs.Content> */}
+
             <Tabs.Content value="services">
-              <ListService items={doctorDetail.services} displayView="slider" />
+              <ListService
+                items={doctorDetail.services}
+                displayView="slider"
+                isBooking={true}
+              />
             </Tabs.Content>
             <Tabs.Content value="reviews">
               <FeedbackList feedbacks={doctorFeedbacks} displayView="list" />

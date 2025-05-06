@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../../store";
+import { RootState } from "@/store";
 import { addPatientAsync } from "./bookingThunks";
 import { StylesConfig } from "react-select";
 const customStyles: StylesConfig<{ value: string; label: string }, false> = {
@@ -58,9 +58,11 @@ const initialState: IBookingState = {
   selectedTime: "",
   selectedSlotId: "",
   isShowRestoreSuggestion: false,
+  isUseSuggestion: true,
   priorExaminationImgUrl: null,
   isSubmitting: false,
   isShowConfirmModal: false,
+  isFormValid: false,
   availableSchedules: [],
   customSelectStyles: customStyles,
 
@@ -87,7 +89,7 @@ const bookingSlice = createSlice({
     setSelectedTime: (state, action: PayloadAction<string>) => {
       state.selectedTime = action.payload;
     },
-    setShowBookingForm: (state, action: PayloadAction<boolean>) => {
+    setIsShowBookingForm: (state, action: PayloadAction<boolean>) => {
       state.isShowBookingForm = action.payload;
     },
     setSelectedSlotId: (state, action: PayloadAction<string>) => {
@@ -96,6 +98,12 @@ const bookingSlice = createSlice({
 
     setIsShowRestoreSuggestion: (state, action: PayloadAction<boolean>) => {
       state.isShowRestoreSuggestion = action.payload;
+    },
+    setIsUseSuggestion: (state, action: PayloadAction<boolean>) => {
+      state.isUseSuggestion = action.payload;
+    },
+    setIsFormValid: (state, action: PayloadAction<boolean>) => {
+      state.isFormValid = action.payload;
     },
     setServices: (state, action: PayloadAction<IService[]>) => {
       state.services = action.payload;
@@ -152,7 +160,7 @@ const bookingSlice = createSlice({
     setIsSubmitting: (state, action: PayloadAction<boolean>) => {
       state.isSubmitting = action.payload;
     },
-    setShowConfirmModal: (state, action: PayloadAction<boolean>) => {
+    setIsShowConfirmModal: (state, action: PayloadAction<boolean>) => {
       state.isShowConfirmModal = action.payload;
     },
     setPriorExaminationImgUrl: (
@@ -186,10 +194,11 @@ export const {
   setStep,
   setSelectedDate,
   setSelectedTime,
-  setShowBookingForm,
+  setIsShowBookingForm,
   setSelectedSlotId,
   setPriorExaminationImgUrl,
   setIsShowRestoreSuggestion,
+  setIsUseSuggestion,
   resetBookingState,
   setServices,
   setSpecialties,
@@ -206,8 +215,9 @@ export const {
   setSelectedPatient,
   setCurrentStep,
   setIsSubmitting,
-  setShowConfirmModal,
+  setIsShowConfirmModal,
   clearPriorExaminationImgUrl,
+  setIsFormValid
 } = bookingSlice.actions;
 
 export const symptoms = (state: RootState) => state.booking.symptoms;
@@ -235,8 +245,11 @@ export const selectedDate = (state: RootState) => state.booking.selectedDate;
 export const selectedTime = (state: RootState) => state.booking.selectedTime;
 export const selectedSlotId = (state: RootState) =>
   state.booking.selectedSlotId;
-export const showRestoreSuggestion = (state: RootState) =>
+
+export const isShowRestoreSuggestion = (state: RootState) =>
   state.booking.isShowRestoreSuggestion;
+export const isFormValid = (state: RootState) =>
+  state.booking.isFormValid;
 export const priorExaminationImg = (state: RootState) =>
   state.booking.priorExaminationImgUrl;
 // export const schedules = (state: RootState) => state.booking.schedules;

@@ -1,23 +1,33 @@
 "use client";
 import Select from "react-select";
 import { Stethoscope as StethoscopeIcon, RefreshCw } from "lucide-react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { specialtyService } from "@/common/services/specialtyService";
+
 import {
   setSpecialtyId,
   setIsShowRestoreSuggestion,
+  setSpecialties,
   setDoctorId,
   setServiceId,
   setSelectedDate,
   setSelectedTime,
+  setIsLoading,
 } from "../redux/bookingSlice";
 import { restoreSuggestion } from "../redux/bookingThunks";
-import type { RootState, AppDispatch } from "../../store";
+import type { RootState, AppDispatch } from "@/store";
 
 const SpecialtySelector = () => {
   const dispatch: AppDispatch = useDispatch();
-  const { specialties, specialtyId, isShowRestoreSuggestion,suggestionData,customSelectStyles } = useSelector(
-    (state: RootState) => state.booking
-  );
+  const {
+    specialties,
+    specialtyId,
+    isShowRestoreSuggestion,
+    isUseSuggestion,
+    suggestionData,
+    customSelectStyles,
+  } = useSelector((state: RootState) => state.booking);
 
   const options = specialties.map((s: ISpecialty) => ({
     value: String(s.specialtyId),
@@ -32,7 +42,7 @@ const SpecialtySelector = () => {
     selectedOption: { value: string; label: string } | null
   ) => {
     if (selectedOption) {
-      const selectedId = selectedOption.value;     
+      const selectedId = selectedOption.value;
       dispatch(setSpecialtyId(selectedId));
       dispatch(setServiceId(""));
       dispatch(setDoctorId(""));
@@ -49,8 +59,20 @@ const SpecialtySelector = () => {
   const handleRestoreSuggestion = () => {
     dispatch(restoreSuggestion());
   };
+  useEffect(() => {
+    const fetchSpecialties = async () => {
+      try {
+        const specialtyList = await specialtyService.getSpecialtyList();
+        dispatch(setSpecialties(specialtyList));
+      } catch (error) {
+        console.error("Error fetching specialties:", error);
+      } finally {
+        dispatch(setIsLoading(false));
+      }
+    };
 
- 
+    fetchSpecialties();
+  }, [dispatch]);
 
   return (
     <div className="space-y-2">
@@ -59,7 +81,7 @@ const SpecialtySelector = () => {
           <StethoscopeIcon className="w-4 h-4 mr-2" />
           Chuyên khoa
         </label>
-        {isShowRestoreSuggestion && (
+        {suggestionData && isShowRestoreSuggestion && isUseSuggestion && (
           <button
             onClick={handleRestoreSuggestion}
             className="text-xs text-cyan-600 hover:text-cyan-700 flex items-center"

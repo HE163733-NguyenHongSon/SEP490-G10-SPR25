@@ -12,7 +12,8 @@ import {
   setSelectedTime,
   setAvailableSchedules,
 } from "../redux/bookingSlice";
-import { RootState } from "../../store";
+import { RootState } from "@/store";
+import { useUser } from "@/common/contexts/UserContext";
 
 const DoctorSelector = () => {
   const dispatch = useDispatch();
@@ -43,7 +44,7 @@ const DoctorSelector = () => {
     },
     [dispatch, isShowRestoreSuggestion, selectedDate, selectedTime]
   );
-
+  const { user } = useUser();
   useEffect(() => {
     if (!serviceId) return;
 
@@ -51,8 +52,9 @@ const DoctorSelector = () => {
       dispatch(setIsLoading(true));
       try {
         const schedules =
-          await doctorScheduleService.getAvailableSchedulesByServiceId(
-            serviceId
+          await doctorScheduleService.getAvailableSchedulesByServiceIdAndPatientId(
+            serviceId,
+            user?.userId
           );
 
         dispatch(setAvailableSchedules(schedules));

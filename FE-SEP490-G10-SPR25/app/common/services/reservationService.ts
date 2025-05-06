@@ -46,7 +46,9 @@ const reservationService = {
     const data = await response.text();
     return { name: "Đã hủy trong tháng", count: Number(data) };
   },
-  async getListReservationByPatientId(patientId?: string): Promise<IReservation[]> {
+  async getListReservationByPatientId(
+    patientId?: string
+  ): Promise<IReservation[]> {
     const response = await fetch(
       `${apiUrl}/api/Reservations?$filter=patient/userId eq ${patientId}`
     );
@@ -59,7 +61,8 @@ const reservationService = {
   // },
 
   async getBookingSuggestion(
-    symptoms: string
+    symptoms: string,
+    patientId?:string,
   ): Promise<IBookingSuggestion | null> {
     try {
       const res = await fetch(WEBHOOK_URL, {
@@ -69,6 +72,7 @@ const reservationService = {
         },
         body: JSON.stringify({
           symptoms,
+          patientId
         }),
       });
 
@@ -84,49 +88,43 @@ const reservationService = {
       return null;
     }
   },
-  // async addReservation(reservation: IAddedReservation) {
-  //   try {
-  //     const formData = new FormData();
 
-  //     if (reservation.patientId) {
-  //       formData.append("PatientId", reservation.patientId);
-  //     }
-  //     if (reservation.doctorScheduleId) {
-  //       formData.append("DoctorScheduleId", reservation.doctorScheduleId);
-  //     }
-  //     formData.append("Reason", reservation.reason);
-  //     if (reservation.appointmentDate) {
-  //       formData.append("AppointmentDate", reservation.appointmentDate);
-  //     }
-  //     if (reservation.createdByUserId) {
-  //       formData.append("CreatedByUserId", reservation.createdByUserId);
-  //     }
-  //     if (reservation.updatedByUserId) {
-  //       formData.append("UpdatedByUserId", reservation.updatedByUserId);
-  //     }
+  async validateSymptomsMatchSpecialtyAndService(
+    symptoms: string,
+    serviceOverview: string,
+    specialtyDescription: string
+  ): Promise<{
+    isValid: boolean;
+    message?: string;
+  }> {
+    try {
+      const response = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          symptoms,
+          serviceOverview,
+          specialtyDescription,
+        } as ISymptomValidation),
+      });
 
-  //     // Nếu có ảnh khám trước thì gửi kèm
-  //     if (reservation.priorExaminationImg) {
-  //       formData.append("PriorExaminationImg", reservation.priorExaminationImg);
-  //     }
+      if (!response.ok) {
+        throw new Error("Failed to connect to n8n.");
+      }
 
-  //     const res = await fetch(`${apiUrl}/api/Reservations/AddReservation`, {
-  //       method: "POST",
-  //       body: formData,
-  //     });
+      const result = await response.json();
 
-  //     if (!res.ok) {
-  //       console.error("Thêm lịch hẹn thất bại:", await res.text());
-  //       return null;
-  //     }
-
-  //     const result = await res.json();
-  //     return result;
-  //   } catch (error) {
-  //     console.error("Error add booking:", error);
-  //     return null;
-  //   }
-  // },
+      return result;
+    } catch (error) {
+      console.error("Validation error:", error);
+      return {
+        isValid: true,
+        message: "Không thể kiểm tra triệu chứng tự động.",
+      };
+    }
+  },
 
   async updateReservationStatus(rs: IReservationStatus) {
     console.log(rs);

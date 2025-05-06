@@ -10,12 +10,14 @@ interface DoctorListProps {
   items: IDoctor[];
   displayView?: string;
   userType?: "guest" | "patient";
+  isBooking?: boolean;
 }
 
 export const DoctorList = ({
   items,
   displayView,
   userType = "patient",
+  isBooking = false,
 }: DoctorListProps) => {
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
@@ -41,8 +43,8 @@ export const DoctorList = ({
   const getDoctorDetailUrl = (doctorId: number | string | undefined) => {
     if (!doctorId) return "#";
     return userType === "guest"
-      ? `/guest/doctors/doctor-detail/${doctorId}`
-      : `/patient/doctors/doctor-detail/${doctorId}`;
+      ? `/guest/doctors/${doctorId}`
+      : `/patient/doctors/${doctorId}`;
   };
 
   const DoctorCard = ({ doctor }: { doctor: IDoctor }) => (
@@ -65,7 +67,7 @@ export const DoctorList = ({
             />
           </div>
           <button className="bg-cyan-500 text-white px-3 rounded-full my-5">
-            {userType === "guest" ? "Chi tiết" : "Hẹn bác sĩ"}
+            {!isBooking ? "Chi tiết" : "Hẹn bác sĩ"}
           </button>
         </div>
         <div className="col-span-2 flex flex-col items-start text-start justify-between font-sans pl-4">

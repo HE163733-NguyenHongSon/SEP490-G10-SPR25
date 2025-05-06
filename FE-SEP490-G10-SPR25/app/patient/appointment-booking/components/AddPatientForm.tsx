@@ -4,12 +4,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useUser } from "@/common/contexts/UserContext";
 import { useDispatch, useSelector } from "react-redux";
 import { addPatientAsync } from "../redux/bookingThunks";
-import type { AppDispatch, RootState } from "../../store";
-
+import type { AppDispatch, RootState } from "@/store";
 import { setIsAddingPatient, setPatients } from "../redux/bookingSlice";
 import { format } from "date-fns";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
   const [userName, setUserName] = useState("");
@@ -19,11 +16,33 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
   const [citizenId, setCitizenId] = useState("");
   const [relationship, setRelationship] = useState("");
   const [address, setAddress] = useState("");
+  const [errors, setErrors] = useState<any>({});
+
   const { user } = useUser();
   const dispatch = useDispatch<AppDispatch>();
   const patients = useSelector((state: RootState) => state.booking.patients);
+
+  const validateForm = () => {
+    const newErrors: any = {};
+
+    if (!userName) newErrors.userName = "Họ và tên không được để trống";
+    if (!phone || !/^\d{10}$/.test(phone))
+      newErrors.phone = "Số điện thoại không hợp lệ";
+    if (!dob) newErrors.dob = "Ngày sinh không được để trống";
+    if (!citizenId || citizenId.length < 12)
+      newErrors.citizenId = "Số CCCD không hợp lệ";
+    if (!relationship)
+      newErrors.relationship = "Mối quan hệ không được để trống";
+    if (!address) newErrors.address = "Địa chỉ không được để trống";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
 
     const addedPatient = {
       userName,
@@ -35,16 +54,14 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
       address,
       guardianId: user?.userId,
     };
-    console.log("dsdsd", addedPatient);
+
     try {
       await dispatch(addPatientAsync(addedPatient)).unwrap();
       dispatch(setIsAddingPatient(true));
       dispatch(setPatients([...patients, addedPatient as IPatient]));
-      toast.success("Thêm bệnh nhân thành công!");
       onClose();
     } catch {
       dispatch(setIsAddingPatient(false));
-      toast.error("Thêm thất bại hoặc bệnh nhân đã tồn tại!");
     }
   };
 
@@ -68,6 +85,9 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
               onChange={(e) => setUserName(e.target.value)}
               required
             />
+            {errors.userName && (
+              <p className="text-red-500 text-xs mt-1">{errors.userName}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-start pl-2">
@@ -81,6 +101,9 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
               onChange={(e) => setPhone(e.target.value)}
               required
             />
+            {errors.phone && (
+              <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+            )}
           </div>
         </div>
 
@@ -97,6 +120,9 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
               placeholderText="dd/mm/yyyy"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none"
             />
+            {errors.dob && (
+              <p className="text-red-500 text-xs mt-1">{errors.dob}</p>
+            )}
           </div>
 
           <div>
@@ -141,19 +167,31 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
               onChange={(e) => setCitizenId(e.target.value)}
               required
             />
+            {errors.citizenId && (
+              <p className="text-red-500 text-xs mt-1">{errors.citizenId}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium mb-1 text-start pl-2">
               Mối quan hệ
             </label>
-            <input
-              type="text"
-              placeholder="Con, Cha, Mẹ, Vợ/Chồng..."
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none"
+            <select
               value={relationship}
               onChange={(e) => setRelationship(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 outline-none"
               required
-            />
+            >
+              <option value="">Chọn mối quan hệ</option>
+              <option value="Con">Con</option>
+              <option value="Cha">Cha</option>
+              <option value="Mẹ">Mẹ</option>
+              <option value="Vợ">Vợ</option>
+              <option value="Chồng">Chồng</option>
+              <option value="Khác">Khác</option>
+            </select>
+            {errors.relationship && (
+              <p className="text-red-500 text-xs mt-1">{errors.relationship}</p>
+            )}
           </div>
         </div>
 
@@ -170,9 +208,11 @@ const AddPatientForm = ({ onClose }: { onClose: () => void }) => {
             placeholder="Nhập đầy đủ địa chỉ của bạn"
             className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-500"
           />
+          {errors.address && (
+            <p className="text-red-500 text-xs mt-1">{errors.address}</p>
+          )}
         </div>
 
-        {/* Buttons */}
         <div className="flex justify-between mt-6">
           <button
             type="submit"

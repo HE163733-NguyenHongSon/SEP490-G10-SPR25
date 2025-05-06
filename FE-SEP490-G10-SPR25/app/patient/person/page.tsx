@@ -1,422 +1,265 @@
 "use client";
 
-import * as Tabs from "@radix-ui/react-tabs";
-import Image from "next/image";
 import { patientService } from "@/common/services/patientService";
 import { useQuery } from "@tanstack/react-query";
-import { useUser } from '@/common/contexts/UserContext';
+import { useState, useEffect } from "react";
+import { useUser } from "@/common/contexts/UserContext";
+import AvatarUploader from "./AvatarUploader";
+import SelectPatient from "./medical-report/components/SelectPatient";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const ProfilePage = () => {
-  const { user } = useUser(); 
-  const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
+  const { user } = useUser();
+  const [patient, setPatient] = useState<IPatient | undefined>();
+  const [userName, setUserName] = useState("");
+  const [dob, setDob] = useState<Date | null>(null);
+  const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
+  const [address, setAddress] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
-  
-  const { data: patientDetail } = useQuery<IPatientDetail>({
-    queryKey: ["patientDetail", user],
+  const { data: patientList, refetch } = useQuery({
+    queryKey: ["patients"],
     queryFn: async () => {
-      const data = await patientService.getPatientDetailById(user?.userId);
-      return data;
+      const pd = await patientService.getPatientDetailById(user?.userId);
+      const dependents = pd?.dependents || [];
+      pd.relationship =
+        dependents.length > 0 ? "Người giám hộ" : "Bệnh nhân chính";
+      return [pd as IPatient, ...dependents];
     },
     staleTime: 30000,
+    enabled: !!user?.userId,
   });
-  
+
+  const parseDate = (dateString: string): Date | null => {
+    if (!dateString) return null;
+    const [day, month, year] = dateString.split("/");
+    const parsed = new Date(Number(year), Number(month) - 1, Number(day));
+    return isNaN(parsed.getTime()) ? null : parsed;
+  };
+
+  const formatDate = (date: Date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`; // ISO format: "YYYY-MM-DD"
+  };
+
+  const updateFieldsFromPatient = (pt: IPatient) => {
+    setUserName(pt.userName || "");
+    setDob(parseDate(pt.dob || ""));
+    setAddress(pt.address || "");
+    setPhone(pt.phone || "");
+    setGender(pt.gender || "");
+  };
+
+  useEffect(() => {
+    if (patientList && patientList.length > 0 && !patient) {
+      const firstPatient = patientList[0];
+      setPatient(firstPatient);
+      updateFieldsFromPatient(firstPatient);
+    }
+  }, [patientList, patient]);
+
+  const handleSelectPatient = (selected: IPatient) => {
+    setPatient(selected);
+    updateFieldsFromPatient(selected);
+  };
+
+  const handleReset = () => {
+    if (patient) updateFieldsFromPatient(patient);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!patient) return;
+    setIsSaving(true);
+
+    const updatedPatient = {
+      userId: patient.userId,
+      userName,
+      dob: dob ? formatDate(dob) : "",
+      gender,
+      address,
+      phone,
+      citizenId: patient.citizenId || "",
+    };
+
+    try {
+      await patientService.updatePatientContact(updatedPatient);
+      alert("Cập nhật hồ sơ thành công!");
+      refetch();
+    } catch (error) {
+      console.error("Update failed:", error);
+      alert("Cập nhật hồ sơ thất bại.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="p-8">
-      <Tabs.Root defaultValue="account" className="w-full">
-        <div className="row-span-1 flex flex-col items-start border-b-2 border-gray-300 gap-5">
-          <div className="flex flex-row items-center gap-3 px-5">
-            <div className="flex flex-col items-center gap-3 border-r-2 border-gray-300 pr-12">
-              <div className="w-[100px] h-[100px] overflow-hidden rounded-lg">
-                <Image
-                  className="object-cover w-full h-full"
-                  src={`${imgUrl}/${patientDetail?.avatarUrl}`}
-                  alt="avatar patient"
-                  width={100}
-                  height={100}
-                />
-              </div>
-              <button className="text-cyan-500 hover:underline">
-                Thay đổi ảnh
-              </button>
-            </div>
-            <div className="text-gray-600">
-              <h3 className="font-semibold text-xl">
-                Hồ sơ cá nhân: {patientDetail?.userName}
-              </h3>
-              <p className="text-lg">
-                <span className="font-semibold">Vai trò: </span>
-                {patientDetail?.roleNames}
-              </p>
-            </div>
+      <div className="row-span-1 flex flex-col gap-6 border-b border-gray-300 pb-6">
+        <div className="flex flex-row items-center justify-center gap-10 w-full border-2 border-gray-300 rounded-lg p-6">
+          <AvatarUploader
+            avatarUrl={patient?.avatarUrl}
+            userId={patient?.userId || ""}
+            onUploaded={refetch}
+          />
+          <div className="flex flex-col items-center text-center text-gray-700 w-1/2">
+            <h3 className="font-semibold text-2xl mb-2">
+              Chọn hồ sơ người bệnh{" "}
+              <SelectPatient
+                patients={patientList || []}
+                selectedPatient={patient}
+                onChange={handleSelectPatient}
+              />
+            </h3>
           </div>
-          <Tabs.List className="flex  ">
-            <Tabs.Trigger
-              value="account"
-              className="px-6 py-2 text-lg font-semibold text-gray-600 data-[state=active]:text-cyan-600 data-[state=active]:border-b-2 data-[state=active]:border-cyan-600 focus:outline-none"
+        </div>
+      </div>
+
+      <form
+        className="bg-white p-10 rounded-lg shadow-md space-y-8"
+        onSubmit={handleSubmit}
+      >
+        <div className="grid grid-cols-4 gap-6">
+          <div>
+            <label
+              htmlFor="citizen_id"
+              className="block text-sm font-medium text-gray-700"
             >
-              Thông tin cá nhân
-            </Tabs.Trigger>
-            <Tabs.Trigger
-              value="dependents"
-              className="px-6 py-2 text-lg font-semibold text-gray-600 data-[state=active]:text-cyan-600 data-[state=active]:border-b-2 data-[state=active]:border-cyan-600 focus:outline-none"
+              Số CMND/CCCD
+            </label>
+            <input
+              id="citizen_id"
+              type="number"
+              value={patient?.citizenId || ""}
+              disabled
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="user_name"
+              className="block text-sm font-medium text-gray-700"
             >
-              Người thân được giám hộ
-            </Tabs.Trigger>
-          </Tabs.List>
+              Họ và tên
+            </label>
+            <input
+              id="user_name"
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="dob"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Ngày sinh
+            </label>
+            <DatePicker
+              selected={dob}
+              onChange={(date: Date | null) => setDob(date)}
+              dateFormat="dd/MM/yyyy"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Giới tính
+            </label>
+            <select
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-600"
+            >
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
+            </select>
+          </div>
         </div>
 
-        <Tabs.Content value="account">
-          <form>
-            <div className="row-span-1 flex flex-col py-10">
-              <div className="grid grid-cols-4 gap-10 mb-5">
-                <div>
-                  <label
-                    htmlFor="citizen_id"
-                    className="block font-medium text-gray-600"
-                  >
-                    Số CMND/CCCD
-                  </label>
-                  <input
-                    id="citizen_id"
-                    type="number"
-                    value={patientDetail?.citizenId}
-                    className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="user_name"
-                    className="block font-medium text-gray-600"
-                  >
-                    Họ và tên
-                  </label>
-                  <input
-                    id="user_name"
-                    type="text"
-                    value={patientDetail?.userName}
-                    className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="dob"
-                    className="block font-medium text-gray-600"
-                  >
-                    Ngày sinh
-                  </label>
-                  <input
-                    id="dob"
-                    type="date"
-                    value={patientDetail?.dob}
-                    className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <label className="col-span-2 block font-medium text-gray-600">
-                    Giới tính
-                  </label>
-                  <div className="flex items-center">
-                    <input
-                      id="male"
-                      type="radio"
-                      name="gender"
-                      value="male"
-                      checked={patientDetail?.gender === "male"}
-                      className="mr-2"
-                    />
-                    <label htmlFor="male">Nam</label>
-                  </div>
-                  <div className="flex items-center">
-                    <input
-                      id="female"
-                      type="radio"
-                      name="gender"
-                      value="female"
-                      checked={patientDetail?.gender === "female"}
-                      className="mr-2"
-                    />
-                    <label htmlFor="female">Nữ</label>
-                  </div>
-                </div>
-              </div>
-
-              {/* Email và số điện thoại */}
-              <div className="grid grid-cols-2 gap-10">
-                <div className="grid grid-cols-4 items-center">
-                  <div className="col-span-3">
-                    <label
-                      htmlFor="email"
-                      className="block font-medium text-gray-600"
-                    >
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={patientDetail?.email}
-                      className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
-                    />
-                  </div>
-                  <div className="col-span-1 flex justify-center">
-                    <button className="h-fit px-4 py-2 bg-cyan-500 text-white rounded-full shadow-md">
-                      Đã xác minh
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-4 items-center">
-                  <div className="col-span-3">
-                    <label
-                      htmlFor="phone"
-                      className="block font-medium text-gray-600"
-                    >
-                      Số điện thoại
-                    </label>
-                    <input
-                      id="phone"
-                      type="tel"
-                      value={patientDetail?.phone}
-                      className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
-                    />
-                  </div>
-                  <div className="col-span-1 flex justify-center">
-                    <button className="h-fit px-4 py-2 bg-cyan-500 text-white rounded-full shadow-md">
-                      Đã xác minh
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Địa chỉ */}
-              <div className="mt-5">
-                <label
-                  htmlFor="address"
-                  className="block font-medium text-gray-600 mb-1"
-                >
-                  Địa chỉ
-                </label>
-                <textarea
-                  id="address"
-                  rows={2}
-                  value={patientDetail?.address}
-                  placeholder="Sửa lại địa chỉ của bạn..."
-                  className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
-                />
-              </div>
-            </div>
-
-            {/* Hành động */}
-            <div className="flex justify-end border-t-2 border-gray-300 pt-5 gap-5">
-              <button
-                type="reset"
-                className="text-base text-gray-600 font-semibold hover:underline"
+        <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-4 items-center gap-2">
+            <div className="col-span-4">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
               >
-                Đặt lại
-              </button>
-              <button
-                type="submit"
-                className="px-8 py-3 bg-cyan-500 text-white font-semibold rounded-md shadow-md hover:bg-cyan-600 transition"
-              >
-                Cập nhật
-              </button>
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={patient?.email || ""}
+                disabled
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
             </div>
-          </form>
-        </Tabs.Content>
+          </div>
 
-        <Tabs.Content value="dependents">
-          {patientDetail?.dependents?.length !== 0 ? (
-            patientDetail?.dependents?.map(
-              (dependent: IPatient, index: number) => (
-                <form key={dependent.userId}>
-                  <div className="row-span-1 flex flex-col py-10">
-                    <div className="flex flex-row items-center gap-3 py-5 mb-5">
-                      <div className="flex flex-col items-center gap-3  pr-12">
-                        <div className="w-[100px] h-[100px] overflow-hidden rounded-lg">
-                          <Image
-                            className="object-cover w-full h-full"
-                            src={`${imgUrl}/${dependent?.avatarUrl}`}
-                            alt="avatar patient"
-                            width={100}
-                            height={100}
-                          />
-                        </div>
+          <div className="grid grid-cols-4 items-center gap-2">
+            <div className="col-span-4">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Số điện thoại
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+              />
+            </div>
+          </div>
+        </div>
 
-                        <button className="text-cyan-500 hover:underline">
-                          Thay đổi ảnh
-                        </button>
-                      </div>
-                      <div className="text-gray-600">
-                        <h3 className="font-semibold text-xl">
-                          Người thân: {dependent.userName}
-                        </h3>
-                        <p className="text-lg">
-                          <span className="font-semibold">Mối quan hệ: </span>
-                          {dependent.relationship}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-4 gap-10 mb-5">
-                      <div>
-                        <label
-                          htmlFor={`citizen_id_${index}`}
-                          className="block font-medium text-gray-600"
-                        >
-                          Số CMND/CCCD
-                        </label>
-                        <input
-                          id={`citizen_id_${index}`}
-                          type="number"
-                          value={dependent.citizenId || ""}
-                          className="w-full border border-gray-300 px-3 py-2 rounded-md"
-                          readOnly
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="user_name"
-                          className="block font-medium text-gray-600"
-                        >
-                          Họ và tên
-                        </label>
-                        <input
-                          id="user_name"
-                          type="text"
-                          value={dependent.userName}
-                          className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="dob"
-                          className="block font-medium text-gray-600"
-                        >
-                          Ngày sinh
-                        </label>
-                        <input
-                          id="dob"
-                          type="date"
-                          value={dependent.dob}
-                          className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <label className="col-span-2 block font-medium text-gray-600">
-                          Giới tính
-                        </label>
-                        <div className="flex items-center">
-                          <input
-                            id="male"
-                            type="radio"
-                            name="gender"
-                            value="male"
-                            checked={dependent.gender === "male"}
-                            className="mr-2"
-                          />
-                          <label htmlFor="male">Nam</label>
-                        </div>
-                        <div className="flex items-center">
-                          <input
-                            id="female"
-                            type="radio"
-                            name="gender"
-                            value="female"
-                            checked={dependent.gender === "female"}
-                            className="mr-2"
-                          />
-                          <label htmlFor="female">Nữ</label>
-                        </div>
-                      </div>
-                    </div>
+        <div>
+          <label
+            htmlFor="address"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Địa chỉ
+          </label>
+          <textarea
+            id="address"
+            rows={2}
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Sửa lại địa chỉ của bạn..."
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
+          />
+        </div>
 
-                    {/* Email và số điện thoại */}
-                    <div className="grid grid-cols-2 gap-10">
-                      <div className="grid grid-cols-4 items-center">
-                        <div className="col-span-3">
-                          <label
-                            htmlFor="email"
-                            className="block font-medium text-gray-600"
-                          >
-                            Email
-                          </label>
-                          <input
-                            id="email"
-                            type="email"
-                            value={dependent.email}
-                            className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
-                          />
-                        </div>
-                        <div className="col-span-1 flex justify-center">
-                          <button className="h-fit px-4 py-2 bg-cyan-500 text-white rounded-full shadow-md">
-                            Đã xác minh
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-4 items-center">
-                        <div className="col-span-3">
-                          <label
-                            htmlFor="phone"
-                            className="block font-medium text-gray-600"
-                          >
-                            Số điện thoại
-                          </label>
-                          <input
-                            id="phone"
-                            type="tel"
-                            value={dependent.phone}
-                            className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
-                          />
-                        </div>
-                        <div className="col-span-1 flex justify-center">
-                          <button className="h-fit px-4 py-2 bg-cyan-500 text-white rounded-full shadow-md">
-                            Đã xác minh
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Địa chỉ */}
-                    <div className="mt-5">
-                      <label
-                        htmlFor="address"
-                        className="block font-medium text-gray-600 mb-1"
-                      >
-                        Địa chỉ
-                      </label>
-                      <textarea
-                        id="address"
-                        rows={2}
-                        value={dependent.address}
-                        placeholder="Sửa lại địa chỉ của bạn..."
-                        className="w-full px-3 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-cyan-500"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Hành động */}
-                  <div className="flex justify-end border-t-2 border-gray-300 py-2 gap-5 bg-cyan-500 px-5">
-                    <button
-                      type="reset"
-                      className="text-base text-white font-semibold hover:underline border-2 border-white rounded-3xl px-4 py-2"
-                    >
-                      Đặt lại
-                    </button>
-                    <button
-                      type="submit"
-                      className="text-base text-white font-semibold hover:underline border-2 border-white rounded-3xl px-4 py-2"
-                    >
-                      Cập nhật
-                    </button>
-                  </div>
-                </form>
-              )
-            )
-          ) : (
-            <p>Không có người phụ thuộc</p>
-          )}
-        </Tabs.Content>
-      </Tabs.Root>
+        <div className="flex justify-end gap-4 border-t pt-5 border-gray-200">
+          <button
+            type="reset"
+            onClick={handleReset}
+            className="text-gray-600 font-medium hover:underline transition"
+          >
+            Đặt lại
+          </button>
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="px-6 py-2 bg-cyan-600 text-white font-semibold rounded-md shadow-sm hover:bg-cyan-700 transition"
+          >
+            {isSaving ? "Đang lưu..." : "Lưu thay đổi"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

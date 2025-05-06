@@ -20,9 +20,11 @@ interface IBookingState {
   selectedTime: string;
   selectedSlotId: string;
   isShowRestoreSuggestion: boolean;
+  isUseSuggestion:boolean;
   priorExaminationImgUrl: string | null;
   isSubmitting: boolean;
   isShowConfirmModal: boolean;
+  isFormValid: boolean;
   availableSchedules: IAvailableSchedule[];
   customSelectStyles: StylesConfig<{ value: string; label: string }, false>;
 }

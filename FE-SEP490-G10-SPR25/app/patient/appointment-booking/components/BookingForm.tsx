@@ -1,14 +1,15 @@
 // BookingForm.tsx
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
-import { useEffect, useCallback, useState } from "react";
+import { RootState } from "@/store";
+import { useCallback, useState, useEffect } from "react";
 import { emailService } from "@/common/services/emailService";
 import { Provider } from "react-redux";
-import { store } from "../../store";
+import { store } from "@/store";
 import SuccessReservationMessage from "./SuccessReservationMessage";
+import { useRouter } from "next/navigation";
 
 import {
-  setShowBookingForm,
+  setIsShowBookingForm,
   setCurrentStep,
   setServiceId,
   setServices,
@@ -19,11 +20,12 @@ import {
   setSelectedPatient,
   setIsShowRestoreSuggestion,
   setIsSubmitting,
-  setShowConfirmModal,
+  setIsShowConfirmModal,
   setSuggestionData,
   setSelectedDate,
   setSelectedTime,
   setSymptoms,
+  setIsLoading,
 } from "../redux/bookingSlice";
 import PatientInfor from "./PatientInfor";
 import BookingInfor from "./BookingInfor";
@@ -36,6 +38,7 @@ const BookingForm = () => {
   const dispatch = useDispatch();
   const [isMounted, setIsMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const {
     isShowBookingForm,
@@ -50,6 +53,7 @@ const BookingForm = () => {
     isSubmitting,
     isShowConfirmModal,
     availableSchedules,
+    isFormValid,
   } = useSelector((state: RootState) => state.booking);
 
   useEffect(() => {
@@ -101,7 +105,6 @@ const BookingForm = () => {
       });
 
       setTimeout(() => confirmCancel(), 1000);
-     
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Đã xảy ra lỗi khi đặt lịch";
@@ -114,7 +117,7 @@ const BookingForm = () => {
 
   const handleBack = useCallback(() => {
     if (currentStep === 1) {
-      dispatch(setShowConfirmModal(true));
+      dispatch(setIsShowConfirmModal(true));
     } else {
       if (currentStep === 2) dispatch(setServices([]));
       dispatch(setCurrentStep(currentStep - 1));
@@ -122,8 +125,8 @@ const BookingForm = () => {
   }, [dispatch, currentStep]);
 
   const confirmCancel = useCallback(() => {
-    dispatch(setShowBookingForm(false));
-    dispatch(setShowConfirmModal(false));
+    dispatch(setIsShowBookingForm(false));
+    dispatch(setIsShowConfirmModal(false));
     dispatch(setCurrentStep(1));
     dispatch(setServices([]));
     dispatch(setServiceId(""));
@@ -137,7 +140,9 @@ const BookingForm = () => {
     dispatch(setSelectedPatient(null));
     dispatch(setSuggestionData(null));
     dispatch(setSymptoms(""));
+    dispatch(setIsLoading(false));
     dispatch(setIsShowRestoreSuggestion(false));
+    router.push("/patient");
   }, [dispatch]);
 
   if (!isShowBookingForm) return null;
@@ -148,7 +153,7 @@ const BookingForm = () => {
         className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
           isMounted ? "opacity-100" : "opacity-0"
         }`}
-        onClick={() => dispatch(setShowConfirmModal(true))}
+        onClick={() => dispatch(setIsShowConfirmModal(true))}
       />
       <div
         className={`relative z-50 top-14 w-full md:w-2/3 lg:w-2/3 h-[90vh] bg-white rounded-2xl shadow-2xl p-6 flex flex-col transition-opacity duration-300 ${
@@ -175,7 +180,7 @@ const BookingForm = () => {
             </svg>
             Quay lại
           </button>
-          {currentStep < 3 && (
+          {currentStep < 3 && isFormValid && (
             <button
               onClick={() => dispatch(setCurrentStep(currentStep + 1))}
               className="bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-700 transition"
@@ -228,7 +233,7 @@ const BookingForm = () => {
             </p>
             <div className="flex justify-end space-x-4">
               <button
-                onClick={() => dispatch(setShowConfirmModal(false))}
+                onClick={() => dispatch(setIsShowConfirmModal(false))}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800 hover:underline"
               >
                 Không

@@ -228,12 +228,6 @@ const LoginPage = () => {
             </a>
           </p>
         </div>
-
-        {apiStatus && (
-          <div className="mt-4 text-xs text-gray-500 text-center">
-            <p>System Status: {apiStatus}</p>
-          </div>
-        )}
       </div>
     </div>
   );

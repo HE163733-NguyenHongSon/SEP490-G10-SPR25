@@ -381,14 +381,6 @@ export default function DoctorAppointmentsPage() {
                             </p>
                           </div>
                         </div>
-                        <div className="mt-4 flex justify-end">
-                          <Link
-                            href={`/doctor/patients/${appointment.patient?.userId}`}
-                            className="text-sm text-indigo-600 hover:text-indigo-800"
-                          >
-                            Xem hồ sơ bệnh nhân →
-                          </Link>
-                        </div>
                       </div>
                     </div>
                   ))}

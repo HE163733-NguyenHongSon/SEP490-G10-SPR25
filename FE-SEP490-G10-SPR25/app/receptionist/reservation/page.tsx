@@ -85,6 +85,27 @@ const Reservation = () => {
     fetchReservations();
   }, []);
 
+  // Sắp xếp lịch hẹn sắp tới lên đầu (từ ngày hiện tại đến ngày đặt gần nhất)
+  const sortedReservations = [...reservations].sort((a, b) => {
+    const now = new Date();
+    const dateA = new Date(a.appointmentDate);
+    const dateB = new Date(b.appointmentDate);
+    // Nếu cả hai đều là lịch trong tương lai hoặc hiện tại, sắp xếp tăng dần
+    if (dateA >= now && dateB >= now) {
+      return dateA.getTime() - dateB.getTime();
+    }
+    // Nếu chỉ a là lịch tương lai, a lên trước
+    if (dateA >= now && dateB < now) {
+      return -1;
+    }
+    // Nếu chỉ b là lịch tương lai, b lên trước
+    if (dateA < now && dateB >= now) {
+      return 1;
+    }
+    // Cả hai đều là quá khứ: sắp xếp giảm dần (gần hiện tại nhất lên trước)
+    return dateB.getTime() - dateA.getTime();
+  });
+
   const handleUpdateDoctorSchedule = async () => {
     if (!selectedReservation || !selectedDoctorId) {
       message.warning("Vui lòng chọn bác sĩ thay thế.");
@@ -299,14 +320,35 @@ const Reservation = () => {
           </Button>
         )}
 
-        {/* Thêm nút hủy lịch cho các lịch hẹn có trạng thái 'Xác nhận' */}
-        {record.status === "Xác nhận" && (
+        {/* Thêm nút hủy lịch cho các lịch hẹn có trạng thái 'Xác nhận' hoặc 'Đang chờ' */}
+        {(record.status === "Xác nhận" || record.status === "Đang chờ") && (
           <Button
             danger
             size="small"
             onClick={() => handleCancel(record)}
           >
             Hủy lịch
+          </Button>
+        )}
+
+        {/* Nút chuyển trạng thái thanh toán về 'Đã hoàn tiền' nếu chưa phải 'Đã hoàn tiền' và chỉ khi trạng thái là 'Đã hủy' */}
+        {record.status === "Đã hủy" && record.paymentStatus !== "Đã hoàn tiền" && (
+          <Button
+            size="small"
+            onClick={async () => {
+              try {
+                await fetch(
+                  `http://localhost:5220/api/Payments/UpdateStatus?reservationId=${record.reservationId}&status=Đã hoàn tiền`,
+                  { method: "PUT" }
+                );
+                message.success("Đã chuyển trạng thái thanh toán về 'Đã hoàn tiền'");
+                fetchReservations?.();
+              } catch (error) {
+                message.error("Cập nhật trạng thái thất bại");
+              }
+            }}
+          >
+            Đã hoàn tiền
           </Button>
         )}
       </Space>
@@ -399,7 +441,7 @@ const Reservation = () => {
       </div>
 
       <Table
-        dataSource={reservations}
+        dataSource={sortedReservations}
         columns={columns}
         rowKey="reservationId"
         pagination={{

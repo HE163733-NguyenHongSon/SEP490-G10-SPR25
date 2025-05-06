@@ -1104,7 +1104,7 @@ export default function AppointmentDetails() {
           ) : null}
 
           {/* Form nhập bệnh án mới */}
-          {(!existingMedicalRecord || showNewRecordForm) && (
+          {(!existingMedicalRecord || showNewRecordForm) && dayjs().isSame(dayjs(appointment.appointmentDate), 'day') ? (
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-lg font-semibold mb-4 flex items-center text-gray-800">
                 <FilePlus className="mr-2 h-5 w-5 text-indigo-600" />
@@ -1263,6 +1263,10 @@ export default function AppointmentDetails() {
                   </button>
                 </div>
               </form>
+            </div>
+          ) : (!existingMedicalRecord || showNewRecordForm) && (
+            <div className="bg-white rounded-lg shadow-md p-6 text-center text-red-600 font-semibold">
+              Chưa đến ngày hẹn ({formatDate(appointment.appointmentDate)})
             </div>
           )}
         </>

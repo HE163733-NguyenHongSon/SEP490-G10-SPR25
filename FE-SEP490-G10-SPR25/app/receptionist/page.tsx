@@ -8,7 +8,7 @@ import { getCurrentUser } from "../common/services/authService";
 
 // Import receptionistService with the IReservation interface
 import { receptionistService } from "../common/services/receptionistService"; 
-
+import ReservationDetailModal from "./components/ReservationDetailModal";
 
 interface IReservation {
   reservationId: number;
@@ -35,6 +35,8 @@ export default function ReceptionistDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [todayAppointments, setTodayAppointments] = useState<IReservation[]>([]);
+  const [selectedReservation, setSelectedReservation] = useState<IReservation | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -75,21 +77,74 @@ export default function ReceptionistDashboardPage() {
   }, []);
 
   return (
-    <div className="grid grid-cols-12 gap-4 md:gap-6">
-      <div className="col-span-12">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">Trang Quản Lý Lễ Tân</h1>
-          <div className="flex space-x-2">
-            <Link href="/receptionist/reservation">
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                Quản Lý Lịch Hẹn
-              </button>
+    <div className="p-6">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Trang Quản Lý Lễ Tân</h1>
+        <Link href="/receptionist/reservation">
+          <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            Quản Lý Lịch Hẹn
+          </button>
+        </Link>
+      </div>
+
+      {/* 2 box ngang */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {/* Thao tác nhanh */}
+        <div className="bg-white rounded-lg shadow p-4">
+          <h2 className="text-lg font-semibold mb-4">Thao Tác Nhanh</h2>
+          <div className="space-y-3">
+            <Link
+              href="/receptionist/reservation"
+              className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
+            >
+              <div className="bg-blue-100 p-2 rounded-full mr-3">
+                <Calendar className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="font-medium">Quản Lý Lịch Hẹn</p>
+                <p className="text-sm text-gray-500">Xem và cập nhật lịch hẹn</p>
+              </div>
             </Link>
+            <Link
+              href="/receptionist/patient"
+              className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
+            >
+              <div className="bg-green-100 p-2 rounded-full mr-3">
+                <Users className="h-5 w-5 text-green-600" />
+              </div>
+              <div>
+                <p className="font-medium">Quản Lý Bệnh Nhân</p>
+                <p className="text-sm text-gray-500">Xem danh sách bệnh nhân</p>
+              </div>
+            </Link>
+            <Link
+              href="/receptionist/doctorSchedule"
+              className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
+            >
+              <div className="bg-purple-100 p-2 rounded-full mr-3">
+                <Clock className="h-5 w-5 text-purple-600" />
+              </div>
+              <div>
+                <p className="font-medium">Lịch Làm Việc Bác Sĩ</p>
+                <p className="text-sm text-gray-500">Xem lịch trình của các bác sĩ</p>
+              </div>
+            </Link>
+          </div>
+        </div>
+        {/* Số liệu tổng quan */}
+        <div className="bg-white rounded-lg shadow p-4 flex flex-col justify-center items-center">
+          <h2 className="text-lg font-semibold mb-4">Số Liệu Tổng Quan</h2>
+          <div className="flex items-center">
+            <Calendar className="h-6 w-6 text-blue-600 mr-2" />
+            <span className="text-xl font-bold">{todayAppointments.length}</span>
+            <span className="ml-2 text-gray-600">lịch hẹn hôm nay</span>
           </div>
         </div>
       </div>
 
-      <div className="col-span-12 p-6 bg-white rounded-lg shadow">
+      {/* Bảng lịch hẹn hôm nay */}
+      <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold mb-4">Lịch Hẹn Hôm Nay</h2>
         <div className="border rounded-lg overflow-hidden">
           {loading ? (
@@ -108,36 +163,11 @@ export default function ReceptionistDashboardPage() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Bệnh Nhân
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Bác Sĩ
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Thời Gian
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Trạng Thái
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Thao Tác
-                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bệnh Nhân</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bác Sĩ</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thời Gian</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng Thái</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao Tác</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -162,10 +192,7 @@ export default function ReceptionistDashboardPage() {
                       {appointment.doctor?.userName || "Chưa phân công"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {appointment.doctorSchedule?.slotStartTime?.substring(
-                        0,
-                        5
-                      ) || "--:--"}
+                      {appointment.doctorSchedule?.slotStartTime?.substring(0,5) || "--:--"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -177,12 +204,15 @@ export default function ReceptionistDashboardPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <Link
-                        href={`/receptionist/reservation/${appointment.reservationId}`}
+                      <button
                         className="text-blue-600 hover:text-blue-900 mr-3"
+                        onClick={() => {
+                          setSelectedReservation(appointment);
+                          setIsModalVisible(true);
+                        }}
                       >
                         Chi tiết
-                      </Link>
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -192,123 +222,12 @@ export default function ReceptionistDashboardPage() {
         </div>
       </div>
 
-      <div className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-6 bg-white rounded-lg shadow">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Thao Tác Nhanh</h2>
-          </div>
-          <div className="space-y-3">
-            <Link
-              href="/receptionist/reservation"
-              className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
-            >
-              <div className="bg-blue-100 p-2 rounded-full mr-3">
-                <Calendar className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="font-medium">Quản Lý Lịch Hẹn</p>
-                <p className="text-sm text-gray-500">
-                  Xem và cập nhật lịch hẹn
-                </p>
-              </div>
-            </Link>
-            <Link
-              href="/receptionist/patient"
-              className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
-            >
-              <div className="bg-green-100 p-2 rounded-full mr-3">
-                <Users className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <p className="font-medium">Quản Lý Bệnh Nhân</p>
-                <p className="text-sm text-gray-500">
-                  Xem danh sách bệnh nhân
-                </p>
-              </div>
-            </Link>
-            <Link
-              href="/receptionist/doctorSchedule"
-              className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
-            >
-              <div className="bg-purple-100 p-2 rounded-full mr-3">
-                <Clock className="h-5 w-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="font-medium">Lịch Làm Việc Bác Sĩ</p>
-                <p className="text-sm text-gray-500">
-                  Xem lịch trình của các bác sĩ
-                </p>
-              </div>
-            </Link>
-          </div>
-        </div>
-
-        <div className="p-6 bg-white rounded-lg shadow">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Số Liệu Tổng Quan</h2>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-blue-50 rounded-lg">
-              <div className="flex items-center">
-                <div className="bg-blue-100 p-2 rounded-full mr-3">
-                  <Calendar className="h-5 w-5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Lịch hẹn hôm nay</p>
-                  <p className="text-xl font-bold">{todayAppointments.length}</p>
-                </div>
-              </div>
-            </div>
-            <div className="p-4 bg-green-50 rounded-lg">
-              <div className="flex items-center">
-                <div className="bg-green-100 p-2 rounded-full mr-3">
-                  <User className="h-5 w-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Bệnh nhân mới</p>
-                  <p className="text-xl font-bold">0</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="p-6 bg-white rounded-lg shadow">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Cần Xử Lý</h2>
-          </div>
-          <div className="space-y-3">
-            <Link
-              href="/receptionist/reservation?status=Chờ xác nhận"
-              className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
-            >
-              <div className="bg-yellow-100 p-2 rounded-full mr-3">
-                <FileText className="h-5 w-5 text-yellow-600" />
-              </div>
-              <div>
-                <p className="font-medium">Lịch Hẹn Chờ Xác Nhận</p>
-                <p className="text-sm text-gray-500">
-                  Xác nhận đặt lịch của bệnh nhân
-                </p>
-              </div>
-            </Link>
-            <Link
-              href="/receptionist/reservation?status=Hết hạn"
-              className="flex items-center p-3 border rounded-lg hover:bg-gray-50"
-            >
-              <div className="bg-red-100 p-2 rounded-full mr-3">
-                <Clipboard className="h-5 w-5 text-red-600" />
-              </div>
-              <div>
-                <p className="font-medium">Lịch Hẹn Hết Hạn</p>
-                <p className="text-sm text-gray-500">
-                  Xử lý lịch hẹn hết hạn
-                </p>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </div>
+      {/* Modal chi tiết */}
+      <ReservationDetailModal
+        open={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        reservation={selectedReservation}
+      />
     </div>
   );
 }

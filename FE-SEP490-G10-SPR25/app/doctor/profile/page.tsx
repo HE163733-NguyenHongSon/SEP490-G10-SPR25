@@ -55,12 +55,6 @@ const DoctorProfilePage = () => {
       <div className="col-span-12">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">Hồ Sơ Của Tôi</h1>
-          <Link href="/doctor/profile/edit">
-            <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 flex items-center">
-              <Edit className="h-4 w-4 mr-2" />
-              Chỉnh Sửa Hồ Sơ
-            </button>
-          </Link>
         </div>
       </div>
 
@@ -183,29 +177,6 @@ const DoctorProfilePage = () => {
             ))}
           </div>
         </div> */}
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Lịch Làm Việc</h2>
-            <Link href="/doctor/schedule">
-              <button className="px-3 py-1 border border-indigo-600 text-indigo-600 rounded-md hover:bg-indigo-50">
-                Cập Nhật Lịch
-              </button>
-            </Link>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-700 mb-2">
-              Bạn có thể cập nhật chi tiết giờ làm việc và lịch khám từ trang
-              Lịch làm việc.
-            </p>
-            <Link
-              href="/doctor/schedule"
-              className="text-sm text-indigo-600 hover:text-indigo-800"
-            >
-              Xem lịch đầy đủ của bạn →
-            </Link>
-          </div>
-        </div>
       </div>
     </div>
   );

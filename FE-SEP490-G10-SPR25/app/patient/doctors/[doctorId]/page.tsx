@@ -8,7 +8,7 @@ const PatientDoctorDetailPage = () => {
   const doctorId = params?.doctorId as string;
   return (
     <div className="flex items-center justify-center gap-4 w-full h-full overflow-hidden">
-      <DoctorDetailPage params={{ doctorId }} />;
+      <DoctorDetailPage params={{ doctorId }} />
     </div>
   );
 };

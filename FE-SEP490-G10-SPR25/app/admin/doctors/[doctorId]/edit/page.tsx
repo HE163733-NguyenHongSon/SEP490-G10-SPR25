@@ -15,6 +15,7 @@ import {
 import PageBreadCrumb from "../../../components/PageBreadCrumb";
 import { doctorService } from "@/common/services/doctorService";
 import { specialtyService } from "@/common/services/specialtyService";
+import { serviceService } from "@/common/services/serviceService";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
@@ -59,6 +60,8 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
   const [editingUserId, setEditingUserId] = useState<number | null>(null);
   const [specialties, setSpecialties] = useState<ISpecialty[]>([]);
   const [selectedSpecialties, setSelectedSpecialties] = useState<number[]>([]);
+  const [services, setServices] = useState<IService[]>([]);
+  const [selectedServices, setSelectedServices] = useState<number[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,6 +81,11 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         const specialtyList = await specialtyService.getSpecialtyList();
         setSpecialties(specialtyList);
         
+        const serviceList = await serviceService.getAllServices();
+        setServices(serviceList);
+        
+        // Xử lý chuyên khoa
+        let selectedSpecialtyIds: number[] = [];
         if (fetchedDoctorDetail.specialtyNames && fetchedDoctorDetail.specialtyNames.length > 0) {
           try {
             const matchedSpecialties = specialtyList.filter(s => 
@@ -85,15 +93,29 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
             );
             
             if (matchedSpecialties.length > 0) {
-              const numericIds = matchedSpecialties
+              selectedSpecialtyIds = matchedSpecialties
                 .map(s => s.specialtyId)
                 .map(id => typeof id === 'string' ? parseInt(id) : id)
                 .filter(id => !isNaN(id));
               
-              setSelectedSpecialties(numericIds);
+              setSelectedSpecialties(selectedSpecialtyIds);
             }
           } catch (error) {
             console.error("Error processing specialties:", error);
+          }
+        }
+        
+        // Xử lý dịch vụ
+        let selectedServiceIds: number[] = [];
+        if (fetchedDoctorDetail.services && fetchedDoctorDetail.services.length > 0) {
+          try {
+            selectedServiceIds = fetchedDoctorDetail.services.map(service => 
+              typeof service.serviceId === 'string' ? parseInt(service.serviceId) : service.serviceId
+            ).filter(id => !isNaN(id));
+            
+            setSelectedServices(selectedServiceIds);
+          } catch (error) {
+            console.error("Error processing services:", error);
           }
         }
 
@@ -182,8 +204,13 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
           gender: fetchedDoctorDetail.gender,
           dateOfBirth: dobValue,
           address: fetchedDoctorDetail.address,
-          specialtyIds: selectedSpecialties,
+          specialtyIds: selectedSpecialtyIds,
+          serviceIds: selectedServiceIds,
         });
+        
+        // Ghi log để kiểm tra giá trị đã gán
+        console.log("Đã gán giá trị chuyên khoa:", selectedSpecialtyIds);
+        console.log("Đã gán giá trị dịch vụ:", selectedServiceIds);
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu:", error);
         message.error(
@@ -257,7 +284,6 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         relevantDoctors: values.relevantDoctors || [],
         email: values.email,
         phone: values.phone,
-        phoneNumber: values.phone,
         gender: values.gender,
         dob: dobValue,
         address: values.address,
@@ -270,6 +296,7 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
         isVerify: doctorDetail.isVerify,
         isActive: doctorDetail.isActive,
         specialtyIds: values.specialtyIds,
+        serviceIds: values.serviceIds,
       };
 
       await doctorService.updateDoctor(doctorId, doctorData as any);
@@ -483,6 +510,19 @@ const EditDoctor = ({ params }: EditDoctorProps) => {
                 placeholder="Chọn chuyên khoa"
                 style={{ width: '100%' }}
                 options={specialties.map(s => ({ label: s.specialtyName, value: s.specialtyId }))}
+              />
+            </Form.Item>
+            
+            <Form.Item
+              name="serviceIds"
+              label="Dịch vụ đảm nhận"
+              rules={[{ required: true, message: "Vui lòng chọn ít nhất một dịch vụ" }]}
+            >
+              <Select
+                mode="multiple"
+                placeholder="Chọn dịch vụ đảm nhận"
+                style={{ width: '100%' }}
+                options={services.map(s => ({ label: s.serviceName, value: s.serviceId }))}
               />
             </Form.Item>
           </div>

@@ -9,13 +9,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import reservationService from "@/common/services/reservationService";
 import {
-  setSymptoms,
   setIsLoading,
   setPatients,
   setIsShowBookingForm,
-  setSpecialtyId,
-  setSuggestionData,
   setIsUseSuggestion,
+  setSymptoms,
 } from "./redux/bookingSlice";
 import { RootState } from "@/store";
 
@@ -24,8 +22,9 @@ const SymptomPopup = () => {
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState("");
 
-  const { isLoading, isShowRestoreSuggestion, symptoms } =
-    useSelector((state: RootState) => state.booking);
+  const { isLoading, isShowBookingForm } = useSelector(
+    (state: RootState) => state.booking
+  );
 
   const { data: patientDetail } = useQuery({
     queryKey: ["patientDetail", user],
@@ -43,31 +42,15 @@ const SymptomPopup = () => {
     dispatch(setIsUseSuggestion(true));
 
     try {
-      const suggestion = await reservationService.getBookingSuggestion(
-        trimmed,
-        user?.userId
-      );
-      dispatch(setSuggestionData(suggestion));
-      console.log("suggestion", suggestion, trimmed);
-      if (
-        suggestion?.specialty?.specialtyId === null ||
-        suggestion?.specialty?.specialtyName === "Không xác định"
-      ) {
+      const suggestion = await reservationService.getBookingSuggestion(trimmed);
+      if (suggestion?.specialty?.specialtyId === null) {
         toast.error(
           `Triệu chứng "${trimmed}" bạn nhập không phù hợp. Vui lòng thử lại!`,
           { autoClose: 5000 }
         );
         return;
       }
-
-      if (
-        suggestion?.specialty?.specialtyId !== null &&
-        !isShowRestoreSuggestion
-      ) {
-        dispatch(setSpecialtyId(suggestion?.specialty.specialtyId || ""));
-        dispatch(setSymptoms(trimmed));
-      }
-
+      dispatch(setSymptoms(trimmed));
       const guardian: IPatient = {
         userId: patientDetail?.userId,
         userName: patientDetail?.userName,
@@ -90,7 +73,7 @@ const SymptomPopup = () => {
     } finally {
       dispatch(setIsLoading(false));
     }
-  }, [inputValue, dispatch, patientDetail, isShowRestoreSuggestion]);
+  }, [inputValue, dispatch, patientDetail]);
 
   return (
     <div className="relative w-full max-w-2xl p-4">
@@ -133,7 +116,7 @@ const SymptomPopup = () => {
           )}
         </button>
       </div>
-      {symptoms.length > 0 && <BookingForm />}
+      {isShowBookingForm && <BookingForm />}
     </div>
   );
 };

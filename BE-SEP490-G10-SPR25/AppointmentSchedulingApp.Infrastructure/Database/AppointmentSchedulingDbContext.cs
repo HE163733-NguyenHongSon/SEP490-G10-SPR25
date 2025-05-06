@@ -304,6 +304,8 @@ public partial class AppointmentSchedulingDbContext : DbContext
         {
             entity.HasKey(e => e.ReservationId).HasName("PK__Reservat__B7EE5F2457D52326");
 
+            entity.HasIndex(r => new { r.DoctorScheduleId, r.AppointmentDate }).IsUnique();
+
             entity.Property(e => e.AppointmentDate).HasColumnType("datetime");
             entity.Property(e => e.CancellationReason).HasMaxLength(255);
             entity.Property(e => e.CreatedDate)

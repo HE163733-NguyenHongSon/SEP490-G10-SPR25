@@ -27,7 +27,10 @@ namespace AppointmentSchedulingApp.Infrastructure
             await _entitySet.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
         }
-
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _entitySet.AnyAsync(predicate);
+        }
         public async Task<T> Get(Expression<Func<T, bool>> expression)
         {
             return await _entitySet.FirstOrDefaultAsync(expression);

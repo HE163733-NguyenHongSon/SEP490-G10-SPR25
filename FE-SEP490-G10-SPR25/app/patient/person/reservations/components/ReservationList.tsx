@@ -74,15 +74,15 @@ const ReservationList: React.FC<ReservationListProps> = ({
         Number(reservationToCancel.reservationId),
         "Đang xử lý"
       );
-      // reservationToCancel.cancellationReason = reason;
       const htmlMessage = ReactDOMServer.renderToStaticMarkup(
         <CancelReservationMessage
+          userName={user?.userName}
           reservation={reservationToCancel}
           cancelledCountThisMonth={cancelCountThisMonth}
         />
       );
       await emailService.sendEmail({
-        toEmail: reservationToCancel.patient.email || "",
+        toEmail: user?.email || "",
         subject: "Cảnh báo hủy hẹn lịch!",
         message: htmlMessage,
       });
@@ -225,7 +225,7 @@ const ReservationList: React.FC<ReservationListProps> = ({
                         <div className="flex items-center justify-center w-full h-full">
                           <span className="text-sm text-gray-700 text-center px-2">
                             {reservation.cancellationReason ||
-                              "Không có lý do hủy"}    
+                              "Không có lý do hủy"}
                           </span>
                         </div>
                       ) : reservation.priorExaminationImg ? (

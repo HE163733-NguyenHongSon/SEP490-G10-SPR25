@@ -12,7 +12,12 @@ const reservationService = {
     );
     return response.json();
   },
-
+  async getReservationById(reservationId: string): Promise<IReservation> {
+    const response = await fetch(`${apiUrl}/api/Reservations/${reservationId}`);
+    if (!response.ok) throw new Error("Không thể lấy thông tin đặt lịch");
+    return response.json();
+  },
+  
   async getNumberOfReservationsByPatientIdAndStatus(
     patientId: string,
     status: string
@@ -54,14 +59,9 @@ const reservationService = {
     return response.json();
   },
 
-  // async createReservation(data: string) {
-  //   const response = await api.post("/Reservation", data);
-  //   return response.data;
-  // },
-
   async getBookingSuggestion(
     symptoms: string,
-    patientId?:string,
+    patientId?: string
   ): Promise<IBookingSuggestion | null> {
     try {
       const res = await fetch(WEBHOOK_URL, {
@@ -71,7 +71,7 @@ const reservationService = {
         },
         body: JSON.stringify({
           symptoms,
-          patientId
+          patientId,
         }),
       });
 

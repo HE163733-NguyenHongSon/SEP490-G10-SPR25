@@ -5,7 +5,6 @@ import { useCallback, useState, useEffect } from "react";
 import { emailService } from "@/common/services/emailService";
 import { Provider } from "react-redux";
 import { store } from "@/store";
-import SuccessReservationMessage from "./SuccessReservationMessage";
 import { useRouter } from "next/navigation";
 
 import {
@@ -34,11 +33,31 @@ import BookingStepper from "./BookingStepper";
 import { handleVNPayPayment } from "@/common/services/vnPayService";
 import { toast } from "react-toastify";
 import ReactDOMServer from "react-dom/server";
+import * as signalR from "@microsoft/signalr";
+
 const BookingForm = () => {
   const dispatch = useDispatch();
   const [isMounted, setIsMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  useEffect(() => {
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl("/hubs/notification")
+      .build();
+
+    connection.on("ScheduleConflict", (data) => {
+      alert(data.message);
+    });
+
+    connection
+      .start()
+      .catch((err) => console.error("SignalR connection error:", err));
+
+    // Cleanup on unmount
+    return () => {
+      connection.stop();
+    };
+  }, []);
 
   const {
     isShowBookingForm,
@@ -92,17 +111,6 @@ const BookingForm = () => {
         amount: service?.price,
       });
       toast.info("Đang chuyển hướng đến cổng thanh toán VNPay...");
-
-      const htmlMessage = ReactDOMServer.renderToStaticMarkup(
-        <Provider store={store}>
-          <SuccessReservationMessage />
-        </Provider>
-      );
-      await emailService.sendEmail({
-        toEmail: selectedPatient?.email || "",
-        subject: "Thông báo đặt lịch thành công!",
-        message: htmlMessage,
-      });
 
       setTimeout(() => confirmCancel(), 1000);
     } catch (err) {

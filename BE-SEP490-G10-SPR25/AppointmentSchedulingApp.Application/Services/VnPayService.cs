@@ -7,6 +7,8 @@ using AppointmentSchedulingApp.Domain.IUnitOfWork;
 using AutoMapper;
 using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -19,20 +21,44 @@ namespace AppointmentSchedulingApp.Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         public IReservationService _reservationService;
+        private readonly IDistributedCache _cache;
+        private readonly INotificationService _notificationService;
 
-        public VnPayService(IConfiguration config, IUnitOfWork unitOfWork, IMapper mapper,IReservationService reservationService)
+        public VnPayService(
+            IConfiguration config,
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IReservationService reservationService,
+            IDistributedCache cache,
+            INotificationService notificationService)
         {
             _config = config;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _reservationService = reservationService;
+            _cache = cache;
+            _notificationService = notificationService;
         }
 
-
-
-
-        public string CreatePaymentUrl(HttpContext context, PaymentDTO model)
+        public async Task<string> CreatePaymentUrl(HttpContext context, PaymentDTO model)
         {
+            string lockKey = $"hold_schedule_{model.Reservation.DoctorScheduleId}_{model.Reservation.AppointmentDate:yyyyMMddHHmm}";
+            var existing = await _cache.GetStringAsync(lockKey);
+
+            if (existing != null)
+            {
+                await _notificationService.NotifyScheduleConflictAsync(
+                    model.Reservation.PatientId.ToString(),
+                    "Lịch hẹn này đã được giữ chỗ. Vui lòng chọn thời gian khác.");
+
+                throw new InvalidOperationException("Lịch hẹn này đang được xử lý bởi người khác.");
+            }
+
+            await _cache.SetStringAsync(lockKey, "locked", new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            });
+
             var tick = DateTime.Now.Ticks.ToString();
 
             var vnpay = new VnPayLibrary();
@@ -161,7 +187,13 @@ namespace AppointmentSchedulingApp.Application.Services
 
                     await _unitOfWork.PaymentRepository.AddAsync(payment);
 
+
+
                     await _unitOfWork.CommitTransactionAsync();
+
+                    // Xoá key giữ chỗ
+                    string lockKey = $"hold_schedule_{doctorScheduleId}_{appointmentDate:yyyyMMddHHmm}";
+                    await _cache.RemoveAsync(lockKey);
 
                     return new PaymentDTO
                     {

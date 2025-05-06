@@ -1,9 +1,11 @@
 interface MessengerProps {
+  userName?: string;
   reservation?: IReservation | null;
   cancelledCountThisMonth: number | null;
 }
 
 const CancelReservationMessage: React.FC<MessengerProps> = ({
+  userName,
   reservation,
   cancelledCountThisMonth,
 }) => {
@@ -35,11 +37,7 @@ const CancelReservationMessage: React.FC<MessengerProps> = ({
 
       <div style={{ marginBottom: "24px" }}>
         <p style={{ marginBottom: "8px", color: "#374151" }}>
-          Kính gửi{" "}
-          <strong style={{}}>
-            {reservation?.patient?.userName || "Quý khách"}
-          </strong>
-          ,
+          Kính gửi <strong style={{}}>{userName || "Quý khách"}</strong>,
         </p>
         <p style={{ color: "#4b5563" }}>
           Chúng tôi xin thông báo về việc hủy lịch hẹn của bạn:
@@ -75,6 +73,20 @@ const CancelReservationMessage: React.FC<MessengerProps> = ({
             </td>
             <td style={{ padding: "12px", color: "#374151" }}>
               {reservation?.reservationId || "N/A"}
+            </td>
+          </tr>
+          <tr style={{ borderBottom: "1px solid #e0f2fe" }}>
+            <td
+              style={{
+                padding: "12px",
+                fontWeight: "600",
+                color: "#4b5563",
+              }}
+            >
+              Bệnh nhân:
+            </td>
+            <td style={{ padding: "12px", color: "#374151" }}>
+              {reservation?.patient.userName}
             </td>
           </tr>
           <tr style={{ borderBottom: "1px solid #e0f2fe" }}>
@@ -161,7 +173,7 @@ const CancelReservationMessage: React.FC<MessengerProps> = ({
                 <span>
                   Chú ý: bạn còn{" "}
                   <strong className="text-orange-600">
-                    {3 - (cancelledCountThisMonth +1)}
+                    {3 - (cancelledCountThisMonth + 1)}
                   </strong>{" "}
                   lần hủy trong tháng này.
                   <br />

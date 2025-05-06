@@ -7,7 +7,7 @@ namespace AppointmentSchedulingApp.Application.IServices
 {
     public interface IVnPayService
     {
-        string CreatePaymentUrl(HttpContext context, PaymentDTO model);
+         Task<string> CreatePaymentUrl(HttpContext context, PaymentDTO model);
         Task<PaymentDTO> PaymentExecuteAsync(IQueryCollection collections);
     }
 }

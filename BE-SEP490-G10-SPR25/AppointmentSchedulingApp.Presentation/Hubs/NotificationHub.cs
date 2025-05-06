@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using AppointmentSchedulingApp.Application.DTOs;
 using Microsoft.Extensions.Logging;
 
@@ -6,6 +6,7 @@ namespace AppointmentSchedulingApp.Presentation.Hubs
 {
     public class NotificationHub : Hub
     {
+
         private readonly ILogger<NotificationHub> _logger;
 
         public NotificationHub(ILogger<NotificationHub> logger)

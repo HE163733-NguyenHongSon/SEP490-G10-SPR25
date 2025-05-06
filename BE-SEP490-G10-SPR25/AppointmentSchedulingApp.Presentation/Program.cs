@@ -17,6 +17,8 @@ using System.Security.Claims;
 using AppointmentSchedulingApp.Presentation.Hubs;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -220,6 +222,9 @@ builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<INotificationService, AppointmentSchedulingApp.Presentation.Hubs.SignalRNotificationService>();
 
+builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
+
+
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
@@ -270,6 +275,6 @@ app.MapHub<CommentHub>("/hubs/comments")
 app.MapHub<NotificationHub>("/hubs/notifications")
    .RequireCors("AllowAll");
 
-app.MapHub<NotificationHub>("/hubs/notification")
-   .RequireCors("SignalRCorsPolicy");
+//app.MapHub<NotificationHub>("/hubs/notification")
+//   .RequireCors("SignalRCorsPolicy");
 app.Run();

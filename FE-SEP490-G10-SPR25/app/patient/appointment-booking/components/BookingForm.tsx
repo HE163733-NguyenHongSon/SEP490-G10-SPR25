@@ -6,7 +6,9 @@ import { emailService } from "@/common/services/emailService";
 import { Provider } from "react-redux";
 import { store } from "@/store";
 import { useRouter } from "next/navigation";
-
+import { useUser } from "@/common/contexts/UserContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   setIsShowBookingForm,
   setCurrentStep,
@@ -40,9 +42,14 @@ const BookingForm = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { user } = useUser();
+
   useEffect(() => {
+    if (!user?.userId) return;
+
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl("/hubs/notification")
+      .withUrl(`/hubs/notifications?userId=${user.userId}`)
+      .withAutomaticReconnect()
       .build();
 
     connection.on("ScheduleConflict", (data) => {
@@ -53,11 +60,10 @@ const BookingForm = () => {
       .start()
       .catch((err) => console.error("SignalR connection error:", err));
 
-    // Cleanup on unmount
     return () => {
       connection.stop();
     };
-  }, []);
+  }, [user?.userId]);
 
   const {
     isShowBookingForm,
@@ -114,10 +120,7 @@ const BookingForm = () => {
 
       setTimeout(() => confirmCancel(), 1000);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Đã xảy ra lỗi khi đặt lịch";
-      setError(errorMessage);
-      console.error("Booking error:", err);
+      toast.error(error || "Đã xảy ra lỗi");
     } finally {
       dispatch(setIsSubmitting(false));
     }

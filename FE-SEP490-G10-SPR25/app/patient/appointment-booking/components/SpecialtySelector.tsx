@@ -87,7 +87,7 @@ const SpecialtySelector = () => {
           <StethoscopeIcon className="w-4 h-4 mr-2" />
           Chuyên khoa
         </label>
-        {suggestionData && isShowRestoreSuggestion && isUseSuggestion && (
+        {suggestionData?.availableSchedules && isShowRestoreSuggestion && isUseSuggestion && (
           <button
             onClick={handleRestoreSuggestion}
             className="text-xs text-cyan-600 hover:text-cyan-700 flex items-center"

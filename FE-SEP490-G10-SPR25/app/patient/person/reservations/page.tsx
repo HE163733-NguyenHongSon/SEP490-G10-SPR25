@@ -48,7 +48,7 @@ const ReservationPage = () => {
 
         return result;
       },
-      staleTime: 30000,
+      staleTime: 0,
     });
 
   const { data: statusList = [], isLoading: isLoadingStatus } = useQuery({
@@ -78,7 +78,7 @@ const ReservationPage = () => {
       ]);
       return statuses;
     },
-    staleTime: 30000,
+    staleTime: 0,
   });
 
   const handleCancelSuccess = async () => {

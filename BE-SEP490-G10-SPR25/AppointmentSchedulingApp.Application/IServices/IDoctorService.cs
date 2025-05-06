@@ -22,6 +22,9 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<List<MedicalRecordDTO>> GetPatientPreviousMedicalRecords(int patientId);
         Task<IEnumerable<DoctorDTO>> GetDoctorListByServiceId(int serviceId);
         
+        // Method to get doctors by specialty id
+        Task<IEnumerable<DoctorDTO>> GetDoctorsBySpecialtyId(int specialtyId);
+        
         // New method to get all medical records for a doctor
         Task<List<MedicalRecordDTO>> GetDoctorMedicalRecords(int doctorId);
         

@@ -213,16 +213,13 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ params }) => {
     );
   }
 
-  // Calculate average rating
-  const avgRating = service.rating || (
-    feedbacks.length > 0 
-      ? feedbacks.reduce((sum, feedback) => sum + feedback.rating, 0) / feedbacks.length 
-      : 4.5
-  );
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8 pt-24">
-      <div className="bg-white rounded-lg shadow-lg p-6 max-w-5xl mx-auto">
+    <div
+      className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center z-10"
+      style={{ backgroundImage: 'url("/images/background_doctors.jpeg")' }}
+    >
+      <div className="relative container w-90 text-gray-600 p-5 mt-20 mb-5 z-30 bg-white rounded-xl shadow-2xl">
         {/* Back button */}
         <button
           onClick={() => router.back()}
@@ -237,20 +234,7 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ params }) => {
           {/* Left - text */}
           <div className="flex-1">
             <h1 className="text-3xl font-bold text-black mb-4">{service.serviceName}</h1>
-            
-            <div className="flex items-center mb-3">
-              <div className="flex items-center text-yellow-500 mr-4">
-                <Star className="h-5 w-5 fill-current text-yellow-500" />
-                <span className="ml-1 font-medium">{avgRating.toFixed(1)}</span>
-                <span className="text-gray-500 ml-1">({feedbacks.length} đánh giá)</span>
-              </div>
-              
-              <div className="flex items-center text-gray-500">
-                <Clock className="h-5 w-5 mr-1" />
-                <span>{service.duration || "30-60"} phút</span>
-              </div>
-            </div>
-            
+ 
             <div className="text-gray-600 space-y-3">
               {/* Chuyên khoa */}
               <div>
@@ -267,17 +251,6 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ params }) => {
               
               {/* Overview preview */}
               <p className="text-gray-700 mt-2 line-clamp-2">{service.overview}</p>
-              
-              {/* Booking button */}
-              <div className="pt-4">
-                <button
-                  className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-600 flex items-center"
-                  onClick={handleBookService}
-                >
-                  <Calendar className="h-5 w-5 mr-2" />
-                  Đặt lịch ngay
-                </button>
-              </div>
             </div>
           </div>
           
@@ -307,13 +280,7 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ params }) => {
             onClick={() => setActiveTab('doctors')}
           >
             Bác sĩ
-          </button>
-          <button
-            className={`pb-2 px-3 ${activeTab === 'feedback' ? 'border-b-2 border-blue-500 text-blue-500 font-semibold' : 'text-gray-500 hover:text-blue-500'}`}
-            onClick={() => setActiveTab('feedback')}
-          >
-            Đánh giá
-          </button>
+          </button>        
         </div>
 
         {/* Content */}
@@ -451,29 +418,6 @@ const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({ params }) => {
                   <Calendar className="h-5 w-5 mr-2" />
                   Đặt lịch với bác sĩ đã chọn
                 </button>
-              </div>
-            )}
-          </div>
-        )}
-        
-        {activeTab === 'feedback' && (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-black">Đánh giá từ bệnh nhân</h2>
-              <div className="flex items-center text-yellow-500">
-                <Star className="h-5 w-5 fill-current text-yellow-500" />
-                <span className="ml-1 font-medium">{avgRating.toFixed(1)}</span>
-                <span className="text-gray-500 ml-1">({feedbacks.length} đánh giá)</span>
-              </div>
-            </div>
-            
-            {feedbacks && feedbacks.length > 0 ? (
-              <FeedbackList feedbacks={feedbacks} displayView="list" />
-            ) : (
-              <div className="text-center py-10 text-gray-500">
-                <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-30" />
-                <p>Chưa có đánh giá nào cho dịch vụ này</p>
-                <p className="mt-2 text-sm">Hãy trở thành người đầu tiên đánh giá sau khi sử dụng dịch vụ</p>
               </div>
             )}
           </div>

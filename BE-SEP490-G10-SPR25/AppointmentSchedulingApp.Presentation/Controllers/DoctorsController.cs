@@ -60,6 +60,25 @@ namespace AppointmentSchedulingApp.Presentation.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        [HttpGet("GetDoctorsBySpecialtyId/{specialtyId}")]
+        public async Task<IActionResult> GetDoctorsBySpecialtyId(int specialtyId)
+        {
+            try
+            {
+                var doctors = await _doctorService.GetDoctorsBySpecialtyId(specialtyId);
+
+                if (doctors == null || !doctors.Any())
+                {
+                    return NoContent();
+                }
+
+                return Ok(doctors);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
         [HttpGet("{doctorId}")]
         [EnableQuery] 
         public async Task<IActionResult> GetDoctorDetailById(int doctorId)

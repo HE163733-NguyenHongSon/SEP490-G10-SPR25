@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { doctorService } from "@/common/services/doctorService";
 
 interface SpecialtyDetailPageProps {
   params: {
@@ -44,7 +45,9 @@ const SpecialtyDetailPage = ({ params }: SpecialtyDetailPageProps) => {
   const isGuestPage = pathname?.includes('/guest/');
 
   const [specialty, setSpecialty] = useState<SpecialtyDetail | null>(null);
+  const [doctors, setDoctors] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [doctorsLoading, setDoctorsLoading] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>("overall");
   const imgUrl = process.env.NEXT_PUBLIC_S3_BASE_URL;
 
@@ -60,11 +63,35 @@ const SpecialtyDetailPage = ({ params }: SpecialtyDetailPageProps) => {
         console.error("Error fetching specialty:", error);
         setLoading(false);
       });
-  }, [id])
+  }, [id]);
+
+  // New function to load doctors when clicking on the doctors tab
+  const fetchDoctorsBySpecialty = async () => {
+    if (activeTab === 'doctors' && doctors.length === 0 && !doctorsLoading) {
+      setDoctorsLoading(true);
+      try {
+        const doctorData = await doctorService.getDoctorsBySpecialtyId(id);
+        setDoctors(doctorData);
+      } catch (error) {
+        console.error("Error fetching doctors by specialty:", error);
+      } finally {
+        setDoctorsLoading(false);
+      }
+    }
+  };
+
+  // Call fetchDoctorsBySpecialty when tab changes to doctors
+  useEffect(() => {
+    fetchDoctorsBySpecialty();
+  }, [activeTab]);
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8 pt-24">
-      <div className="bg-white rounded-lg shadow-lg p-6 max-w-6xl mx-auto">
+    <div
+      className="relative min-h-screen w-full bg-cover bg-center bg-fixed flex flex-col items-center z-10"
+      style={{ backgroundImage: 'url("/images/background_doctors.jpeg")' }}
+    >
+      <div className="absolute inset-0 bg-black bg-opacity-50 z-20"></div>
+      <div className="relative container w-90 text-gray-600 p-5 mt-20 mb-5 z-30 bg-white rounded-xl shadow-2xl">
         {/* Nút Back */}
         <button
           onClick={() => router.back()}
@@ -92,21 +119,9 @@ const SpecialtyDetailPage = ({ params }: SpecialtyDetailPageProps) => {
         ) : (
           <>
             {/* Header */}
-            <div className="flex justify-between items-start mb-6">
-              {/* Left - text */}
-              <div className="flex-1">
-                <h1 className="text-2xl font-bold text-black">{specialty?.specialtyName || "Đang tải..."}</h1>
-                <div className="text-gray-600 mt-2 space-y-2">
-                  {!isGuestPage && (
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
-                      Đặt lịch hẹn
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Right - image */}
-              <div className="w-64 h-48 ml-2">
+            <div className="flex flex-row items-center mb-6">
+              {/* Image on the left */}
+              <div className="w-64 h-48 mr-8 flex-shrink-0">
                 <Image
                   src={`${imgUrl}/${specialty?.image}`}
                   alt="Chuyên khoa"
@@ -116,8 +131,12 @@ const SpecialtyDetailPage = ({ params }: SpecialtyDetailPageProps) => {
                   unoptimized
                 />
               </div>
+              {/* Text on the right */}
+              <div className="flex-1">
+                <h1 className="text-2xl font-bold text-black">{specialty?.specialtyName || "Đang tải..."}</h1>
+              </div>
             </div>
-
+            
             {/* Tabs */}
             <div className="flex space-x-4 border-b mb-6">
               <button 
@@ -218,7 +237,37 @@ const SpecialtyDetailPage = ({ params }: SpecialtyDetailPageProps) => {
             {activeTab === 'doctors' && (
               <div>
                 <h2 className="text-lg font-semibold mb-4 text-black">Bác sĩ thuộc {specialty?.specialtyName}</h2>
-                {specialty?.Doctors && specialty.Doctors.length > 0 ? (
+                {doctorsLoading ? (
+                  <div className="flex justify-center items-center h-64">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                  </div>
+                ) : doctors.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {doctors.map((doctor) => (
+                      <Link 
+                        key={doctor.userId} 
+                        href={`/patient/doctors/${doctor.userId}`}
+                        className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow flex flex-col items-center"
+                      >
+                        <div className="w-32 h-32 mb-3 rounded-full overflow-hidden">
+                          <Image
+                            src={doctor.avatarUrl ? `${imgUrl}/${doctor.avatarUrl}` : "https://via.placeholder.com/150?text=Doctor"}
+                            alt={doctor.userName}
+                            className="w-full h-full object-cover"
+                            width={150}
+                            height={150}
+                            unoptimized
+                          />
+                        </div>
+                        <h3 className="font-semibold text-md text-center">
+                          {doctor.academicTitle} {doctor.degree} {doctor.userName}
+                        </h3>
+                        <p className="text-sm text-gray-600 mt-1 text-center">Chuyên khoa {specialty?.specialtyName}</p>
+                        <p className="text-sm text-gray-600 mt-1 text-center">{doctor.workExperience}</p>
+                      </Link>
+                    ))}
+                  </div>
+                ) : specialty?.Doctors && specialty.Doctors.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {specialty.Doctors.map((doctor) => (
                       <Link 

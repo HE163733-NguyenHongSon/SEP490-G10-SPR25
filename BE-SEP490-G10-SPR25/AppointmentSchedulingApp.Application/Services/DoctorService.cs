@@ -333,7 +333,7 @@ namespace AppointmentSchedulingApp.Application.Services
         
         public async Task<IEnumerable<DoctorDTO>> GetDoctorListByServiceId(int serviceId)
         {
-            try 
+            try
             {
                 var doctors = await dbContext.Doctors
                     .Include(d => d.Services)
@@ -368,9 +368,48 @@ namespace AppointmentSchedulingApp.Application.Services
             }
             catch (Exception ex)
             {
-                // Log lỗi
-                Console.WriteLine($"Error getting doctors for service {serviceId}: {ex.Message}");
-                return new List<DoctorDTO>();
+                throw new Exception($"Lỗi khi lấy danh sách bác sĩ theo dịch vụ: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<IEnumerable<DoctorDTO>> GetDoctorsBySpecialtyId(int specialtyId)
+        {
+            try
+            {
+                var doctors = await dbContext.Doctors
+                    .Include(d => d.Services)
+                    .Include(d => d.DoctorNavigation)
+                    .Include(d => d.Specialties)
+                    .Where(d => d.Specialties.Any(s => s.SpecialtyId == specialtyId) && d.DoctorNavigation.IsActive)
+                    .ToListAsync();
+
+                // Map dữ liệu thủ công để tránh lỗi Roles mapping
+                var result = doctors.Select(d => new DoctorDTO
+                {
+                    UserId = d.DoctorNavigation.UserId,
+                    UserName = d.DoctorNavigation.UserName,
+                    Email = d.DoctorNavigation.Email,
+                    Phone = d.DoctorNavigation.Phone,
+                    AvatarUrl = d.DoctorNavigation.AvatarUrl,
+                    Gender = d.DoctorNavigation.Gender,
+                    Dob = d.DoctorNavigation.Dob.ToString(),
+                    Address = d.DoctorNavigation.Address,
+                    AcademicTitle = d.AcademicTitle,
+                    Degree = d.Degree,
+                    CurrentWork = d.CurrentWork,
+                    DoctorDescription = d.DoctorDescription,
+                    SpecialtyNames = d.Specialties.Select(s => s.SpecialtyName).ToArray(),
+                    NumberOfService = d.Services.Count,
+                    NumberOfExamination = 0, // Có thể tính toán sau nếu cần
+                    Rating = d.Rating,
+                    RatingCount = d.RatingCount
+                }).ToList();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi lấy danh sách bác sĩ theo chuyên khoa: {ex.Message}", ex);
             }
         }
 

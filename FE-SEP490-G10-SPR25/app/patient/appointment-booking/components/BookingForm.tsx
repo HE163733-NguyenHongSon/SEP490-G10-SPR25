@@ -5,7 +5,6 @@ import { useCallback, useState, useEffect } from "react";
 import { emailService } from "@/common/services/emailService";
 import { Provider } from "react-redux";
 import { store } from "@/store";
-import SuccessReservationMessage from "./SuccessReservationMessage";
 import { useRouter } from "next/navigation";
 
 import {
@@ -112,17 +111,6 @@ const BookingForm = () => {
         amount: service?.price,
       });
       toast.info("Đang chuyển hướng đến cổng thanh toán VNPay...");
-
-      const htmlMessage = ReactDOMServer.renderToStaticMarkup(
-        <Provider store={store}>
-          <SuccessReservationMessage />
-        </Provider>
-      );
-      await emailService.sendEmail({
-        toEmail: selectedPatient?.email || "",
-        subject: "Thông báo đặt lịch thành công!",
-        message: htmlMessage,
-      });
 
       setTimeout(() => confirmCancel(), 1000);
     } catch (err) {

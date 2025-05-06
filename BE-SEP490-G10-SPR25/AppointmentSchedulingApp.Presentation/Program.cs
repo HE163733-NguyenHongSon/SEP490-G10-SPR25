@@ -181,7 +181,7 @@ builder.Services.AddControllers().AddOData(opt => opt.Select().Filter().SetMaxTo
 
 
 builder.Services.AddDbContext<AppointmentSchedulingDbContext>(options =>
-    options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("MyDatabase"))
+     options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("MyDatabase"))
     .EnableSensitiveDataLogging()
     .LogTo(Console.WriteLine, LogLevel.Information));
 

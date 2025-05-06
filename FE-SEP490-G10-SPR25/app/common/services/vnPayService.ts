@@ -20,8 +20,8 @@ export const handleVNPayPayment = async (paymentData: Partial<IPayment>) => {
     if (!data.paymentUrl) {
       throw new Error("Invalid payment URL received from server");
     }
-
-    window.location.href = data.paymentUrl;
+    console.log("Payment URL:", data.paymentUrl);
+    window.location.href = data.paymentUrl.result;
     // return { ok: true, paymentUrl: data.paymentUrl };
   } catch (error) {
     console.error("Payment error:", error);

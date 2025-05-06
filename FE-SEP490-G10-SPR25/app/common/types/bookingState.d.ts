@@ -24,6 +24,7 @@ interface IBookingState {
   priorExaminationImgUrl: string | null;
   isSubmitting: boolean;
   isShowConfirmModal: boolean;
+  isFormValid: boolean;
   availableSchedules: IAvailableSchedule[];
   customSelectStyles: StylesConfig<{ value: string; label: string }, false>;
 }

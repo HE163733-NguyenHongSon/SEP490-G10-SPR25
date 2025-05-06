@@ -43,27 +43,24 @@ const MedicalReportPage = () => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const { user } = useUser();
 
-  useEffect(() => {
-    if (user) {
-      setPatient(user as IPatient);
-    }
-  }, [user]);
-  // const [selectedDependent, setSelectedDependent] = useState<IPatient>();
-
   const { data: patientList } = useQuery({
     queryKey: ["patients"],
     queryFn: async () => {
-      const pd = await patientService.getPatientDetailById(patient?.userId);
+      const pd = await patientService.getPatientDetailById(user?.userId);
       const dependents = pd?.dependents || [];
       pd.relationship =
         dependents.length > 0 ? "Người giám hộ" : "Bệnh nhân chính";
-      setPatient(pd as IPatient);
       return [pd as IPatient, ...dependents];
     },
     staleTime: 30000,
-    enabled: !!patient?.userId,
+    enabled: !!user?.userId,
   });
 
+  useEffect(() => {
+    if (patientList && patientList.length > 0 && !patient) {
+      setPatient(patientList[0]);
+    }
+  }, [patientList]);
   const {
     data: medicalReport,
     isLoading: isLoadingMedicalReport,

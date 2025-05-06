@@ -143,6 +143,7 @@ namespace AppointmentSchedulingApp.Application.Services
                         UpdatedByUserId = updatedByUserId
                     };
 
+
                     var reservation = _mapper.Map<Reservation>(reservationDto);
                     await _unitOfWork.ReservationRepository.AddAsync(reservation);
                     await _unitOfWork.CommitAsync();

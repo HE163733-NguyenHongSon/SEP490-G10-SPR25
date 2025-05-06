@@ -2,14 +2,16 @@
 import { useUser } from "@/common/contexts/UserContext";
 import { patientService } from "@/common/services/patientService";
 import { useQuery } from "@tanstack/react-query";
-import BookingForm from "./components/BookingForm";
 import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import BookingForm from "./components/BookingForm";
+
 import {
   setIsLoading,
   setPatients,
-  setShowBookingForm,
+  setIsShowBookingForm,
+  setIsUseSuggestion,
 } from "./redux/bookingSlice";
-import { useEffect } from "react";
 
 const BookingPage = () => {
   const { user } = useUser();
@@ -17,36 +19,39 @@ const BookingPage = () => {
 
   const { data: patientDetail } = useQuery({
     queryKey: ["patientDetail", user],
-    queryFn: async () => {
-      const data = await patientService.getPatientDetailById(user?.userId);
-      return data;
-    },
+    queryFn: async () =>
+      await patientService.getPatientDetailById(user?.userId),
     enabled: !!user,
-    staleTime: 30000,
+    staleTime: 0,
   });
 
   useEffect(() => {
-    if (patientDetail) {
-      const guardian: IPatient = {
-        userId: patientDetail?.userId,
-        userName: patientDetail?.userName,
-        avatarUrl: patientDetail?.avatarUrl,
-        relationship: "Người giám hộ",
-        dob: patientDetail?.dob,
-        phone: patientDetail?.phone,
-        address: patientDetail?.address,
-        gender: patientDetail?.gender,
-        email: patientDetail?.email,
-      };
-
-      dispatch(setPatients([guardian, ...(patientDetail?.dependents || [])]));
+    const initBooking = async () => {
+      if (!patientDetail) return;
 
       dispatch(setIsLoading(true));
-      dispatch(setShowBookingForm(true));
-    }
+
+      const guardian: IPatient = {
+        userId: patientDetail.userId,
+        userName: patientDetail.userName,
+        avatarUrl: patientDetail.avatarUrl,
+        relationship: "Người giám hộ",
+        dob: patientDetail.dob,
+        phone: patientDetail.phone,
+        address: patientDetail.address,
+        gender: patientDetail.gender,
+        email: patientDetail.email,
+      };
+
+      dispatch(setPatients([guardian, ...(patientDetail.dependents || [])]));
+      dispatch(setIsShowBookingForm(true));
+      dispatch(setIsUseSuggestion(false));
+    };
+
+    initBooking();
   }, [patientDetail, dispatch]);
 
-  return <BookingForm isUseSuggestion={false}/>;
+  return <BookingForm />;
 };
-
+   
 export default BookingPage;

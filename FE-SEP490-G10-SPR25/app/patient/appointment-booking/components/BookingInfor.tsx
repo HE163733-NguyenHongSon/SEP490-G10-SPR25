@@ -1,10 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import reservationService from "@/common/services/reservationService";
-import { specialtyService } from "@/common/services/specialtyService";
-
+import { useSelector } from "react-redux";
 import SpecialtySelector from "./SpecialtySelector";
 import ServiceSelector from "./ServiceSelector";
 import DoctorSelector from "./DoctorSelector";
@@ -12,70 +9,15 @@ import DatetimeSelector from "./DatetimeSelector";
 import SymptomInput from "./SymptomInput";
 import FileUpload from "./FileUpload";
 
-import {
-  setIsLoading,
-  setSpecialties,
-  setSpecialtyId,
-  setSuggestionData,
-} from "../redux/bookingSlice";
 import { RootState } from "@/store";
 
 const BookingInfor = () => {
-  const dispatch = useDispatch();
-
-  const {
-    symptoms,
-    isLoading,
-    selectedPatient,
-    isShowRestoreSuggestion,
-    isUseSuggestion,
-  } = useSelector((state: RootState) => state.booking);
-
+  const { isLoading, suggestionData } = useSelector(
+    (state: RootState) => state.booking
+  );
   useEffect(() => {
-    const fetchData = async () => {
-      dispatch(setIsLoading(true));
-      try {
-        const [suggestion, specialtyList] = await Promise.all([
-          reservationService.getBookingSuggestion(symptoms),
-          specialtyService.getSpecialtyList(),
-        ]);
-        console.log("Fetching data...", symptoms,suggestion);
-        dispatch(setSpecialties(specialtyList));
-        dispatch(setSuggestionData(suggestion));
-
-        if (suggestion && !isShowRestoreSuggestion) {
-          dispatch(setSpecialtyId(suggestion?.specialty.specialtyId || ""));
-        }
-      } catch (error) {
-        if (error instanceof Error && error.name !== "AbortError") {
-          console.error("Error fetching suggestion:", error);
-        }
-      } finally {
-        dispatch(setIsLoading(false));
-      }
-    };
-
-    const fetchSpecialtyList = async () => {
-      dispatch(setIsLoading(true));
-      try {
-        const specialtyList = await specialtyService.getSpecialtyList();
-        dispatch(setSpecialties(specialtyList));
-      } catch (error) {
-        console.error("Error fetching specialties:", error);
-      } finally {
-        dispatch(setIsLoading(false));
-      }
-    };
-
-    if (selectedPatient?.userId) {
-      if (isUseSuggestion) {
-        fetchData();
-      } else {
-        fetchSpecialtyList();
-      }
-    }
-  }, [symptoms, dispatch, selectedPatient?.userId]);
-
+    console.log("suggestion", suggestionData);
+  }, [isLoading]);
   return (
     <div className="relative border-b border-gray-200 py-6 md:py-8 px-2 md:px-4 rounded-lg bg-white shadow-sm transition-all duration-300">
       {isLoading && (
@@ -115,6 +57,27 @@ const BookingInfor = () => {
           <FileUpload />
         </div>
       </div>
+
+      {(!suggestionData?.availableSchedules ||
+        suggestionData.availableSchedules.length === 0) && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
+            <h2 className="text-xl font-semibold text-red-600 mb-4">
+              Lịch này không khả dụng
+            </h2>
+            <p>
+              Hiện tại không có lịch trống phù hợp với lựa chọn của bạn. Vui
+              lòng chọn chuyên khoa, dịch vụ hoặc bác sĩ khác.
+            </p>
+            <button
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              onClick={() => window.location.reload()}
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

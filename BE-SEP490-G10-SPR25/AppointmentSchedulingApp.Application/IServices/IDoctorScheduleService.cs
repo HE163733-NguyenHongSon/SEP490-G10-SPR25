@@ -13,7 +13,7 @@ namespace AppointmentSchedulingApp.Application.IServices
         Task<List<DoctorScheduleDTO>> GetDoctorScheduleListByServiceId(int serviceId);
         Task<List<AvailableScheduleDTO>> GetProposedDoctorSchedulesByServiceId(int serviceId);
 
-        Task<List<AvailableScheduleDTO>> GetAvailableSchedulesByServiceId(int serviceId);
+        Task<List<AvailableScheduleDTO>> GetAvailableSchedulesByServiceIdAndPatientId(int serviceId, int patientId);
 
         Task<List<DoctorScheduleDTO>> GetDoctorScheduleList();
         Task<DoctorScheduleDTO> GetDoctorScheduleDetailById(int doctorScheduleId);

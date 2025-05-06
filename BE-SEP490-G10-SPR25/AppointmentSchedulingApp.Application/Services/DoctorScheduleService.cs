@@ -100,27 +100,34 @@ namespace AppointmentSchedulingApp.Application.Services
             return sortedResults;
 
         }
-        public async Task<List<AvailableScheduleDTO>> GetAvailableSchedulesByServiceId(int serviceId)
+
+        public async Task<List<AvailableScheduleDTO>> GetAvailableSchedulesByServiceIdAndPatientId(int serviceId, int patientId)
         {
             var proposedSchedules = await GetProposedDoctorSchedulesByServiceId(serviceId);
             var activeReservation = await reservationService.GetActiveReservationsForThisWeek();
 
-            var nowVN = DateTime.UtcNow.AddHours(12);
-            var availableSchedules = proposedSchedules.Where(proposed =>
-            {
-                bool isNotOverlapping = !activeReservation.Any(active =>
-                    active.DoctorSchedule.DoctorScheduleId == proposed.DoctorScheduleId &&
-                    active.AppointmentDate == proposed.AppointmentDate
-                );
+            var nowVN = DateTime.UtcNow.AddHours(7);
 
-                bool isAfterNowPlusFive = proposed.AppointmentDate > nowVN;
+            var overlappingReservations = new HashSet<(int doctorScheduleId, DateTime appointmentDate)>(
+                activeReservation.Select(r => (r.DoctorSchedule.DoctorScheduleId, r.AppointmentDate))
+            );
 
-                return isNotOverlapping && isAfterNowPlusFive;
-            }).ToList();
+            var patientSameDayReservations = new HashSet<DateTime>(
+                activeReservation
+                    .Where(r => r.Patient.UserId == patientId)
+                    .Select(r => r.AppointmentDate)
+            );   
+
+            var availableSchedules = proposedSchedules
+                .Where(p =>
+                    p.AppointmentDate > nowVN.AddHours(5) &&
+                    !overlappingReservations.Contains((p.DoctorScheduleId, p.AppointmentDate)) &&
+                    !patientSameDayReservations.Contains(p.AppointmentDate)
+                ).ToList();
 
             return availableSchedules;
-
         }
+
 
 
         public async Task<List<DoctorScheduleDTO>> GetDoctorScheduleList()

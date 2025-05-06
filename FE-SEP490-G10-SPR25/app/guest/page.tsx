@@ -9,7 +9,7 @@ import { PostList } from "@/guest/components/PostList";
 import FeedbackList from "@/guest/components/FeedbackList";
 import VideoPlayer from "./components/VideoPlayer";
 import SymptomPopup from "../patient/appointment-booking/SymptomPopup";
-import { getPostList, IBlog } from "@/common/services/postService";
+import { getPostList } from "@/common/services/postService";
 
 const GuestHomePage = async ({ isGuest = true }: { isGuest: boolean }) => {
   const specialties = await specialtyService.getSpecialtyList();

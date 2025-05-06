@@ -52,7 +52,7 @@ const SuccessReservationMessage = () => {
           thông tin chi tiết về lịch hẹn của bạn:
         </p>
       </div>
-
+           
       <table
         style={{
           width: "100%",

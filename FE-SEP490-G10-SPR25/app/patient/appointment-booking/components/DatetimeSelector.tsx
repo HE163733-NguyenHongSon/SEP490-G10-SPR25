@@ -10,7 +10,7 @@ import {
   setAvailableDates,
 } from "../redux/bookingSlice";
 import { FaCalendar as Calendar, FaClock as Clock } from "react-icons/fa";
-import { RootState } from "@/store";;
+import { RootState } from "@/store";
 
 interface ITimeOption {
   value: string;
@@ -166,7 +166,7 @@ const DatetimeSelector = () => {
             filterDate={isDateAvailable}
             dateFormat="dd/MM/yyyy"
             placeholderText="Chọn ngày"
-            className="w-full p-2 border rounded-md text-gray-700"
+            className="w-full border p-2  rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-100  border-gray-300"
             minDate={new Date()}
           />
         </div>
@@ -200,9 +200,7 @@ const DatetimeSelector = () => {
         </div>
       )}
 
-      {/* {availableDates.length === 0 && !isLoading && (
-        <div className="text-sm text-red-500">Không có lịch khả dụng.</div>
-      )} */}
+     
     </div>
   );
 };

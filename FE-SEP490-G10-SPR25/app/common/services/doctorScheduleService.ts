@@ -33,11 +33,12 @@ export const doctorScheduleService = {
     }
   },
 
-  async getAvailableSchedulesByServiceId(
-    serviceId: string | number
+  async getAvailableSchedulesByServiceIdAndPatientId(
+    serviceId: string | number,
+    patientId?: string | number
   ): Promise<IAvailableSchedule[]> {    
     try {
-      const res = await fetch(`${apiUrl}/api/DoctorSchedules/GetAvailableSchedulesByServiceId/${serviceId}`);
+      const res = await fetch(`${apiUrl}/api/DoctorSchedules/GetAvailableSchedulesByServiceIdAndPatientId/${serviceId}/${patientId}`);
 
       if (!res.ok) {
         console.error("Gợi ý thất bại:", await res.text());

@@ -200,7 +200,7 @@ const DoctorDetailPage = ({ params }: DoctorDetailPageProps) => {
                 {route.name}
               </Tabs.Trigger>
             ))}
-          </Tabs.List>
+          </Tabs.List>        
 
           <div className="px-5 py-4 h-fit overflow-y-auto">
             <Tabs.Content value="overview">

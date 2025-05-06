@@ -202,19 +202,26 @@ const SpecialtiesManagement = () => {
         width={700}
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Form.Item
-            name="specialtyName"
-            label="Tên chuyên khoa"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên chuyên khoa" },
-              {
-                pattern: /^[A-Za-zÀ-ỹ\s\-]+$/u,
-                message: "Tên không được chứa số hoặc ký tự đặc biệt",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+        <Form.Item
+          name="specialtyName"
+          label="Tên chuyên khoa"
+          rules={[
+            { required: true, message: "Vui lòng nhập tên chuyên khoa" },
+            {
+              pattern: /^[A-Za-zÀ-ỹ\s\-]+$/u,
+              message: "Tên không được chứa số hoặc ký tự đặc biệt",
+            },
+            {
+              validator: (_, value) =>
+                value && value.trim() !== ""
+                  ? Promise.resolve()
+                  : Promise.reject("Tên không được để trống hoặc chỉ chứa khoảng trắng"),
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
 
           <Form.Item
             name="description"

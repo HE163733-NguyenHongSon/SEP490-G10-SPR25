@@ -92,23 +92,24 @@ const ListService = ({ items, displayView, isBooking }: ListServiceProps) => {
       </div>
 
       <div className="mt-4">
-        {isBooking ? (
-          <button
-            value={service.serviceId}
-            type="button"
-            onClick={(e) => handleBooking(e, service)}
-            className="inline-block w-full text-center bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-md transition"
-          >
-            Đặt dịch vụ
-          </button>
-        ) : (
+        <div className="flex gap-2">
+          {isBooking && (
+            <button
+              value={service.serviceId}
+              type="button"
+              onClick={(e) => handleBooking(e, service)}
+              className="flex-1 text-center bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-md transition"
+            >
+              Đặt dịch vụ
+            </button>
+          )}
           <Link
-            href={`/patient/service-detail/${service.serviceId}`}
-            className="inline-block w-full text-center bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-md transition"
+            href={`/patient/services/service-detail/${service.serviceId}`}
+            className={`flex-1 text-center bg-cyan-500 hover:bg-cyan-600 text-white py-2 px-4 rounded-md transition`}
           >
             Chi tiết
           </Link>
-        )}
+        </div>
       </div>
     </div>
   );

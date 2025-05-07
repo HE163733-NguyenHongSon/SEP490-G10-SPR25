@@ -68,7 +68,7 @@ const HomeSearch = ({
     if (selected) {
       setSelectedOption(selected);
       const typePathMap: Record<string, string> = {
-        doctor: "doctors/doctor-detail",
+        doctor: "doctors",
         service: "services/service-detail",
         specialty: "specialties",
       };

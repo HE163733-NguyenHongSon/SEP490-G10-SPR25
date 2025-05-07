@@ -68,9 +68,9 @@ export const About = () => {
             tôi không ngừng nâng cao chất lượng dịch vụ và mở rộng hệ thống
             chuyên môn nhằm đáp ứng mọi nhu cầu của bệnh nhân.
           </p>
-          <button className="ml-3 bg-cyan-500 text-white px-8 py-2 rounded hover:bg-cyan-600">
+          {/* <button className="ml-3 bg-cyan-500 text-white px-8 py-2 rounded hover:bg-cyan-600">
             Tìm hiểu thêm
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

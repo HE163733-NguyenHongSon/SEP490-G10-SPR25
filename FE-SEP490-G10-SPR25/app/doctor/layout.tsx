@@ -5,6 +5,7 @@ import ProtectedRoute from "../common/components/ProtectedRoute";
 import { AppRole } from "../common/types/roles";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
+import { SignalRProvider } from "@/common/contexts/SignalRContext";
 
 import "../globals.css";
 
@@ -22,16 +23,18 @@ export default function DoctorLayout({ children }: DoctorLayoutProps) {
       <div>
         <ThemeProvider>
           <SidebarProvider>
-            <div className="min-h-screen xl:flex">
-              <Sidebar />
-              <Backdrop />
-              <div className="flex-1">
-                <Header />
-                <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
-                  {children}
+            <SignalRProvider hubUrl={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5220'}/hubs/notification`}>
+              <div className="min-h-screen xl:flex">
+                <Sidebar />
+                <Backdrop />
+                <div className="flex-1">
+                  <Header />
+                  <div className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+                    {children}
+                  </div>
                 </div>
               </div>
-            </div>
+            </SignalRProvider>
           </SidebarProvider>
         </ThemeProvider>
       </div>

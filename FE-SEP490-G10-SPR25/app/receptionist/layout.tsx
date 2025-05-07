@@ -9,6 +9,7 @@ import { useSidebar } from "@/common/contexts/SidebarContext";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import Backdrop from "./components/Backdrop";
+import { SignalRProvider } from "@/common/contexts/SignalRContext";
 
 import "@/globals.css";
 
@@ -27,7 +28,9 @@ export default function ReceptionistLayout({
       <div>
         <ThemeProvider>
           <SidebarProvider>
-            <LayoutContent>{children}</LayoutContent>
+            <SignalRProvider hubUrl={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5220'}/hubs/notification`}>
+              <LayoutContent>{children}</LayoutContent>
+            </SignalRProvider>
           </SidebarProvider>
         </ThemeProvider>
       </div>

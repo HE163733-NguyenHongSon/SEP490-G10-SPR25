@@ -1,6 +1,2 @@
-https://www.youtube.com/watch?v=EnzPVKoz4nc&list=PLncHg6Kn2JT5CAeetB0Kt6bWgiPSWIq8G&index=1--next js tutorial 
-https://nextjs.org/docs/14/app/building-your-application/routing/dynamic-routes---- nextjs doc(v14)
-https://tailwindcss.com/ ---taildwind doc
-xóa forder next để chạy lại nếu catche 
-kiểm tra version node js trên 18 cho next.js 14 
-          
+Link Docs: https://docs.google.com/document/d/1uVSps5MDGXEkqoJmNRY9BE4gK8VdfkmQkiNANi2vK-s/edit?tab=t.0
+Link Figmas: https://www.figma.com/design/S0kRPJRNRBe1Y6WutSbiV3/Untitled?node-id=0-1&p=f&t=mW4tIoAxyoV8Kcuj-0
